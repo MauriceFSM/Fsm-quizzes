@@ -1,0 +1,1958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NICET Level 3 — NFPA 13 Storage Study Tool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange:  #D85A30;
+    --blue:    #185FA5;
+    --green:   #1D9E75;
+    --red:     #E74C3C;
+    --yellow:  #F39C12;
+    --purple:  #8E44AD;
+    --bg:      #0F1117;
+    --bg2:     #1A1D27;
+    --bg3:     #22263A;
+    --border:  #2E3250;
+    --text:    #E8EAF6;
+    --muted:   #8892B0;
+    --white:   #FFFFFF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    background: linear-gradient(135deg, var(--bg2) 0%, #1a2040 100%);
+    border-bottom: 2px solid var(--orange);
+    padding: 24px 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .header-badge {
+    background: var(--orange);
+    color: white;
+    font-weight: 800;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  header h1 {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--white);
+  }
+  header h1 span { color: var(--orange); }
+  .header-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  /* ===== NAV TABS ===== */
+  .nav-tabs {
+    display: flex;
+    gap: 0;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+  }
+  .nav-tab {
+    padding: 14px 24px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    color: var(--muted);
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .nav-tab:hover { color: var(--text); }
+  .nav-tab.active { color: var(--orange); border-bottom-color: var(--orange); }
+
+  /* ===== MAIN CONTENT ===== */
+  .section { display: none; padding: 32px; max-width: 1200px; margin: 0 auto; }
+  .section.active { display: block; }
+
+  /* ===== CARDS GRID ===== */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(520px, 1fr));
+    gap: 20px;
+  }
+  @media (max-width: 700px) {
+    .cards-grid { grid-template-columns: 1fr; }
+    header { flex-wrap: wrap; }
+    .header-sub { display: none; }
+  }
+
+  /* ===== STUDY CARD ===== */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .card-num {
+    background: var(--bg3);
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    min-width: 36px;
+    text-align: center;
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--white);
+    flex: 1;
+  }
+  .card-icon {
+    font-size: 22px;
+  }
+  .card-body { padding: 20px; }
+
+  /* ===== KEY RULE BOX ===== */
+  .rule-box {
+    border-left: 4px solid var(--orange);
+    background: rgba(216,90,48,0.08);
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* ===== COLOR PILLS / BADGES ===== */
+  .pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    margin: 2px;
+  }
+  .pill-orange  { background: rgba(216,90,48,0.2);  color: var(--orange);  border: 1px solid var(--orange); }
+  .pill-blue    { background: rgba(24,95,165,0.2);  color: #5BA4F5;        border: 1px solid var(--blue); }
+  .pill-green   { background: rgba(29,158,117,0.2); color: var(--green);   border: 1px solid var(--green); }
+  .pill-red     { background: rgba(231,76,60,0.2);  color: var(--red);     border: 1px solid var(--red); }
+  .pill-yellow  { background: rgba(243,156,18,0.2); color: var(--yellow);  border: 1px solid var(--yellow); }
+  .pill-purple  { background: rgba(142,68,173,0.2); color: #C39BD3;        border: 1px solid var(--purple); }
+
+  /* ===== VISUAL DIAGRAMS ===== */
+  .diagram {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 14px;
+    font-size: 13px;
+  }
+  .diagram-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  /* Horizontal bar diagrams */
+  .bar-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    gap: 10px;
+  }
+  .bar-label {
+    font-size: 12px;
+    color: var(--muted);
+    min-width: 120px;
+    font-weight: 500;
+  }
+  .bar-track {
+    flex: 1;
+    background: var(--bg2);
+    border-radius: 4px;
+    height: 22px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+    white-space: nowrap;
+  }
+  .bar-note {
+    font-size: 11px;
+    color: var(--muted);
+    min-width: 80px;
+    text-align: right;
+  }
+
+  /* Stacked layout diagrams */
+  .stack-diagram {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+  }
+  .stack-block {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  /* Arrow connector */
+  .arrow-down {
+    font-size: 18px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1;
+  }
+
+  /* Comparison grid */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .compare-cell {
+    background: var(--bg2);
+    border-radius: 6px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .compare-cell .compare-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  .compare-cell .compare-val {
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  /* Checklist */
+  .checklist { list-style: none; margin-top: 10px; }
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+  .checklist li::before {
+    content: '✦';
+    color: var(--orange);
+    font-size: 10px;
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+
+  /* Class table */
+  .class-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+  .class-table th {
+    background: var(--bg3);
+    color: var(--muted);
+    padding: 8px 10px;
+    text-align: left;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+  .class-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(46,50,80,0.5);
+    vertical-align: top;
+  }
+  .class-table tr:last-child td { border-bottom: none; }
+  .class-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* Threshold visual */
+  .threshold-line {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 10px 0;
+  }
+  .threshold-zone {
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+    flex: 1;
+  }
+  .threshold-marker {
+    background: var(--bg3);
+    border: 2px solid var(--orange);
+    padding: 8px 6px;
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--orange);
+    text-align: center;
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+    white-space: nowrap;
+    border-radius: 4px;
+  }
+
+  /* Warning callout */
+  .callout {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: rgba(231,76,60,0.08);
+    border: 1px solid rgba(231,76,60,0.3);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size: 13px;
+  }
+  .callout-icon { font-size: 18px; flex-shrink: 0; }
+  .callout-text { color: var(--text); }
+
+  .callout-green {
+    background: rgba(29,158,117,0.08);
+    border-color: rgba(29,158,117,0.3);
+  }
+  .callout-blue {
+    background: rgba(24,95,165,0.08);
+    border-color: rgba(24,95,165,0.3);
+  }
+  .callout-yellow {
+    background: rgba(243,156,18,0.08);
+    border-color: rgba(243,156,18,0.3);
+  }
+
+  /* ===== QUIZ SECTION ===== */
+  #quiz-section { max-width: 860px; }
+  .quiz-header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .quiz-header h2 {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+  .quiz-header p { color: var(--muted); font-size: 14px; }
+
+  .progress-bar-wrap {
+    background: var(--bg3);
+    border-radius: 8px;
+    height: 8px;
+    margin-bottom: 28px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--orange), var(--yellow));
+    border-radius: 8px;
+    transition: width 0.4s ease;
+  }
+  .progress-label {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: right;
+    margin-top: 6px;
+    margin-bottom: 20px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .question-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 20px;
+    display: none;
+  }
+  .question-card.active { display: block; }
+
+  .question-num {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--orange);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .question-text {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 22px;
+    line-height: 1.5;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    background: var(--bg3);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text);
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    user-select: none;
+  }
+  .option:hover:not(.disabled) {
+    border-color: var(--orange);
+    background: rgba(216,90,48,0.07);
+    transform: translateX(4px);
+  }
+  .option.correct {
+    border-color: var(--green);
+    background: rgba(29,158,117,0.12);
+    color: var(--white);
+  }
+  .option.wrong {
+    border-color: var(--red);
+    background: rgba(231,76,60,0.10);
+    color: var(--muted);
+  }
+  .option.disabled { cursor: default; }
+  .option-letter {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .option.correct .option-letter { border-color: var(--green); background: var(--green); color: white; }
+  .option.wrong   .option-letter { border-color: var(--red);   background: var(--red);   color: white; }
+
+  .feedback-box {
+    margin-top: 16px;
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    display: none;
+    line-height: 1.5;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.correct-fb {
+    background: rgba(29,158,117,0.1);
+    border: 1px solid rgba(29,158,117,0.4);
+    color: var(--green);
+  }
+  .feedback-box.wrong-fb {
+    background: rgba(231,76,60,0.08);
+    border: 1px solid rgba(231,76,60,0.3);
+    color: #F1948A;
+  }
+  .feedback-icon { font-size: 18px; margin-right: 6px; }
+
+  .next-btn {
+    display: none;
+    margin-top: 18px;
+    background: var(--orange);
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    font-family: 'Inter', sans-serif;
+  }
+  .next-btn:hover { opacity: 0.85; }
+  .next-btn.show { display: inline-block; }
+
+  /* ===== SCORE CARD ===== */
+  #score-card {
+    display: none;
+    text-align: center;
+    padding: 48px 32px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  #score-card.show { display: block; }
+  .score-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    font-weight: 800;
+    border: 6px solid var(--green);
+  }
+  .score-circle.good  { border-color: var(--green); background: rgba(29,158,117,0.1); }
+  .score-circle.ok    { border-color: var(--yellow); background: rgba(243,156,18,0.1); }
+  .score-circle.low   { border-color: var(--red); background: rgba(231,76,60,0.1); }
+  .score-number {
+    font-size: 36px;
+    line-height: 1;
+    color: var(--white);
+  }
+  .score-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .score-msg {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 10px;
+  }
+  .score-sub {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .retry-btn {
+    background: var(--orange);
+    color: white;
+    border: none;
+    padding: 14px 36px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: opacity 0.2s;
+  }
+  .retry-btn:hover { opacity: 0.85; }
+  .score-breakdown {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin: 20px 0;
+  }
+  .score-stat {
+    text-align: center;
+  }
+  .score-stat-val {
+    font-size: 24px;
+    font-weight: 800;
+  }
+  .score-stat-lbl {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* ===== CHEAT SHEET ===== */
+  #ref-section h2 {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--white);
+    margin-bottom: 20px;
+  }
+  .ref-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+  }
+  .ref-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .ref-card h3 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--orange);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+  }
+  .ref-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px dotted var(--border);
+    font-size: 13px;
+  }
+  .ref-row:last-child { border-bottom: none; }
+  .ref-row-key { color: var(--muted); }
+  .ref-row-val { font-weight: 700; color: var(--text); text-align: right; }
+
+  /* Utilities */
+  .mt8 { margin-top: 8px; }
+  .mt12 { margin-top: 12px; }
+  .mt16 { margin-top: 16px; }
+  .text-muted { color: var(--muted); font-size: 12px; }
+  .text-sm { font-size: 13px; }
+  .flex { display: flex; gap: 8px; flex-wrap: wrap; }
+  .bold { font-weight: 700; }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .card { animation: fadeSlide 0.3s ease forwards; }
+  .question-card.active { animation: fadeSlide 0.25s ease forwards; }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="header-badge">NICET L3</span>
+  <h1>NFPA 13 <span>Storage</span> — Interactive Study Tool</h1>
+  <span class="header-sub">18 Topics · 15-Question Quiz · Quick-Ref Sheet</span>
+</header>
+
+<div class="nav-tabs">
+  <div class="nav-tab active" onclick="showSection('cards')">📚 Study Cards</div>
+  <div class="nav-tab" onclick="showSection('quiz')">🎯 Quiz</div>
+  <div class="nav-tab" onclick="showSection('ref')">⚡ Quick Ref</div>
+</div>
+
+<!-- ============================================================
+     SECTION 1 — STUDY CARDS
+     ============================================================ -->
+<div class="section active" id="cards-section">
+  <div class="cards-grid">
+
+    <!-- CARD 1: Commodity Definition -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">01</span>
+        <span class="card-title">Commodity = Product + Packaging + Pallet</span>
+        <span class="card-icon">📦</span>
+      </div>
+      <div class="card-body">
+        <div class="rule-box">Classify using ALL three components together — the worst one drives the classification.</div>
+        <div class="diagram">
+          <div class="diagram-title">Commodity Components</div>
+          <div style="display:flex; gap:6px; align-items:center; justify-content:center; flex-wrap:wrap; font-size:14px;">
+            <div style="background:rgba(216,90,48,0.15); border:2px solid var(--orange); border-radius:8px; padding:12px 18px; text-align:center; font-weight:700;">
+              🏭 Product<br><span style="font-size:11px; color:var(--muted); font-weight:400;">the item itself</span>
+            </div>
+            <div style="font-size:22px; color:var(--muted);">+</div>
+            <div style="background:rgba(24,95,165,0.15); border:2px solid var(--blue); border-radius:8px; padding:12px 18px; text-align:center; font-weight:700;">
+              📦 Packaging<br><span style="font-size:11px; color:var(--muted); font-weight:400;">carton, wrap, foam</span>
+            </div>
+            <div style="font-size:22px; color:var(--muted);">+</div>
+            <div style="background:rgba(29,158,117,0.15); border:2px solid var(--green); border-radius:8px; padding:12px 18px; text-align:center; font-weight:700;">
+              🪵 Pallet<br><span style="font-size:11px; color:var(--muted); font-weight:400;">wood or plastic</span>
+            </div>
+            <div style="font-size:22px; color:var(--muted);">=</div>
+            <div style="background:rgba(216,90,48,0.25); border:2px dashed var(--orange); border-radius:8px; padding:12px 18px; text-align:center; font-weight:800; color:var(--orange);">
+              COMMODITY<br><span style="font-size:11px; color:var(--muted); font-weight:400;">worst component wins</span>
+            </div>
+          </div>
+        </div>
+        <div class="callout mt12">
+          <span class="callout-icon">⚠️</span>
+          <span class="callout-text">A noncombustible product in a foam plastic package becomes a <strong>Group A plastic commodity</strong>. Never classify product alone.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 2: Start at Chapter 20 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">02</span>
+        <span class="card-title">Always Start Storage Design at Chapter 20</span>
+        <span class="card-icon">📖</span>
+      </div>
+      <div class="card-body">
+        <div class="rule-box">Chapter 20 = the storage overview chapter. It tells you WHERE to go next based on your storage type.</div>
+        <div class="diagram">
+          <div class="diagram-title">NFPA 13 Storage Design Flow</div>
+          <div class="stack-diagram">
+            <div class="stack-block" style="background:rgba(216,90,48,0.2); border:2px solid var(--orange); color:var(--orange); font-size:14px;">
+              🔵 Chapter 20<br><span style="font-size:11px; font-weight:400; color:var(--text);">Storage — Overview &amp; Classification</span>
+            </div>
+            <div class="arrow-down">▼</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; width:100%;">
+              <div class="stack-block" style="background:rgba(24,95,165,0.15); border:1px solid var(--blue); font-size:12px; color:#5BA4F5;">Ch 21<br><span style="font-weight:400; color:var(--muted);">CMDA — High-Piled Storage</span></div>
+              <div class="stack-block" style="background:rgba(24,95,165,0.15); border:1px solid var(--blue); font-size:12px; color:#5BA4F5;">Ch 22<br><span style="font-weight:400; color:var(--muted);">CMSA Requirements</span></div>
+              <div class="stack-block" style="background:rgba(24,95,165,0.15); border:1px solid var(--blue); font-size:12px; color:#5BA4F5;">Ch 23<br><span style="font-weight:400; color:var(--muted);">ESFR Requirements</span></div>
+              <div class="stack-block" style="background:rgba(24,95,165,0.15); border:1px solid var(--blue); font-size:12px; color:#5BA4F5;">Ch 24<br><span style="font-weight:400; color:var(--muted);">Alternative Designs</span></div>
+              <div class="stack-block" style="background:rgba(24,95,165,0.15); border:1px solid var(--blue); font-size:12px; color:#5BA4F5;">Ch 25<br><span style="font-weight:400; color:var(--muted);">In-Rack Sprinklers</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="callout callout-blue mt12">
+          <span class="callout-icon">💡</span>
+          <span class="callout-text">Chapter 20 also defines miscellaneous and low-piled storage. Miss it and you miss the entire foundation.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 3: Miscellaneous Storage -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">03</span>
+        <span class="card-title">Miscellaneous Storage — The 5 Rules</span>
+        <span class="card-icon">🏪</span>
+      </div>
+      <div class="card-body">
+        <div class="rule-box">Miscellaneous = INCIDENTAL use. Fails if it becomes the building's primary purpose.</div>
+        <div class="diagram">
+          <div class="diagram-title">All 5 Requirements — ALL must be met</div>
+          <div class="bar-row">
+            <div class="bar-label">Max Height</div>
+            <div class="bar-track"><div class="bar-fill" style="width:60%; background:var(--blue);">≤ 12 ft</div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">% of Building</div>
+            <div class="bar-track"><div class="bar-fill" style="width:40%; background:var(--orange);">≤ 10%</div></div>
+            <div class="bar-note">OR 4,000 ft²</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">Per Pile Max</div>
+            <div class="bar-track"><div class="bar-fill" style="width:50%; background:var(--purple);">≤ 1,000 ft²</div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">Pile Separation</div>
+            <div class="bar-track"><div class="bar-fill" style="width:80%; background:var(--green);">≥ 25 ft apart</div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">Use Type</div>
+            <div class="bar-track"><div class="bar-fill" style="width:100%; background:var(--muted);">INCIDENTAL — not primary</div></div>
+          </div>
+        </div>
+        <div class="callout mt12">
+          <span class="callout-icon">⚠️</span>
+          <span class="callout-text">Fail <strong>any one</strong> of these five and you fall into low-piled or high-piled storage rules.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 4: Low-Piled Storage -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">04</span>
+        <span class="card-title">Low-Piled Storage — No Area Limit</span>
+        <span class="card-icon">📏</span>
+      </div>
+      <div class="card-body">
+        <div class="rule-box">Low-piled CAN be the PRIMARY use of a building. No square footage cap. Height ≤ 12 ft.</div>
+        <div class="diagram">
+          <div class="diagram-title">Low-Piled vs Miscellaneous</div>
+          <div class="compare-grid">
+            <div class="compare-cell">
+              <div class="compare-label">Miscellaneous</div>
+              <div class="compare-val" style="color:var(--yellow);">Incidental Only</div>
+              <div class="text-muted mt8">≤ 10% or 4,000 ft²<br>≤ 1,000 ft² per pile<br>≥ 25 ft separation</div>
+            </div>
+            <div class="compare-cell">
+              <div class="compare-label">Low-Piled</div>
+              <div class="compare-val" style="color:var(--green);">Can Be Primary</div>
+              <div class="text-muted mt8">NO area limit<br>No pile size limit<br>No separation req.</div>
+            </div>
+          </div>
+          <div style="margin-top:10px; text-align:center;">
+            <span class="pill pill-orange">Both ≤ 12 ft height</span>
+            <span class="pill pill-blue">Both Class I–IV or Group A Plastics</span>
+          </div>
+        </div>
+        <div class="callout callout-green mt12">
+          <span class="callout-icon">✅</span>
+          <span class="callout-text">A warehouse where storage IS the purpose = low-piled. A retail store with a back stockroom = miscellaneous.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 5: Encapsulation -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">05</span>
+        <span class="card-title">Encapsulation = Sides AND Top Covered</span>
+        <span class="card-icon">🎁</span>
+      </div>
+      <div class="card-body">
+        <div class="rule-box">Encapsulation requires BOTH sides AND top covered. Banding (sides only) does NOT qualify.</div>
+        <div class="diagram">
+          <div class="diagram-title">Visual Comparison</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div style="text-align:center;">
+              <div style="border:3px solid var(--red); border-radius:6px; padding:12px; margin-bottom:6px; position:relative;">
+                <div style="font-size:28px;">📦</div>
+                <div style="position:absolute; left:4px; top:50%; transform:translateY(-50%); font-size:16px;">|</div>
+                <div style="position:absolute; right:4px; top:50%; transform:translateY(-50%); font-size:16px;">|</div>
+                <div style="font-size:10px; color:var(--muted); margin-top:4px;">only sides</div>
+              </div>
+              <span class="pill pill-red">❌ Banding</span>
+              <div class="text-muted mt8">Sides only = NOT encapsulated</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="border:3px solid var(--green); border-radius:6px; padding:12px; margin-bottom:6px; background:rgba(29,158,117,0.05);">
+                <div style="font-size:28px;">🎁</div>
+                <div style="font-size:10px; color:var(--muted); margin-top:4px;">sides + top</div>
+              </div>
+              <span class="pill pill-green">✅ Encapsulated</span>
+              <div class="text-muted mt8">Sides AND top covered</div>
+            </div>
+          </div>
+        </div>
+        <div class="callout mt12">
+          <span class="callout-icon">🔥</span>
+          <span class="callout-text">Encapsulation matters because it <strong>traps heat</strong> and prevents water penetration — triggers density penalties in rack storage over 12 ft. (Palletized/solid-piled penalty triggers at over 15 ft.)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 6: Solid Shelf Racks -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">06</span>
+        <span class="card-title">Solid Shelf Racks — Always Need In-Rack Sprinklers</span>
+        <span class="card-icon">🗄️</span>
+      </div>
+      <div class="card-body">
+        <div class="rule-box">Solid shelves block water from ceiling sprinklers (umbrella effect). In-rack sprinklers required — always.</div>
+        <div class="diagram">
+          <div class="diagram-title">Why Solid Shelves Are Different</div>
+          <div class="stack-diagram">
+            <div style="display:flex; justify-content:center; gap:6px; font-size:22px;">💧💧💧💧💧</div>
+            <div style="font-size:12px; color:var(--muted); text-align:center;">Ceiling sprinkler water</div>
+            <div class="arrow-down">▼</div>
+            <div class="stack-block" style="background:rgba(231,76,60,0.15); border:2px solid var(--red); color:var(--red);">
+              ██████████████ SOLID SHELF ██████████████<br>
+              <span style="font-size:11px; color:var(--muted); font-weight:400;">Water cannot penetrate — creates umbrella effect</span>
+            </div>
+            <div style="display:flex; gap:8px; font-size:12px; color:var(--muted);">← blocked →</div>
+            <div class="stack-block" style="background:rgba(216,90,48,0.1); border:1px dashed var(--orange); color:var(--muted); font-size:12px;">
+              🔥 FIRE BELOW — unreached by ceiling water
+            </div>
+          </div>
+          <div style="margin-top:12px; padding:10px; background:rgba(29,158,117,0.1); border:1px solid rgba(29,158,117,0.3); border-radius:6px; font-size:12px; text-align:center;">
+            <span style="color:var(--green); font-weight:700;">Solution: In-Rack Sprinklers</span> placed below each solid shelf
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 7: High-Piled Thresholds -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">07</span>
+        <span class="card-title">High-Piled Thresholds by Commodity</span>
+        <span class="card-icon">📐</span>
+      </div>
+      <div class="card-body">
+        <div class="rule-box">Class I–IV becomes HIGH-PILED over 12 ft. Group A Plastics becomes high-piled over 5 ft.</div>
+        <div class="diagram">
+          <div class="diagram-title">Height Thresholds</div>
+          <div class="threshold-line">
+            <div class="threshold-zone" style="background:rgba(29,158,117,0.12); color:var(--green); border-radius:6px 0 0 6px;">
+              ✅ LOW-PILED<br><span style="font-size:11px; font-weight:400;">≤ 12 ft</span>
+            </div>
+            <div class="threshold-marker">12 FT</div>
+            <div class="threshold-zone" style="background:rgba(231,76,60,0.12); color:var(--red); border-radius:0 6px 6px 0;">
+              🔥 HIGH-PILED<br><span style="font-size:11px; font-weight:400;">&gt; 12 ft</span>
+            </div>
+          </div>
+          <div style="text-align:center; font-size:11px; color:var(--muted); margin-bottom:12px;">↑ For Class I, II, III, IV ↑</div>
+
+          <div class="threshold-line">
+            <div class="threshold-zone" style="background:rgba(29,158,117,0.12); color:var(--green); border-radius:6px 0 0 6px;">
+              ✅ LOW-PILED<br><span style="font-size:11px; font-weight:400;">≤ 5 ft</span>
+            </div>
+            <div class="threshold-marker">5 FT</div>
+            <div class="threshold-zone" style="background:rgba(231,76,60,0.12); color:var(--red); border-radius:0 6px 6px 0;">
+              🔥 HIGH-PILED<br><span style="font-size:11px; font-weight:400;">&gt; 5 ft</span>
+            </div>
+          </div>
+          <div style="text-align:center; font-size:11px; color:var(--muted);">↑ For Group A Plastics only ↑</div>
+        </div>
+        <div class="callout callout-yellow mt12">
+          <span class="callout-icon">💥</span>
+          <span class="callout-text">Group A plastics are SO hazardous they go high-piled at just 5 ft — less than half the standard threshold.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 8: Class I–IV Definitions -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">08</span>
+        <span class="card-title">Class I, II, III, IV — Commodity Classes</span>
+        <span class="card-icon">🏷️</span>
+      </div>
+      <div class="card-body">
+        <div class="rule-box">Hazard increases from I to IV. Class IV is the most hazardous before Group A Plastics.</div>
+        <table class="class-table">
+          <tr>
+            <th>Class</th>
+            <th>Product</th>
+            <th>Packaging</th>
+            <th>Hazard</th>
+          </tr>
+          <tr>
+            <td><span class="pill pill-green">I</span></td>
+            <td>Noncombustible</td>
+            <td>Minimal / none</td>
+            <td style="color:var(--green);">Lowest</td>
+          </tr>
+          <tr>
+            <td><span class="pill pill-blue">II</span></td>
+            <td>Noncombustible</td>
+            <td>More combustible packaging</td>
+            <td style="color:#5BA4F5;">Low-Mid</td>
+          </tr>
+          <tr>
+            <td><span class="pill pill-yellow">III</span></td>
+            <td>Combustible<br><span style="font-size:11px; color:var(--muted);">(wood, paper, natural fiber)</span></td>
+            <td>Any, but &lt;5% Grp A plastic</td>
+            <td style="color:var(--yellow);">Moderate</td>
+          </tr>
+          <tr>
+            <td><span class="pill pill-orange">IV</span></td>
+            <td>May contain plastic</td>
+            <td>&gt;5% Group A nonexpanded by weight</td>
+            <td style="color:var(--orange);">High</td>
+          </tr>
+        </table>
+        <div class="callout callout-yellow mt12">
+          <span class="callout-icon">🔑</span>
+          <span class="callout-text">The <strong>5% Group A threshold</strong> is the dividing line between Class III and Class IV.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 9: Group A/B/C Plastics -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">09</span>
+        <span class="card-title">Group A / B / C Plastics — Hazard Levels</span>
+        <span class="card-icon">🧪</span>
+      </div>
+      <div class="card-body">
+        <div class="rule-box">Group A = EXTREME. Group B = protected as Class IV. Group C = protected as Class III.</div>
+        <div class="diagram">
+          <div class="diagram-title">Plastics Hazard Hierarchy</div>
+          <div class="bar-row">
+            <div class="bar-label">Group A</div>
+            <div class="bar-track"><div class="bar-fill" style="width:100%; background:var(--red);">EXTREME — own special rules</div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">Group B</div>
+            <div class="bar-track"><div class="bar-fill" style="width:65%; background:var(--orange);">Moderate → treat as Class IV</div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">Group C</div>
+            <div class="bar-track"><div class="bar-fill" style="width:35%; background:var(--blue);">Lower → treat as Class III</div></div>
+          </div>
+        </div>
+        <div class="mt12">
+          <div style="font-size:12px; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px;">Examples</div>
+          <div class="flex">
+            <span class="pill pill-red">Group A: ABS</span>
+            <span class="pill pill-red">Acrylic</span>
+            <span class="pill pill-red">Styrofoam</span>
+            <span class="pill pill-red">Expanded Foam</span>
+          </div>
+          <div class="flex mt8">
+            <span class="pill pill-orange">Group B: Chloroprene</span>
+            <span class="pill pill-orange">Silicone Rubber</span>
+          </div>
+          <div class="flex mt8">
+            <span class="pill pill-blue">Group C: Teflon/PTFE</span>
+            <span class="pill pill-blue">Melamine</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 10: 5% Group A Threshold -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">10</span>
+        <span class="card-title">5% Group A Threshold — Class III vs IV</span>
+        <span class="card-icon">⚖️</span>
+      </div>
+      <div class="card-body">
+        <div class="rule-box">Under 5% Group A nonexpanded plastic by weight = Class III. Over 5% = Class IV.</div>
+        <div class="diagram">
+          <div class="diagram-title">The Critical 5% Line</div>
+          <div style="display:flex; align-items:stretch; margin:8px 0; border-radius:8px; overflow:hidden; height:60px;">
+            <div style="flex:5; background:rgba(243,156,18,0.2); border:2px solid var(--yellow); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:var(--yellow);">
+              CLASS III<br><span style="font-size:11px; font-weight:400;">&lt; 5% Grp A</span>
+            </div>
+            <div style="width:4px; background:var(--red);"></div>
+            <div style="flex:5; background:rgba(216,90,48,0.2); border:2px solid var(--orange); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:var(--orange);">
+              CLASS IV<br><span style="font-size:11px; font-weight:400;">&gt; 5% Grp A</span>
+            </div>
+          </div>
+          <div style="text-align:center; font-size:13px; font-weight:700; color:var(--red); margin-top:4px;">← 5% BY WEIGHT →</div>
+        </div>
+        <div class="callout callout-yellow mt12">
+          <span class="callout-icon">📏</span>
+          <span class="callout-text">"Nonexpanded" is key. Expanded foam (like Styrofoam peanuts) = automatic Group A regardless of percentage — it's so hazardous it has its own rules.</span>
+        </div>
+        <div class="callout callout-blue mt8">
+          <span class="callout-icon">💡</span>
+          <span class="callout-text">This 5% rule applies to <strong>packaging</strong>. If the <strong>product itself</strong> is Group A plastic, skip straight to Group A commodity rules.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 11: Product IS Group A Plastic -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">11</span>
+        <span class="card-title">Product IS Group A Plastic → Group A Rules</span>
+        <span class="card-icon">🎯</span>
+      </div>
+      <div class="card-body">
+        <div class="rule-box">When the PRODUCT itself is Group A plastic, it's a Group A plastic commodity — not Class IV. Owns its own rules and 5 ft threshold.</div>
+        <div class="diagram">
+          <div class="diagram-title">Classification Decision Tree</div>
+          <div class="stack-diagram">
+            <div class="stack-block" style="background:var(--bg3); border:1px solid var(--border); font-size:13px; color:var(--text);">
+              ❓ Is the product itself Group A plastic?
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; width:100%;">
+              <div>
+                <div class="arrow-down">▼ YES</div>
+                <div class="stack-block" style="background:rgba(231,76,60,0.15); border:2px solid var(--red); color:var(--red); font-size:12px;">
+                  Group A Plastic Commodity<br>→ Chapter 21–24 (own tables)<br>→ 5 ft threshold<br>→ Own density tables
+                </div>
+              </div>
+              <div>
+                <div class="arrow-down">▼ NO</div>
+                <div class="stack-block" style="background:rgba(24,95,165,0.15); border:2px solid var(--blue); color:#5BA4F5; font-size:12px;">
+                  Apply 5% packaging rule<br>→ &lt;5% = Class III<br>→ &gt;5% = Class IV<br>→ Ch 21/22
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 12: Natural Rubber vs Group B -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">12</span>
+        <span class="card-title">Natural Rubber ≠ Group B Plastic</span>
+        <span class="card-icon">🌿</span>
+      </div>
+      <div class="card-body">
+        <div class="rule-box">Natural rubber = its own "rubber commodity" category. Chloroprene and silicone = Group B plastics.</div>
+        <div class="diagram">
+          <div class="diagram-title">Rubber Classification</div>
+          <div class="compare-grid">
+            <div class="compare-cell" style="border-color:var(--green);">
+              <div class="compare-label" style="color:var(--green);">Natural Rubber</div>
+              <div class="compare-val">🌿 Rubber Commodity</div>
+              <div class="text-muted mt8">Latex, natural gum<br>Rubber commodity — own tables<br>NOT Group B</div>
+            </div>
+            <div class="compare-cell" style="border-color:var(--orange);">
+              <div class="compare-label" style="color:var(--orange);">Synthetic Rubber</div>
+              <div class="compare-val">🧪 Group B Plastic</div>
+              <div class="text-muted mt8">Chloroprene<br>Silicone rubber<br>→ Protect as Class IV</div>
+            </div>
+          </div>
+        </div>
+        <div class="callout mt12">
+          <span class="callout-icon">⚠️</span>
+          <span class="callout-text">Exam trap: "rubber commodity" and "Group B plastic" both involve rubber products but are entirely different categories with different design requirements.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 13: Tire Storage Orientation -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">13</span>
+        <span class="card-title">Tire Orientation — On-Side More Hazardous</span>
+        <span class="card-icon">🛞</span>
+      </div>
+      <div class="card-body">
+        <div class="rule-box">Tires stored on-side (flat/horizontal stacked) are MORE hazardous than on-tread (upright).</div>
+        <div class="diagram">
+          <div class="diagram-title">Tire Storage Orientations</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div style="text-align:center;">
+              <div style="font-size:32px; margin-bottom:6px;">🛞<br>🛞<br>🛞</div>
+              <span class="pill pill-green">On-Tread (Upright)</span>
+              <div class="text-muted mt8">Less hazardous<br>Air gaps allow water in<br>Less heat trapping</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="background:rgba(231,76,60,0.1); border:2px solid var(--red); border-radius:8px; padding:8px; margin-bottom:6px;">
+                <div style="font-size:14px; font-weight:700; color:var(--red);">⬤ ⬤ ⬤<br>⬤ ⬤ ⬤<br>⬤ ⬤ ⬤</div>
+                <div style="font-size:10px; color:var(--muted); margin-top:2px;">flat stack view from side</div>
+              </div>
+              <span class="pill pill-red">On-Side (Flat Stacked)</span>
+              <div class="text-muted mt8">MORE hazardous<br>Creates chimney effect<br>Traps heat, blocks water</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 14: Misc Tire Storage Area -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">14</span>
+        <span class="card-title">Miscellaneous Tire Storage — 2,000 ft² Max</span>
+        <span class="card-icon">🅿️</span>
+      </div>
+      <div class="card-body">
+        <div class="rule-box">Misc tire storage = max 2,000 ft² per pile (vs 1,000 ft² for standard misc storage).</div>
+        <div class="diagram">
+          <div class="diagram-title">Miscellaneous Storage Area Limits</div>
+          <div class="bar-row">
+            <div class="bar-label">Standard Misc<br><span style="font-size:10px;">(per pile)</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:50%; background:var(--blue);">1,000 ft²</div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">Tire Misc Pile<br><span style="font-size:10px;">(per pile)</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:100%; background:var(--orange);">2,000 ft² (tires only)</div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">Misc Total<br><span style="font-size:10px;">(building max)</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:100%; background:var(--muted);">4,000 ft² OR ≤ 10% of building</div></div>
+          </div>
+        </div>
+        <div class="callout callout-yellow mt12">
+          <span class="callout-icon">🧠</span>
+          <span class="callout-text">The 25 ft separation rule between piles still applies for tire miscellaneous storage. And total building miscellaneous stays ≤ 4,000 ft².</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 15: CMDA Areas -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">15</span>
+        <span class="card-title">CMDA Design Areas — Wet vs Dry Pipe</span>
+        <span class="card-icon">💧</span>
+      </div>
+      <div class="card-body">
+        <div class="rule-box">CMDA wet pipe minimum area = 2,000 ft². Dry pipe = 2,600 ft². Density is the SAME for both.</div>
+        <div class="diagram">
+          <div class="diagram-title">CMDA — Control Mode Density/Area</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:8px;">
+            <div style="background:rgba(24,95,165,0.15); border:2px solid var(--blue); border-radius:8px; padding:14px; text-align:center;">
+              <div style="font-size:24px; margin-bottom:4px;">💧</div>
+              <div style="font-weight:800; color:#5BA4F5; font-size:15px;">WET PIPE</div>
+              <div style="font-size:28px; font-weight:800; color:var(--white); margin:8px 0;">2,000 ft²</div>
+              <div style="font-size:11px; color:var(--muted);">Minimum design area</div>
+            </div>
+            <div style="background:rgba(216,90,48,0.15); border:2px solid var(--orange); border-radius:8px; padding:14px; text-align:center;">
+              <div style="font-size:24px; margin-bottom:4px;">🌫️</div>
+              <div style="font-weight:800; color:var(--orange); font-size:15px;">DRY PIPE</div>
+              <div style="font-size:28px; font-weight:800; color:var(--white); margin:8px 0;">2,600 ft²</div>
+              <div style="font-size:11px; color:var(--muted);">Minimum design area</div>
+            </div>
+          </div>
+          <div style="margin-top:12px; text-align:center; padding:10px; background:rgba(29,158,117,0.1); border:1px solid rgba(29,158,117,0.3); border-radius:6px;">
+            <span style="color:var(--green); font-weight:700; font-size:13px;">⚡ Density (gpm/ft²) is IDENTICAL for both — only the area changes</span>
+          </div>
+        </div>
+        <div class="text-muted mt12" style="font-size:12px;">CMDA = Control Mode Density/Area method. Contrast with CMSA (Control Mode Specific Application) which uses larger drops.</div>
+      </div>
+    </div>
+
+    <!-- CARD 16: Encapsulation Penalty -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">16</span>
+        <span class="card-title">Encapsulation Density Penalty in Racks</span>
+        <span class="card-icon">📈</span>
+      </div>
+      <div class="card-body">
+        <div class="rule-box">Rack storage over 12 ft with encapsulated product: Class I–III = +25% density. Class IV = +50% density. (Palletized/solid-piled: penalty triggers at over 15 ft.)</div>
+        <div class="diagram">
+          <div class="diagram-title">Encapsulation Penalty (Rack, &gt;12 ft)</div>
+          <div class="bar-row">
+            <div class="bar-label" style="color:var(--yellow);">Class I–III</div>
+            <div class="bar-track">
+              <div style="height:100%; background:var(--bg2); display:flex; align-items:center; position:relative; padding:0 8px;">
+                <div style="height:100%; background:var(--blue); position:absolute; left:0; top:0; width:57%; border-radius:3px;"></div>
+                <span style="position:relative; z-index:1; font-size:11px; font-weight:700; color:white; padding-left:6px;">Base density</span>
+                <div style="height:100%; background:rgba(243,156,18,0.7); position:absolute; left:57%; top:0; width:25%; border:1px dashed var(--yellow); display:flex; align-items:center; justify-content:center;"></div>
+                <span style="position:absolute; right:8px; font-size:11px; font-weight:800; color:var(--yellow);">+25%</span>
+              </div>
+            </div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label" style="color:var(--orange);">Class IV</div>
+            <div class="bar-track">
+              <div style="height:100%; background:var(--bg2); display:flex; align-items:center; position:relative; padding:0 8px;">
+                <div style="height:100%; background:var(--blue); position:absolute; left:0; top:0; width:50%; border-radius:3px;"></div>
+                <span style="position:relative; z-index:1; font-size:11px; font-weight:700; color:white; padding-left:6px;">Base density</span>
+                <div style="height:100%; background:rgba(216,90,48,0.7); position:absolute; left:50%; top:0; width:50%; border:1px dashed var(--orange); display:flex; align-items:center; justify-content:center;"></div>
+                <span style="position:absolute; right:8px; font-size:11px; font-weight:800; color:var(--orange);">+50%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="callout mt12">
+          <span class="callout-icon">⚠️</span>
+          <span class="callout-text">Trigger conditions: <strong>rack storage</strong> (not palletized), <strong>over 12 ft</strong> storage height, AND product is <strong>encapsulated</strong> (sides + top covered). Palletized/solid-piled storage: penalty triggers at over 15 ft.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 17: Clearance Definitions -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">17</span>
+        <span class="card-title">Clearance vs Clearance to Ceiling</span>
+        <span class="card-icon">📏</span>
+      </div>
+      <div class="card-body">
+        <div class="rule-box">Clearance = top of storage to sprinkler DEFLECTOR. Clearance-to-ceiling = top of storage to CEILING.</div>
+        <div class="diagram">
+          <div class="diagram-title">Clearance Measurement Points</div>
+          <div style="background:var(--bg2); border-radius:8px; padding:16px; position:relative; min-height:180px;">
+            <!-- ceiling -->
+            <div style="background:var(--bg3); border:2px solid var(--border); border-radius:4px; height:20px; width:100%; margin-bottom:8px; display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--muted); font-weight:600;">CEILING</div>
+            <!-- sprinkler -->
+            <div style="text-align:center; margin-bottom:4px;">
+              <span style="font-size:20px;">💧</span>
+              <div style="font-size:10px; color:var(--blue); font-weight:700;">DEFLECTOR</div>
+            </div>
+            <!-- arrows -->
+            <div style="display:flex; justify-content:space-around; margin:4px 0;">
+              <div style="text-align:center; font-size:11px;">
+                <div style="color:var(--blue); font-weight:700;">|</div>
+                <div style="color:var(--blue); font-weight:700;">|</div>
+                <div style="font-size:10px; color:var(--blue);">← CLEARANCE →<br>to DEFLECTOR</div>
+              </div>
+              <div style="text-align:center; font-size:11px;">
+                <div style="color:var(--muted);">.</div>
+                <div style="color:var(--muted);">.</div>
+              </div>
+            </div>
+            <!-- storage -->
+            <div style="background:rgba(216,90,48,0.2); border:2px solid var(--orange); border-radius:4px; height:40px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:var(--orange);">
+              TOP OF STORAGE
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px; font-size:12px;">
+            <div style="background:rgba(24,95,165,0.1); border:1px solid var(--blue); border-radius:6px; padding:10px; text-align:center;">
+              <div style="color:#5BA4F5; font-weight:700;">CLEARANCE</div>
+              <div style="color:var(--muted); margin-top:4px;">Top of storage<br>↕<br>Sprinkler <strong>DEFLECTOR</strong></div>
+            </div>
+            <div style="background:rgba(216,90,48,0.1); border:1px solid var(--orange); border-radius:6px; padding:10px; text-align:center;">
+              <div style="color:var(--orange); font-weight:700;">CLEARANCE TO CEILING</div>
+              <div style="color:var(--muted); margin-top:4px;">Top of storage<br>↕<br><strong>CEILING</strong> surface</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 18: ESFR Rules -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">18</span>
+        <span class="card-title">ESFR — Wet Pipe Only, 36" Clearance</span>
+        <span class="card-icon">🚒</span>
+      </div>
+      <div class="card-body">
+        <div class="rule-box">ESFR = wet pipe ONLY — no exceptions. CMSA and ESFR both require 36-inch clearance (top of storage to deflector).</div>
+        <div class="diagram">
+          <div class="diagram-title">ESFR Requirements</div>
+          <div class="stack-diagram">
+            <div class="stack-block" style="background:rgba(231,76,60,0.15); border:2px solid var(--red); color:var(--red); font-size:13px;">
+              🚫 DRY PIPE + ESFR = NOT ALLOWED<br>
+              <span style="font-size:11px; font-weight:400; color:var(--muted);">No exceptions in NFPA 13</span>
+            </div>
+            <div class="stack-block" style="background:rgba(29,158,117,0.15); border:2px solid var(--green); color:var(--green); font-size:13px;">
+              ✅ WET PIPE + ESFR = Required<br>
+              <span style="font-size:11px; font-weight:400; color:var(--muted);">ESFR is always wet pipe system</span>
+            </div>
+          </div>
+          <div style="margin-top:14px;">
+            <div style="font-size:12px; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:8px;">Clearance Requirements</div>
+            <div class="bar-row">
+              <div class="bar-label">CMSA Clearance</div>
+              <div class="bar-track"><div class="bar-fill" style="width:80%; background:var(--blue);">36 inches minimum</div></div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">ESFR Clearance</div>
+              <div class="bar-track"><div class="bar-fill" style="width:80%; background:var(--orange);">36 inches minimum</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="callout callout-yellow mt12">
+          <span class="callout-icon">🧠</span>
+          <span class="callout-text">ESFR = Early Suppression Fast Response. Huge drops, high pressure. Requires wet pipe for immediate water delivery — delay from dry pipe air purge would be catastrophic.</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /cards-grid -->
+</div><!-- /cards-section -->
+
+
+<!-- ============================================================
+     SECTION 2 — QUIZ
+     ============================================================ -->
+<div class="section" id="quiz-section">
+  <div class="quiz-header">
+    <h2>🎯 NFPA 13 Storage Quiz</h2>
+    <p>15 questions · Immediate feedback · Score at the end</p>
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="quiz-progress" style="width:0%"></div>
+  </div>
+  <div class="progress-label" id="progress-label">Question 0 of 15</div>
+
+  <!-- Q1 -->
+  <div class="question-card active" id="q1">
+    <div class="question-num">Question 1 of 15 — Commodity Definition</div>
+    <div class="question-text">When classifying a commodity, which THREE components must ALL be considered together?</div>
+    <div class="options">
+      <div class="option" onclick="answer(this,1,false)"><div class="option-letter">A</div>Product, weight, and dimensions</div>
+      <div class="option" onclick="answer(this,1,true)"><div class="option-letter">B</div>Product, packaging, and pallet</div>
+      <div class="option" onclick="answer(this,1,false)"><div class="option-letter">C</div>Product, storage height, and building area</div>
+      <div class="option" onclick="answer(this,1,false)"><div class="option-letter">D</div>Packaging, pallet type, and rack configuration</div>
+    </div>
+    <div class="feedback-box" id="fb1"></div>
+    <button class="next-btn" id="next1" onclick="nextQ(1)">Next Question →</button>
+  </div>
+
+  <!-- Q2 -->
+  <div class="question-card" id="q2">
+    <div class="question-num">Question 2 of 15 — Chapter 20</div>
+    <div class="question-text">You are designing a sprinkler system for a high-piled storage warehouse. Which NFPA 13 chapter should you start with?</div>
+    <div class="options">
+      <div class="option" onclick="answer(this,2,false)"><div class="option-letter">A</div>Chapter 5 — System Requirements</div>
+      <div class="option" onclick="answer(this,2,false)"><div class="option-letter">B</div>Chapter 11 — Design Approaches</div>
+      <div class="option" onclick="answer(this,2,true)"><div class="option-letter">C</div>Chapter 20 — Storage Overview</div>
+      <div class="option" onclick="answer(this,2,false)"><div class="option-letter">D</div>Chapter 22 — CMSA Requirements</div>
+    </div>
+    <div class="feedback-box" id="fb2"></div>
+    <button class="next-btn" id="next2" onclick="nextQ(2)">Next Question →</button>
+  </div>
+
+  <!-- Q3 -->
+  <div class="question-card" id="q3">
+    <div class="question-num">Question 3 of 15 — Miscellaneous Storage</div>
+    <div class="question-text">A storage pile in a retail distribution warehouse covers 1,200 ft² and is 10 ft tall. This storage pile can be classified as miscellaneous storage — TRUE or FALSE?</div>
+    <div class="options">
+      <div class="option" onclick="answer(this,3,false)"><div class="option-letter">A</div>True — height is within 12 ft and area looks acceptable</div>
+      <div class="option" onclick="answer(this,3,true)"><div class="option-letter">B</div>False — the pile exceeds the 1,000 ft² per-pile limit for miscellaneous storage</div>
+      <div class="option" onclick="answer(this,3,false)"><div class="option-letter">C</div>True — because total building storage is under 4,000 ft²</div>
+      <div class="option" onclick="answer(this,3,false)"><div class="option-letter">D</div>False — miscellaneous storage is never allowed in distribution warehouses</div>
+    </div>
+    <div class="feedback-box" id="fb3"></div>
+    <button class="next-btn" id="next3" onclick="nextQ(3)">Next Question →</button>
+  </div>
+
+  <!-- Q4 -->
+  <div class="question-card" id="q4">
+    <div class="question-num">Question 4 of 15 — Low-Piled Storage</div>
+    <div class="question-text">What is the maximum floor area allowed for low-piled storage when it is the PRIMARY use of a building?</div>
+    <div class="options">
+      <div class="option" onclick="answer(this,4,false)"><div class="option-letter">A</div>4,000 ft²</div>
+      <div class="option" onclick="answer(this,4,false)"><div class="option-letter">B</div>12,000 ft²</div>
+      <div class="option" onclick="answer(this,4,true)"><div class="option-letter">C</div>No area limit — low-piled storage has no maximum floor area</div>
+      <div class="option" onclick="answer(this,4,false)"><div class="option-letter">D</div>10% of the building floor area</div>
+    </div>
+    <div class="feedback-box" id="fb4"></div>
+    <button class="next-btn" id="next4" onclick="nextQ(4)">Next Question →</button>
+  </div>
+
+  <!-- Q5 -->
+  <div class="question-card" id="q5">
+    <div class="question-num">Question 5 of 15 — Encapsulation</div>
+    <div class="question-text">A pallet load of product is wrapped with stretch film on all four sides but the top is open. Is this considered encapsulated per NFPA 13?</div>
+    <div class="options">
+      <div class="option" onclick="answer(this,5,false)"><div class="option-letter">A</div>Yes — sides are the primary concern for water penetration</div>
+      <div class="option" onclick="answer(this,5,true)"><div class="option-letter">B</div>No — encapsulation requires BOTH sides AND top to be covered</div>
+      <div class="option" onclick="answer(this,5,false)"><div class="option-letter">C</div>Yes — stretch film on sides qualifies as full encapsulation</div>
+      <div class="option" onclick="answer(this,5,false)"><div class="option-letter">D</div>It depends on the commodity class</div>
+    </div>
+    <div class="feedback-box" id="fb5"></div>
+    <button class="next-btn" id="next5" onclick="nextQ(5)">Next Question →</button>
+  </div>
+
+  <!-- Q6 -->
+  <div class="question-card" id="q6">
+    <div class="question-num">Question 6 of 15 — Solid Shelf Racks</div>
+    <div class="question-text">Why do solid shelf racks ALWAYS require in-rack sprinklers, regardless of commodity class or storage height?</div>
+    <div class="options">
+      <div class="option" onclick="answer(this,6,false)"><div class="option-letter">A</div>Solid shelves increase loading weight beyond rack capacity limits</div>
+      <div class="option" onclick="answer(this,6,true)"><div class="option-letter">B</div>Solid shelves create an umbrella effect that blocks ceiling sprinkler water from reaching lower levels</div>
+      <div class="option" onclick="answer(this,6,false)"><div class="option-letter">C</div>In-rack sprinklers are required for all rack storage, solid shelf or not</div>
+      <div class="option" onclick="answer(this,6,false)"><div class="option-letter">D</div>AHJ discretion — solid shelves don't automatically require in-rack sprinklers</div>
+    </div>
+    <div class="feedback-box" id="fb6"></div>
+    <button class="next-btn" id="next6" onclick="nextQ(6)">Next Question →</button>
+  </div>
+
+  <!-- Q7 -->
+  <div class="question-card" id="q7">
+    <div class="question-num">Question 7 of 15 — High-Piled Thresholds</div>
+    <div class="question-text">At what height does Group A plastic storage become "high-piled" and require high-piled storage protection?</div>
+    <div class="options">
+      <div class="option" onclick="answer(this,7,false)"><div class="option-letter">A</div>Over 12 feet, same as Class I–IV commodities</div>
+      <div class="option" onclick="answer(this,7,true)"><div class="option-letter">B</div>Over 5 feet</div>
+      <div class="option" onclick="answer(this,7,false)"><div class="option-letter">C</div>Over 8 feet</div>
+      <div class="option" onclick="answer(this,7,false)"><div class="option-letter">D</div>Over 10 feet</div>
+    </div>
+    <div class="feedback-box" id="fb7"></div>
+    <button class="next-btn" id="next7" onclick="nextQ(7)">Next Question →</button>
+  </div>
+
+  <!-- Q8 -->
+  <div class="question-card" id="q8">
+    <div class="question-num">Question 8 of 15 — Commodity Classes</div>
+    <div class="question-text">A product consists of steel bolts (noncombustible) in cardboard boxes on wood pallets. The cardboard packaging contains 8% Group A plastic by weight. What is the correct commodity class?</div>
+    <div class="options">
+      <div class="option" onclick="answer(this,8,false)"><div class="option-letter">A</div>Class I — product is noncombustible</div>
+      <div class="option" onclick="answer(this,8,false)"><div class="option-letter">B</div>Class II — noncombustible product with combustible packaging</div>
+      <div class="option" onclick="answer(this,8,false)"><div class="option-letter">C</div>Class III — packaging is primarily cardboard</div>
+      <div class="option" onclick="answer(this,8,true)"><div class="option-letter">D</div>Class IV — packaging contains more than 5% Group A plastic by weight</div>
+    </div>
+    <div class="feedback-box" id="fb8"></div>
+    <button class="next-btn" id="next8" onclick="nextQ(8)">Next Question →</button>
+  </div>
+
+  <!-- Q9 -->
+  <div class="question-card" id="q9">
+    <div class="question-num">Question 9 of 15 — Group A/B/C Plastics</div>
+    <div class="question-text">Silicone rubber components are stored in a warehouse. How should this storage be protected per NFPA 13?</div>
+    <div class="options">
+      <div class="option" onclick="answer(this,9,false)"><div class="option-letter">A</div>As a rubber commodity — own protection tables, NOT Group B</div>
+      <div class="option" onclick="answer(this,9,false)"><div class="option-letter">B</div>As Group A plastic using Chapter 21–24 design tables</div>
+      <div class="option" onclick="answer(this,9,true)"><div class="option-letter">C</div>As Class IV — silicone rubber is Group B plastic, protected as Class IV</div>
+      <div class="option" onclick="answer(this,9,false)"><div class="option-letter">D</div>As Class III — silicone rubber is a low-hazard Group C plastic</div>
+    </div>
+    <div class="feedback-box" id="fb9"></div>
+    <button class="next-btn" id="next9" onclick="nextQ(9)">Next Question →</button>
+  </div>
+
+  <!-- Q10 -->
+  <div class="question-card" id="q10">
+    <div class="question-num">Question 10 of 15 — 5% Threshold</div>
+    <div class="question-text">A commodity has combustible wood products (the product) in packaging that contains 3% Group A nonexpanded plastic by weight. What class is this?</div>
+    <div class="options">
+      <div class="option" onclick="answer(this,10,false)"><div class="option-letter">A</div>Class II — low plastic content</div>
+      <div class="option" onclick="answer(this,10,true)"><div class="option-letter">B</div>Class III — combustible product with less than 5% Group A packaging</div>
+      <div class="option" onclick="answer(this,10,false)"><div class="option-letter">C</div>Class IV — any Group A plastic content requires Class IV</div>
+      <div class="option" onclick="answer(this,10,false)"><div class="option-letter">D</div>Group A plastic commodity — Group A plastic is present</div>
+    </div>
+    <div class="feedback-box" id="fb10"></div>
+    <button class="next-btn" id="next10" onclick="nextQ(10)">Next Question →</button>
+  </div>
+
+  <!-- Q11 -->
+  <div class="question-card" id="q11">
+    <div class="question-num">Question 11 of 15 — Group A Plastic Product</div>
+    <div class="question-text">A warehouse stores ABS plastic pipes (the product) in paper packaging on wood pallets. How is this classified?</div>
+    <div class="options">
+      <div class="option" onclick="answer(this,11,false)"><div class="option-letter">A</div>Class III — packaging is paper (combustible, natural fiber)</div>
+      <div class="option" onclick="answer(this,11,false)"><div class="option-letter">B</div>Class IV — plastic products exceed 5% threshold</div>
+      <div class="option" onclick="answer(this,11,true)"><div class="option-letter">C</div>Group A plastic commodity — the product itself is Group A plastic (ABS)</div>
+      <div class="option" onclick="answer(this,11,false)"><div class="option-letter">D</div>Group B plastic — ABS is a moderate-hazard plastic</div>
+    </div>
+    <div class="feedback-box" id="fb11"></div>
+    <button class="next-btn" id="next11" onclick="nextQ(11)">Next Question →</button>
+  </div>
+
+  <!-- Q12 -->
+  <div class="question-card" id="q12">
+    <div class="question-num">Question 12 of 15 — Rubber Commodities</div>
+    <div class="question-text">Natural latex rubber (natural rubber) is stored in a warehouse. Under NFPA 13, this is classified as:</div>
+    <div class="options">
+      <div class="option" onclick="answer(this,12,false)"><div class="option-letter">A</div>Group A plastic — rubber is a high-hazard polymer</div>
+      <div class="option" onclick="answer(this,12,false)"><div class="option-letter">B</div>Group B plastic — natural rubber is a moderate-hazard material</div>
+      <div class="option" onclick="answer(this,12,false)"><div class="option-letter">C</div>Class III — natural rubber is a natural fiber commodity</div>
+      <div class="option" onclick="answer(this,12,true)"><div class="option-letter">D</div>Rubber commodity — natural rubber has its own commodity classification</div>
+    </div>
+    <div class="feedback-box" id="fb12"></div>
+    <button class="next-btn" id="next12" onclick="nextQ(12)">Next Question →</button>
+  </div>
+
+  <!-- Q13 -->
+  <div class="question-card" id="q13">
+    <div class="question-num">Question 13 of 15 — Tire Storage</div>
+    <div class="question-text">Which tire storage orientation is MORE hazardous and requires more demanding sprinkler protection?</div>
+    <div class="options">
+      <div class="option" onclick="answer(this,13,false)"><div class="option-letter">A</div>On-tread (upright) — tires are unstable when stacked on tread</div>
+      <div class="option" onclick="answer(this,13,true)"><div class="option-letter">B</div>On-side (flat/horizontal) — creates a chimney effect that traps heat and blocks water</div>
+      <div class="option" onclick="answer(this,13,false)"><div class="option-letter">C</div>Both orientations are equally hazardous per NFPA 13</div>
+      <div class="option" onclick="answer(this,13,false)"><div class="option-letter">D</div>Hazard depends on storage height, not orientation</div>
+    </div>
+    <div class="feedback-box" id="fb13"></div>
+    <button class="next-btn" id="next13" onclick="nextQ(13)">Next Question →</button>
+  </div>
+
+  <!-- Q14 -->
+  <div class="question-card" id="q14">
+    <div class="question-num">Question 14 of 15 — CMDA Design Area</div>
+    <div class="question-text">When using the CMDA method for storage, what is the minimum design area for a DRY PIPE system?</div>
+    <div class="options">
+      <div class="option" onclick="answer(this,14,false)"><div class="option-letter">A</div>1,500 ft²</div>
+      <div class="option" onclick="answer(this,14,false)"><div class="option-letter">B</div>2,000 ft² — same as wet pipe</div>
+      <div class="option" onclick="answer(this,14,true)"><div class="option-letter">C</div>2,600 ft²</div>
+      <div class="option" onclick="answer(this,14,false)"><div class="option-letter">D</div>3,000 ft²</div>
+    </div>
+    <div class="feedback-box" id="fb14"></div>
+    <button class="next-btn" id="next14" onclick="nextQ(14)">Next Question →</button>
+  </div>
+
+  <!-- Q15 -->
+  <div class="question-card" id="q15">
+    <div class="question-num">Question 15 of 15 — ESFR Systems</div>
+    <div class="question-text">An engineer proposes a dry pipe ESFR system for a cold storage warehouse where pipes could freeze. Is this allowed per NFPA 13?</div>
+    <div class="options">
+      <div class="option" onclick="answer(this,15,false)"><div class="option-letter">A</div>Yes — ESFR can be wet or dry pipe depending on building conditions</div>
+      <div class="option" onclick="answer(this,15,false)"><div class="option-letter">B</div>Yes — with AHJ approval, dry pipe ESFR is permitted</div>
+      <div class="option" onclick="answer(this,15,false)"><div class="option-letter">C</div>Conditionally — only if response time is within 60 seconds</div>
+      <div class="option" onclick="answer(this,15,true)"><div class="option-letter">D</div>No — ESFR is wet pipe only, with no exceptions per NFPA 13</div>
+    </div>
+    <div class="feedback-box" id="fb15"></div>
+    <button class="next-btn" id="next15" onclick="showScore()">See My Score →</button>
+  </div>
+
+  <!-- Score Card -->
+  <div id="score-card">
+    <div class="score-circle" id="score-circle">
+      <div class="score-number" id="score-num">0/15</div>
+      <div class="score-label">correct</div>
+    </div>
+    <div class="score-msg" id="score-msg">—</div>
+    <div class="score-sub" id="score-sub">—</div>
+    <div class="score-breakdown">
+      <div class="score-stat">
+        <div class="score-stat-val" id="stat-correct" style="color:var(--green);">0</div>
+        <div class="score-stat-lbl">✅ Correct</div>
+      </div>
+      <div class="score-stat">
+        <div class="score-stat-val" id="stat-wrong" style="color:var(--red);">0</div>
+        <div class="score-stat-lbl">❌ Wrong</div>
+      </div>
+      <div class="score-stat">
+        <div class="score-stat-val" id="stat-pct" style="color:var(--yellow);">0%</div>
+        <div class="score-stat-lbl">Score</div>
+      </div>
+    </div>
+    <div id="wrong-report" style="display:none; margin-top:24px; width:100%; text-align:left;">
+      <div style="font-size:13px; font-weight:700; color:var(--red); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;">❌ Review — Questions You Missed</div>
+      <div id="wrong-list"></div>
+    </div>
+    <button class="retry-btn" onclick="resetQuiz()">🔄 Try Again</button>
+  </div>
+
+</div><!-- /quiz-section -->
+
+
+<!-- ============================================================
+     SECTION 3 — QUICK REF
+     ============================================================ -->
+<div class="section" id="ref-section">
+  <h2>⚡ Quick Reference Cheat Sheet</h2>
+  <div class="ref-grid">
+
+    <div class="ref-card">
+      <h3>Miscellaneous Storage Limits</h3>
+      <div class="ref-row"><span class="ref-row-key">Max height</span><span class="ref-row-val">≤ 12 ft</span></div>
+      <div class="ref-row"><span class="ref-row-key">Building %</span><span class="ref-row-val">≤ 10% OR 4,000 ft²</span></div>
+      <div class="ref-row"><span class="ref-row-key">Per pile area</span><span class="ref-row-val">≤ 1,000 ft²</span></div>
+      <div class="ref-row"><span class="ref-row-key">Pile separation</span><span class="ref-row-val">≥ 25 ft</span></div>
+      <div class="ref-row"><span class="ref-row-key">Use type</span><span class="ref-row-val">Incidental only</span></div>
+      <div class="ref-row"><span class="ref-row-key">Tire pile exception</span><span class="ref-row-val">≤ 2,000 ft² per pile</span></div>
+    </div>
+
+    <div class="ref-card">
+      <h3>High-Piled Thresholds</h3>
+      <div class="ref-row"><span class="ref-row-key">Class I–IV</span><span class="ref-row-val">Over 12 ft</span></div>
+      <div class="ref-row"><span class="ref-row-key">Group A Plastics</span><span class="ref-row-val">Over 5 ft</span></div>
+      <div class="ref-row"><span class="ref-row-key">Low-piled max</span><span class="ref-row-val">≤ 12 ft (no area limit)</span></div>
+      <div class="ref-row"><span class="ref-row-key">Misc max</span><span class="ref-row-val">≤ 12 ft (area limited)</span></div>
+    </div>
+
+    <div class="ref-card">
+      <h3>Commodity 5% Rule</h3>
+      <div class="ref-row"><span class="ref-row-key">&lt; 5% Grp A (by wt)</span><span class="ref-row-val">Class III</span></div>
+      <div class="ref-row"><span class="ref-row-key">&gt; 5% Grp A (by wt)</span><span class="ref-row-val">Class IV</span></div>
+      <div class="ref-row"><span class="ref-row-key">Product = Grp A plastic</span><span class="ref-row-val">Group A Commodity</span></div>
+      <div class="ref-row"><span class="ref-row-key">Product = natural rubber</span><span class="ref-row-val">Rubber Commodity</span></div>
+    </div>
+
+    <div class="ref-card">
+      <h3>Plastic Groups</h3>
+      <div class="ref-row"><span class="ref-row-key">Group A</span><span class="ref-row-val" style="color:var(--red);">Extreme — own rules</span></div>
+      <div class="ref-row"><span class="ref-row-key">Examples A</span><span class="ref-row-val">ABS, Acrylic, Styrofoam</span></div>
+      <div class="ref-row"><span class="ref-row-key">Group B</span><span class="ref-row-val" style="color:var(--orange);">→ Protect as Class IV</span></div>
+      <div class="ref-row"><span class="ref-row-key">Examples B</span><span class="ref-row-val">Chloroprene, Silicone</span></div>
+      <div class="ref-row"><span class="ref-row-key">Group C</span><span class="ref-row-val" style="color:#5BA4F5;">→ Protect as Class III</span></div>
+      <div class="ref-row"><span class="ref-row-key">Examples C</span><span class="ref-row-val">Teflon/PTFE, Melamine</span></div>
+    </div>
+
+    <div class="ref-card">
+      <h3>CMDA Design Areas</h3>
+      <div class="ref-row"><span class="ref-row-key">Wet pipe minimum</span><span class="ref-row-val">2,000 ft²</span></div>
+      <div class="ref-row"><span class="ref-row-key">Dry pipe minimum</span><span class="ref-row-val">2,600 ft²</span></div>
+      <div class="ref-row"><span class="ref-row-key">Density</span><span class="ref-row-val">Same for both</span></div>
+    </div>
+
+    <div class="ref-card">
+      <h3>Encapsulation Penalties (Rack &gt;12 ft / Palletized &gt;15 ft)</h3>
+      <div class="ref-row"><span class="ref-row-key">Class I–III</span><span class="ref-row-val" style="color:var(--yellow);">+25% density</span></div>
+      <div class="ref-row"><span class="ref-row-key">Class IV</span><span class="ref-row-val" style="color:var(--orange);">+50% density</span></div>
+      <div class="ref-row"><span class="ref-row-key">Encapsulation =</span><span class="ref-row-val">Sides AND top covered</span></div>
+      <div class="ref-row"><span class="ref-row-key">Banding =</span><span class="ref-row-val">Sides only ≠ encapsulated</span></div>
+    </div>
+
+    <div class="ref-card">
+      <h3>ESFR &amp; CMSA Rules</h3>
+      <div class="ref-row"><span class="ref-row-key">ESFR pipe type</span><span class="ref-row-val" style="color:var(--green);">Wet pipe ONLY</span></div>
+      <div class="ref-row"><span class="ref-row-key">ESFR clearance</span><span class="ref-row-val">36 inches (to deflector)</span></div>
+      <div class="ref-row"><span class="ref-row-key">CMSA clearance</span><span class="ref-row-val">36 inches (to deflector)</span></div>
+      <div class="ref-row"><span class="ref-row-key">Dry pipe ESFR</span><span class="ref-row-val" style="color:var(--red);">NOT allowed</span></div>
+    </div>
+
+    <div class="ref-card">
+      <h3>Clearance Definitions</h3>
+      <div class="ref-row"><span class="ref-row-key">Clearance</span><span class="ref-row-val">Top of storage → Deflector</span></div>
+      <div class="ref-row"><span class="ref-row-key">Clearance to ceiling</span><span class="ref-row-val">Top of storage → Ceiling</span></div>
+      <div class="ref-row"><span class="ref-row-key">Solid shelf racks</span><span class="ref-row-val">Always need in-rack sprinklers</span></div>
+    </div>
+
+    <div class="ref-card">
+      <h3>Tire Storage</h3>
+      <div class="ref-row"><span class="ref-row-key">On-side (flat)</span><span class="ref-row-val" style="color:var(--red);">More hazardous</span></div>
+      <div class="ref-row"><span class="ref-row-key">On-tread (upright)</span><span class="ref-row-val" style="color:var(--green);">Less hazardous</span></div>
+      <div class="ref-row"><span class="ref-row-key">Misc tire pile max</span><span class="ref-row-val">2,000 ft²</span></div>
+      <div class="ref-row"><span class="ref-row-key">Misc total max</span><span class="ref-row-val">4,000 ft² or 10%</span></div>
+    </div>
+
+    <div class="ref-card">
+      <h3>Design Chapter Routing</h3>
+      <div class="ref-row"><span class="ref-row-key">Start here always</span><span class="ref-row-val">Chapter 20</span></div>
+      <div class="ref-row"><span class="ref-row-key">CMDA — High-Piled Storage</span><span class="ref-row-val">Chapter 21</span></div>
+      <div class="ref-row"><span class="ref-row-key">CMSA Requirements</span><span class="ref-row-val">Chapter 22</span></div>
+      <div class="ref-row"><span class="ref-row-key">ESFR Requirements</span><span class="ref-row-val">Chapter 23</span></div>
+      <div class="ref-row"><span class="ref-row-key">Alternative Designs</span><span class="ref-row-val">Chapter 24</span></div>
+      <div class="ref-row"><span class="ref-row-key">In-Rack Sprinklers</span><span class="ref-row-val">Chapter 25</span></div>
+    </div>
+
+  </div>
+</div><!-- /ref-section -->
+
+
+<script>
+// ===== SECTION SWITCHING =====
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(name + '-section').classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ===== QUIZ LOGIC =====
+let quizScore = 0;
+let currentQ = 1;
+const totalQ = 15;
+let wrongAnswers = [];
+
+const questionTopics = {
+  1:  'Q1 — Commodity Definition',
+  2:  'Q2 — Chapter 20 Starting Point',
+  3:  'Q3 — Miscellaneous Storage (Incidental)',
+  4:  'Q4 — Low-Piled Storage (No Area Limit)',
+  5:  'Q5 — Encapsulation vs. Banding',
+  6:  'Q6 — Solid Shelf Racks',
+  7:  'Q7 — High-Piled Thresholds (12 ft / 5 ft)',
+  8:  'Q8 — Class I–IV Classification',
+  9:  'Q9 — Group A/B/C Plastics (Silicone Rubber = Group B = Class IV)',
+  10: 'Q10 — 5% Group A Threshold (Class III vs. Class IV)',
+  11: 'Q11 — Group A Plastic Product (ABS = Group A Commodity)',
+  12: 'Q12 — Natural Rubber (Rubber Commodity, NOT Group B)',
+  13: 'Q13 — Tire Orientation (On-Side = More Hazardous)',
+  14: 'Q14 — CMDA Dry Pipe Area (2,600 ft²)',
+  15: 'Q15 — ESFR Wet Pipe Only'
+};
+
+const feedbackText = {
+  1: {
+    correct: "Correct! Commodity = Product + Packaging + Pallet. All three together determine the class. The worst component drives the classification upward.",
+    wrong: "The three components are Product, Packaging, and Pallet. Always evaluate all three — a noncombustible steel product in foam packaging becomes Group A plastic."
+  },
+  2: {
+    correct: "Correct! Chapter 20 is the storage overview and starting point for ALL storage design. It classifies the storage type and directs you to the appropriate chapter.",
+    wrong: "Chapter 20 is where all storage design begins. It defines miscellaneous, low-piled, and high-piled storage and routes you to the correct protection chapter."
+  },
+  3: {
+    correct: "Correct! Miscellaneous storage piles are limited to 1,000 ft² each. At 1,200 ft², this pile exceeds that limit and must be classified as low-piled or high-piled storage.",
+    wrong: "False — miscellaneous storage has a 1,000 ft² per-pile limit. This 1,200 ft² pile exceeds it. Height (10 ft ≤ 12 ft) is fine, but pile area fails."
+  },
+  4: {
+    correct: "Correct! Low-piled storage has NO floor area limit. Unlike miscellaneous storage, it CAN be the primary use of a building with unlimited area — as long as height stays ≤ 12 ft.",
+    wrong: "Low-piled storage has NO area limit. That's what distinguishes it from miscellaneous storage. A warehouse dedicated to low-piled goods can fill the entire building."
+  },
+  5: {
+    correct: "Correct! NFPA 13 requires BOTH sides AND top to be covered for encapsulation. Sides only = banding, not encapsulation. No top cover = no encapsulation penalty relief either.",
+    wrong: "Not encapsulated. NFPA 13 requires sides AND top to be covered. Wrapping only the sides is considered 'banding' — it does not qualify as encapsulation."
+  },
+  6: {
+    correct: "Correct! Solid shelves act like umbrellas — ceiling sprinkler water cannot penetrate to lower levels. In-rack sprinklers are always required under solid shelves.",
+    wrong: "Solid shelves create an 'umbrella effect' — ceiling water cannot reach lower storage levels through a solid shelf. In-rack sprinklers are required, always."
+  },
+  7: {
+    correct: "Correct! Group A plastics become high-piled at over 5 ft — far lower than the 12 ft threshold for Class I–IV. Their extreme heat release drives this stricter rule.",
+    wrong: "Group A plastics trigger high-piled protection at just 5 ft (not 12 ft). Their extreme heat release rate makes them far more dangerous at lower heights."
+  },
+  8: {
+    correct: "Correct! The product (steel) is noncombustible, but the packaging contains 8% Group A plastic by weight — exceeding the 5% threshold. This makes it Class IV.",
+    wrong: "The packaging contains 8% Group A nonexpanded plastic by weight, which exceeds the 5% threshold. That elevates this to Class IV, regardless of the noncombustible product."
+  },
+  9: {
+    correct: "Correct! Silicone rubber is a Group B plastic (moderate hazard). Group B plastics are protected as Class IV commodities per NFPA 13.",
+    wrong: "Silicone rubber = Group B plastic. Group B plastics are protected as Class IV — not as rubber commodity (that's for natural rubber), not as Class III."
+  },
+  10: {
+    correct: "Correct! The product is combustible wood = at least Class III. The packaging has only 3% Group A plastic, which is under the 5% threshold, so it stays at Class III.",
+    wrong: "Combustible wood product = Class III. The packaging has 3% Group A plastic, which is under the 5% threshold. Under 5% = stays at Class III; over 5% = bumps to Class IV."
+  },
+  11: {
+    correct: "Correct! When the product ITSELF is Group A plastic (ABS), it is a Group A plastic commodity — not Class IV. ABS = Group A plastic. Product = Group A → Group A commodity classification.",
+    wrong: "ABS (Acrylonitrile Butadiene Styrene) is a Group A plastic. When the product itself is Group A plastic, it's a Group A plastic commodity — skip the 5% rule. It has its own protection tables within Chapters 21–24 and a 5 ft high-piled threshold."
+  },
+  12: {
+    correct: "Correct! Natural rubber has its own commodity classification: 'rubber commodity.' It is NOT Group B plastic. Chloroprene and silicone = Group B. Natural rubber = rubber commodity.",
+    wrong: "Natural rubber is a 'rubber commodity' — its own category in NFPA 13. Only synthetic rubbers like chloroprene and silicone fall under Group B plastics."
+  },
+  13: {
+    correct: "Correct! On-side (flat/horizontal) storage is MORE hazardous. The stacked tires create a chimney effect — heat rises through the tire cavities, and water from ceiling sprinklers cannot penetrate.",
+    wrong: "On-side (flat) storage is more hazardous. Horizontally stacked tires create a chimney effect with unobstructed vertical air channels that concentrate heat and block water penetration."
+  },
+  14: {
+    correct: "Correct! CMDA dry pipe minimum area = 2,600 ft² (vs 2,000 ft² for wet pipe). The density stays the same — only the design area increases for dry pipe to account for slower water delivery.",
+    wrong: "CMDA dry pipe = 2,600 ft². Wet pipe = 2,000 ft². The density is the same for both. The larger area for dry pipe compensates for the time delay during air expulsion."
+  },
+  15: {
+    correct: "Correct! ESFR is wet pipe ONLY — no exceptions in NFPA 13. For cold storage where freezing is a concern, a different suppression approach must be used (such as CMSA with anti-freeze or dry pipe with appropriate heads).",
+    wrong: "ESFR systems are wet pipe ONLY — no exceptions. The entire design concept of ESFR relies on immediate water delivery. A dry pipe system's air purge delay is incompatible with ESFR's suppression mechanism."
+  }
+};
+
+function answer(el, qNum, isCorrect) {
+  const card = document.getElementById('q' + qNum);
+  const options = card.querySelectorAll('.option');
+  const fb = document.getElementById('fb' + qNum);
+  const nextBtn = document.getElementById('next' + qNum);
+
+  // Disable all options
+  options.forEach(opt => {
+    opt.classList.add('disabled');
+    opt.onclick = null;
+  });
+
+  if (isCorrect) {
+    el.classList.add('correct');
+    quizScore++;
+    fb.className = 'feedback-box correct-fb show';
+    fb.innerHTML = '<span class="feedback-icon">✅</span>' + feedbackText[qNum].correct;
+  } else {
+    el.classList.add('wrong');
+    fb.className = 'feedback-box wrong-fb show';
+    fb.innerHTML = '<span class="feedback-icon">❌</span>' + feedbackText[qNum].wrong;
+    if (!wrongAnswers.includes(qNum)) wrongAnswers.push(qNum);
+    // Highlight correct answer
+    options.forEach(opt => {
+      if (opt.onclick === null && !opt.classList.contains('wrong')) {
+        // find the correct one by checking if it would have been correct
+      }
+    });
+  }
+
+  nextBtn.classList.add('show');
+  updateProgress(qNum);
+}
+
+function updateProgress(qNum) {
+  const pct = (qNum / totalQ) * 100;
+  document.getElementById('quiz-progress').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = 'Question ' + qNum + ' of ' + totalQ;
+}
+
+function nextQ(qNum) {
+  document.getElementById('q' + qNum).classList.remove('active');
+  if (qNum < totalQ) {
+    document.getElementById('q' + (qNum + 1)).classList.add('active');
+    currentQ = qNum + 1;
+  }
+}
+
+function showScore() {
+  // Hide all question cards
+  for (let i = 1; i <= totalQ; i++) {
+    const c = document.getElementById('q' + i);
+    if (c) c.style.display = 'none';
+  }
+  document.getElementById('progress-label').style.display = 'none';
+
+  const pct = Math.round((quizScore / totalQ) * 100);
+  const circle = document.getElementById('score-circle');
+  const scoreCard = document.getElementById('score-card');
+
+  document.getElementById('score-num').textContent = quizScore + '/' + totalQ;
+  document.getElementById('stat-correct').textContent = quizScore;
+  document.getElementById('stat-wrong').textContent = (totalQ - quizScore);
+  document.getElementById('stat-pct').textContent = pct + '%';
+
+  let msg, sub, circleClass;
+  if (pct >= 87) {
+    msg = '🔥 Excellent Work!';
+    sub = 'NICET-level mastery. You know your storage classification cold.';
+    circleClass = 'good';
+  } else if (pct >= 67) {
+    msg = '💪 Good Effort!';
+    sub = 'Solid foundation. Review the cards you missed before exam day.';
+    circleClass = 'ok';
+  } else {
+    msg = '📚 Keep Studying!';
+    sub = 'Go back through the Study Cards and hit this quiz again tomorrow.';
+    circleClass = 'low';
+  }
+
+  document.getElementById('score-msg').textContent = msg;
+  document.getElementById('score-sub').textContent = sub;
+  circle.className = 'score-circle ' + circleClass;
+
+  scoreCard.classList.add('show');
+  document.getElementById('quiz-progress').style.width = '100%';
+
+  // Build wrong answer report
+  const wrongReport = document.getElementById('wrong-report');
+  const wrongList = document.getElementById('wrong-list');
+  wrongList.innerHTML = '';
+  if (wrongAnswers.length > 0) {
+    wrongAnswers.sort((a,b) => a - b).forEach(qNum => {
+      const item = document.createElement('div');
+      item.style.cssText = 'background:rgba(231,76,60,0.12); border:1px solid rgba(231,76,60,0.4); border-radius:8px; padding:12px 14px; margin-bottom:10px;';
+      item.innerHTML = '<div style="font-weight:700; color:var(--red); margin-bottom:6px;">' + questionTopics[qNum] + '</div>'
+        + '<div style="font-size:13px; color:var(--text); line-height:1.5;">' + feedbackText[qNum].wrong + '</div>';
+      wrongList.appendChild(item);
+    });
+    wrongReport.style.display = 'block';
+  } else {
+    wrongReport.style.display = 'none';
+  }
+}
+
+function resetQuiz() {
+  quizScore = 0;
+  currentQ = 1;
+  wrongAnswers = [];
+
+  // Reset all question cards
+  for (let i = 1; i <= totalQ; i++) {
+    const card = document.getElementById('q' + i);
+    if (!card) continue;
+    card.style.display = '';
+    card.classList.remove('active');
+
+    // Re-enable options
+    card.querySelectorAll('.option').forEach((opt, idx) => {
+      opt.classList.remove('correct', 'wrong', 'disabled');
+      const letters = ['A','B','C','D'];
+      // Restore onclick by resetting element
+    });
+
+    // Hide feedback and next button
+    const fb = document.getElementById('fb' + i);
+    if (fb) { fb.className = 'feedback-box'; fb.innerHTML = ''; }
+    const nb = document.getElementById('next' + i);
+    if (nb) nb.classList.remove('show');
+  }
+
+  // Hide score card
+  document.getElementById('score-card').classList.remove('show');
+  document.getElementById('progress-label').style.display = '';
+
+  // Reset progress
+  document.getElementById('quiz-progress').style.width = '0%';
+  document.getElementById('progress-label').textContent = 'Question 0 of 15';
+
+  // Show Q1
+  document.getElementById('q1').classList.add('active');
+
+  // Reload page for cleanest reset
+  location.reload();
+}
+</script>
+
+</body>
+</html>

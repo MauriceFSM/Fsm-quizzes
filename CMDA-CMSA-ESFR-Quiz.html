@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMDA / CMSA / ESFR — NICET Level 3 Quiz</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #0f1923;
+    color: #e8eaf0;
+    min-height: 100vh;
+  }
+  header {
+    background: linear-gradient(135deg, #185FA5 0%, #0d3d6e 100%);
+    padding: 24px 32px;
+    border-bottom: 3px solid #D85A30;
+  }
+  header h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: 0.5px; }
+  header p { margin-top: 6px; color: #a8c8f0; font-size: 0.9rem; }
+  .badge {
+    display: inline-block;
+    background: #D85A30;
+    color: white;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 12px;
+    margin-left: 10px;
+    vertical-align: middle;
+    letter-spacing: 0.5px;
+  }
+
+  /* ─── STUDY CARDS ─── */
+  #study-section { padding: 32px; max-width: 900px; margin: 0 auto; }
+  .section-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #D85A30;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .card {
+    background: #1a2738;
+    border: 1px solid #2a3a52;
+    border-radius: 10px;
+    padding: 22px 26px;
+    margin-bottom: 18px;
+    border-left: 4px solid #185FA5;
+  }
+  .card.danger { border-left-color: #D85A30; }
+  .card.success { border-left-color: #1D9E75; }
+  .card.warn { border-left-color: #e8a000; }
+  .card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 10px; color: #ffffff; }
+  .card p, .card li { font-size: 0.9rem; line-height: 1.7; color: #c8d4e0; }
+  .card ul { padding-left: 20px; margin-top: 6px; }
+  .card li { margin-bottom: 4px; }
+  .rule-box {
+    background: #0d2035;
+    border: 1px solid #1D9E75;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: #a0d8b0;
+    line-height: 1.6;
+  }
+  .trap-box {
+    background: #2a1a10;
+    border: 1px solid #D85A30;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: #f0b090;
+    line-height: 1.6;
+  }
+  .highlight { color: #f0c040; font-weight: 700; }
+  .step-list { counter-reset: steps; list-style: none; padding-left: 0; }
+  .step-list li { counter-increment: steps; padding-left: 32px; position: relative; margin-bottom: 8px; }
+  .step-list li::before {
+    content: counter(steps);
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: #185FA5;
+    color: white;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    font-size: 0.83rem;
+  }
+  .data-table th {
+    background: #0d2035;
+    color: #7ab8f5;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 700;
+    border-bottom: 2px solid #185FA5;
+  }
+  .data-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #1e2e42;
+    color: #c8d4e0;
+  }
+  .data-table tr:hover td { background: #1e2e42; }
+  .start-btn {
+    display: block;
+    width: 100%;
+    max-width: 340px;
+    margin: 32px auto;
+    background: linear-gradient(135deg, #D85A30, #b84020);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 16px 24px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 16px rgba(216,90,48,0.3);
+  }
+  .start-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(216,90,48,0.4); }
+
+  /* ─── QUIZ ─── */
+  #quiz-section { display: none; padding: 32px; max-width: 780px; margin: 0 auto; }
+  .progress-bar-wrap {
+    background: #1a2738;
+    border-radius: 100px;
+    height: 8px;
+    margin-bottom: 28px;
+  }
+  .progress-bar-fill {
+    background: linear-gradient(90deg, #1D9E75, #185FA5);
+    height: 8px;
+    border-radius: 100px;
+    transition: width 0.4s ease;
+  }
+  .q-counter { font-size: 0.78rem; color: #7ab8f5; font-weight: 700; margin-bottom: 8px; letter-spacing: 1px; }
+  .q-text {
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.6;
+    margin-bottom: 22px;
+    color: #e8eaf0;
+  }
+  .q-sub { font-size: 0.82rem; color: #8a9ab0; margin-top: 6px; font-weight: 400; }
+  .option {
+    background: #1a2738;
+    border: 2px solid #2a3a52;
+    border-radius: 8px;
+    padding: 13px 18px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-size: 0.92rem;
+    color: #c8d4e0;
+    transition: all 0.15s;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .option:hover { border-color: #185FA5; background: #1e2e42; color: #ffffff; }
+  .option .opt-letter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    background: #0d2035;
+    border-radius: 50%;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #7ab8f5;
+  }
+  .option.correct { background: #0e2e1e; border-color: #1D9E75; color: #a0d8b0; }
+  .option.correct .opt-letter { background: #1D9E75; color: white; }
+  .option.wrong { background: #2e1010; border-color: #cc3333; color: #f0a0a0; }
+  .option.wrong .opt-letter { background: #cc3333; color: white; }
+  .option.disabled { pointer-events: none; }
+  .explanation {
+    background: #0d2035;
+    border: 1px solid #185FA5;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-top: 12px;
+    font-size: 0.88rem;
+    color: #a8c8f0;
+    line-height: 1.6;
+    display: none;
+  }
+  .explanation.show { display: block; }
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 20px; }
+  .next-btn {
+    background: #185FA5;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 11px 28px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: none;
+    transition: background 0.15s;
+  }
+  .next-btn:hover { background: #1475c8; }
+
+  /* ─── SCORE ─── */
+  #score-section { display: none; padding: 40px 32px; max-width: 700px; margin: 0 auto; text-align: center; }
+  .score-circle {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    margin: 0 auto 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.6rem;
+    font-weight: 900;
+    border: 6px solid;
+  }
+  .score-circle.great { border-color: #1D9E75; color: #1D9E75; background: #0e2e1e; }
+  .score-circle.ok    { border-color: #e8a000; color: #e8a000; background: #2a1e00; }
+  .score-circle.low   { border-color: #cc3333; color: #cc3333; background: #2e1010; }
+  .score-label { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
+  .score-sub { color: #8a9ab0; font-size: 0.9rem; margin-bottom: 28px; }
+  .wrong-report {
+    text-align: left;
+    background: #1a2738;
+    border: 1px solid #2a3a52;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    display: none;
+  }
+  .wrong-report h3 { font-size: 0.85rem; color: #D85A30; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; font-weight: 700; }
+  .wrong-item {
+    background: #2e1010;
+    border: 1px solid #cc3333;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    font-size: 0.86rem;
+    color: #f0c0b0;
+    line-height: 1.5;
+  }
+  .wrong-item .wi-q { font-weight: 700; color: #ff9988; margin-bottom: 4px; }
+  .wrong-item .wi-a { color: #a0d8b0; font-weight: 600; }
+  .retry-btn {
+    background: linear-gradient(135deg, #1D9E75, #158060);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 36px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-right: 12px;
+    transition: transform 0.15s;
+  }
+  .retry-btn:hover { transform: translateY(-2px); }
+  .review-btn {
+    background: #1a2738;
+    color: #7ab8f5;
+    border: 2px solid #185FA5;
+    border-radius: 10px;
+    padding: 14px 36px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .review-btn:hover { background: #1e2e42; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════ HEADER -->
+<header>
+  <h1>CMDA / CMSA / ESFR Storage Protection <span class="badge">NICET Level 3</span></h1>
+  <p>NFPA 13 2022 · Chapter 21 (CMDA) · Chapter 22 (CMSA) · Chapter 23 (ESFR) · Chapter 25 (In-Rack)</p>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════ STUDY CARDS -->
+<div id="study-section">
+  <p class="section-title">📖 Study Cards — Review Before the Quiz</p>
+
+  <!-- Card 1: CMDA Overview -->
+  <div class="card">
+    <h3>1. CMDA — What It Covers and When to Use It (§21.2)</h3>
+    <p>Control Mode Density/Area (CMDA) protects <span class="highlight">Class I–IV</span> commodities stored in:</p>
+    <ul>
+      <li>Palletized, solid-piled, bin box, or back-to-back shelf storage up to <span class="highlight">30 ft</span> (non-encapsulated)</li>
+      <li>Shelf storage up to <span class="highlight">15 ft</span> (non-encapsulated)</li>
+      <li>Encapsulated commodities up to <span class="highlight">15 ft</span> (palletized, solid-piled, bin box, shelf)</li>
+      <li>Encapsulated palletized/solid-piled up to <span class="highlight">20 ft</span> — with special criteria</li>
+    </ul>
+    <div class="rule-box">Always start with Chapter 20 → then apply Chapter 21 for CMDA design criteria.</div>
+  </div>
+
+  <!-- Card 2: New vs Existing -->
+  <div class="card warn">
+    <h3>2. New Systems vs. Existing Systems — Critical Distinction (2022 Change)</h3>
+    <p><strong>New systems (§21.2.2.2):</strong> Density from <span class="highlight">Table 21.2.2.2.1</span> with a fixed design area of <span class="highlight">2,000 ft²</span>. No curves — just read the table for your commodity class and storage height.</p>
+    <p style="margin-top:10px;"><strong>Existing systems — evaluation or modification (§21.2.2.3):</strong> Use density <em>curves</em>:</p>
+    <ul>
+      <li>Figure 21.2.2.3.1 — Ordinary temperature sprinklers, 20 ft storage</li>
+      <li>Figure 21.2.2.3.2 — High temperature sprinklers, 20 ft storage</li>
+      <li>Figure 21.2.2.3.3 — Height adjustment factor (for heights other than 20 ft)</li>
+    </ul>
+    <div class="trap-box">⚠️ EXAM TRAP: On a new system, area is always 2,000 ft² — never adjusted from the table. The density comes from Table 21.2.2.2.1 based on storage height and temperature rating.</div>
+  </div>
+
+  <!-- Card 3: 5-Step Process -->
+  <div class="card success">
+    <h3>3. The 5-Step CMDA Design Process (Annex A.21.2)</h3>
+    <ol class="step-list">
+      <li>Determine the commodity class</li>
+      <li>Select density and area from the appropriate figure or table</li>
+      <li>Adjust the density for storage height (existing systems only — using Figure 21.2.2.3.3)</li>
+      <li>Increase the operating area by <span class="highlight">30%</span> if a dry pipe system is used</li>
+      <li>Satisfy minimum densities and areas</li>
+    </ol>
+    <div class="rule-box">For dry systems: area × 1.30 — but density stays the same. Never adjust density for dry pipe.</div>
+  </div>
+
+  <!-- Card 4: Minimum Rules -->
+  <div class="card">
+    <h3>4. Minimum Density and Area Rules (CMDA)</h3>
+    <table class="data-table">
+      <tr><th>Rule</th><th>Value</th></tr>
+      <tr><td>Minimum density floor — storage over 12 ft</td><td class="highlight">0.15 gpm/ft²</td></tr>
+      <tr><td>Minimum remote area — wet pipe</td><td class="highlight">2,000 ft²</td></tr>
+      <tr><td>Minimum remote area — dry pipe</td><td class="highlight">2,600 ft²</td></tr>
+      <tr><td>Dry pipe area increase</td><td class="highlight">30% (area only — density unchanged)</td></tr>
+    </table>
+    <p style="margin-top:12px; font-size:0.85rem; color:#8a9ab0;">Additionally: Class III and IV densities must be at least equal to OH2 (Ordinary Hazard Group 2) for the given area of operation.</p>
+  </div>
+
+  <!-- Card 5: Special Rules -->
+  <div class="card">
+    <h3>5. Special Rules and Exceptions</h3>
+    <ul>
+      <li><strong>K-11.2+ ordinary/intermediate sprinklers listed for storage</strong> → may use high-temperature densities (§21.1.9)</li>
+      <li><strong>Metal bin boxes or closed shelves with face area &lt; 16 ft²</strong> → area of application can be reduced by <span class="highlight">33%</span></li>
+      <li><strong>Back-to-back shelf storage 12–15 ft</strong> → use Figure 21.2.2.3.1 for design density</li>
+      <li><strong>Encapsulated palletized/solid-piled 15–20 ft</strong> → must use K-factor ≥ 11.2 sprinklers; Class I min density = 0.46 gpm/ft² over 2,000 ft²</li>
+      <li><strong>Bin box and shelf storage in Chapter 26</strong> (moved from Ch. 21 in 2022) — walkways at ≤12 ft vertical intervals require sprinklers under each walkway</li>
+    </ul>
+  </div>
+
+  <!-- Card 6: CMSA -->
+  <div class="card">
+    <h3>6. CMSA — Control Mode Specific Application (§22.2)</h3>
+    <p>CMSA sprinklers protect <span class="highlight">palletized and solid-piled</span> Class I–IV storage only.</p>
+    <p style="margin-top:8px;"><strong>NOT permitted for bin box or shelf storage</strong> — those require spray sprinklers with CMDA density/area criteria.</p>
+    <table class="data-table" style="margin-top:12px;">
+      <tr><th>System Type</th><th>Number of Design Sprinklers</th></tr>
+      <tr><td>Wet pipe</td><td>15 or 20</td></tr>
+      <tr><td>Dry/Preaction</td><td>25</td></tr>
+    </table>
+    <div class="rule-box">Design area = number of sprinklers × max coverage per sprinkler (from Table 13.2.5.2.1). Then: branch line length = 1.2 × √(design area).</div>
+  </div>
+
+  <!-- Card 7: ESFR -->
+  <div class="card danger">
+    <h3>7. ESFR — Early Suppression Fast Response (§23.3)</h3>
+    <ul>
+      <li>Protects Class I–IV and Group A plastics in <span class="highlight">palletized and solid-piled</span> storage up to <span class="highlight">40 ft</span> high</li>
+      <li><strong>NOT permitted</strong> for bin box or shelf storage (solid structure blocks discharge from reaching the fire)</li>
+      <li><strong>Wet pipe systems only</strong> — no dry, preaction, or deluge</li>
+      <li>Operating pressure: <span class="highlight">15 to 75 psi minimum</span></li>
+      <li>Design area: <span class="highlight">12 sprinklers — 4 on each of 3 branch lines</span></li>
+      <li>K-factors available: 14.0, 16.8, 19.6, 25.2</li>
+    </ul>
+    <div class="trap-box">⚠️ ESFR = wet pipe ONLY. The suppression model depends on instant water delivery — a dry system delay defeats the early-suppression mission entirely.</div>
+  </div>
+
+  <!-- Card 8: In-Rack with CMDA -->
+  <div class="card">
+    <h3>8. In-Rack Sprinklers in Combination with CMDA (§25.3)</h3>
+    <ul>
+      <li>Chapter 25 was <span class="highlight">completely rewritten in 2022</span> — know the new structure</li>
+      <li>Aisle width + ceiling sprinkler temperature → determine which design curve to use</li>
+      <li>In-rack sprinklers must discharge not less than <span class="highlight">15 psi</span></li>
+      <li>Adding in-rack sprinklers can <span class="highlight">reduce the required ceiling density</span></li>
+      <li>More in-rack levels = lower ceiling density requirement</li>
+      <li>Max rack system floor area coverage: <span class="highlight">40,000 ft²</span></li>
+      <li>Separate control valves required for in-rack and ceiling systems (except &lt;20 sprinklers)</li>
+    </ul>
+    <div class="rule-box">Horizontal barriers: sheet metal, wood, or similar — extend full length and depth of rack — used to impede vertical fire spread in combination with in-rack sprinklers.</div>
+  </div>
+
+  <!-- Card 9: Existing System Worked Example -->
+  <div class="card success">
+    <h3>9. Worked Example — Existing System, Dry Pipe (Annex A.21.2)</h3>
+    <p style="margin-bottom:8px;">Storage: Greeting cards (Class III) | Height: 22 ft | Ordinary temp sprinklers | Dry system</p>
+    <ol class="step-list">
+      <li>Class III commodity</li>
+      <li>Figure 21.2.2.3.1 → 0.225 gpm/ft² over 3,000 ft²</li>
+      <li>Height adjustment (22 ft vs 20 ft base) → Figure 21.2.2.3.3: factor = 1.15 → 0.225 × 1.15 = <span class="highlight">0.26 gpm/ft²</span></li>
+      <li>Dry system → area × 1.30 → 3,000 × 1.30 = <span class="highlight">3,900 ft²</span> (density unchanged)</li>
+      <li>Minimums met: 0.26 ≥ 0.15 ✓ and 3,900 ≥ 2,600 ✓</li>
+    </ol>
+    <div class="rule-box">Final answer: 0.26 gpm/ft² over 3,900 ft²</div>
+  </div>
+
+  <!-- Card 10: New System Worked Example -->
+  <div class="card success">
+    <h3>10. Worked Example — New System, Dry Pipe (Table 21.2.2.2.1)</h3>
+    <p style="margin-bottom:8px;">Storage: Solid-Piled Class I | Height: 25 ft | High-temp sprinklers | Dry system</p>
+    <ol class="step-list">
+      <li>Class I commodity</li>
+      <li>Table 21.2.2.2.1 → 25 ft height, high-temp → <span class="highlight">0.20 gpm/ft² at 2,000 ft²</span></li>
+      <li>No height adjustment needed for new systems (table is already height-specific)</li>
+      <li>Dry system → 2,000 × 1.30 = <span class="highlight">2,600 ft²</span> (density stays 0.20)</li>
+      <li>Minimums met: 0.20 ≥ 0.15 ✓ and 2,600 ≥ 2,600 ✓</li>
+    </ol>
+    <div class="rule-box">Final answer: 0.20 gpm/ft² over 2,600 ft²</div>
+  </div>
+
+  <button class="start-btn" onclick="startQuiz()">🎯 Start 15-Question Quiz</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ QUIZ -->
+<div id="quiz-section">
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+  </div>
+  <div class="q-counter" id="q-counter">QUESTION 1 OF 15</div>
+  <div class="q-text" id="q-text"></div>
+  <div id="options-wrap"></div>
+  <div class="explanation" id="explanation"></div>
+  <div class="nav-row">
+    <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SCORE -->
+<div id="score-section">
+  <div class="score-circle" id="score-circle"></div>
+  <div class="score-label" id="score-label"></div>
+  <div class="score-sub" id="score-sub"></div>
+  <div class="wrong-report" id="wrong-report">
+    <h3>📋 Questions You Missed — Review These</h3>
+    <div id="wrong-list"></div>
+  </div>
+  <button class="retry-btn" onclick="retryQuiz()">🔄 Try Again</button>
+  <button class="review-btn" onclick="goToStudy()">📖 Back to Study Cards</button>
+</div>
+
+<script>
+const questions = [
+  {
+    q: "What is the minimum design density floor for CMDA systems protecting storage over 12 ft in height?",
+    opts: ["0.10 gpm/ft²", "0.12 gpm/ft²", "0.15 gpm/ft²", "0.20 gpm/ft²"],
+    correct: 2,
+    exp: "<strong>0.15 gpm/ft²</strong> is the minimum density floor for any CMDA system protecting storage greater than 12 ft (NFPA 13 2022, §21.2). You cannot design below this threshold regardless of what the curve or table shows."
+  },
+  {
+    q: "For a new CMDA system protecting Class IV palletized storage over 12 ft, where do you find the design density?",
+    opts: [
+      "Figure 21.2.2.3.1 — ordinary temperature design curves",
+      "Figure 21.2.2.3.2 — high temperature design curves",
+      "Table 21.2.2.2.1 — new system density table",
+      "Table 22.2 — CMSA design criteria"
+    ],
+    correct: 2,
+    exp: "<strong>Table 21.2.2.2.1</strong> is used for new systems (§21.2.2.2). The density/area curves (Figures 21.2.2.3.1 and 21.2.2.3.2) are only for evaluating or modifying <em>existing</em> systems (§21.2.2.3). New systems always use the table with a fixed 2,000 ft² design area."
+  },
+  {
+    q: "An existing warehouse stores Class II solid-piled commodities 22 ft high using ordinary temperature sprinklers. After reading the density from Figure 21.2.2.3.1, what adjustment must be made because storage height is 22 ft (not 20 ft)?",
+    opts: [
+      "No adjustment — the curves cover all heights up to 30 ft",
+      "Use Figure 21.2.2.3.3 to find a height adjustment factor and multiply the density",
+      "Increase the design area by 30% to account for the additional height",
+      "Switch to high-temperature sprinkler curves"
+    ],
+    correct: 1,
+    exp: "Figure 21.2.2.3.3 provides a height adjustment factor for storage heights other than 20 ft (the nominal base used by the curves in Figures 21.2.2.3.1 and 21.2.2.3.2). <strong>Only the density is multiplied by this factor — the design area is NOT revised</strong>. For example, at 22 ft the factor is approximately 1.15."
+  },
+  {
+    q: "A dry pipe CMDA system serves Class III solid-piled storage over 12 ft. The base wet-pipe design area from the density curve is 2,500 ft². What is the dry pipe minimum required operating area?",
+    opts: ["2,500 ft²", "2,600 ft²", "3,250 ft²", "3,500 ft²"],
+    correct: 2,
+    exp: "Dry pipe systems require a <strong>30% increase in operating area</strong> (2,500 × 1.30 = 3,250 ft²). The density does NOT change — only the area increases. The 2,600 ft² figure is only the minimum floor for dry pipe; the actual required area (3,250 ft²) exceeds that minimum, so 3,250 ft² governs."
+  },
+  {
+    q: "A new dry pipe system is designed for a warehouse storing Class I palletized commodities at 25 ft using high-temperature-rated sprinklers. Table 21.2.2.2.1 gives a density of 0.20 gpm/ft². What is the final design area?",
+    opts: ["2,000 ft²", "2,300 ft²", "2,600 ft²", "3,000 ft²"],
+    correct: 2,
+    exp: "For a new system, Table 21.2.2.2.1 provides the density and a fixed area of 2,000 ft². Since this is a dry system, the area increases 30%: 2,000 × 1.30 = <strong>2,600 ft²</strong>. The density (0.20 gpm/ft²) does not change. Final answer: 0.20 gpm/ft² over 2,600 ft²."
+  },
+  {
+    q: "Which storage arrangement is CMSA specifically designed to protect? (Select the best answer)",
+    opts: [
+      "Bin box and shelf storage only",
+      "Solid-piled and palletized storage only",
+      "Rack storage and palletized storage",
+      "All Class I–IV storage arrangements"
+    ],
+    correct: 1,
+    exp: "<strong>CMSA sprinklers are only permitted to protect solid-piled and palletized storage</strong> (§22.2). Bin box and shelf storage must be protected with standard spray sprinklers using CMDA density/area criteria. This is a key distinction between CMSA and CMDA."
+  },
+  {
+    q: "For a wet pipe CMSA system protecting Class IV palletized storage at 25 ft in a 30 ft building with noncombustible unobstructed ceiling, how many sprinklers are in the design area per Table 22.2?",
+    opts: ["10", "15", "20", "25"],
+    correct: 1,
+    exp: "Per NFPA 13 2022, Table 22.2, <strong>15 sprinklers</strong> are required in the design area for this storage arrangement with a wet pipe system. Dry or preaction systems require 25 sprinklers. The design area is then calculated as: 15 × max coverage per sprinkler."
+  },
+  {
+    q: "To find the branch line length for CMSA hydraulic design (number of sprinklers per branch line), what formula does Section 28.2.4.3 require?",
+    opts: [
+      "Length = design area ÷ number of sprinklers",
+      "Length = 1.2 × √(design area)",
+      "Length = number of sprinklers × 10 ft spacing",
+      "Length = √(design area) × 0.8"
+    ],
+    correct: 1,
+    exp: "Section 28.2.4.3 requires the dimension parallel to branch lines to be calculated as: <strong>1.2 × √(design area)</strong>. For example, with a design area of 1,950 ft²: 1.2 × √1,950 = 1.2 × 44.2 = 53 ft."
+  },
+  {
+    q: "ESFR sprinklers may be used to protect which of the following storage arrangements?",
+    opts: [
+      "Bin box storage up to 30 ft",
+      "Shelf storage up to 20 ft",
+      "Palletized and solid-piled storage up to 40 ft",
+      "Rack storage only, up to 35 ft"
+    ],
+    correct: 2,
+    exp: "ESFR sprinklers protect encapsulated and non-encapsulated Class I–IV in <strong>palletized and solid-piled</strong> storage up to <strong>40 ft</strong> in height (§23.3). They are NOT permitted for bin box or shelf storage — the solid nature of those arrangements blocks discharge from reaching the fire."
+  },
+  {
+    q: "What type of sprinkler system is required for ESFR sprinklers?",
+    opts: [
+      "Wet pipe systems only",
+      "Dry pipe or wet pipe systems",
+      "Preaction systems only",
+      "Any system type — determined by AHJ"
+    ],
+    correct: 0,
+    exp: "<strong>ESFR sprinklers require wet pipe systems only</strong>. The entire suppression model depends on water being present at the deflector the instant the head fuses. A dry pipe delay (15–60 seconds) defeats the early-suppression mission. No exceptions exist under NFPA 13 (unless the sprinkler is specifically listed for dry use)."
+  },
+  {
+    q: "The design area for ESFR sprinklers must consist of how many sprinklers, arranged on how many branch lines?",
+    opts: [
+      "10 sprinklers — 5 on 2 branch lines",
+      "12 sprinklers — 4 on 3 branch lines",
+      "15 sprinklers — 5 on 3 branch lines",
+      "20 sprinklers — 4 on 5 branch lines"
+    ],
+    correct: 1,
+    exp: "The ESFR design area must be the most hydraulically demanding area of <strong>12 sprinklers — 4 sprinklers on each of 3 branch lines</strong> (§23.3). This specific arrangement (4×3) is a fixed NFPA 13 requirement for ESFR systems."
+  },
+  {
+    q: "For encapsulated palletized storage over 15 ft and up to 20 ft in height (§21.2.3), what minimum K-factor must the ceiling sprinklers have?",
+    opts: ["K-5.6", "K-8.0", "K-11.2", "K-16.8"],
+    correct: 2,
+    exp: "Encapsulated palletized and solid-piled storage between 15 ft and 20 ft must be protected with sprinklers having a minimum K-factor of <strong>K-11.2</strong> (§21.2.3). This higher K-factor delivers the flow rate needed to penetrate the plastic wrap and control the more hazardous encapsulated commodity."
+  },
+  {
+    q: "For in-rack sprinkler systems in combination with CMDA ceiling sprinklers, what is the maximum floor area coverage per rack system?",
+    opts: ["20,000 ft²", "30,000 ft²", "40,000 ft²", "50,000 ft²"],
+    correct: 2,
+    exp: "A rack sprinkler system is limited to a maximum floor area coverage of <strong>40,000 ft²</strong> (§25.1.4). Separate control valves are required for in-rack and ceiling systems, unless the system has fewer than 20 sprinklers."
+  },
+  {
+    q: "What is the minimum discharge pressure for in-rack sprinklers used in combination with CMDA ceiling-level sprinklers for all commodity classes?",
+    opts: ["5 psi", "10 psi", "15 psi", "25 psi"],
+    correct: 2,
+    exp: "For all classes of commodities, in-rack sprinklers must discharge at not less than <strong>15 psi</strong> (§21.4). This minimum pressure applies regardless of the ceiling sprinkler system type or commodity classification."
+  },
+  {
+    q: "For metal bin boxes or metal closed shelves with face areas less than 16 ft², by how much may the CMDA area of application be reduced?",
+    opts: ["20%", "25%", "30%", "33%"],
+    correct: 3,
+    exp: "For metal bin boxes and metal closed shelves with face areas less than 16 ft², the area of application may be reduced by <strong>33%</strong> when specific conditions are met (§21.2, Annex A.21.2). This reduction is exclusive to this specific configuration — do not confuse it with the 30% dry pipe increase."
+  }
+];
+
+let current = 0;
+let score = 0;
+let wrongAnswers = [];
+const questionTopics = {
+  0: "Q1 — Minimum CMDA density floor (0.15 gpm/ft²)",
+  1: "Q2 — New systems use Table 21.2.2.2.1, not curves",
+  2: "Q3 — Height adjustment factor for existing systems (Figure 21.2.2.3.3)",
+  3: "Q4 — Dry pipe area = base area × 1.30",
+  4: "Q5 — New dry system: table density + 30% area increase",
+  5: "Q6 — CMSA limited to solid-piled and palletized storage only",
+  6: "Q7 — CMSA wet pipe = 15 design sprinklers (Table 22.2)",
+  7: "Q8 — CMSA branch line: 1.2 × √(design area)",
+  8: "Q9 — ESFR protects palletized/solid-piled up to 40 ft",
+  9: "Q10 — ESFR = wet pipe only",
+  10: "Q11 — ESFR design area = 12 sprinklers, 4 on 3 branch lines",
+  11: "Q12 — Encapsulated 15–20 ft requires K-11.2 minimum",
+  12: "Q13 — Max rack system floor area = 40,000 ft²",
+  13: "Q14 — In-rack sprinklers min discharge = 15 psi",
+  14: "Q15 — Metal bin box/shelf < 16 ft² → 33% area reduction"
+};
+
+function startQuiz() {
+  document.getElementById('study-section').style.display = 'none';
+  document.getElementById('quiz-section').style.display = 'block';
+  current = 0; score = 0; wrongAnswers = [];
+  showQuestion();
+}
+
+function showQuestion() {
+  const q = questions[current];
+  document.getElementById('q-counter').textContent = `QUESTION ${current + 1} OF ${questions.length}`;
+  document.getElementById('progress-bar').style.width = `${(current / questions.length) * 100}%`;
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('explanation').classList.remove('show');
+  document.getElementById('explanation').innerHTML = '';
+  document.getElementById('next-btn').style.display = 'none';
+
+  const wrap = document.getElementById('options-wrap');
+  wrap.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('div');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span><span>${opt}</span>`;
+    btn.onclick = () => answer(i, q.correct, q.exp, current);
+    wrap.appendChild(btn);
+  });
+}
+
+function answer(chosen, correct, exp, qNum) {
+  const opts = document.querySelectorAll('.option');
+  opts.forEach((o, i) => {
+    o.classList.add('disabled');
+    if (i === correct) o.classList.add('correct');
+    if (i === chosen && chosen !== correct) o.classList.add('wrong');
+  });
+
+  if (chosen === correct) {
+    score++;
+  } else {
+    if (!wrongAnswers.includes(qNum)) wrongAnswers.push(qNum);
+  }
+
+  const expBox = document.getElementById('explanation');
+  expBox.innerHTML = exp;
+  expBox.classList.add('show');
+  document.getElementById('next-btn').style.display = 'block';
+}
+
+function nextQuestion() {
+  current++;
+  if (current < questions.length) {
+    showQuestion();
+  } else {
+    showScore();
+  }
+}
+
+function showScore() {
+  document.getElementById('quiz-section').style.display = 'none';
+  document.getElementById('score-section').style.display = 'block';
+
+  const pct = Math.round((score / questions.length) * 100);
+  const circle = document.getElementById('score-circle');
+  circle.textContent = `${pct}%`;
+  if (pct >= 80) { circle.className = 'score-circle great'; }
+  else if (pct >= 60) { circle.className = 'score-circle ok'; }
+  else { circle.className = 'score-circle low'; }
+
+  document.getElementById('score-label').textContent = `${score} / ${questions.length} Correct`;
+
+  let msg = '';
+  if (pct === 100) msg = 'Perfect score — CMDA, CMSA, and ESFR locked in!';
+  else if (pct >= 87) msg = 'Strong work — review the missed questions below.';
+  else if (pct >= 67) msg = 'Solid foundation — a few key distinctions need reinforcement.';
+  else msg = 'More study needed — these are high-frequency NICET topics.';
+  document.getElementById('score-sub').textContent = msg;
+
+  const reportDiv = document.getElementById('wrong-report');
+  const listDiv = document.getElementById('wrong-list');
+  if (wrongAnswers.length > 0) {
+    listDiv.innerHTML = '';
+    wrongAnswers.sort((a, b) => a - b).forEach(idx => {
+      const q = questions[idx];
+      const div = document.createElement('div');
+      div.className = 'wrong-item';
+      div.innerHTML = `<div class="wi-q">${questionTopics[idx]}</div>
+        <div class="wi-a">✓ Correct: ${q.opts[q.correct]}</div>
+        <div style="margin-top:5px; color:#c8d4e0; font-size:0.82rem;">${q.exp}</div>`;
+      listDiv.appendChild(div);
+    });
+    reportDiv.style.display = 'block';
+  } else {
+    reportDiv.style.display = 'none';
+  }
+}
+
+function retryQuiz() {
+  document.getElementById('score-section').style.display = 'none';
+  document.getElementById('quiz-section').style.display = 'block';
+  current = 0; score = 0; wrongAnswers = [];
+  showQuestion();
+}
+
+function goToStudy() {
+  document.getElementById('score-section').style.display = 'none';
+  document.getElementById('study-section').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>

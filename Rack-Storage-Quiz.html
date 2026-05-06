@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rack Storage Class I-IV — NICET Level 3 Quiz</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #0f1923;
+    color: #e8eaf0;
+    min-height: 100vh;
+  }
+  header {
+    background: linear-gradient(135deg, #185FA5 0%, #0d3d6e 100%);
+    padding: 24px 32px;
+    border-bottom: 3px solid #D85A30;
+  }
+  header h1 { font-size: 1.6rem; font-weight: 700; }
+  header p { margin-top: 6px; color: #a8c8f0; font-size: 0.9rem; }
+  .badge {
+    display: inline-block; background: #D85A30; color: white;
+    font-size: 0.72rem; font-weight: 700; padding: 2px 10px;
+    border-radius: 12px; margin-left: 10px; vertical-align: middle;
+  }
+
+  /* ─── STUDY CARDS ─── */
+  #study-section { padding: 32px; max-width: 900px; margin: 0 auto; }
+  .section-title {
+    font-size: 0.8rem; font-weight: 700; letter-spacing: 1.5px;
+    color: #D85A30; text-transform: uppercase; margin-bottom: 18px;
+  }
+  .card {
+    background: #1a2738; border: 1px solid #2a3a52;
+    border-radius: 10px; padding: 22px 26px; margin-bottom: 18px;
+    border-left: 4px solid #185FA5;
+  }
+  .card.danger { border-left-color: #D85A30; }
+  .card.success { border-left-color: #1D9E75; }
+  .card.warn { border-left-color: #e8a000; }
+  .card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 10px; color: #fff; }
+  .card p, .card li { font-size: 0.9rem; line-height: 1.7; color: #c8d4e0; }
+  .card ul, .card ol { padding-left: 20px; margin-top: 6px; }
+  .card li { margin-bottom: 4px; }
+  .hl { color: #f0c040; font-weight: 700; }
+  .rule-box {
+    background: #0d2035; border: 1px solid #1D9E75;
+    border-radius: 6px; padding: 12px 16px; margin-top: 12px;
+    font-size: 0.85rem; color: #a0d8b0; line-height: 1.6;
+  }
+  .trap-box {
+    background: #2a1a10; border: 1px solid #D85A30;
+    border-radius: 6px; padding: 12px 16px; margin-top: 12px;
+    font-size: 0.85rem; color: #f0b090; line-height: 1.6;
+  }
+  .data-table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 0.83rem; }
+  .data-table th {
+    background: #0d2035; color: #7ab8f5; padding: 8px 12px;
+    text-align: left; font-weight: 700; border-bottom: 2px solid #185FA5;
+  }
+  .data-table td { padding: 8px 12px; border-bottom: 1px solid #1e2e42; color: #c8d4e0; }
+  .data-table tr:hover td { background: #1e2e42; }
+  .start-btn {
+    display: block; width: 100%; max-width: 340px; margin: 32px auto;
+    background: linear-gradient(135deg, #D85A30, #b84020); color: white;
+    border: none; border-radius: 10px; padding: 16px 24px;
+    font-size: 1.1rem; font-weight: 700; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(216,90,48,0.3); transition: transform 0.15s;
+  }
+  .start-btn:hover { transform: translateY(-2px); }
+
+  /* ─── QUIZ ─── */
+  #quiz-section { display: none; padding: 32px; max-width: 780px; margin: 0 auto; }
+  .progress-bar-wrap { background: #1a2738; border-radius: 100px; height: 8px; margin-bottom: 28px; }
+  .progress-bar-fill {
+    background: linear-gradient(90deg, #1D9E75, #185FA5);
+    height: 8px; border-radius: 100px; transition: width 0.4s ease;
+  }
+  .q-counter { font-size: 0.78rem; color: #7ab8f5; font-weight: 700; margin-bottom: 8px; letter-spacing: 1px; }
+  .q-text { font-size: 1.05rem; font-weight: 600; line-height: 1.6; margin-bottom: 22px; color: #e8eaf0; }
+  .option {
+    background: #1a2738; border: 2px solid #2a3a52; border-radius: 8px;
+    padding: 13px 18px; margin-bottom: 10px; cursor: pointer;
+    font-size: 0.92rem; color: #c8d4e0; transition: all 0.15s;
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .option:hover { border-color: #185FA5; background: #1e2e42; color: #fff; }
+  .opt-letter {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; min-width: 26px;
+    background: #0d2035; border-radius: 50%;
+    font-size: 0.78rem; font-weight: 700; color: #7ab8f5;
+  }
+  .option.correct { background: #0e2e1e; border-color: #1D9E75; color: #a0d8b0; }
+  .option.correct .opt-letter { background: #1D9E75; color: white; }
+  .option.wrong { background: #2e1010; border-color: #cc3333; color: #f0a0a0; }
+  .option.wrong .opt-letter { background: #cc3333; color: white; }
+  .option.disabled { pointer-events: none; }
+  .explanation {
+    background: #0d2035; border: 1px solid #185FA5;
+    border-radius: 8px; padding: 14px 18px; margin-top: 12px;
+    font-size: 0.88rem; color: #a8c8f0; line-height: 1.6; display: none;
+  }
+  .explanation.show { display: block; }
+  .nav-row { display: flex; justify-content: flex-end; margin-top: 20px; }
+  .next-btn {
+    background: #185FA5; color: white; border: none; border-radius: 8px;
+    padding: 11px 28px; font-size: 0.95rem; font-weight: 700;
+    cursor: pointer; display: none; transition: background 0.15s;
+  }
+  .next-btn:hover { background: #1475c8; }
+
+  /* ─── SCORE ─── */
+  #score-section { display: none; padding: 40px 32px; max-width: 700px; margin: 0 auto; text-align: center; }
+  .score-circle {
+    width: 140px; height: 140px; border-radius: 50%; margin: 0 auto 24px;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; font-size: 2.6rem; font-weight: 900; border: 6px solid;
+  }
+  .score-circle.great { border-color: #1D9E75; color: #1D9E75; background: #0e2e1e; }
+  .score-circle.ok    { border-color: #e8a000; color: #e8a000; background: #2a1e00; }
+  .score-circle.low   { border-color: #cc3333; color: #cc3333; background: #2e1010; }
+  .score-label { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
+  .score-sub { color: #8a9ab0; font-size: 0.9rem; margin-bottom: 28px; }
+  .wrong-report {
+    text-align: left; background: #1a2738; border: 1px solid #2a3a52;
+    border-radius: 10px; padding: 20px 24px; margin-bottom: 24px; display: none;
+  }
+  .wrong-report h3 { font-size: 0.85rem; color: #D85A30; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; font-weight: 700; }
+  .wrong-item {
+    background: #2e1010; border: 1px solid #cc3333;
+    border-radius: 6px; padding: 10px 14px; margin-bottom: 10px;
+    font-size: 0.86rem; color: #f0c0b0; line-height: 1.5;
+  }
+  .wrong-item .wi-q { font-weight: 700; color: #ff9988; margin-bottom: 4px; }
+  .wrong-item .wi-a { color: #a0d8b0; font-weight: 600; }
+  .retry-btn {
+    background: linear-gradient(135deg, #1D9E75, #158060); color: white;
+    border: none; border-radius: 10px; padding: 14px 36px;
+    font-size: 1rem; font-weight: 700; cursor: pointer; margin-right: 12px; transition: transform 0.15s;
+  }
+  .retry-btn:hover { transform: translateY(-2px); }
+  .review-btn {
+    background: #1a2738; color: #7ab8f5; border: 2px solid #185FA5;
+    border-radius: 10px; padding: 14px 36px; font-size: 1rem;
+    font-weight: 700; cursor: pointer; transition: background 0.15s;
+  }
+  .review-btn:hover { background: #1e2e42; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Rack Storage — Class I–IV <span class="badge">NICET Level 3</span></h1>
+  <p>NFPA 13 2022 · Chapter 21 (§21.4 Rack) · Chapter 25 (In-Rack) · Completely rewritten in 2022</p>
+</header>
+
+<!-- ═══════════ STUDY CARDS ═══════════ -->
+<div id="study-section">
+  <p class="section-title">📖 Study Cards — Review Before the Quiz</p>
+
+  <div class="card warn">
+    <h3>1. Chapter 25 Was Completely Rewritten in 2022 — Know the Structure</h3>
+    <p>Chapter 25 now has a clear logical structure. Navigate it by ceiling sprinkler type:</p>
+    <table class="data-table">
+      <tr><th>Section</th><th>What It Covers</th></tr>
+      <tr><td>§25.2</td><td>Miscellaneous and low-piled rack storage</td></tr>
+      <tr><td>§25.3</td><td>In-rack + <strong>CMDA</strong> ceiling sprinklers</td></tr>
+      <tr><td>§25.4</td><td>In-rack + <strong>CMSA</strong> ceiling sprinklers</td></tr>
+      <tr><td>§25.5</td><td>In-rack + <strong>ESFR</strong> ceiling sprinklers</td></tr>
+      <tr><td>§25.6</td><td>In-rack <strong>independent</strong> of ceiling sprinklers (wet pipe only)</td></tr>
+      <tr><td>§25.7</td><td>Evaluation/modification of existing misc/low-piled rack</td></tr>
+      <tr><td>§25.8</td><td>Evaluation/modification of existing CMDA rack</td></tr>
+    </table>
+    <div class="rule-box">Start every rack problem by identifying the ceiling sprinkler type — that's your section. Then use aisle width + sprinkler temperature to find the correct curve.</div>
+  </div>
+
+  <div class="card">
+    <h3>2. The Three Inputs That Drive Every Rack Storage Design</h3>
+    <ol>
+      <li><span class="hl">Rack type</span> — single-row, double-row, or multiple-row → picks your table</li>
+      <li><span class="hl">Aisle width</span> — wider than 8 ft vs. 8 ft or narrower → picks your curve group</li>
+      <li><span class="hl">Ceiling sprinkler temperature rating</span> — ordinary vs. high temp → picks your exact curve</li>
+    </ol>
+    <div class="trap-box">⚠️ EXAM TRAP: The critical aisle width split is <strong>8 ft</strong>. Multiple-row racks with aisles &gt;8 ft use different (less demanding) design curves than those with aisles ≤8 ft. Narrower aisles = fire spreads across faster = more demanding design.</div>
+  </div>
+
+  <div class="card success">
+    <h3>3. In-Rack Sprinklers Reduce Ceiling Demand — The Key Trade-Off</h3>
+    <p>Adding in-rack sprinklers lowers the required ceiling sprinkler density. More in-rack levels = bigger reduction. Example: double-row rack, 8 ft aisles, exposed non-encapsulated Class III, 24 ft storage, high-temp ceiling sprinklers:</p>
+    <table class="data-table">
+      <tr><th>In-Rack Coverage</th><th>Ceiling Density Required</th></tr>
+      <tr><td>One level of in-rack</td><td class="hl">0.25 gpm/ft² / 2,000 ft²</td></tr>
+      <tr><td>In-rack at every tier</td><td class="hl">0.15 gpm/ft² / 2,000 ft²</td></tr>
+    </table>
+    <div class="rule-box">In-rack at every tier = ceiling system at its minimum (0.15 gpm/ft² floor). This is why retrofit jobs with limited water supply often add in-rack sprinklers — it dramatically reduces the overhead system demand.</div>
+  </div>
+
+  <div class="card">
+    <h3>4. Key Numbers for Rack Storage</h3>
+    <table class="data-table">
+      <tr><th>Rule</th><th>Value</th></tr>
+      <tr><td>In-rack sprinkler minimum discharge pressure</td><td class="hl">15 psi (all commodity classes)</td></tr>
+      <tr><td>Max rack system floor area coverage</td><td class="hl">40,000 ft²</td></tr>
+      <tr><td>Separate control valves required (in-rack vs ceiling)</td><td class="hl">Yes — except &lt;20 in-rack sprinklers</td></tr>
+      <tr><td>Transverse flue space — all rack types</td><td class="hl">6 inches nominal</td></tr>
+      <tr><td>Longitudinal flue — storage up to 25 ft (Class I–IV)</td><td class="hl">NOT required</td></tr>
+      <tr><td>Longitudinal flue — storage over 25 ft (Class I–IV)</td><td class="hl">Required — 6 inches nominal</td></tr>
+      <tr><td>Aisle width — critical split for multiple-row racks</td><td class="hl">8 ft (wider vs. 8 ft or narrower)</td></tr>
+      <tr><td>In-rack minimum spacing between heads</td><td class="hl">27 inches minimum</td></tr>
+    </table>
+  </div>
+
+  <div class="card danger">
+    <h3>5. Encapsulation Penalties in Rack Storage (§21.4)</h3>
+    <p>For encapsulated commodities in rack storage over <span class="hl">12 ft</span>:</p>
+    <ul>
+      <li><strong>Class I–III:</strong> ceiling density increased by <span class="hl">25%</span></li>
+      <li><strong>Class IV:</strong> ceiling density increased by <span class="hl">50%</span></li>
+    </ul>
+    <div class="trap-box">⚠️ Rack trigger = <strong>over 12 ft</strong>. Palletized/solid-piled encapsulation trigger = over 15 ft. These are different storage types with different threshold heights. The exam will try to get you to mix them up.</div>
+  </div>
+
+  <div class="card">
+    <h3>6. Horizontal Barriers — When and Why</h3>
+    <p>A <strong>horizontal barrier</strong> is a solid barrier (sheet metal, wood, or similar) that spans the full length and depth of the rack at a specific height increment. Its job: stop vertical fire spread between rack tiers.</p>
+    <ul>
+      <li>Must extend full length and depth of the rack</li>
+      <li>Must be strong enough not to sag during loading/unloading</li>
+      <li>Used in combination with in-rack sprinklers to compartmentalize vertical fire development</li>
+    </ul>
+    <div class="rule-box">Where clearance to ceiling exceeds 10 ft with CMDA ceiling sprinklers protecting exposed non-encapsulated Class I–IV, a horizontal barrier should be installed above storage with one level of in-rack sprinklers under it (per Annex §A.25.3.3.1.1.6).</div>
+  </div>
+
+  <div class="card">
+    <h3>7. In-Rack Independent of Ceiling Sprinklers (§25.6)</h3>
+    <p>Section 25.6 allows protection purely from inside the rack — no ceiling system involvement for rack protection. Key rules:</p>
+    <ul>
+      <li>Closed-top commodities only (no open-top containers)</li>
+      <li><span class="hl">Wet pipe systems only</span></li>
+      <li>Minimum K-factor: K-8.0</li>
+      <li>Minimum in-rack spacing: <span class="hl">27 inches</span> between heads</li>
+      <li>Single-row racks: minimum 6 in-rack sprinklers at 60 gpm</li>
+      <li>Double/multiple-row racks: minimum 8 in-rack sprinklers at 60 gpm</li>
+    </ul>
+    <div class="rule-box">The top level of in-rack sprinklers is treated as a "floor" for ceiling system design purposes — ceiling system design follows Chapters 20–23 above that level.</div>
+  </div>
+
+  <div class="card success">
+    <h3>8. Worked Example — In-Rack + CMDA (from NFPA 13 2022 Study Doc)</h3>
+    <p style="margin-bottom:8px;"><strong>Scenario:</strong> 24 ft high storage, exposed non-encapsulated Class III, double-row rack, 8 ft aisles, no solid shelves, one level of in-rack, high-temp ceiling sprinklers.</p>
+    <p><strong>Answer:</strong> Per Table 25.3.2.1.2.1(A)(c) → <span class="hl">0.25 gpm/ft² / 2,000 ft²</span></p>
+    <p style="margin-top:8px;"><strong>If in-rack at every tier instead:</strong> Same table → <span class="hl">0.15 gpm/ft² / 2,000 ft²</span></p>
+    <p style="margin-top:8px;"><strong>In-rack specs (from figure notes):</strong> Ordinary temp, quick or standard response, pendent or upright, minimum K-5.6, designed for minimum 6 sprinklers at 22 gpm (one level) or 10 sprinklers at 22 gpm (every tier).</p>
+  </div>
+
+  <div class="card">
+    <h3>9. Solid Shelf Racks — Always Need In-Rack Sprinklers</h3>
+    <p>Solid shelves act like mini-ceilings inside the rack. They block water from ceiling sprinklers from reaching the lower storage levels. Result: in-rack sprinklers are mandatory at every tier with solid shelves, regardless of commodity class.</p>
+    <p style="margin-top:8px;">ESFR sprinklers are <span class="hl">not permitted</span> when solid shelves are present — unless the solid shelf racks are protected with in-rack sprinklers per §25.5.1.</p>
+    <div class="trap-box">⚠️ ESFR also cannot protect storage with open-top containers. Both solid shelves and open-tops block the ESFR discharge from reaching the fire interior.</div>
+  </div>
+
+  <div class="card warn">
+    <h3>10. Face Sprinklers — Rack Storage over 25 ft (Plastics)</h3>
+    <p>For rack storage of Group A plastic commodities over 25 ft, <strong>face sprinklers</strong> are required. A face sprinkler is:</p>
+    <ul>
+      <li>A standard sprinkler placed in the transverse flue space along the aisle or in the rack</li>
+      <li>Located within <span class="hl">18 inches</span> of the aisle face of storage</li>
+      <li>Purpose: oppose vertical development of fire on the external face of storage</li>
+    </ul>
+    <div class="rule-box">Face sprinklers are located within the rack structure — walkways are NOT considered flue spaces for face sprinkler placement purposes.</div>
+  </div>
+
+  <button class="start-btn" onclick="startQuiz()">🎯 Start 15-Question Quiz</button>
+</div>
+
+<!-- ═══════════ QUIZ ═══════════ -->
+<div id="quiz-section">
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+  </div>
+  <div class="q-counter" id="q-counter">QUESTION 1 OF 15</div>
+  <div class="q-text" id="q-text"></div>
+  <div id="options-wrap"></div>
+  <div class="explanation" id="explanation"></div>
+  <div class="nav-row">
+    <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next →</button>
+  </div>
+</div>
+
+<!-- ═══════════ SCORE ═══════════ -->
+<div id="score-section">
+  <div class="score-circle" id="score-circle"></div>
+  <div class="score-label" id="score-label"></div>
+  <div class="score-sub" id="score-sub"></div>
+  <div class="wrong-report" id="wrong-report">
+    <h3>📋 Questions You Missed — Study These</h3>
+    <div id="wrong-list"></div>
+  </div>
+  <button class="retry-btn" onclick="retryQuiz()">🔄 Try Again</button>
+  <button class="review-btn" onclick="goToStudy()">📖 Back to Study Cards</button>
+</div>
+
+<script>
+const questions = [
+  {
+    q: "Chapter 25 of NFPA 13 2022 was completely rewritten. Which section covers in-rack sprinkler protection in combination with CMDA ceiling-level sprinklers?",
+    opts: ["§25.2", "§25.3", "§25.4", "§25.5"],
+    correct: 1,
+    exp: "<strong>§25.3</strong> covers in-rack sprinkler protection in combination with CMDA ceiling-level sprinklers. §25.4 = CMSA, §25.5 = ESFR, §25.2 = miscellaneous and low-piled rack storage. Knowing this structure lets you navigate to the right tables immediately."
+  },
+  {
+    q: "For multiple-row rack storage, what is the critical aisle width that determines which design curves to use?",
+    opts: ["6 ft", "8 ft", "10 ft", "12 ft"],
+    correct: 1,
+    exp: "<strong>8 ft</strong> is the critical split. Aisles wider than 8 ft use one set of curves; aisles 8 ft or narrower use more demanding criteria. Narrower aisles allow fire to spread across the aisle face faster, requiring more aggressive design."
+  },
+  {
+    q: "What two factors (beyond rack type) determine which density/area design curve to use in CMDA rack storage design?",
+    opts: [
+      "Commodity class and storage height",
+      "Aisle width and ceiling sprinkler temperature rating",
+      "Encapsulation status and ceiling height",
+      "Number of in-rack levels and clearance to ceiling"
+    ],
+    correct: 1,
+    exp: "<strong>Aisle width + ceiling sprinkler temperature rating</strong> (ordinary vs. high temp) determine which curve you use once you've selected the correct table for your rack type. These two inputs together point you to the exact figure and curve line."
+  },
+  {
+    q: "For all commodity classes, what is the minimum discharge pressure for in-rack sprinklers used in combination with CMDA ceiling sprinklers?",
+    opts: ["5 psi", "10 psi", "15 psi", "25 psi"],
+    correct: 2,
+    exp: "<strong>15 psi minimum</strong> for all commodity classes (NFPA 13 2022, §21.4). This applies regardless of the ceiling system type or commodity class — it's a universal floor for in-rack sprinkler pressure."
+  },
+  {
+    q: "A rack sprinkler system is limited to a maximum floor area coverage of:",
+    opts: ["20,000 ft²", "30,000 ft²", "40,000 ft²", "50,000 ft²"],
+    correct: 2,
+    exp: "<strong>40,000 ft²</strong> maximum floor area coverage per rack system (§25.1.4). Separate control valves are required for in-rack and ceiling systems, except when the in-rack system has fewer than 20 sprinklers."
+  },
+  {
+    q: "A double-row rack stores exposed non-encapsulated Class III commodities at 24 ft with 8 ft aisles and high-temperature ceiling sprinklers. One level of in-rack sprinklers is installed. What is the required ceiling design density and area?",
+    opts: [
+      "0.15 gpm/ft² / 2,000 ft²",
+      "0.20 gpm/ft² / 2,000 ft²",
+      "0.25 gpm/ft² / 2,000 ft²",
+      "0.30 gpm/ft² / 2,500 ft²"
+    ],
+    correct: 2,
+    exp: "<strong>0.25 gpm/ft² / 2,000 ft²</strong> per Table 25.3.2.1.2.1(A)(c) for this configuration with one level of in-rack. If in-rack sprinklers were at every tier instead, the ceiling density drops to the minimum floor of 0.15 gpm/ft² / 2,000 ft²."
+  },
+  {
+    q: "For the same double-row rack scenario (Class III, 24 ft, 8 ft aisles, high temp) with in-rack sprinklers at EVERY TIER, what is the required ceiling density?",
+    opts: [
+      "0.10 gpm/ft²",
+      "0.15 gpm/ft²",
+      "0.20 gpm/ft²",
+      "0.25 gpm/ft²"
+    ],
+    correct: 1,
+    exp: "<strong>0.15 gpm/ft²</strong> — the minimum density floor. In-rack at every tier provides the maximum reduction to the ceiling system demand. The floor for any CMDA system over 12 ft storage is 0.15 gpm/ft² regardless of what the table would otherwise show."
+  },
+  {
+    q: "For encapsulated commodities in rack storage over 12 ft, what is the ceiling density increase for Class I–III?",
+    opts: ["10%", "20%", "25%", "50%"],
+    correct: 2,
+    exp: "<strong>25% density increase</strong> for Class I–III encapsulated rack storage over 12 ft. Class IV requires a 50% increase. The trigger is over 12 ft for rack — this is different from palletized/solid-piled storage, which triggers at over 15 ft."
+  },
+  {
+    q: "For encapsulated Class IV commodities in rack storage over 12 ft, by how much must the ceiling density be increased?",
+    opts: ["15%", "25%", "40%", "50%"],
+    correct: 3,
+    exp: "<strong>50% density increase</strong> for Class IV encapsulated rack storage over 12 ft. Class IV already has significant plastic content — adding encapsulation on top makes fire behavior nearly uncontrollable. Double the Class I–III penalty."
+  },
+  {
+    q: "Section 25.6 covers in-rack sprinkler protection independent of ceiling sprinklers. Which system type is required?",
+    opts: [
+      "Dry pipe systems only",
+      "Wet pipe systems only",
+      "Either wet or dry pipe",
+      "Preaction systems only"
+    ],
+    correct: 1,
+    exp: "<strong>Wet pipe systems only</strong> (§25.6 per §26.2). In-rack independent protection relies on immediate water delivery — a dry pipe delay would allow fire to spread unchecked inside the rack before water arrives."
+  },
+  {
+    q: "For in-rack sprinklers used independent of ceiling sprinklers (§25.6), what is the minimum K-factor required?",
+    opts: ["K-2.8", "K-5.6", "K-8.0", "K-11.2"],
+    correct: 2,
+    exp: "<strong>K-8.0 minimum</strong> for in-rack sprinklers used independently of ceiling sprinklers (§25.6). For in-rack in combination with CMDA ceiling sprinklers, a minimum K-5.6 is used — note the different minimums depending on the system type."
+  },
+  {
+    q: "What is the minimum horizontal distance between in-rack sprinklers?",
+    opts: ["18 inches", "24 inches", "27 inches", "36 inches"],
+    correct: 2,
+    exp: "<strong>27 inches minimum</strong> between in-rack sprinklers (§25.6.2.3.1). The maximum can be extended to 8.5 ft when transverse flue spaces do not exceed 4.25 ft. The 36-inch number applies to ESFR/CMSA clearance from the deflector to top of storage — don't confuse them."
+  },
+  {
+    q: "Why do solid shelf racks ALWAYS require in-rack sprinklers?",
+    opts: [
+      "Solid shelves increase commodity class to Class IV automatically",
+      "Solid shelves block water penetration from ceiling sprinklers, preventing water from reaching lower storage levels",
+      "NFPA 13 prohibits ceiling-only protection for all rack storage",
+      "Solid shelves create a chimney effect that ceiling sprinklers cannot control"
+    ],
+    correct: 1,
+    exp: "<strong>Solid shelves block water penetration</strong> from overhead sprinklers. Each shelf acts as a mini-ceiling, trapping heat and preventing water from dripping through flue spaces to reach lower tiers. In-rack sprinklers at every tier are mandatory — ceiling-only protection physically cannot work."
+  },
+  {
+    q: "When is a longitudinal flue space required in double-row rack storage of Class I–IV commodities?",
+    opts: [
+      "Always — for all rack storage heights",
+      "Storage heights over 12 ft",
+      "Storage heights over 20 ft",
+      "Storage heights over 25 ft"
+    ],
+    correct: 3,
+    exp: "<strong>Over 25 ft</strong> — longitudinal flue space (nominal 6 in.) is required for Class I–IV rack storage exceeding 25 ft in height. For storage up to and including 25 ft, no longitudinal flue is required. Transverse flue space (6 in.) is always required regardless of height."
+  },
+  {
+    q: "For rack storage of Group A plastic commodities over 25 ft, face sprinklers must be placed within how many inches of the aisle face of storage?",
+    opts: ["12 inches", "18 inches", "24 inches", "36 inches"],
+    correct: 1,
+    exp: "<strong>18 inches</strong> from the aisle face of storage (§25.1.7.9). Face sprinklers are placed in the transverse flue space along the aisle to oppose vertical fire development on the external face of the storage. They are required for Group A plastic rack storage exceeding 25 ft."
+  }
+];
+
+let current = 0, score = 0, wrongAnswers = [];
+const questionTopics = {
+  0: "Q1 — Chapter 25 structure: §25.3 = In-rack + CMDA",
+  1: "Q2 — Critical aisle width split = 8 ft",
+  2: "Q3 — Two curve inputs: aisle width + ceiling sprinkler temperature",
+  3: "Q4 — In-rack minimum pressure = 15 psi",
+  4: "Q5 — Max rack system floor area = 40,000 ft²",
+  5: "Q6 — One in-rack level: 0.25 gpm/ft² / 2,000 ft²",
+  6: "Q7 — Every tier in-rack: 0.15 gpm/ft² (minimum floor)",
+  7: "Q8 — Encapsulation Class I–III rack >12 ft = +25% density",
+  8: "Q9 — Encapsulation Class IV rack >12 ft = +50% density",
+  9: "Q10 — §25.6 independent in-rack = wet pipe only",
+  10: "Q11 — §25.6 independent in-rack = K-8.0 minimum",
+  11: "Q12 — Minimum in-rack spacing = 27 inches",
+  12: "Q13 — Solid shelf racks always need in-rack (water blocking)",
+  13: "Q14 — Longitudinal flue required over 25 ft",
+  14: "Q15 — Face sprinklers within 18 inches of aisle face"
+};
+
+function startQuiz() {
+  document.getElementById('study-section').style.display = 'none';
+  document.getElementById('quiz-section').style.display = 'block';
+  current = 0; score = 0; wrongAnswers = [];
+  showQuestion();
+}
+
+function showQuestion() {
+  const q = questions[current];
+  document.getElementById('q-counter').textContent = `QUESTION ${current + 1} OF ${questions.length}`;
+  document.getElementById('progress-bar').style.width = `${(current / questions.length) * 100}%`;
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('explanation').classList.remove('show');
+  document.getElementById('next-btn').style.display = 'none';
+  const wrap = document.getElementById('options-wrap');
+  wrap.innerHTML = '';
+  ['A','B','C','D'].forEach((letter, i) => {
+    const btn = document.createElement('div');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="opt-letter">${letter}</span><span>${q.opts[i]}</span>`;
+    btn.onclick = () => answer(i, q.correct, q.exp, current);
+    wrap.appendChild(btn);
+  });
+}
+
+function answer(chosen, correct, exp, qNum) {
+  document.querySelectorAll('.option').forEach((o, i) => {
+    o.classList.add('disabled');
+    if (i === correct) o.classList.add('correct');
+    if (i === chosen && chosen !== correct) o.classList.add('wrong');
+  });
+  if (chosen === correct) { score++; }
+  else { if (!wrongAnswers.includes(qNum)) wrongAnswers.push(qNum); }
+  document.getElementById('explanation').innerHTML = exp;
+  document.getElementById('explanation').classList.add('show');
+  document.getElementById('next-btn').style.display = 'block';
+}
+
+function nextQuestion() {
+  current++;
+  if (current < questions.length) showQuestion();
+  else showScore();
+}
+
+function showScore() {
+  document.getElementById('quiz-section').style.display = 'none';
+  document.getElementById('score-section').style.display = 'block';
+  const pct = Math.round((score / questions.length) * 100);
+  const circle = document.getElementById('score-circle');
+  circle.textContent = `${pct}%`;
+  circle.className = pct >= 80 ? 'score-circle great' : pct >= 60 ? 'score-circle ok' : 'score-circle low';
+  document.getElementById('score-label').textContent = `${score} / ${questions.length} Correct`;
+  const msgs = ['', 'Chapter 25 locked in — rack storage mastered.', 'Strong work — review the missed questions below.', 'Solid foundation — a few precision items need work.', 'More repetition needed on rack storage rules.'];
+  document.getElementById('score-sub').textContent = pct === 100 ? msgs[1] : pct >= 87 ? msgs[2] : pct >= 67 ? msgs[3] : msgs[4];
+  const reportDiv = document.getElementById('wrong-report');
+  const listDiv = document.getElementById('wrong-list');
+  if (wrongAnswers.length > 0) {
+    listDiv.innerHTML = '';
+    wrongAnswers.sort((a,b) => a-b).forEach(idx => {
+      const q = questions[idx];
+      const div = document.createElement('div');
+      div.className = 'wrong-item';
+      div.innerHTML = `<div class="wi-q">${questionTopics[idx]}</div>
+        <div class="wi-a">✓ Correct: ${q.opts[q.correct]}</div>
+        <div style="margin-top:5px;color:#c8d4e0;font-size:0.82rem;">${q.exp}</div>`;
+      listDiv.appendChild(div);
+    });
+    reportDiv.style.display = 'block';
+  } else { reportDiv.style.display = 'none'; }
+}
+
+function retryQuiz() {
+  document.getElementById('score-section').style.display = 'none';
+  document.getElementById('quiz-section').style.display = 'block';
+  current = 0; score = 0; wrongAnswers = [];
+  showQuestion();
+}
+
+function goToStudy() {
+  document.getElementById('score-section').style.display = 'none';
+  document.getElementById('study-section').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
