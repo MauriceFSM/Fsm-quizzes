@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pop Quiz — Chapter 23: ESFR</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#0f1923;color:#e8edf2;min-height:100vh;padding:30px 16px}
+.wrap{max-width:760px;margin:0 auto}
+.back{display:inline-block;color:#7a8fa6;font-size:13px;text-decoration:none;margin-bottom:24px;letter-spacing:1px}
+.back:hover{color:#D85A30}
+header{margin-bottom:36px}
+.tag{font-size:11px;font-weight:700;letter-spacing:3px;color:#D85A30;text-transform:uppercase;margin-bottom:8px}
+h1{font-size:26px;font-weight:800;color:#fff;margin-bottom:6px}
+.meta{font-size:14px;color:#7a8fa6}
+.badge{display:inline-block;background:#185FA5;color:#fff;font-size:11px;font-weight:700;letter-spacing:2px;padding:3px 10px;border-radius:20px;margin-top:10px;text-transform:uppercase}
+.q-block{background:#1a2736;border:1px solid #243447;border-radius:14px;padding:24px;margin-bottom:18px;transition:border-color .2s}
+.q-block.correct{border-color:#1D9E75}
+.q-block.wrong{border-color:#c0392b}
+.q-num{font-size:11px;font-weight:700;letter-spacing:2px;color:#D85A30;text-transform:uppercase;margin-bottom:8px}
+.q-text{font-size:16px;font-weight:600;color:#fff;margin-bottom:18px;line-height:1.5}
+.choices{display:flex;flex-direction:column;gap:10px}
+label{display:flex;align-items:flex-start;gap:12px;background:#243447;border:1px solid #2e4060;border-radius:10px;padding:12px 16px;cursor:pointer;transition:border-color .15s;font-size:15px;color:#c8d8e8;line-height:1.4}
+label:hover{border-color:#D85A30}
+input[type=radio]{margin-top:3px;accent-color:#D85A30;flex-shrink:0}
+label.correct-ans{border-color:#1D9E75!important;background:#1a3a2a!important;color:#fff}
+label.wrong-ans{border-color:#c0392b!important;background:#2a1a1a!important;color:#fff}
+.submit-wrap{text-align:center;margin:32px 0 0}
+#submit-btn{background:#D85A30;color:#fff;font-size:16px;font-weight:700;border:none;padding:14px 48px;border-radius:12px;cursor:pointer;letter-spacing:.5px;transition:background .15s}
+#submit-btn:hover{background:#c04a22}
+#submit-btn:disabled{background:#3a4a5a;cursor:default}
+#score-section{display:none;background:#1a2736;border:1px solid #243447;border-radius:16px;padding:32px;margin-top:36px;text-align:center}
+.score-circle{width:110px;height:110px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;margin:0 auto 16px;border:4px solid}
+.score-label{font-size:18px;font-weight:700;color:#fff;margin-bottom:6px}
+.score-sub{font-size:14px;color:#7a8fa6;margin-bottom:28px}
+#wrong-report{text-align:left;margin-top:8px}
+.wr-title{font-size:13px;font-weight:700;letter-spacing:2px;color:#D85A30;text-transform:uppercase;margin-bottom:16px}
+.wr-item{background:#243447;border-radius:10px;padding:16px;margin-bottom:12px;font-size:14px;line-height:1.6}
+.wr-q{font-weight:600;color:#fff;margin-bottom:6px}
+.wr-yours{color:#e88}
+.wr-correct{color:#1D9E75}
+#retry-btn{background:#185FA5;color:#fff;font-size:14px;font-weight:700;border:none;padding:12px 36px;border-radius:10px;cursor:pointer;margin-top:20px;transition:background .15s}
+#retry-btn:hover{background:#1a4a80}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← Back to Quiz Hub</a>
+  <header>
+    <div class="tag">NFPA 13 · 2022 Edition</div>
+    <h1>Pop Quiz — Chapter 23</h1>
+    <div class="meta">ESFR — Early Suppression Fast Response Sprinklers</div>
+    <span class="badge">10 Questions · No Hints</span>
+  </header>
+
+  <div id="quiz-form">
+
+    <div class="q-block" id="q1">
+      <div class="q-num">Question 1 of 10</div>
+      <div class="q-text">What does ESFR stand for?</div>
+      <div class="choices">
+        <label><input type="radio" name="q1" value="A"> A) Extended Spray Fire Response</label>
+        <label><input type="radio" name="q1" value="B"> B) Early Suppression Fast Response</label>
+        <label><input type="radio" name="q1" value="C"> C) Enhanced Sprinkler Flow Rate</label>
+        <label><input type="radio" name="q1" value="D"> D) Early Spray Flood Response</label>
+      </div>
+    </div>
+
+    <div class="q-block" id="q2">
+      <div class="q-num">Question 2 of 10</div>
+      <div class="q-text">What is the maximum storage height permitted for ESFR protection?</div>
+      <div class="choices">
+        <label><input type="radio" name="q2" value="A"> A) 25 feet</label>
+        <label><input type="radio" name="q2" value="B"> B) 30 feet</label>
+        <label><input type="radio" name="q2" value="C"> C) 35 feet</label>
+        <label><input type="radio" name="q2" value="D"> D) 40 feet</label>
+      </div>
+    </div>
+
+    <div class="q-block" id="q3">
+      <div class="q-num">Question 3 of 10</div>
+      <div class="q-text">Can ESFR sprinklers protect bin box storage?</div>
+      <div class="choices">
+        <label><input type="radio" name="q3" value="A"> A) Yes — ESFR works for all storage arrangements</label>
+        <label><input type="radio" name="q3" value="B"> B) Yes — but only with metal bin boxes</label>
+        <label><input type="radio" name="q3" value="C"> C) No — solid structure prevents proper ESFR discharge</label>
+        <label><input type="radio" name="q3" value="D"> D) Only if storage height is under 20 ft</label>
+      </div>
+    </div>
+
+    <div class="q-block" id="q4">
+      <div class="q-num">Question 4 of 10</div>
+      <div class="q-text">Can ESFR sprinklers protect storage in open-top containers?</div>
+      <div class="choices">
+        <label><input type="radio" name="q4" value="A"> A) Yes — open-top containers are acceptable for ESFR</label>
+        <label><input type="radio" name="q4" value="B"> B) No — open-top containers are specifically prohibited for ESFR</label>
+        <label><input type="radio" name="q4" value="C"> C) Only if containers are less than 24 inches deep</label>
+        <label><input type="radio" name="q4" value="D"> D) Yes — if protected with in-rack sprinklers as well</label>
+      </div>
+    </div>
+
+    <div class="q-block" id="q5">
+      <div class="q-num">Question 5 of 10</div>
+      <div class="q-text">ESFR design area: how many branch lines are used, and how many sprinklers per branch line?</div>
+      <div class="choices">
+        <label><input type="radio" name="q5" value="A"> A) 2 branch lines × 6 sprinklers = 12 total</label>
+        <label><input type="radio" name="q5" value="B"> B) 3 branch lines × 3 sprinklers = 9 total</label>
+        <label><input type="radio" name="q5" value="C"> C) 3 branch lines × 4 sprinklers = 12 total</label>
+        <label><input type="radio" name="q5" value="D"> D) 4 branch lines × 3 sprinklers = 12 total</label>
+      </div>
+    </div>
+
+    <div class="q-block" id="q6">
+      <div class="q-num">Question 6 of 10</div>
+      <div class="q-text">What type of sprinkler system is required for ESFR — no exceptions?</div>
+      <div class="choices">
+        <label><input type="radio" name="q6" value="A"> A) Dry pipe only</label>
+        <label><input type="radio" name="q6" value="B"> B) Wet pipe only</label>
+        <label><input type="radio" name="q6" value="C"> C) Preaction only</label>
+        <label><input type="radio" name="q6" value="D"> D) Either wet or dry pipe</label>
+      </div>
+    </div>
+
+    <div class="q-block" id="q7">
+      <div class="q-num">Question 7 of 10</div>
+      <div class="q-text">What minimum clearance must be maintained between the top of storage and the ESFR sprinkler deflector?</div>
+      <div class="choices">
+        <label><input type="radio" name="q7" value="A"> A) 18 inches</label>
+        <label><input type="radio" name="q7" value="B"> B) 24 inches</label>
+        <label><input type="radio" name="q7" value="C"> C) 36 inches</label>
+        <label><input type="radio" name="q7" value="D"> D) 48 inches</label>
+      </div>
+    </div>
+
+    <div class="q-block" id="q8">
+      <div class="q-num">Question 8 of 10</div>
+      <div class="q-text">ESFR sprinkler requirements are found in which chapter of NFPA 13 2022?</div>
+      <div class="choices">
+        <label><input type="radio" name="q8" value="A"> A) Chapter 21</label>
+        <label><input type="radio" name="q8" value="B"> B) Chapter 22</label>
+        <label><input type="radio" name="q8" value="C"> C) Chapter 23</label>
+        <label><input type="radio" name="q8" value="D"> D) Chapter 25</label>
+      </div>
+    </div>
+
+    <div class="q-block" id="q9">
+      <div class="q-num">Question 9 of 10</div>
+      <div class="q-text">Why is ESFR restricted to wet pipe systems only?</div>
+      <div class="choices">
+        <label><input type="radio" name="q9" value="A"> A) ESFR heads cannot withstand the pressure in dry pipe systems</label>
+        <label><input type="radio" name="q9" value="B"> B) The early-suppression model depends on instant water delivery — any delay defeats the suppression goal</label>
+        <label><input type="radio" name="q9" value="C"> C) Dry pipe systems require a different K-factor not available in ESFR heads</label>
+        <label><input type="radio" name="q9" value="D"> D) AHJs typically require wet pipe for high-piled storage</label>
+      </div>
+    </div>
+
+    <div class="q-block" id="q10">
+      <div class="q-num">Question 10 of 10</div>
+      <div class="q-text">ESFR can protect which of the following storage arrangements?</div>
+      <div class="choices">
+        <label><input type="radio" name="q10" value="A"> A) Bin box and shelf storage only</label>
+        <label><input type="radio" name="q10" value="B"> B) Rack storage only</label>
+        <label><input type="radio" name="q10" value="C"> C) Palletized and solid-piled storage up to 40 ft</label>
+        <label><input type="radio" name="q10" value="D"> D) Any arrangement if clearance exceeds 36 inches</label>
+      </div>
+    </div>
+
+    <div class="submit-wrap">
+      <button id="submit-btn" onclick="gradeQuiz()">Submit Answers</button>
+    </div>
+  </div>
+
+  <div id="score-section">
+    <div class="score-circle" id="score-circle"></div>
+    <div class="score-label" id="score-label"></div>
+    <div class="score-sub" id="score-sub"></div>
+    <div id="wrong-report"></div>
+    <button id="retry-btn" onclick="retryQuiz()">Try Again</button>
+  </div>
+</div>
+
+<script>
+const answers = {
+  q1:{correct:'B',explain:'ESFR = Early Suppression Fast Response. The name tells you the design philosophy: suppress the fire fast, early in its growth, using high-pressure large-droplet sprinklers.'},
+  q2:{correct:'D',explain:'ESFR maximum storage height is 40 ft. Above that, ESFR cannot be used — in-rack sprinklers or a different system type is required.'},
+  q3:{correct:'C',explain:'ESFR cannot protect bin box storage. The solid walls of the bin boxes prevent the ESFR spray from reaching the fuel — the discharge model breaks down.'},
+  q4:{correct:'B',explain:'Open-top containers are specifically prohibited for ESFR. The container walls concentrate heat, changing the fire behavior in ways ESFR cannot reliably suppress.'},
+  q5:{correct:'C',explain:'ESFR design area = 3 branch lines × 4 sprinklers per line = 12 sprinklers total. The grid is 3×4, not 2×6 or 4×3. This is a common exam question — know the layout.'},
+  q6:{correct:'B',explain:'ESFR requires wet pipe systems ONLY. No dry pipe, preaction, or deluge. The early-suppression model depends on water being at the sprinkler head instantly when it opens.'},
+  q7:{correct:'C',explain:'ESFR requires 36 inches of clearance from the deflector to the top of storage — same as CMSA. This clearance allows the spray pattern to fully develop before hitting the commodity.'},
+  q8:{correct:'C',explain:'ESFR = Chapter 23. Chapter 21 = CMDA, Chapter 22 = CMSA, Chapter 25 = In-Rack. This chapter map is tested directly on NICET.'},
+  q9:{correct:'B',explain:'ESFR\'s suppression model requires water on the fire IMMEDIATELY when heads open. Any delay (like filling a dry pipe system) allows the fire to grow past the suppression threshold. That\'s why wet pipe only.'},
+  q10:{correct:'C',explain:'ESFR protects palletized and solid-piled storage up to 40 ft. Bin box, shelf, and open-top container storage are all prohibited. Same restriction as CMSA.'}
+};
+
+function gradeQuiz(){
+  let score=0, wrong=[];
+  document.querySelectorAll('.q-block').forEach((block,i)=>{
+    const qKey='q'+(i+1);
+    const sel=document.querySelector('input[name='+qKey+']:checked');
+    const ans=answers[qKey];
+    block.querySelectorAll('label').forEach(l=>{
+      if(l.querySelector('input').value===ans.correct) l.classList.add('correct-ans');
+    });
+    if(sel){
+      if(sel.value===ans.correct){score++;block.classList.add('correct');}
+      else{block.classList.add('wrong');sel.closest('label').classList.add('wrong-ans');
+        wrong.push({q:block.querySelector('.q-text').textContent,yours:sel.closest('label').textContent.trim().slice(2),correct:block.querySelector('label.correct-ans').textContent.trim().slice(2),explain:ans.explain});
+      }
+    } else {
+      block.classList.add('wrong');
+      wrong.push({q:block.querySelector('.q-text').textContent,yours:'No answer',correct:block.querySelector('label.correct-ans').textContent.trim().slice(2),explain:ans.explain});
+    }
+  });
+  document.getElementById('submit-btn').disabled=true;
+  const pct=Math.round(score/10*100);
+  const circle=document.getElementById('score-circle');
+  circle.textContent=pct+'%';
+  if(pct>=80){circle.style.borderColor='#1D9E75';circle.style.color='#1D9E75';}
+  else if(pct>=60){circle.style.borderColor='#f0ad4e';circle.style.color='#f0ad4e';}
+  else{circle.style.borderColor='#c0392b';circle.style.color='#c0392b';}
+  document.getElementById('score-label').textContent=score+' out of 10 correct';
+  document.getElementById('score-sub').textContent=pct>=80?'Solid work — keep going!':pct>=60?'Getting there — review the misses below.':'Keep drilling — the details matter on the exam.';
+  let wr='';
+  if(wrong.length>0){
+    wr='<div class="wr-title">Review — Missed Questions</div>';
+    wrong.forEach(w=>{wr+=`<div class="wr-item"><div class="wr-q">${w.q}</div><div class="wr-yours">Your answer: ${w.yours}</div><div class="wr-correct">Correct: ${w.correct}</div><div style="color:#a8bdd0;margin-top:6px;font-size:13px">${w.explain}</div></div>`;});
+  } else {wr='<div style="color:#1D9E75;font-weight:700;font-size:16px;text-align:center">Perfect score — zero misses!</div>';}
+  document.getElementById('wrong-report').innerHTML=wr;
+  document.getElementById('score-section').style.display='block';
+  document.getElementById('score-section').scrollIntoView({behavior:'smooth'});
+}
+function retryQuiz(){
+  document.querySelectorAll('input[type=radio]').forEach(r=>r.checked=false);
+  document.querySelectorAll('.q-block').forEach(b=>{b.className='q-block';});
+  document.querySelectorAll('label').forEach(l=>l.className='');
+  document.getElementById('score-section').style.display='none';
+  document.getElementById('submit-btn').disabled=false;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
