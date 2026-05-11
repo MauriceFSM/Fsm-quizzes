@@ -16,8 +16,7 @@ h1{font-size:26px;font-weight:800;color:#fff;margin-bottom:6px}
 .meta{font-size:14px;color:#7a8fa6}
 .badge{display:inline-block;background:#185FA5;color:#fff;font-size:11px;font-weight:700;letter-spacing:2px;padding:3px 10px;border-radius:20px;margin-top:10px;text-transform:uppercase}
 .q-block{background:#1a2736;border:1px solid #243447;border-radius:14px;padding:24px;margin-bottom:18px;transition:border-color .2s}
-.q-block.correct{border-color:#1D9E75}
-.q-block.wrong{border-color:#c0392b}
+.q-block.correct{border-color:#1D9E75}.q-block.wrong{border-color:#c0392b}
 .q-num{font-size:11px;font-weight:700;letter-spacing:2px;color:#D85A30;text-transform:uppercase;margin-bottom:8px}
 .q-text{font-size:16px;font-weight:600;color:#fff;margin-bottom:18px;line-height:1.5}
 .choices{display:flex;flex-direction:column;gap:10px}
@@ -27,7 +26,7 @@ input[type=radio]{margin-top:3px;accent-color:#D85A30;flex-shrink:0}
 label.correct-ans{border-color:#1D9E75!important;background:#1a3a2a!important;color:#fff}
 label.wrong-ans{border-color:#c0392b!important;background:#2a1a1a!important;color:#fff}
 .submit-wrap{text-align:center;margin:32px 0 0}
-#submit-btn{background:#D85A30;color:#fff;font-size:16px;font-weight:700;border:none;padding:14px 48px;border-radius:12px;cursor:pointer;letter-spacing:.5px;transition:background .15s}
+#submit-btn{background:#D85A30;color:#fff;font-size:16px;font-weight:700;border:none;padding:14px 48px;border-radius:12px;cursor:pointer;transition:background .15s}
 #submit-btn:hover{background:#c04a22}
 #submit-btn:disabled{background:#3a4a5a;cursor:default}
 #score-section{display:none;background:#1a2736;border:1px solid #243447;border-radius:16px;padding:32px;margin-top:36px;text-align:center}
@@ -38,10 +37,20 @@ label.wrong-ans{border-color:#c0392b!important;background:#2a1a1a!important;colo
 .wr-title{font-size:13px;font-weight:700;letter-spacing:2px;color:#D85A30;text-transform:uppercase;margin-bottom:16px}
 .wr-item{background:#243447;border-radius:10px;padding:16px;margin-bottom:12px;font-size:14px;line-height:1.6}
 .wr-q{font-weight:600;color:#fff;margin-bottom:6px}
-.wr-yours{color:#e88}
-.wr-correct{color:#1D9E75}
+.wr-yours{color:#e88}.wr-correct{color:#1D9E75}
 #retry-btn{background:#185FA5;color:#fff;font-size:14px;font-weight:700;border:none;padding:12px 36px;border-radius:10px;cursor:pointer;margin-top:20px;transition:background .15s}
 #retry-btn:hover{background:#1a4a80}
+#ai-wrap{margin-top:24px;text-align:left;border-top:1px solid #243447;padding-top:22px;display:none}
+.ai-hdr{font-size:12px;font-weight:700;letter-spacing:2px;color:#a855f7;text-transform:uppercase;margin-bottom:10px}
+.ai-intro{font-size:13px;color:#7a8fa6;margin-bottom:12px;line-height:1.5}
+.key-row{display:flex;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+#ai-key{flex:1;min-width:180px;background:#243447;border:1px solid #2e4060;border-radius:8px;padding:9px 12px;color:#e8edf2;font-size:13px;outline:none}
+#ai-key:focus{border-color:#a855f7}
+#ai-gen-btn{background:#a855f7;color:#fff;font-size:13px;font-weight:700;border:none;padding:9px 18px;border-radius:8px;cursor:pointer;transition:background .15s}
+#ai-gen-btn:hover{background:#9333ea}
+#ai-gen-btn:disabled{background:#3a4a5a;cursor:default}
+.key-note{font-size:11px;color:#3d5166;margin-bottom:12px}
+#ai-out{background:#1a1a2e;border:1px solid #3a2a5a;border-radius:10px;padding:18px;font-size:14px;line-height:1.9;color:#d0c0e8;display:none;white-space:pre-wrap;margin-top:10px}
 </style>
 </head>
 <body>
@@ -53,9 +62,7 @@ label.wrong-ans{border-color:#c0392b!important;background:#2a1a1a!important;colo
     <div class="meta">ESFR — Early Suppression Fast Response Sprinklers</div>
     <span class="badge">10 Questions · No Hints</span>
   </header>
-
   <div id="quiz-form">
-
     <div class="q-block" id="q1">
       <div class="q-num">Question 1 of 10</div>
       <div class="q-text">What does ESFR stand for?</div>
@@ -66,7 +73,6 @@ label.wrong-ans{border-color:#c0392b!important;background:#2a1a1a!important;colo
         <label><input type="radio" name="q1" value="D"> D) Early Spray Flood Response</label>
       </div>
     </div>
-
     <div class="q-block" id="q2">
       <div class="q-num">Question 2 of 10</div>
       <div class="q-text">What is the maximum storage height permitted for ESFR protection?</div>
@@ -77,7 +83,6 @@ label.wrong-ans{border-color:#c0392b!important;background:#2a1a1a!important;colo
         <label><input type="radio" name="q2" value="D"> D) 40 feet</label>
       </div>
     </div>
-
     <div class="q-block" id="q3">
       <div class="q-num">Question 3 of 10</div>
       <div class="q-text">Can ESFR sprinklers protect bin box storage?</div>
@@ -88,7 +93,6 @@ label.wrong-ans{border-color:#c0392b!important;background:#2a1a1a!important;colo
         <label><input type="radio" name="q3" value="D"> D) Only if storage height is under 20 ft</label>
       </div>
     </div>
-
     <div class="q-block" id="q4">
       <div class="q-num">Question 4 of 10</div>
       <div class="q-text">Can ESFR sprinklers protect storage in open-top containers?</div>
@@ -99,7 +103,6 @@ label.wrong-ans{border-color:#c0392b!important;background:#2a1a1a!important;colo
         <label><input type="radio" name="q4" value="D"> D) Yes — if protected with in-rack sprinklers as well</label>
       </div>
     </div>
-
     <div class="q-block" id="q5">
       <div class="q-num">Question 5 of 10</div>
       <div class="q-text">ESFR design area: how many branch lines are used, and how many sprinklers per branch line?</div>
@@ -110,7 +113,6 @@ label.wrong-ans{border-color:#c0392b!important;background:#2a1a1a!important;colo
         <label><input type="radio" name="q5" value="D"> D) 4 branch lines × 3 sprinklers = 12 total</label>
       </div>
     </div>
-
     <div class="q-block" id="q6">
       <div class="q-num">Question 6 of 10</div>
       <div class="q-text">What type of sprinkler system is required for ESFR — no exceptions?</div>
@@ -121,7 +123,6 @@ label.wrong-ans{border-color:#c0392b!important;background:#2a1a1a!important;colo
         <label><input type="radio" name="q6" value="D"> D) Either wet or dry pipe</label>
       </div>
     </div>
-
     <div class="q-block" id="q7">
       <div class="q-num">Question 7 of 10</div>
       <div class="q-text">What minimum clearance must be maintained between the top of storage and the ESFR sprinkler deflector?</div>
@@ -132,7 +133,6 @@ label.wrong-ans{border-color:#c0392b!important;background:#2a1a1a!important;colo
         <label><input type="radio" name="q7" value="D"> D) 48 inches</label>
       </div>
     </div>
-
     <div class="q-block" id="q8">
       <div class="q-num">Question 8 of 10</div>
       <div class="q-text">ESFR sprinkler requirements are found in which chapter of NFPA 13 2022?</div>
@@ -143,18 +143,16 @@ label.wrong-ans{border-color:#c0392b!important;background:#2a1a1a!important;colo
         <label><input type="radio" name="q8" value="D"> D) Chapter 25</label>
       </div>
     </div>
-
     <div class="q-block" id="q9">
       <div class="q-num">Question 9 of 10</div>
       <div class="q-text">Why is ESFR restricted to wet pipe systems only?</div>
       <div class="choices">
-        <label><input type="radio" name="q9" value="A"> A) ESFR heads cannot withstand the pressure in dry pipe systems</label>
+        <label><input type="radio" name="q9" value="A"> A) ESFR heads cannot withstand pressure in dry pipe systems</label>
         <label><input type="radio" name="q9" value="B"> B) The early-suppression model depends on instant water delivery — any delay defeats the suppression goal</label>
         <label><input type="radio" name="q9" value="C"> C) Dry pipe systems require a different K-factor not available in ESFR heads</label>
         <label><input type="radio" name="q9" value="D"> D) AHJs typically require wet pipe for high-piled storage</label>
       </div>
     </div>
-
     <div class="q-block" id="q10">
       <div class="q-num">Question 10 of 10</div>
       <div class="q-text">ESFR can protect which of the following storage arrangements?</div>
@@ -165,53 +163,54 @@ label.wrong-ans{border-color:#c0392b!important;background:#2a1a1a!important;colo
         <label><input type="radio" name="q10" value="D"> D) Any arrangement if clearance exceeds 36 inches</label>
       </div>
     </div>
-
     <div class="submit-wrap">
       <button id="submit-btn" onclick="gradeQuiz()">Submit Answers</button>
     </div>
   </div>
-
   <div id="score-section">
     <div class="score-circle" id="score-circle"></div>
     <div class="score-label" id="score-label"></div>
     <div class="score-sub" id="score-sub"></div>
     <div id="wrong-report"></div>
     <button id="retry-btn" onclick="retryQuiz()">Try Again</button>
+    <div id="ai-wrap">
+      <div class="ai-hdr">⚡ AI Study Session — Missed Questions</div>
+      <p class="ai-intro">Get personalized study notes for what you missed — NFPA 13 rules, job-site examples, and memory hooks. Uses your Anthropic API key (same one as your FSM Estimator tool).</p>
+      <div class="key-row">
+        <input type="password" id="ai-key" placeholder="sk-ant-...">
+        <button id="ai-gen-btn" onclick="runAIReview()">Generate →</button>
+      </div>
+      <p class="key-note">Saved locally in your browser only · Never sent anywhere except Anthropic</p>
+      <div id="ai-out"></div>
+    </div>
   </div>
 </div>
-
 <script>
-const answers = {
+let missed=[];
+const answers={
   q1:{correct:'B',explain:'ESFR = Early Suppression Fast Response. The name tells you the design philosophy: suppress the fire fast, early in its growth, using high-pressure large-droplet sprinklers.'},
   q2:{correct:'D',explain:'ESFR maximum storage height is 40 ft. Above that, ESFR cannot be used — in-rack sprinklers or a different system type is required.'},
   q3:{correct:'C',explain:'ESFR cannot protect bin box storage. The solid walls of the bin boxes prevent the ESFR spray from reaching the fuel — the discharge model breaks down.'},
   q4:{correct:'B',explain:'Open-top containers are specifically prohibited for ESFR. The container walls concentrate heat, changing the fire behavior in ways ESFR cannot reliably suppress.'},
-  q5:{correct:'C',explain:'ESFR design area = 3 branch lines × 4 sprinklers per line = 12 sprinklers total. The grid is 3×4, not 2×6 or 4×3. This is a common exam question — know the layout.'},
+  q5:{correct:'C',explain:'ESFR design area = 3 branch lines × 4 sprinklers per line = 12 sprinklers total. The grid is 3×4. This is a common exam question — know the layout.'},
   q6:{correct:'B',explain:'ESFR requires wet pipe systems ONLY. No dry pipe, preaction, or deluge. The early-suppression model depends on water being at the sprinkler head instantly when it opens.'},
   q7:{correct:'C',explain:'ESFR requires 36 inches of clearance from the deflector to the top of storage — same as CMSA. This clearance allows the spray pattern to fully develop before hitting the commodity.'},
   q8:{correct:'C',explain:'ESFR = Chapter 23. Chapter 21 = CMDA, Chapter 22 = CMSA, Chapter 25 = In-Rack. This chapter map is tested directly on NICET.'},
-  q9:{correct:'B',explain:'ESFR\'s suppression model requires water on the fire IMMEDIATELY when heads open. Any delay (like filling a dry pipe system) allows the fire to grow past the suppression threshold. That\'s why wet pipe only.'},
+  q9:{correct:'B',explain:'ESFR\'s suppression model requires water on the fire IMMEDIATELY when heads open. Any delay (like filling a dry pipe system) allows the fire to grow past the suppression threshold.'},
   q10:{correct:'C',explain:'ESFR protects palletized and solid-piled storage up to 40 ft. Bin box, shelf, and open-top container storage are all prohibited. Same restriction as CMSA.'}
 };
-
 function gradeQuiz(){
-  let score=0, wrong=[];
+  let score=0; missed=[];
   document.querySelectorAll('.q-block').forEach((block,i)=>{
     const qKey='q'+(i+1);
     const sel=document.querySelector('input[name='+qKey+']:checked');
     const ans=answers[qKey];
-    block.querySelectorAll('label').forEach(l=>{
-      if(l.querySelector('input').value===ans.correct) l.classList.add('correct-ans');
-    });
+    block.querySelectorAll('label').forEach(l=>{if(l.querySelector('input').value===ans.correct)l.classList.add('correct-ans');});
     if(sel){
       if(sel.value===ans.correct){score++;block.classList.add('correct');}
       else{block.classList.add('wrong');sel.closest('label').classList.add('wrong-ans');
-        wrong.push({q:block.querySelector('.q-text').textContent,yours:sel.closest('label').textContent.trim().slice(2),correct:block.querySelector('label.correct-ans').textContent.trim().slice(2),explain:ans.explain});
-      }
-    } else {
-      block.classList.add('wrong');
-      wrong.push({q:block.querySelector('.q-text').textContent,yours:'No answer',correct:block.querySelector('label.correct-ans').textContent.trim().slice(2),explain:ans.explain});
-    }
+        missed.push({q:block.querySelector('.q-text').textContent,yours:sel.closest('label').textContent.trim().slice(2),correct:block.querySelector('label.correct-ans').textContent.trim().slice(2),explain:ans.explain});}
+    }else{block.classList.add('wrong');missed.push({q:block.querySelector('.q-text').textContent,yours:'No answer',correct:block.querySelector('label.correct-ans').textContent.trim().slice(2),explain:ans.explain});}
   });
   document.getElementById('submit-btn').disabled=true;
   const pct=Math.round(score/10*100);
@@ -223,13 +222,14 @@ function gradeQuiz(){
   document.getElementById('score-label').textContent=score+' out of 10 correct';
   document.getElementById('score-sub').textContent=pct>=80?'Solid work — keep going!':pct>=60?'Getting there — review the misses below.':'Keep drilling — the details matter on the exam.';
   let wr='';
-  if(wrong.length>0){
+  if(missed.length>0){
     wr='<div class="wr-title">Review — Missed Questions</div>';
-    wrong.forEach(w=>{wr+=`<div class="wr-item"><div class="wr-q">${w.q}</div><div class="wr-yours">Your answer: ${w.yours}</div><div class="wr-correct">Correct: ${w.correct}</div><div style="color:#a8bdd0;margin-top:6px;font-size:13px">${w.explain}</div></div>`;});
-  } else {wr='<div style="color:#1D9E75;font-weight:700;font-size:16px;text-align:center">Perfect score — zero misses!</div>';}
+    missed.forEach(w=>{wr+=`<div class="wr-item"><div class="wr-q">${w.q}</div><div class="wr-yours">Your answer: ${w.yours}</div><div class="wr-correct">Correct: ${w.correct}</div><div style="color:#a8bdd0;margin-top:6px;font-size:13px">${w.explain}</div></div>`;});
+  }else{wr='<div style="color:#1D9E75;font-weight:700;font-size:16px;text-align:center">Perfect score — zero misses!</div>';}
   document.getElementById('wrong-report').innerHTML=wr;
   document.getElementById('score-section').style.display='block';
   document.getElementById('score-section').scrollIntoView({behavior:'smooth'});
+  if(missed.length>0){document.getElementById('ai-wrap').style.display='block';const k=localStorage.getItem('fsm_key');if(k)document.getElementById('ai-key').value=k;}
 }
 function retryQuiz(){
   document.querySelectorAll('input[type=radio]').forEach(r=>r.checked=false);
@@ -237,7 +237,34 @@ function retryQuiz(){
   document.querySelectorAll('label').forEach(l=>l.className='');
   document.getElementById('score-section').style.display='none';
   document.getElementById('submit-btn').disabled=false;
+  document.getElementById('ai-wrap').style.display='none';
+  const o=document.getElementById('ai-out');o.style.display='none';o.textContent='';
+  const b=document.getElementById('ai-gen-btn');b.disabled=false;b.textContent='Generate →';
   window.scrollTo({top:0,behavior:'smooth'});
+}
+async function runAIReview(){
+  const key=document.getElementById('ai-key').value.trim();
+  if(!key){alert('Enter your Anthropic API key to continue.');return;}
+  localStorage.setItem('fsm_key',key);
+  const btn=document.getElementById('ai-gen-btn');const out=document.getElementById('ai-out');
+  btn.disabled=true;btn.textContent='Generating…';
+  out.style.display='block';out.textContent='FSM Professor is building your study session…';
+  const chapter=document.querySelector('h1').textContent+' — '+document.querySelector('.meta').textContent;
+  const summary=missed.map((m,i)=>'['+(i+1)+'] Q: '+m.q+'\n    Correct: '+m.correct+'\n    You chose: '+m.yours+'\n    Context: '+m.explain).join('\n\n');
+  const prompt='You are FSM Professor, a fire protection exam coach for the NICET Level 3 Water-Based System Layout exam.\n\nMaurice just completed a pop quiz on: '+chapter+'\n\nHe missed '+missed.length+' question(s):\n\n'+summary+'\n\nFor EACH missed question, write a focused study block with these 5 parts:\n1. THE RULE — State the NFPA 13 rule precisely with chapter reference.\n2. WHY IT EXISTS — One sentence on the fire protection reasoning behind the rule.\n3. JOB SITE EXAMPLE — A concrete warehouse or field scenario that illustrates the rule.\n4. MEMORY HOOK — A short phrase, number pattern, or analogy to make it stick.\n5. QUICK CHECK — One follow-up question to confirm understanding (do NOT answer it — let him think).\n\nSeparate each block with a clear divider. Write like a knowledgeable colleague explaining it over lunch — practical, direct, exam-focused. Reference NFPA 13 2022.';
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2048,stream:true,messages:[{role:'user',content:prompt}]})});
+    if(!r.ok){out.textContent='API error ('+r.status+'). Check your key and try again.';btn.disabled=false;btn.textContent='Retry →';return;}
+    const reader=r.body.getReader();const dec=new TextDecoder();let txt='';out.textContent='';
+    while(true){
+      const{done,value}=await reader.read();if(done)break;
+      for(const line of dec.decode(value,{stream:true}).split('\n')){
+        if(!line.startsWith('data: '))continue;const d=line.slice(6);if(d==='[DONE]')continue;
+        try{const j=JSON.parse(d);if(j.delta?.text){txt+=j.delta.text;out.textContent=txt;out.scrollIntoView({behavior:'smooth',block:'end'});}}catch(e){}
+      }
+    }
+    btn.textContent='Regenerate →';btn.disabled=false;
+  }catch(e){out.textContent='Error: '+e.message;btn.disabled=false;btn.textContent='Retry →';}
 }
 </script>
 </body>
