@@ -147,6 +147,16 @@
     font-weight: 700; cursor: pointer; transition: background 0.15s;
   }
   .review-btn:hover { background: #1e2e42; }
+  #ai-wrap{margin-top:24px;text-align:left;border-top:1px solid #243447;padding-top:22px;display:none}
+  .ai-hdr{font-size:12px;font-weight:700;letter-spacing:2px;color:#a855f7;text-transform:uppercase;margin-bottom:10px}
+  .ai-intro{font-size:13px;color:#7a8fa6;margin-bottom:12px;line-height:1.5}
+  .key-row{display:flex;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+  #ai-key{flex:1;min-width:180px;background:#243447;border:1px solid #2e4060;border-radius:8px;padding:9px 12px;color:#e8edf2;font-size:13px;outline:none}
+  #ai-key:focus{border-color:#a855f7}
+  #ai-gen-btn{background:#a855f7;color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+  #ai-gen-btn:disabled{opacity:0.6;cursor:not-allowed}
+  .key-note{font-size:11px;color:#4a5a6a;margin-bottom:10px}
+  #ai-out{background:#1a1a2e;border:1px solid #3a2a5a;border-radius:10px;padding:16px 18px;font-size:13px;line-height:1.7;color:#d0c8f0;white-space:pre-wrap;display:none;margin-top:10px}
 </style>
 </head>
 <body>
@@ -301,6 +311,16 @@
   </div>
   <button class="retry-btn" onclick="retryQuiz()">🔄 Try Again</button>
   <button class="review-btn" onclick="goToStudy()">📖 Back to Study Cards</button>
+  <div id="ai-wrap">
+    <div class="ai-hdr">⚡ AI Study Session — Missed Questions</div>
+    <p class="ai-intro">Get personalized study notes for every question you missed — NFPA 13 rules, job-site examples, and memory hooks.</p>
+    <div class="key-row">
+      <input type="password" id="ai-key" placeholder="sk-ant-...  Anthropic API key">
+      <button id="ai-gen-btn" onclick="runAIReview()">Generate →</button>
+    </div>
+    <p class="key-note">Saved locally in your browser only · Never sent anywhere except Anthropic</p>
+    <div id="ai-out"></div>
+  </div>
 </div>
 
 <script>
@@ -427,7 +447,7 @@ const questions = [
   }
 ];
 
-let current = 0, score = 0, wrongAnswers = [];
+let current = 0, score = 0, wrongAnswers = [], missed = [];
 const questionTopics = {
   0: "Q1 — Chapter 25 structure: §25.3 = In-rack + CMDA",
   1: "Q2 — Critical aisle width split = 8 ft",
@@ -449,7 +469,7 @@ const questionTopics = {
 function startQuiz() {
   document.getElementById('study-section').style.display = 'none';
   document.getElementById('quiz-section').style.display = 'block';
-  current = 0; score = 0; wrongAnswers = [];
+  current = 0; score = 0; wrongAnswers = []; missed = [];
   showQuestion();
 }
 
@@ -478,7 +498,10 @@ function answer(chosen, correct, exp, qNum) {
     if (i === chosen && chosen !== correct) o.classList.add('wrong');
   });
   if (chosen === correct) { score++; }
-  else { if (!wrongAnswers.includes(qNum)) wrongAnswers.push(qNum); }
+  else {
+    if (!wrongAnswers.includes(qNum)) wrongAnswers.push(qNum);
+    missed.push({q: questions[qNum].q, correct: questions[qNum].opts[correct], yours: questions[qNum].opts[chosen], explain: questions[qNum].exp.replace(/<[^>]+>/g,'')});
+  }
   document.getElementById('explanation').innerHTML = exp;
   document.getElementById('explanation').classList.add('show');
   document.getElementById('next-btn').style.display = 'block';
@@ -515,12 +538,20 @@ function showScore() {
     });
     reportDiv.style.display = 'block';
   } else { reportDiv.style.display = 'none'; }
+  if (missed.length > 0) {
+    document.getElementById('ai-wrap').style.display = 'block';
+    const k = localStorage.getItem('fsm_key');
+    if (k) document.getElementById('ai-key').value = k;
+  }
 }
 
 function retryQuiz() {
   document.getElementById('score-section').style.display = 'none';
   document.getElementById('quiz-section').style.display = 'block';
-  current = 0; score = 0; wrongAnswers = [];
+  current = 0; score = 0; wrongAnswers = []; missed = [];
+  document.getElementById('ai-wrap').style.display = 'none';
+  const o = document.getElementById('ai-out'); o.style.display = 'none'; o.textContent = '';
+  const b = document.getElementById('ai-gen-btn'); b.disabled = false; b.textContent = 'Generate →';
   showQuestion();
 }
 
@@ -528,6 +559,37 @@ function goToStudy() {
   document.getElementById('score-section').style.display = 'none';
   document.getElementById('study-section').style.display = 'block';
   window.scrollTo(0, 0);
+}
+
+async function runAIReview() {
+  const key = document.getElementById('ai-key').value.trim();
+  if (!key) { alert('Enter your Anthropic API key to continue.'); return; }
+  localStorage.setItem('fsm_key', key);
+  const btn = document.getElementById('ai-gen-btn');
+  const out = document.getElementById('ai-out');
+  btn.disabled = true; btn.textContent = 'Generating…';
+  out.style.display = 'block'; out.textContent = 'FSM Professor is building your study session…';
+  const chapter = 'Rack Storage — Class I–IV, NICET Level 3 (NFPA 13 2022, Ch. 21 §21.4 & Ch. 25 In-Rack)';
+  const summary = missed.map((m,i) => '['+(i+1)+'] Q: '+m.q+'\n    Correct: '+m.correct+'\n    You chose: '+m.yours+'\n    Context: '+m.explain).join('\n\n');
+  const prompt = 'You are FSM Professor, a fire protection exam coach for the NICET Level 3 Water-Based System Layout exam.\n\nMaurice just completed a quiz on: '+chapter+'\n\nHe missed '+missed.length+' question(s):\n\n'+summary+'\n\nFor EACH missed question, write a focused study block with these 5 parts:\n1. THE RULE — State the NFPA 13 rule precisely with chapter/section reference.\n2. WHY IT EXISTS — One sentence on the fire protection reasoning behind the rule.\n3. JOB SITE EXAMPLE — A concrete warehouse or field scenario that illustrates the rule.\n4. MEMORY HOOK — A short phrase, number pattern, or analogy to make it stick.\n5. QUICK CHECK — One follow-up question to confirm understanding (do NOT answer it).\n\nSeparate each block with a clear divider line (---). Write like a knowledgeable colleague over lunch. Reference NFPA 13 2022.';
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2048,stream:true,messages:[{role:'user',content:prompt}]})
+    });
+    if (!r.ok) { out.textContent = 'API error ('+r.status+'). Check your key and try again.'; btn.disabled=false; btn.textContent='Retry →'; return; }
+    const reader = r.body.getReader(); const dec = new TextDecoder(); let txt = ''; out.textContent = '';
+    while (true) {
+      const {done, value} = await reader.read(); if (done) break;
+      for (const line of dec.decode(value,{stream:true}).split('\n')) {
+        if (!line.startsWith('data: ')) continue;
+        const d = line.slice(6); if (d==='[DONE]') continue;
+        try { const j=JSON.parse(d); if(j.delta?.text){txt+=j.delta.text; out.textContent=txt; out.scrollIntoView({behavior:'smooth',block:'end'});} } catch(e){}
+      }
+    }
+    btn.textContent = 'Regenerate →'; btn.disabled = false;
+  } catch(e) { out.textContent = 'Error: '+e.message; btn.disabled=false; btn.textContent='Retry →'; }
 }
 </script>
 </body>
