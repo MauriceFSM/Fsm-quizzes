@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ceiling Pockets & Clouds — NFPA 13 Printable Study Sheet</title>
+<style>
+/* ══════════════════════════════════════
+   SCREEN STYLES (preview before printing)
+══════════════════════════════════════ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #e8ecef;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-size: 11pt;
+  color: #1a1a1a;
+  line-height: 1.5;
+  padding: 20px;
+}
+
+.page {
+  background: #fff;
+  width: 8.5in;
+  min-height: 11in;
+  margin: 0 auto 30px;
+  padding: 0.65in 0.7in 0.65in;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+}
+
+/* ── Print preview notice ── */
+.print-notice {
+  background: #1a2736;
+  color: #e8edf2;
+  text-align: center;
+  padding: 10px 16px;
+  font-size: 12px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  width: 8.5in;
+  margin-left: auto;
+  margin-right: auto;
+}
+.print-notice button {
+  background: #D85A30;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-left: 14px;
+}
+
+/* ── PAGE HEADER ── */
+.page-header {
+  border-bottom: 3px solid #1a1a1a;
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.page-header .brand {
+  font-size: 9pt;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #888;
+}
+.page-header h1 {
+  font-size: 16pt;
+  font-weight: 800;
+  color: #1a1a1a;
+  line-height: 1.1;
+  margin: 2px 0;
+}
+.page-header .code-refs {
+  font-size: 8.5pt;
+  color: #555;
+}
+.page-header .pg-num {
+  font-size: 9pt;
+  color: #888;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* ── SECTION TITLES ── */
+.sec {
+  font-size: 10.5pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #1a1a1a;
+  border-bottom: 1.5px solid #ccc;
+  padding-bottom: 4px;
+  margin: 14px 0 8px;
+}
+.sec.first { margin-top: 0; }
+
+/* ── TWO-COLUMN LAYOUT ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 10px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+
+/* ── BOXES / CALLOUTS ── */
+.box {
+  border: 1.5px solid #ccc;
+  border-radius: 4px;
+  padding: 10px 12px;
+  font-size: 10pt;
+}
+.box.key {
+  border-color: #1a1a1a;
+  border-left: 5px solid #1a1a1a;
+  background: #f5f5f5;
+  font-size: 11pt;
+  font-weight: 600;
+}
+.box.warn {
+  border-color: #c0392b;
+  border-left: 5px solid #c0392b;
+  background: #fdf5f5;
+}
+.box.good {
+  border-color: #1D9E75;
+  border-left: 5px solid #1D9E75;
+  background: #f0fbf7;
+}
+.box.info {
+  border-color: #185FA5;
+  border-left: 5px solid #185FA5;
+  background: #f0f5ff;
+}
+.box.highlight {
+  background: #fffbf0;
+  border-color: #c8a000;
+  border-left: 5px solid #c8a000;
+}
+.box-title {
+  font-size: 9pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+/* ── THRESHOLD CARDS ── */
+.thresh { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 8px 0; }
+.thresh-card {
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  padding: 10px 12px;
+  text-align: center;
+}
+.thresh-card.pass { border-color: #1D9E75; background: #f0fbf7; }
+.thresh-card.fail { border-color: #c0392b; background: #fdf5f5; }
+.thresh-num { font-size: 20pt; font-weight: 800; color: #1a1a1a; line-height: 1.1; }
+.thresh-card.pass .thresh-num { color: #1a7a55; }
+.thresh-card.fail .thresh-num { color: #c0392b; }
+.thresh-sub { font-size: 9pt; color: #555; margin-top: 2px; }
+.thresh-verdict { font-size: 9.5pt; font-weight: 700; margin-top: 6px; }
+
+/* ── TABLES ── */
+table { width: 100%; border-collapse: collapse; font-size: 9.5pt; margin: 8px 0; }
+th { background: #1a1a1a; color: #fff; padding: 6px 10px; text-align: left; font-size: 9pt; }
+td { padding: 5px 10px; border-bottom: 1px solid #ddd; }
+tr:nth-child(even) td { background: #f8f8f8; }
+tr.bold td { font-weight: 700; background: #fffbf0; }
+
+/* ── CHECKLIST ── */
+.checklist { list-style: none; margin: 6px 0; }
+.checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 10pt;
+}
+.checklist li:last-child { border-bottom: none; }
+.check-box {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid #555;
+  border-radius: 2px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.check-num {
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid #1a1a1a;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8.5pt;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.check-content strong { display: block; font-weight: 700; margin-bottom: 1px; }
+.check-content .code { font-size: 8.5pt; color: #555; font-style: italic; }
+.check-content .number { font-size: 10pt; font-weight: 800; color: #c0392b; }
+
+/* ── SVG WRAPPERS ── */
+.svg-zone {
+  margin: 10px 0;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 8px;
+  background: #fafafa;
+}
+.svg-caption { font-size: 8.5pt; color: #666; margin-top: 6px; font-style: italic; }
+
+/* ── DECISION STEPS ── */
+.steps { counter-reset: step-c; list-style: none; margin: 6px 0; }
+.steps li {
+  counter-increment: step-c;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 6px;
+  font-size: 10pt;
+  align-items: flex-start;
+}
+.steps li::before {
+  content: counter(step-c);
+  min-width: 20px;
+  height: 20px;
+  background: #1a1a1a;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8.5pt;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ── PAGE FOOTER ── */
+.page-footer {
+  border-top: 1px solid #ccc;
+  margin-top: 16px;
+  padding-top: 6px;
+  font-size: 8pt;
+  color: #888;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ── QUICK-REF NUMBERS ── */
+.num-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 8px 0; }
+.num-card {
+  border: 1.5px solid #1a1a1a;
+  border-radius: 4px;
+  padding: 8px 10px;
+  text-align: center;
+}
+.num-big { font-size: 18pt; font-weight: 800; color: #1a1a1a; line-height: 1.1; }
+.num-label { font-size: 8pt; color: #555; margin-top: 2px; }
+.num-ref { font-size: 7.5pt; color: #888; margin-top: 2px; font-style: italic; }
+
+/* ══════════════════════════════════════
+   PRINT STYLES
+══════════════════════════════════════ */
+@media print {
+  body {
+    background: #fff;
+    padding: 0;
+    font-size: 10pt;
+  }
+  .print-notice { display: none; }
+  .page {
+    box-shadow: none;
+    margin: 0;
+    padding: 0.55in 0.65in;
+    page-break-after: always;
+    width: 100%;
+    min-height: unset;
+  }
+  .page:last-child { page-break-after: auto; }
+  .page-break { page-break-before: always; }
+  @page {
+    size: letter;
+    margin: 0;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="print-notice">
+  📄 This is a print-ready study sheet — open in Chrome/Edge and press <kbd>Ctrl+P</kbd> (or ⌘P on Mac) → Save as PDF
+  <button onclick="window.print()">Print / Save PDF</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     PAGE 1 — CEILING POCKETS
+════════════════════════════════════════════════════════ -->
+<div class="page">
+
+  <div class="page-header">
+    <div>
+      <div class="brand">FSM Professor · NICET Level 3</div>
+      <h1>Ceiling Pockets &amp; Ceiling Clouds</h1>
+      <div class="code-refs">NFPA 13 2019 · §10.2.6.1.1.3 · §10.2.7 · §10.2.9 · §12.1.12</div>
+    </div>
+    <div class="pg-num">Page 1 of 2<br>Ceiling Pocket Rules</div>
+  </div>
+
+  <!-- BUILDING ANALYSIS -->
+  <div class="sec first">Your Building — Rehearsal Lab 308</div>
+  <div class="three-col" style="margin-bottom:10px">
+    <div class="box">
+      <div class="box-title">Perimeter Ceiling</div>
+      <div style="font-size:18pt;font-weight:800">7′-2″</div>
+      <div style="font-size:9pt;color:#555">= 86 inches AFF</div>
+    </div>
+    <div class="box">
+      <div class="box-title">Center Ceiling (Raised)</div>
+      <div style="font-size:18pt;font-weight:800">9′-9½″</div>
+      <div style="font-size:9pt;color:#555">= 117.5 inches AFF</div>
+    </div>
+    <div class="box" style="border-color:#1D9E75;background:#f0fbf7">
+      <div class="box-title" style="color:#1a7a55">Pocket Depth</div>
+      <div style="font-size:18pt;font-weight:800;color:#1a7a55">31.5″</div>
+      <div style="font-size:9pt;color:#1a7a55">117.5 − 86 = 31.5 in. = 2′-7½″</div>
+    </div>
+  </div>
+
+  <!-- CROSS-SECTION SVG -->
+  <div class="svg-zone">
+  <svg viewBox="0 0 680 200" xmlns="http://www.w3.org/2000/svg" width="100%" style="max-width:640px">
+    <defs>
+      <marker id="pa" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto">
+        <path d="M0,0 L0,5 L5,2.5 z" fill="#555"/>
+      </marker>
+      <marker id="pal" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto-start-reverse">
+        <path d="M0,0 L0,5 L5,2.5 z" fill="#555"/>
+      </marker>
+      <marker id="pg" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto">
+        <path d="M0,0 L0,5 L5,2.5 z" fill="#1a7a55"/>
+      </marker>
+      <marker id="pgl" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto-start-reverse">
+        <path d="M0,0 L0,5 L5,2.5 z" fill="#1a7a55"/>
+      </marker>
+      <pattern id="ph" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="5" stroke="#ccc" stroke-width="1.5"/>
+      </pattern>
+    </defs>
+
+    <!-- Floor -->
+    <rect x="0" y="178" width="680" height="22" fill="#ddd"/>
+    <text x="340" y="193" text-anchor="middle" fill="#666" font-size="9" font-weight="600">FLOOR</text>
+
+    <!-- Left wall -->
+    <rect x="0" y="0" width="30" height="178" fill="#ccc"/>
+    <rect x="0" y="0" width="30" height="178" fill="url(#ph)"/>
+
+    <!-- Right wall -->
+    <rect x="650" y="0" width="30" height="178" fill="#ccc"/>
+    <rect x="650" y="0" width="30" height="178" fill="url(#ph)"/>
+
+    <!-- Lower (perimeter) ceiling — left -->
+    <rect x="30" y="112" width="155" height="12" fill="#ccc"/>
+    <rect x="30" y="112" width="155" height="12" fill="url(#ph)"/>
+
+    <!-- Lower (perimeter) ceiling — right -->
+    <rect x="495" y="112" width="155" height="12" fill="#ccc"/>
+    <rect x="495" y="112" width="155" height="12" fill="url(#ph)"/>
+
+    <!-- Raised center ceiling -->
+    <rect x="185" y="38" width="310" height="12" fill="#ccc"/>
+    <rect x="185" y="38" width="310" height="12" fill="url(#ph)"/>
+
+    <!-- Pocket vertical faces -->
+    <rect x="185" y="38" width="10" height="86" fill="#bbb"/>
+    <rect x="495" y="38" width="10" height="86" fill="#bbb"/>
+
+    <!-- SPRINKLERS at lower ceiling -->
+    <circle cx="107" cy="112" r="4" fill="none" stroke="#333" stroke-width="1.5"/>
+    <line x1="107" y1="112" x2="107" y2="105" stroke="#333" stroke-width="1.5"/>
+    <circle cx="573" cy="112" r="4" fill="none" stroke="#333" stroke-width="1.5"/>
+    <line x1="573" y1="112" x2="573" y2="105" stroke="#333" stroke-width="1.5"/>
+
+    <!-- Pocket sprinkler (dashed = optional) -->
+    <circle cx="340" cy="50" r="4" fill="none" stroke="#888" stroke-width="1.5" stroke-dasharray="3"/>
+    <line x1="340" y1="50" x2="340" y2="43" stroke="#888" stroke-width="1.5" stroke-dasharray="3"/>
+    <text x="340" y="34" text-anchor="middle" fill="#888" font-size="8">Pocket sprinkler?</text>
+    <text x="340" y="25" text-anchor="middle" fill="#888" font-size="8">(Check 6 conditions)</text>
+
+    <!-- DIMENSION: 7'-2" (floor to lower ceiling) -->
+    <line x1="18" y1="124" x2="18" y2="178" stroke="#555" stroke-width="1" marker-start="url(#pal)" marker-end="url(#pa)"/>
+    <text x="9" y="153" fill="#555" font-size="9" text-anchor="middle" transform="rotate(-90,9,153)">7′-2″</text>
+
+    <!-- DIMENSION: 9'-9.5" (floor to raised ceiling) -->
+    <line x1="660" y1="50" x2="660" y2="178" stroke="#555" stroke-width="1" marker-start="url(#pal)" marker-end="url(#pa)"/>
+    <text x="669" y="116" fill="#555" font-size="9" text-anchor="middle" transform="rotate(90,669,116)">9′-9½″</text>
+
+    <!-- DIMENSION: pocket depth 31.5" -->
+    <line x1="174" y1="50" x2="174" y2="124" stroke="#1a7a55" stroke-width="1.5" marker-start="url(#pgl)" marker-end="url(#pg)"/>
+    <rect x="126" y="78" width="44" height="20" rx="2" fill="#f0fbf7" stroke="#1a7a55" stroke-width="1"/>
+    <text x="148" y="89" text-anchor="middle" fill="#1a7a55" font-size="9" font-weight="700">31.5″</text>
+    <text x="148" y="99" text-anchor="middle" fill="#1a7a55" font-size="8">pocket</text>
+
+    <!-- 36" limit (dashed red line) -->
+    <line x1="185" y1="130" x2="495" y2="130" stroke="#c0392b" stroke-width="1" stroke-dasharray="4" opacity="0.5"/>
+    <text x="498" y="133" fill="#c0392b" font-size="7.5" opacity="0.7">← 36″ limit</text>
+
+    <!-- Labels -->
+    <text x="107" y="146" text-anchor="middle" fill="#555" font-size="8">Perimeter zone</text>
+    <text x="107" y="156" text-anchor="middle" fill="#555" font-size="8">sprinklers at 7′-2″</text>
+    <text x="340" y="70" text-anchor="middle" fill="#333" font-size="9" font-weight="700">CEILING POCKET</text>
+    <text x="573" y="146" text-anchor="middle" fill="#555" font-size="8">Perimeter zone</text>
+    <text x="573" y="156" text-anchor="middle" fill="#555" font-size="8">sprinklers at 7′-2″</text>
+  </svg>
+  <div class="svg-caption">Cross-section — Rehearsal Lab 308. Pocket depth 31.5 in. &lt; 36 in. threshold = NOT treated as a wall. Dashed sprinkler in pocket = required unless all 6 conditions are met.</div>
+  </div>
+
+  <!-- RULE 1 -->
+  <div class="sec">Rule 1 — The 36-Inch Vertical Change Threshold (§10.2.6.1.1.3)</div>
+  <div class="thresh">
+    <div class="thresh-card pass">
+      <div class="thresh-num">≤ 36 in.</div>
+      <div class="thresh-sub">Vertical step depth</div>
+      <div class="thresh-verdict">✓ Treat ceiling as FLAT</div>
+      <div style="font-size:8.5pt;color:#333;margin-top:5px">Sprinklers may span the step. Still must comply with obstruction rules. <strong>Maurice = 31.5 in. ← HERE</strong></div>
+    </div>
+    <div class="thresh-card fail">
+      <div class="thresh-num">&gt; 36 in.</div>
+      <div class="thresh-sub">Vertical step depth</div>
+      <div class="thresh-verdict">✗ Vertical face = WALL</div>
+      <div style="font-size:8.5pt;color:#333;margin-top:5px">Each ceiling level spaced independently to that wall. See Figure 10.2.6.1.1.3(A).</div>
+    </div>
+  </div>
+
+  <!-- RULE 2 -->
+  <div class="sec">Rule 2 — Ceiling Pocket Sprinklers: The 6-Condition Exception (§10.2.9)</div>
+
+  <div class="box key" style="margin-bottom:8px">§10.2.9.1 — Sprinklers shall be required in ALL ceiling pockets. (Default rule — always starts here.)</div>
+
+  <p style="font-size:10pt;margin-bottom:8px;color:#333">The exception at §10.2.9.2 allows pocket sprinklers to be <strong>omitted</strong> only when <strong>ALL SIX</strong> conditions below are satisfied simultaneously. If even one fails → pocket sprinklers required.</p>
+
+  <ul class="checklist">
+    <li>
+      <div class="check-num">1</div>
+      <div class="check-content">
+        <strong>Volume of the unprotected pocket ≤ <span class="number">1,000 ft³</span> (28 m³)</strong>
+        <span class="code">§10.2.9.2(1) — Calculate: L × W × depth of raised area in feet</span>
+      </div>
+    </li>
+    <li>
+      <div class="check-num">2</div>
+      <div class="check-content">
+        <strong>Depth of pocket ≤ <span class="number">36 in.</span> (900 mm)</strong>
+        <span class="code">§10.2.9.2(2) — Maurice = 31.5 in. ✓ PASSES</span>
+      </div>
+    </li>
+    <li>
+      <div class="check-num">3</div>
+      <div class="check-content">
+        <strong>Entire floor area beneath the pocket is protected at the lower ceiling elevation</strong>
+        <span class="code">§10.2.9.2(3) — Every sq. ft. of floor under the raised section must be covered by the 7′-2″ sprinklers</span>
+      </div>
+    </li>
+    <li>
+      <div class="check-num">4</div>
+      <div class="check-content">
+        <strong>Combined volume of all unprotected pockets within 10 ft of each other ≤ <span class="number">1,000 ft³</span></strong>
+        <span class="code">§10.2.9.2(4) — Add volumes of all nearby pockets; total must stay under limit</span>
+      </div>
+    </li>
+    <li>
+      <div class="check-num">5</div>
+      <div class="check-content">
+        <strong>Interior finish of the pocket is noncombustible or limited-combustible</strong>
+        <span class="code">§10.2.9.2(5) — Drywall, concrete, metal deck OK · Wood paneling or combustible tile = FAIL</span>
+      </div>
+    </li>
+    <li>
+      <div class="check-num">6</div>
+      <div class="check-content">
+        <strong>Quick-response (QR) sprinklers are used <em>throughout the entire compartment</em></strong>
+        <span class="code">§10.2.9.2(6) — ALL sprinklers in the room must be QR-rated, not just those near the pocket</span>
+      </div>
+    </li>
+  </ul>
+
+  <div class="box warn" style="margin-top:8px;font-size:9.5pt">
+    <strong>EXAM TRAP — Condition 6:</strong> A single standard-response sprinkler anywhere in the room kills the exception. The QR requirement applies to every sprinkler in the compartment, not just the ones adjacent to the pocket.
+  </div>
+
+  <div class="page-footer">
+    <span>Fire System Mastery · FSM Professor · NFPA 13 2019</span>
+    <span>Page 1 — Ceiling Pocket Rules</span>
+    <span>study.firesystemmastery.com</span>
+  </div>
+
+</div><!-- end page 1 -->
+
+<!-- ═══════════════════════════════════════════════════════
+     PAGE 2 — CEILING CLOUDS & REFERENCE
+════════════════════════════════════════════════════════ -->
+<div class="page">
+
+  <div class="page-header">
+    <div>
+      <div class="brand">FSM Professor · NICET Level 3</div>
+      <h1>Ceiling Clouds — Fixed Obstruction Rules</h1>
+      <div class="code-refs">NFPA 13 2019 · §10.2.7 · §12.1.12 · Table 10.2.7.1.2</div>
+    </div>
+    <div class="pg-num">Page 2 of 2<br>Cloud &amp; Reference Rules</div>
+  </div>
+
+  <!-- CLOUD CEILING DIAGRAM -->
+  <div class="sec first">Cloud Ceiling Cross-Section — Two-Level Sprinkler Layout</div>
+
+  <div class="svg-zone">
+  <svg viewBox="0 0 660 200" xmlns="http://www.w3.org/2000/svg" width="100%" style="max-width:640px">
+    <defs>
+      <pattern id="ph2" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="5" stroke="#ccc" stroke-width="1.5"/>
+      </pattern>
+      <marker id="pa2" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto">
+        <path d="M0,0 L0,5 L5,2.5 z" fill="#555"/>
+      </marker>
+      <marker id="pa2l" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto-start-reverse">
+        <path d="M0,0 L0,5 L5,2.5 z" fill="#555"/>
+      </marker>
+      <marker id="pb" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto">
+        <path d="M0,0 L0,5 L5,2.5 z" fill="#c0392b"/>
+      </marker>
+      <marker id="pbl" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto-start-reverse">
+        <path d="M0,0 L0,5 L5,2.5 z" fill="#c0392b"/>
+      </marker>
+    </defs>
+
+    <!-- Structural ceiling -->
+    <rect x="0" y="22" width="660" height="14" fill="#ccc"/>
+    <rect x="0" y="22" width="660" height="14" fill="url(#ph2)"/>
+    <text x="330" y="14" text-anchor="middle" fill="#555" font-size="9" font-weight="600">STRUCTURAL CEILING</text>
+
+    <!-- Cloud panel 1 -->
+    <rect x="80" y="68" width="155" height="18" rx="2" fill="#dce9f8" stroke="#185FA5" stroke-width="2"/>
+    <text x="157" y="81" text-anchor="middle" fill="#185FA5" font-size="9" font-weight="700">CLOUD PANEL</text>
+
+    <!-- Cloud panel 2 -->
+    <rect x="425" y="68" width="155" height="18" rx="2" fill="#dce9f8" stroke="#185FA5" stroke-width="2"/>
+    <text x="502" y="81" text-anchor="middle" fill="#185FA5" font-size="9" font-weight="700">CLOUD PANEL</text>
+
+    <!-- Gap label -->
+    <text x="330" y="59" text-anchor="middle" fill="#555" font-size="8.5">← Gap between clouds →</text>
+
+    <!-- Ceiling sprinkler (open circle) in gap -->
+    <circle cx="330" cy="36" r="6" fill="none" stroke="#333" stroke-width="2"/>
+    <line x1="330" y1="36" x2="330" y2="28" stroke="#333" stroke-width="1.5"/>
+    <!-- spray fan -->
+    <line x1="330" y1="42" x2="310" y2="62" stroke="#333" stroke-width="1" stroke-dasharray="3" opacity="0.5"/>
+    <line x1="330" y1="42" x2="350" y2="62" stroke="#333" stroke-width="1" stroke-dasharray="3" opacity="0.5"/>
+    <text x="330" y="70" text-anchor="middle" fill="#333" font-size="8" font-weight="700">○ Ceiling sprinkler</text>
+    <text x="330" y="80" text-anchor="middle" fill="#333" font-size="8">(in gap at struct. ceiling)</text>
+
+    <!-- Under-cloud sprinkler LEFT -->
+    <circle cx="157" cy="92" r="6" fill="#1a7a55" stroke="#1a7a55" stroke-width="1.5"/>
+    <line x1="157" y1="92" x2="157" y2="84" stroke="#1a7a55" stroke-width="1.5"/>
+    <line x1="157" y1="98" x2="140" y2="120" stroke="#1a7a55" stroke-width="1" stroke-dasharray="3" opacity="0.5"/>
+    <line x1="157" y1="98" x2="174" y2="120" stroke="#1a7a55" stroke-width="1" stroke-dasharray="3" opacity="0.5"/>
+    <text x="157" y="132" text-anchor="middle" fill="#1a7a55" font-size="8" font-weight="700">● Under-cloud</text>
+    <text x="157" y="142" text-anchor="middle" fill="#1a7a55" font-size="8">sprinkler (REQUIRED)</text>
+
+    <!-- Under-cloud sprinkler RIGHT -->
+    <circle cx="502" cy="92" r="6" fill="#1a7a55" stroke="#1a7a55" stroke-width="1.5"/>
+    <line x1="502" y1="92" x2="502" y2="84" stroke="#1a7a55" stroke-width="1.5"/>
+    <line x1="502" y1="98" x2="485" y2="120" stroke="#1a7a55" stroke-width="1" stroke-dasharray="3" opacity="0.5"/>
+    <line x1="502" y1="98" x2="519" y2="120" stroke="#1a7a55" stroke-width="1" stroke-dasharray="3" opacity="0.5"/>
+    <text x="502" y="132" text-anchor="middle" fill="#1a7a55" font-size="8" font-weight="700">● Under-cloud</text>
+    <text x="502" y="142" text-anchor="middle" fill="#1a7a55" font-size="8">sprinkler (REQUIRED)</text>
+
+    <!-- 12" max arrow -->
+    <line x1="60" y1="86" x2="60" y2="92" stroke="#c0392b" stroke-width="1.5" marker-start="url(#pbl)" marker-end="url(#pb)"/>
+    <rect x="2" y="84" width="52" height="20" rx="2" fill="#fff" stroke="#c0392b" stroke-width="1"/>
+    <text x="28" y="95" text-anchor="middle" fill="#c0392b" font-size="8.5" font-weight="700">Max 12″</text>
+    <text x="28" y="105" text-anchor="middle" fill="#c0392b" font-size="7.5">below cloud</text>
+
+    <!-- Cloud width dimension -->
+    <line x1="80" y1="116" x2="235" y2="116" stroke="#555" stroke-width="1" marker-start="url(#pa2l)" marker-end="url(#pa2)"/>
+    <text x="157" y="127" text-anchor="middle" fill="#555" font-size="8">6′-2″ wide &gt; 4 ft → MUST add under-cloud sprinkler</text>
+
+    <!-- 4 ft trigger label -->
+    <rect x="256" y="135" width="148" height="22" rx="3" fill="#fff8e0" stroke="#c8a000" stroke-width="1.5"/>
+    <text x="330" y="147" text-anchor="middle" fill="#7a5c00" font-size="9" font-weight="700">4 ft wide = the trigger</text>
+    <text x="330" y="157" text-anchor="middle" fill="#7a5c00" font-size="8">§10.2.7.3.2</text>
+
+    <!-- Floor -->
+    <rect x="0" y="175" width="660" height="25" fill="#ddd"/>
+    <text x="330" y="191" text-anchor="middle" fill="#666" font-size="9">FLOOR</text>
+  </svg>
+  <div class="svg-caption">Cloud ceiling cross-section. Clouds wider than 4 ft require sprinklers at the structural ceiling (in gaps between clouds) AND below each cloud. Under-cloud deflector must be within 12 in. of cloud bottom (§10.2.7.3.4).</div>
+  </div>
+
+  <!-- TWO-COL: Rules + A/B table -->
+  <div class="two-col" style="gap:16px;margin-top:10px">
+
+    <div>
+      <div class="sec" style="margin-top:0">Key Cloud Rules</div>
+
+      <div class="box key" style="margin-bottom:7px">§10.2.7.3.2 — Sprinklers <u>shall</u> be installed under fixed obstructions over <strong>4 ft (1.2 m) wide.</strong></div>
+
+      <div class="box" style="margin-bottom:7px;font-size:9.5pt">
+        <strong>§10.2.7.3.4 — Under-cloud deflector position:</strong><br>
+        No more than <strong>12 in. (300 mm)</strong> below the bottom of the obstruction.
+      </div>
+
+      <div class="box info" style="margin-bottom:7px;font-size:9.5pt">
+        <strong>Your plan decoded:</strong><br>
+        <strong>○ Open circle</strong> = ceiling-level sprinkler in gap between clouds (at structural ceiling)<br>
+        <strong>● Filled circle</strong> = under-cloud sprinkler below cloud panel
+      </div>
+
+      <div class="box highlight" style="font-size:9.5pt">
+        <strong>Decision flow for any obstruction:</strong>
+        <ol class="steps" style="margin-top:6px">
+          <li>Is the obstruction fixed (not moveable)?</li>
+          <li>Measure the width. &gt; 4 ft? → Under-obstruction sprinkler required.</li>
+          <li>Position deflector ≤ 12 in. below obstruction bottom.</li>
+          <li>Position ceiling sprinkler per A/B table at right.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div>
+      <div class="sec" style="margin-top:0">A/B Positioning Table (Table 10.2.7.1.2)</div>
+      <p style="font-size:8.5pt;color:#555;margin-bottom:6px"><strong>A</strong> = horizontal distance from sprinkler to side of obstruction &nbsp;|&nbsp; <strong>B</strong> = max deflector height above bottom of obstruction</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Distance A (sprinkler to obstruction side)</th>
+            <th>Max B (deflector above obstruction bottom)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Less than 1 ft</td><td>0 in.</td></tr>
+          <tr><td>1 ft to &lt; 1′-6″</td><td>1 in.</td></tr>
+          <tr><td>1′-6″ to &lt; 2 ft</td><td>2 in.</td></tr>
+          <tr><td>2 ft to &lt; 2′-6″</td><td>3 in.</td></tr>
+          <tr><td>2′-6″ to &lt; 3 ft</td><td>4 in.</td></tr>
+          <tr class="bold"><td>3 ft to &lt; 3′-6″ ← typical cloud gap</td><td>6 in.</td></tr>
+          <tr><td>3′-6″ to &lt; 4 ft</td><td>7 in.</td></tr>
+          <tr><td>4 ft to &lt; 4′-6″</td><td>9 in.</td></tr>
+          <tr><td>4′-6″ to &lt; 5 ft</td><td>11 in.</td></tr>
+          <tr><td>5 ft or more</td><td>14 in.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- RESIDENTIAL COMPARISON -->
+  <div class="sec">Exam Trap — Standard vs. Residential Ceiling Pocket Exception</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:35%">Condition</th>
+        <th style="width:32.5%">Standard Pendent/Upright — §10.2.9.2</th>
+        <th style="width:32.5%">Residential Sprinklers — §12.1.12.2</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Max Pocket Volume</strong></td>
+        <td style="font-weight:700">1,000 ft³ (28 m³)</td>
+        <td style="font-weight:700;color:#c0392b">100 ft³ (2.8 m³) — 10× smaller!</td>
+      </tr>
+      <tr>
+        <td><strong>Max Pocket Depth</strong></td>
+        <td style="font-weight:700">36 in. (900 mm)</td>
+        <td style="font-weight:700;color:#c0392b">12 in. (300 mm) — 3× shallower!</td>
+      </tr>
+      <tr>
+        <td>Floor protected at lower elevation</td>
+        <td>✓ Required</td>
+        <td>✓ Required</td>
+      </tr>
+      <tr>
+        <td>Combined pocket volume (within 10 ft)</td>
+        <td>✓ Required ≤ 1,000 ft³</td>
+        <td style="color:#888">— Not required</td>
+      </tr>
+      <tr>
+        <td>Noncombustible / limited-comb. finish</td>
+        <td>✓ Required</td>
+        <td>✓ Required</td>
+      </tr>
+      <tr>
+        <td><strong>QR sprinklers throughout</strong></td>
+        <td style="font-weight:700">✓ Required (entire compartment)</td>
+        <td style="color:#888">— NOT required</td>
+      </tr>
+      <tr>
+        <td><strong>Number of conditions</strong></td>
+        <td style="font-weight:700">6 conditions</td>
+        <td style="font-weight:700">4 conditions</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- QUICK-REFERENCE NUMBERS -->
+  <div class="sec">Critical Numbers — Quick Reference</div>
+
+  <div class="num-grid">
+    <div class="num-card">
+      <div class="num-big">36″</div>
+      <div class="num-label">Step depth = wall</div>
+      <div class="num-ref">§10.2.6.1.1.3</div>
+    </div>
+    <div class="num-card">
+      <div class="num-big">1,000 ft³</div>
+      <div class="num-label">Max pocket vol. (std.)</div>
+      <div class="num-ref">§10.2.9.2(1)</div>
+    </div>
+    <div class="num-card">
+      <div class="num-big">4 ft</div>
+      <div class="num-label">Cloud width trigger</div>
+      <div class="num-ref">§10.2.7.3.2</div>
+    </div>
+    <div class="num-card">
+      <div class="num-big">12″</div>
+      <div class="num-label">Max deflector below cloud</div>
+      <div class="num-ref">§10.2.7.3.4</div>
+    </div>
+    <div class="num-card">
+      <div class="num-big">100 ft³</div>
+      <div class="num-label">Max pocket vol. (residential)</div>
+      <div class="num-ref">§12.1.12.2(1)</div>
+    </div>
+    <div class="num-card">
+      <div class="num-big">12″</div>
+      <div class="num-label">Max depth (residential)</div>
+      <div class="num-ref">§12.1.12.2(2)</div>
+    </div>
+    <div class="num-card">
+      <div class="num-big">6</div>
+      <div class="num-label">Conditions for std. exception</div>
+      <div class="num-ref">§10.2.9.2</div>
+    </div>
+    <div class="num-card">
+      <div class="num-big">QR</div>
+      <div class="num-label">Req'd throughout (std. only)</div>
+      <div class="num-ref">§10.2.9.2(6)</div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Fire System Mastery · FSM Professor · NFPA 13 2019</span>
+    <span>Page 2 — Cloud &amp; Reference Rules</span>
+    <span>study.firesystemmastery.com</span>
+  </div>
+
+</div><!-- end page 2 -->
+
+</body>
+</html>
