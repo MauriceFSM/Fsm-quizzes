@@ -1,0 +1,1330 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FSM — NFPA 25 Study App</title>
+<meta name="description" content="Fire System Mastery study app for NFPA 25 (2020 edition): definitions flashcards, ITM multiple-choice questions, study + scored test mode." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0a;
+  --bg-2:#0f0f0f;
+  --panel:#141414;
+  --panel-2:#1a1a1a;
+  --line:#262626;
+  --line-2:#333;
+  --text:#f5f5f5;
+  --muted:#a3a3a3;
+  --dim:#737373;
+  --orange:#ff6b35;
+  --amber:#ffaa00;
+  --cyan:#00d9ff;
+  --green:#22c55e;
+  --red:#ef4444;
+  --purple:#a855f7;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5}
+body{min-height:100vh;display:flex;flex-direction:column}
+a{color:var(--orange);text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+/* HEADER */
+header{
+  position:sticky;top:0;z-index:50;
+  background:rgba(10,10,10,0.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.header-inner{
+  max-width:1200px;margin:0 auto;padding:14px 20px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.brand{display:flex;align-items:center;gap:12px;text-align:left}
+.brand-flame{
+  width:34px;height:34px;border-radius:8px;
+  background:linear-gradient(135deg,var(--orange),var(--amber));
+  display:grid;place-items:center;color:#000;font-size:20px;line-height:1;
+  box-shadow:0 0 24px -6px rgba(255,107,53,0.6);
+}
+.brand-name{display:flex;flex-direction:column;line-height:1}
+.brand-name .brand-fsm{
+  font-size:26px;font-weight:900;letter-spacing:1.5px;color:var(--orange);
+  text-shadow:0 0 14px rgba(255,107,53,0.35);
+}
+.brand-name .brand-full{
+  font-size:10px;font-weight:700;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--muted);margin-top:5px;
+}
+.edition-badge{
+  font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;
+  border:1px solid var(--line-2);padding:5px 9px;border-radius:6px;color:var(--muted);
+}
+.header-actions{display:flex;gap:8px;align-items:center}
+.icon-btn{
+  width:36px;height:36px;border-radius:8px;border:1px solid var(--line-2);
+  display:grid;place-items:center;color:var(--muted);transition:all .15s;
+}
+.icon-btn:hover{border-color:var(--orange);color:var(--orange)}
+
+/* LAYOUT */
+main{max-width:1200px;margin:0 auto;padding:32px 20px 80px;width:100%;flex:1}
+
+/* HERO */
+.hero{margin-bottom:36px;text-align:center;padding:20px 0 8px}
+.hero .eyebrow{
+  display:inline-block;
+  font-size:11px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--orange);padding:6px 14px;border:1px solid rgba(255,107,53,0.4);
+  border-radius:999px;background:rgba(255,107,53,0.08);margin-bottom:18px;
+}
+.hero h1{
+  font-size:clamp(32px,5vw,52px);font-weight:900;letter-spacing:-1px;line-height:1.05;
+  margin-bottom:14px;
+}
+.hero h1 .accent{color:var(--orange);text-shadow:0 0 24px rgba(255,107,53,0.4)}
+.hero p{color:var(--muted);font-size:clamp(15px,1.6vw,17px);max-width:680px;margin:0 auto}
+
+/* STATS */
+.stats{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:12px;overflow:hidden;
+  margin:0 auto 36px;max-width:880px;
+}
+.stat{padding:18px 14px;background:var(--bg-2);text-align:center}
+.stat-num{font-size:22px;font-weight:900;color:var(--orange);letter-spacing:-0.5px}
+.stat-label{font-size:9px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--dim);margin-top:4px}
+@media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}}
+
+/* CARDS GRID */
+.section-title{
+  font-size:11px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--amber);margin-bottom:14px;display:flex;align-items:center;gap:10px;
+}
+.section-title::before{content:'';width:24px;height:2px;background:var(--amber)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;margin-bottom:40px}
+.card{
+  background:var(--bg-2);border:1px solid var(--line);border-radius:14px;
+  padding:22px;cursor:pointer;transition:all .18s;
+  display:flex;flex-direction:column;gap:12px;text-align:left;width:100%;
+  position:relative;overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;inset:0;border-radius:14px;pointer-events:none;
+  background:radial-gradient(circle at top right, var(--card-glow,rgba(255,107,53,0.12)), transparent 60%);
+  opacity:0;transition:opacity .18s;
+}
+.card:hover::before{opacity:1}
+.card:hover{border-color:var(--card-color,var(--orange));transform:translateY(-2px);
+  box-shadow:0 8px 30px -10px var(--card-glow,rgba(255,107,53,0.3));
+}
+.card-icon{
+  width:44px;height:44px;border-radius:10px;
+  background:var(--card-bg,rgba(255,107,53,0.12));
+  border:1px solid var(--card-color,var(--orange));color:var(--card-color,var(--orange));
+  display:grid;place-items:center;font-size:22px;
+}
+.card-title{font-size:18px;font-weight:800;letter-spacing:-0.3px}
+.card-desc{color:var(--muted);font-size:13.5px;line-height:1.55;flex:1}
+.card-meta{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-top:14px;border-top:1px solid var(--line);
+  font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;
+}
+.card-count{color:var(--card-color,var(--orange))}
+.card-cta{color:var(--muted);display:flex;align-items:center;gap:6px}
+.card-progress{
+  height:4px;background:var(--line);border-radius:999px;overflow:hidden;margin-top:8px;
+}
+.card-progress-bar{height:100%;background:var(--card-color,var(--orange));transition:width .3s}
+
+/* BUTTONS */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 22px;border-radius:10px;font-weight:700;font-size:13.5px;
+  letter-spacing:0.4px;transition:all .15s;border:2px solid transparent;
+}
+.btn-primary{background:var(--orange);color:#000;border-color:var(--orange)}
+.btn-primary:hover{background:#ff8555;border-color:#ff8555;box-shadow:0 0 30px -8px rgba(255,107,53,0.6)}
+.btn-secondary{background:transparent;border-color:var(--line-2);color:var(--text)}
+.btn-secondary:hover{border-color:var(--orange);color:var(--orange)}
+.btn-ghost{background:transparent;color:var(--muted);padding:8px 14px;border-radius:8px}
+.btn-ghost:hover{color:var(--text);background:var(--panel)}
+
+/* MODE PICKER */
+.mode-picker{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:24px 0;
+}
+.mode-option{
+  background:var(--bg-2);border:1px solid var(--line);border-radius:12px;
+  padding:24px;cursor:pointer;transition:all .15s;text-align:left;
+}
+.mode-option:hover{border-color:var(--orange);transform:translateY(-1px)}
+.mode-option h3{font-size:16px;font-weight:800;margin-bottom:6px;color:var(--orange)}
+.mode-option p{color:var(--muted);font-size:13px;line-height:1.55}
+
+/* FLASHCARD */
+.flashcard-wrap{max-width:760px;margin:0 auto}
+.flashcard{
+  background:var(--bg-2);border:1px solid var(--line);border-radius:18px;
+  padding:48px 36px;min-height:340px;display:flex;flex-direction:column;
+  justify-content:center;cursor:pointer;transition:all .15s;text-align:center;
+  position:relative;
+}
+.flashcard:hover{border-color:var(--orange)}
+.flashcard-side{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:20px}
+.flashcard .term{font-size:clamp(22px,3vw,32px);font-weight:800;letter-spacing:-0.5px;line-height:1.2}
+.flashcard .definition{font-size:clamp(15px,1.7vw,18px);line-height:1.6;color:var(--text);max-width:560px;margin:0 auto}
+.flashcard .citation{
+  position:absolute;bottom:18px;left:0;right:0;text-align:center;
+  font-size:11px;font-weight:700;letter-spacing:1px;color:var(--dim);
+}
+.flashcard-tap-hint{
+  position:absolute;top:18px;right:24px;font-size:10px;font-weight:700;letter-spacing:1.5px;
+  color:var(--dim);text-transform:uppercase;
+}
+
+/* MC QUESTION */
+.question-wrap{max-width:760px;margin:0 auto}
+.question-meta{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;
+  font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);
+}
+.question-progress{
+  height:4px;background:var(--line);border-radius:999px;overflow:hidden;margin-bottom:24px;
+}
+.question-progress-bar{height:100%;background:var(--orange);transition:width .3s}
+.question-card{
+  background:var(--bg-2);border:1px solid var(--line);border-radius:18px;
+  padding:32px 28px;
+}
+.question-text{
+  font-size:clamp(18px,2.3vw,22px);font-weight:700;line-height:1.4;
+  margin-bottom:24px;letter-spacing:-0.3px;
+}
+.options{display:flex;flex-direction:column;gap:12px}
+.option{
+  display:flex;align-items:center;gap:14px;padding:16px 18px;
+  background:var(--panel);border:2px solid var(--line);border-radius:10px;
+  cursor:pointer;transition:all .12s;text-align:left;width:100%;
+  font-size:15px;font-weight:500;line-height:1.45;
+}
+.option:hover{border-color:var(--orange);background:var(--panel-2)}
+.option-letter{
+  width:30px;height:30px;border-radius:7px;background:var(--bg);border:1px solid var(--line-2);
+  display:grid;place-items:center;font-weight:800;font-size:12px;color:var(--muted);flex-shrink:0;
+}
+.option.correct{border-color:var(--green);background:rgba(34,197,94,0.08)}
+.option.correct .option-letter{background:var(--green);color:#000;border-color:var(--green)}
+.option.wrong{border-color:var(--red);background:rgba(239,68,68,0.08)}
+.option.wrong .option-letter{background:var(--red);color:#fff;border-color:var(--red)}
+.option:disabled{cursor:default}
+.feedback{
+  margin-top:20px;padding:16px 18px;border-radius:10px;
+  background:var(--panel);border-left:3px solid var(--orange);
+}
+.feedback.correct{border-left-color:var(--green)}
+.feedback.wrong{border-left-color:var(--red)}
+.feedback-label{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
+.feedback-label.correct{color:var(--green)}
+.feedback-label.wrong{color:var(--red)}
+.feedback-text{font-size:14px;line-height:1.55;color:var(--text)}
+.feedback-cite{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--amber);margin-top:8px;text-transform:uppercase}
+.question-nav{display:flex;justify-content:space-between;gap:12px;margin-top:24px}
+
+/* RESULTS */
+.results{max-width:760px;margin:0 auto;text-align:center}
+.results-score{
+  font-size:clamp(48px,10vw,96px);font-weight:900;letter-spacing:-3px;line-height:1;
+  background:linear-gradient(135deg,var(--orange),var(--amber));
+  -webkit-background-clip:text;background-clip:text;color:transparent;margin:20px 0 10px;
+}
+.results-total{color:var(--muted);font-size:14px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:28px}
+.results-grade{
+  display:inline-block;padding:8px 20px;border-radius:999px;
+  font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:32px;
+}
+.results-grade.pass{background:rgba(34,197,94,0.1);color:var(--green);border:1px solid var(--green)}
+.results-grade.borderline{background:rgba(255,170,0,0.1);color:var(--amber);border:1px solid var(--amber)}
+.results-grade.fail{background:rgba(239,68,68,0.1);color:var(--red);border:1px solid var(--red)}
+.review-list{text-align:left;margin-top:32px}
+.review-item{
+  background:var(--bg-2);border:1px solid var(--line);border-left:3px solid var(--red);
+  border-radius:10px;padding:18px 20px;margin-bottom:12px;
+}
+.review-item.correct{border-left-color:var(--green)}
+.review-q{font-weight:700;font-size:15px;margin-bottom:8px}
+.review-a{font-size:13px;color:var(--muted);line-height:1.5}
+.review-a strong{color:var(--green);font-weight:700}
+.review-a em{color:var(--red);font-style:normal;font-weight:600}
+.review-cite{font-size:10px;font-weight:800;letter-spacing:1.5px;color:var(--amber);margin-top:6px;text-transform:uppercase}
+
+/* SETTINGS / DIALOG */
+.test-setup{max-width:520px;margin:40px auto}
+.test-setup h2{font-size:24px;font-weight:800;margin-bottom:8px;text-align:center}
+.test-setup .lead{color:var(--muted);font-size:14px;text-align:center;margin-bottom:30px}
+.test-options{display:grid;gap:10px;margin-bottom:24px}
+.test-option{
+  display:flex;align-items:center;justify-content:space-between;padding:14px 18px;
+  background:var(--bg-2);border:2px solid var(--line);border-radius:10px;cursor:pointer;transition:all .15s;
+}
+.test-option:hover{border-color:var(--orange)}
+.test-option.selected{border-color:var(--orange);background:rgba(255,107,53,0.05)}
+.test-option-label{font-weight:700;font-size:14px}
+.test-option-sub{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:1px;text-transform:uppercase}
+
+/* BREADCRUMB / BACK */
+.crumb{
+  display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:20px;
+}
+.crumb a{color:var(--muted)}
+.crumb a:hover{color:var(--orange)}
+.crumb span{color:var(--dim)}
+
+/* EMPTY */
+.empty-state{
+  background:var(--bg-2);border:1px dashed var(--line-2);border-radius:14px;
+  padding:40px 24px;text-align:center;color:var(--muted);
+}
+.empty-state h3{font-size:16px;font-weight:800;color:var(--text);margin-bottom:8px}
+.empty-state p{font-size:13.5px;line-height:1.55;max-width:420px;margin:0 auto}
+
+/* FOOTER */
+footer{
+  border-top:1px solid var(--line);padding:24px 20px;text-align:center;
+  font-size:12px;color:var(--dim);
+}
+footer .disclaimer{max-width:760px;margin:0 auto;font-size:11px;line-height:1.55}
+
+/* UTIL */
+.hidden{display:none !important}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .25s ease}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-flame" aria-hidden="true">◆</div>
+      <div class="brand-name">
+        <span class="brand-fsm">FSM</span>
+        <span class="brand-full">Fire System Mastery</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <span class="edition-badge">NFPA 25 · 2020</span>
+      <button class="icon-btn" id="btn-reset" title="Reset progress">↻</button>
+    </div>
+  </div>
+</header>
+
+<main id="app"><!-- routed views render here --></main>
+
+<footer>
+  <div class="disclaimer">
+    Educational content based on NFPA 25, 2020 edition. Always verify against the current edition of the standard and your authority having jurisdiction before performing work. Definitions and explanations are paraphrased in plain language — they are not a substitute for the standard itself.
+  </div>
+</footer>
+
+<!-- Embedded content. Replaced when the comprehensive question bank is generated. -->
+<script type="application/json" id="content-data">
+{
+  "edition": "NFPA 25, 2020",
+  "generated": "2026-05-26",
+  "definitions": [
+    { "term": "Approved", "definition": "Acceptable to the authority having jurisdiction (AHJ).", "citation": "NFPA 25 § 3.2.1" },
+    { "term": "Authority Having Jurisdiction (AHJ)", "definition": "An organization, office, or individual responsible for enforcing the requirements of a code or standard, or for approving equipment, materials, an installation, or a procedure.", "citation": "NFPA 25 § 3.2.2" },
+    { "term": "Listed", "definition": "Equipment, materials, or services included in a list published by an acceptable organization that performs periodic evaluation, and whose listing states the item meets appropriate designated standards or has been found suitable for a specified purpose.", "citation": "NFPA 25 § 3.2.3" },
+    { "term": "Shall", "definition": "Indicates a mandatory requirement.", "citation": "NFPA 25 § 3.2.4" },
+    { "term": "Should", "definition": "Indicates a recommendation or that which is advised but not required.", "citation": "NFPA 25 § 3.2.5" },
+    { "term": "Standard", "definition": "An NFPA Standard whose main text contains only mandatory provisions using the word 'shall' for requirements and is in a form suitable for mandatory reference by another standard or for adoption into law.", "citation": "NFPA 25 § 3.2.6" },
+    { "term": "Adjust", "definition": "To maintain or regulate, within prescribed limits, by setting the operating characteristics to specified parameters.", "citation": "NFPA 25 § 3.3.1" },
+    { "term": "Alarm Receiving Facility", "definition": "The place where alarm or supervisory signals are received.", "citation": "NFPA 25 § 3.3.2" },
+    { "term": "Automated Inspection and Testing", "definition": "The performance of inspections and tests at a distant location from the system or component being inspected or tested through the use of electronic devices or equipment installed for the purpose.", "citation": "NFPA 25 § 3.3.3" },
+    { "term": "Automatic Detection Equipment", "definition": "Equipment that automatically detects heat, flame, products of combustion, flammable gases, or other conditions likely to produce fire or explosion and causes automatic actuation of alarm and protection equipment.", "citation": "NFPA 25 § 3.3.4" },
+    { "term": "Automatic Operation", "definition": "Operation without human intervention.", "citation": "NFPA 25 § 3.3.5" },
+    { "term": "Automatic Transfer Switch (ATS)", "definition": "Self-acting equipment that transfers the connected load from one power source to another power source.", "citation": "NFPA 25 § 3.3.6" },
+    { "term": "Clean", "definition": "To remove dirt, scale, and debris.", "citation": "NFPA 25 § 3.3.7" },
+    { "term": "Deficiency", "definition": "For ITM purposes, a condition that will or has the potential to adversely impact the performance of a system or portion thereof but does not rise to the level of an impairment.", "citation": "NFPA 25 § 3.3.8" },
+    { "term": "Critical Deficiency", "definition": "A deficiency that, if not corrected, can have a material effect on the ability of the fire protection system or unit to function as intended in a fire event.", "citation": "NFPA 25 § 3.3.8.1" },
+    { "term": "Noncritical Deficiency", "definition": "A deficiency that does not have a material effect on the ability of the fire protection system or unit to function in a fire event, but correction is needed to meet the requirements of this standard or for proper ITM of the system or unit.", "citation": "NFPA 25 § 3.3.8.2" },
+    { "term": "Discharge Device", "definition": "A device designed to discharge water or foam-water solution in a predetermined, fixed, or adjustable pattern. Examples include sprinklers, spray nozzles, and hose nozzles.", "citation": "NFPA 25 § 3.3.9" },
+    { "term": "Double Check Valve Assembly (DCVA)", "definition": "An assembly of two internally loaded check valves, either spring-loaded or internally weighted, installed as a unit between two tightly closing resilient-seated shutoff valves with properly located resilient-seated test cocks.", "citation": "NFPA 25 § 3.3.10" },
+    { "term": "Main Drain", "definition": "The primary drain connection located on the system riser.", "citation": "NFPA 25 § 3.3.11.1" },
+    { "term": "Sectional Drain", "definition": "A drain located beyond a sectional control valve that drains only a portion of the system.", "citation": "NFPA 25 § 3.3.11.2" },
+    { "term": "Fire Department Connection", "definition": "A connection through which the fire department can pump supplemental water into the sprinkler system, standpipe, or other system furnishing water for fire extinguishment.", "citation": "NFPA 25 § 3.3.12" },
+    { "term": "Fire Hydrant", "definition": "A valved connection on a water supply system having one or more outlets that is used to supply hose and fire department pumpers with water.", "citation": "NFPA 25 § 3.3.13" },
+    { "term": "Dry Barrel Hydrant (Frostproof Hydrant)", "definition": "A type of hydrant with the main control valve below the frost line between the footpiece and the barrel.", "citation": "NFPA 25 § 3.3.13.1" },
+    { "term": "Dry Hydrant", "definition": "An arrangement of pipe permanently connected to a water source other than a piped, pressurized water supply, providing a ready means of water for fire-fighting purposes that utilizes the drafting capability of a fire department pump.", "citation": "NFPA 25 § 3.3.13.2" },
+    { "term": "Monitor Nozzle Hydrant", "definition": "A hydrant equipped with a monitor nozzle capable of delivering more than 250 gpm (946 L/min).", "citation": "NFPA 25 § 3.3.13.3" },
+    { "term": "Wall Hydrant", "definition": "A hydrant mounted on the outside of a wall of a building, fed from interior piping, and equipped with control valves located inside the building that normally are key-operated from the building's exterior.", "citation": "NFPA 25 § 3.3.13.4" },
+    { "term": "Wet Barrel Hydrant", "definition": "A type of hydrant intended for use where there is no danger of freezing weather and where each outlet is provided with a valve and an outlet.", "citation": "NFPA 25 § 3.3.13.5" },
+    { "term": "Foam Concentrate", "definition": "A concentrated liquid foaming agent as received from the manufacturer.", "citation": "NFPA 25 § 3.3.14" },
+    { "term": "Foam Discharge Device", "definition": "A device designed to discharge water or foam-water solution in a predetermined, fixed, or adjustable pattern. Examples include sprinklers, spray nozzles, and hose nozzles.", "citation": "NFPA 25 § 3.3.15" },
+    { "term": "Hose Connection", "definition": "The outlet of a hose valve installed on a standpipe system for connection of fire hose.", "citation": "NFPA 25 § 3.3.16" },
+    { "term": "Hose House", "definition": "An enclosure located over or adjacent to a hydrant or other water supply designed to contain the necessary hose nozzles, hose wrenches, gaskets, and spanners to be used in fire fighting in conjunction with and to provide aid to the local fire department.", "citation": "NFPA 25 § 3.3.17" },
+    { "term": "Hose Nozzle", "definition": "A device intended for discharging water for manual suppression or extinguishment of a fire.", "citation": "NFPA 25 § 3.3.18" },
+    { "term": "Hose Station", "definition": "A combination of a hose rack or reel, hose nozzle, hose, and hose connection.", "citation": "NFPA 25 § 3.3.19" },
+    { "term": "Conventional Pin Rack", "definition": "A hose rack where the hose is folded vertically and attached over the pins.", "citation": "NFPA 25 § 3.3.20.1" },
+    { "term": "Horizontal Rack", "definition": "A hose rack where the hose is connected to the valve, then stack-folded horizontally to the top of the rack.", "citation": "NFPA 25 § 3.3.20.2" },
+    { "term": "Hose Reel", "definition": "A circular device used to store hose.", "citation": "NFPA 25 § 3.3.20.3" },
+    { "term": "Semiautomatic Hose Rack Assembly", "definition": "The same as a conventional pin rack or hose reel except that, after the valve is opened, a retaining device holds the hose and water until the last few feet are removed.", "citation": "NFPA 25 § 3.3.20.4" },
+    { "term": "Hydrostatic Test", "definition": "A test of a closed piping system and its attached appurtenances consisting of subjecting the piping to an increased internal pressure for a specified duration to verify system integrity and leakage rates.", "citation": "NFPA 25 § 3.3.21" },
+    { "term": "Impairment", "definition": "A condition where a fire protection system or unit or portion thereof is out of order, and the condition can result in the fire protection system or unit not functioning in a fire event.", "citation": "NFPA 25 § 3.3.22" },
+    { "term": "Emergency Impairment", "definition": "A condition where a water-based fire protection system or portion thereof is out of order due to an unplanned occurrence, or the impairment is found while performing ITM activities.", "citation": "NFPA 25 § 3.3.22.1" },
+    { "term": "Preplanned Impairment", "definition": "A condition where a water-based fire protection system or a portion thereof is out of service to work planned in advance, such as revisions to the water supply or sprinkler system piping.", "citation": "NFPA 25 § 3.3.22.2" },
+    { "term": "Inspect", "definition": "See Inspection (3.3.24).", "citation": "NFPA 25 § 3.3.23" },
+    { "term": "Inspection", "definition": "A visual examination of a system or portion thereof to verify that it appears to be in operating condition and is free of physical damage.", "citation": "NFPA 25 § 3.3.24" },
+    { "term": "Inspection, Testing, and Maintenance Service", "definition": "A service program provided by a qualified contractor or qualified property owner's representative in which all components unique to the property's systems are inspected and tested at the required times and necessary maintenance is provided.", "citation": "NFPA 25 § 3.3.25" },
+    { "term": "Lowest Permissible Suction Pressure", "definition": "The lowest suction pressure permitted by this standard and the AHJ.", "citation": "NFPA 25 § 3.3.26" },
+    { "term": "Maintenance", "definition": "In water-based fire protection systems, work performed to keep equipment operable.", "citation": "NFPA 25 § 3.3.27" },
+    { "term": "Manual Operation", "definition": "Operation of a system or its components through human action.", "citation": "NFPA 25 § 3.3.28" },
+    { "term": "Monitor Nozzle", "definition": "A permanently mounted nozzle specifically designed with a high flow rate to provide a far-reaching stream for locations where large amounts of water need to be available without the delay of laying hose lines.", "citation": "NFPA 25 § 3.3.29.1" },
+    { "term": "Water Spray Nozzle", "definition": "An open or automatic water discharge device that, when discharging water under pressure, will distribute the water in a specific, directional pattern.", "citation": "NFPA 25 § 3.3.29.2" },
+    { "term": "Orifice Plate Proportioning", "definition": "A system that uses an orifice plate through which passes a specific amount of foam concentrate at a specific pressure drop across the orifice plate.", "citation": "NFPA 25 § 3.3.30" },
+    { "term": "Performance-Based Program", "definition": "Methods and frequencies that have been demonstrated to deliver equivalent or superior levels of performance through quantitative performance-based analysis.", "citation": "NFPA 25 § 3.3.31" },
+    { "term": "Pressure-Regulating Device", "definition": "A device designed for the purpose of reducing, regulating, controlling, or restricting water pressure.", "citation": "NFPA 25 § 3.3.32" },
+    { "term": "Pressure-Restricting Device", "definition": "A valve or device designed for reducing the downstream water pressure under flowing (residual) conditions only.", "citation": "NFPA 25 § 3.3.33" },
+    { "term": "Pressure Vacuum Vent", "definition": "A venting device mounted on atmospheric foam concentrate storage vessels to allow concentrate expansion and contraction and for tank breathing during concentrate discharge or filling.", "citation": "NFPA 25 § 3.3.34" },
+    { "term": "Bladder Tank Proportioner", "definition": "A system similar to a standard pressure proportioner, except the foam concentrate is contained inside a diaphragm bag inside a pressure vessel.", "citation": "NFPA 25 § 3.3.35.1" },
+    { "term": "In-Line Balanced Pressure Proportioner", "definition": "A system similar to a standard balanced pressure system, except the pumped concentrate pressure is maintained at a fixed preset value.", "citation": "NFPA 25 § 3.3.35.2" },
+    { "term": "Line Proportioner", "definition": "A system that uses a venturi pickup-type device where water passing through the unit creates a vacuum, thereby allowing foam concentrate to be picked up from an atmospheric storage container.", "citation": "NFPA 25 § 3.3.35.3" },
+    { "term": "Standard Balanced Pressure Proportioner", "definition": "A system that utilizes a foam concentrate pump where concentrate is drawn from an atmospheric storage tank, pressurized by the pump, and passes back through a diaphragm balancing valve to the storage tank.", "citation": "NFPA 25 § 3.3.35.4" },
+    { "term": "Standard Pressure Proportioner", "definition": "A system using a pressure vessel containing foam concentrate where water is supplied to the proportioner, which directs an amount of supply downward onto the contained concentrate, thereby pressurizing the tank.", "citation": "NFPA 25 § 3.3.35.5" },
+    { "term": "Qualified", "definition": "A competent and capable person who has met the requirements and training for a given field acceptable to the AHJ.", "citation": "NFPA 25 § 3.3.36" },
+    { "term": "Rebuild", "definition": "To restore working condition by replacement or repair of worn or damaged parts.", "citation": "NFPA 25 § 3.3.37" },
+    { "term": "Reduced-Pressure Principle Backflow Prevention Assembly (RPBA)", "definition": "Two independently acting check valves together with a hydraulically operating, mechanically independent pressure differential relief valve located between the check valves, along with two resilient-seated shutoff valves as an assembly and equipped with properly located test cocks.", "citation": "NFPA 25 § 3.3.38" },
+    { "term": "Remove", "definition": "To physically take away or eliminate.", "citation": "NFPA 25 § 3.3.39" },
+    { "term": "Repair", "definition": "Restore to sound working condition or to fix damage.", "citation": "NFPA 25 § 3.3.40" },
+    { "term": "Replace", "definition": "To remove a component and install a new or equivalent component.", "citation": "NFPA 25 § 3.3.41" },
+    { "term": "Concealed Sprinkler", "definition": "A recessed sprinkler with a cover plate.", "citation": "NFPA 25 § 3.3.42.1.1" },
+    { "term": "Flush Sprinkler", "definition": "A sprinkler in which all or part of the body, including the shank thread, is mounted above the lower plane of the ceiling.", "citation": "NFPA 25 § 3.3.42.1.2" },
+    { "term": "Pendent Sprinkler", "definition": "A sprinkler designed to be installed so the water stream is directed downward against the deflector.", "citation": "NFPA 25 § 3.3.42.1.3" },
+    { "term": "Recessed Sprinkler", "definition": "A sprinkler in which all or part of the body, other than the shank thread, is mounted within a recessed housing.", "citation": "NFPA 25 § 3.3.42.1.4" },
+    { "term": "Sidewall Sprinkler", "definition": "A sprinkler with special deflectors designed to discharge most of the water away from the nearby wall in a pattern resembling one-quarter of a sphere, with a small portion of the discharge directed at the wall behind the sprinkler.", "citation": "NFPA 25 § 3.3.42.1.5" },
+    { "term": "Upright Sprinkler", "definition": "A sprinkler designed to be installed so the water spray is directed upwards against the deflector.", "citation": "NFPA 25 § 3.3.42.1.6" },
+    { "term": "Control Mode Specific Application (CMSA) Sprinkler", "definition": "A type of spray sprinkler capable of producing characteristic large water droplets and listed for its capability to provide fire control of specific high-challenge fire hazards.", "citation": "NFPA 25 § 3.3.42.2" },
+    { "term": "Corrosion-Resistant Sprinkler", "definition": "A sprinkler fabricated with corrosion-resistant material, or with special coatings or platings, for use in an atmosphere that would normally corrode sprinklers.", "citation": "NFPA 25 § 3.3.42.3" },
+    { "term": "Dry Sprinkler", "definition": "A sprinkler secured in an extension nipple that has a seal at the inlet end to prevent water from entering the nipple until the sprinkler operates.", "citation": "NFPA 25 § 3.3.42.4" },
+    { "term": "Early Suppression Fast-Response (ESFR) Sprinkler", "definition": "A type of fast-response sprinkler with a thermal element of RTI 50 (m·s)^1/2 or less, listed for fire suppression of specific high-challenge fire hazards.", "citation": "NFPA 25 § 3.3.42.5" },
+    { "term": "Electrically Operated Sprinkler", "definition": "A sprinkler equipped with an integral means of activation using electricity.", "citation": "NFPA 25 § 3.3.42.6" },
+    { "term": "Extended Coverage Sprinkler", "definition": "A type of spray sprinkler with maximum coverage areas as specified in Sections 11.2 and 11.3 of NFPA 13.", "citation": "NFPA 25 § 3.3.42.7" },
+    { "term": "Nozzle (Sprinkler)", "definition": "A device for use in applications requiring special water discharge patterns, directional spray, or other unusual discharge characteristics.", "citation": "NFPA 25 § 3.3.42.8" },
+    { "term": "Old-Style/Conventional Sprinkler", "definition": "A sprinkler that directs from 40 to 60 percent of the total water initially in a downward direction and is designed to be installed with the deflector either upright or pendent.", "citation": "NFPA 25 § 3.3.42.9" },
+    { "term": "Open Sprinkler", "definition": "A sprinkler that does not have actuators or heat-responsive elements.", "citation": "NFPA 25 § 3.3.42.10" },
+    { "term": "Ornamental/Decorative Sprinkler", "definition": "A sprinkler that has been painted or plated by the manufacturer.", "citation": "NFPA 25 § 3.3.42.11" },
+    { "term": "Quick-Response Early Suppression (QRES) Sprinkler", "definition": "A type of quick-response sprinkler with a thermal element of RTI 50 (m·s)^1/2 or less, listed for fire suppression of specific fire hazards.", "citation": "NFPA 25 § 3.3.42.12" },
+    { "term": "Quick-Response Extended Coverage Sprinkler", "definition": "A type of quick-response sprinkler with a thermal element of RTI 50 (m·s)^1/2 or less that complies with the extended protection areas in NFPA 13 Chapter 8.", "citation": "NFPA 25 § 3.3.42.13" },
+    { "term": "Quick-Response (QR) Sprinkler", "definition": "A type of spray sprinkler with a thermal element of RTI 50 (m·s)^1/2 or less and listed as a quick-response sprinkler for its intended use.", "citation": "NFPA 25 § 3.3.42.14" },
+    { "term": "Residential Sprinkler", "definition": "A type of fast-response sprinkler with a thermal element of RTI 50 (m·s)^1/2 or less that has been specifically investigated for its ability to enhance survivability in the room of fire origin and is listed for use in the protection of dwelling units.", "citation": "NFPA 25 § 3.3.42.15" },
+    { "term": "Special Sprinkler", "definition": "A sprinkler that has been tested and listed as prescribed in Section 15.2 of NFPA 13.", "citation": "NFPA 25 § 3.3.42.16" },
+    { "term": "Spray Sprinkler", "definition": "A type of sprinkler listed for its capability to provide fire control for a wide range of fire hazards.", "citation": "NFPA 25 § 3.3.42.17" },
+    { "term": "Standard Spray Sprinkler", "definition": "A spray sprinkler with maximum coverage areas as specified in Sections 10.2 and 10.3 of NFPA 13.", "citation": "NFPA 25 § 3.3.42.18" },
+    { "term": "Standpipe System", "definition": "An arrangement of piping, valves, hose connections, and associated equipment installed in a building so water can be discharged in streams or spray patterns through attached hose and nozzles, for extinguishing a fire and protecting the building.", "citation": "NFPA 25 § 3.3.43" },
+    { "term": "Automatic Standpipe System", "definition": "A standpipe system attached to a water supply capable of supplying the system demand and requiring no action other than opening a hose valve to provide water at hose connections.", "citation": "NFPA 25 § 3.3.43.1" },
+    { "term": "Dry Standpipe", "definition": "A standpipe system designed to have piping contain water only when the system is being utilized.", "citation": "NFPA 25 § 3.3.43.2" },
+    { "term": "Manual Standpipe", "definition": "A standpipe system that relies exclusively on the fire department connection to supply the system demand.", "citation": "NFPA 25 § 3.3.43.3" },
+    { "term": "Semiautomatic Dry Standpipe System", "definition": "A standpipe system permanently attached to a water supply capable of supplying the system demand at all times, arranged through a device such as a deluge valve that requires activation of a remote control device to provide water at hose connections.", "citation": "NFPA 25 § 3.3.43.4" },
+    { "term": "Wet Standpipe System", "definition": "A standpipe system having piping containing water at all times.", "citation": "NFPA 25 § 3.3.43.5" },
+    { "term": "Class I System", "definition": "A standpipe system providing 2.5 in. (65 mm) hose connections to supply water for use by fire departments.", "citation": "NFPA 25 § 3.3.44.1" },
+    { "term": "Class II System", "definition": "A standpipe system providing 1.5 in. (40 mm) hose stations to supply water for use primarily by trained personnel or by the fire department during initial response.", "citation": "NFPA 25 § 3.3.44.2" },
+    { "term": "Class III System", "definition": "A standpipe system providing 1.5 in. (40 mm) hose stations to supply water for use by trained personnel and 2.5 in. (65 mm) hose connections to supply a larger volume of water for use by fire departments.", "citation": "NFPA 25 § 3.3.44.3" },
+    { "term": "Strainer", "definition": "A device capable of removing from the water all solids of sufficient size to obstruct water spray nozzles.", "citation": "NFPA 25 § 3.3.45" },
+    { "term": "Supervision", "definition": "In water-based fire protection systems, a means of monitoring system status and indicating abnormal conditions.", "citation": "NFPA 25 § 3.3.46" },
+    { "term": "Test", "definition": "The operation of a device to verify it is functioning correctly, or the measurement of a system characteristic to determine if it meets requirements.", "citation": "NFPA 25 § 3.3.47" },
+    { "term": "Testing", "definition": "A procedure used to determine the operational status of a component or system by conducting periodic physical checks such as waterflow tests, fire pump tests, alarm tests, and trip tests of dry pipe, deluge, or preaction valves.", "citation": "NFPA 25 § 3.3.48" },
+    { "term": "Valve Status Test", "definition": "Flowing water to verify that valves on a portion of the system are not closed.", "citation": "NFPA 25 § 3.3.49" },
+    { "term": "Valve Status Test Connection", "definition": "A point in the system where water is discharged for purposes of performing a valve status test.", "citation": "NFPA 25 § 3.3.50" },
+    { "term": "Water Spray", "definition": "Water in a form having a predetermined pattern, particle size, velocity, and density discharged from specially designed nozzles or devices.", "citation": "NFPA 25 § 3.3.51" },
+    { "term": "Water Supply", "definition": "A source of water that provides the flows and pressures required by the water-based fire protection system.", "citation": "NFPA 25 § 3.3.52" },
+    { "term": "Waterflow Alarm Device", "definition": "An attachment to a water-based fire protection system that detects and signals a predetermined waterflow.", "citation": "NFPA 25 § 3.3.53" },
+    { "term": "Foam-Water Spray System", "definition": "A foam-water sprinkler system designed to use nozzles rather than sprinklers.", "citation": "NFPA 25 § 3.4.1" },
+    { "term": "Foam-Water Sprinkler System", "definition": "A piping network employing automatic sprinklers, nozzles, or other discharge devices connected to a source of foam concentrate and to a water supply.", "citation": "NFPA 25 § 3.4.2" },
+    { "term": "Control Valve", "definition": "A valve controlling flow to water-based fire protection systems.", "citation": "NFPA 25 § 3.5.1" },
+    { "term": "Deluge Valve", "definition": "A water supply control valve intended to be operated by actuation of an automatic detection system that is installed in the same area as the discharge devices.", "citation": "NFPA 25 § 3.5.2" },
+    { "term": "Hose Valve", "definition": "The valve to an individual hose connection with an outlet for attaching a fire hose.", "citation": "NFPA 25 § 3.5.3" },
+    { "term": "Pressure Control Valve", "definition": "A pilot-operated pressure-reducing valve designed for the purpose of reducing the downstream water pressure to a specific value under both flowing and nonflowing conditions.", "citation": "NFPA 25 § 3.5.4" },
+    { "term": "Pressure-Reducing Valve", "definition": "A valve designed to reduce the downstream water pressure under both flowing (residual) and nonflowing (static) conditions.", "citation": "NFPA 25 § 3.5.5" },
+    { "term": "Master Pressure-Reducing Valve", "definition": "A pressure-reducing valve installed to regulate pressures in an entire fire protection system and/or standpipe system zone.", "citation": "NFPA 25 § 3.5.5.1" },
+    { "term": "Pressure Relief Valve", "definition": "A device that allows the diversion of liquid to limit excess pressure in a system.", "citation": "NFPA 25 § 3.5.6" },
+    { "term": "Circulation Relief Valve", "definition": "A valve used to cool a pump by discharging a small quantity of water. This valve is separate from and independent of the main relief valve.", "citation": "NFPA 25 § 3.5.6.1" },
+    { "term": "Combined Standpipe and Sprinkler System", "definition": "A system where water piping services both 2.5 in. (65 mm) outlets for fire department use and outlets for automatic sprinklers.", "citation": "NFPA 25 § 3.6.1" },
+    { "term": "Churn (Fire Pump)", "definition": "The condition of zero flow when the fire pump is running but the only water passing through the pump is a small flow that is discharged through the pump circulation relief valve or supplies the cooling for a diesel engine driver.", "citation": "NFPA 25 § 3.6.2.4" },
+    { "term": "Fire Pump", "definition": "A pump that is a provider of liquid flow and pressure dedicated to fire protection.", "citation": "NFPA 25 § 3.6.2.3" },
+    { "term": "No Flow (Churn, Shutoff)", "definition": "The condition of zero flow when the fire pump is running but only the water passing through the pump is a small flow discharged through the circulation relief valve.", "citation": "NFPA 25 § 3.6.2.4" },
+    { "term": "Peak Load (Fire Pump)", "definition": "As pertains to annual testing in this standard, the maximum power required to drive the pump at any flow rate up to 150 percent of rated capacity.", "citation": "NFPA 25 § 3.6.2.5" },
+    { "term": "Discharge Pressure (Fire Pump)", "definition": "The total pressure available at the fire pump discharge flange.", "citation": "NFPA 25 § 3.6.2.6.1" },
+    { "term": "Net Pressure (Differential Pressure)", "definition": "For vertical turbine fire pumps, the total pressure at the fire pump discharge flange plus the total suction lift. For other fire pumps, the total pressure at the discharge flange minus the total pressure at the suction flange.", "citation": "NFPA 25 § 3.6.2.6.2" },
+    { "term": "Rated Pressure (Fire Pump)", "definition": "The net pressure (differential pressure) at rated flow and rated speed as marked on the manufacturer's nameplate.", "citation": "NFPA 25 § 3.6.2.6.3" },
+    { "term": "Suction Pressure", "definition": "The total pressure available at the fire pump suction flange.", "citation": "NFPA 25 § 3.6.2.6.4" },
+    { "term": "Rated Flow", "definition": "The capacity of the pump at rated speed and rated pressure as marked on the manufacturer's nameplate.", "citation": "NFPA 25 § 3.6.2.7" },
+    { "term": "Unadjusted Field Test Curve", "definition": "A fire pump discharge curve including churn, 100 percent rated flow, and maximum flow up to 150 percent of rated flow, based on discharge gauge readings without speed or velocity pressure adjustments.", "citation": "NFPA 25 § 3.6.2.11" },
+    { "term": "Variable Speed Pump", "definition": "A fire pump with variable speed pressure limiting control or self-regulating variable speed fire pump unit.", "citation": "NFPA 25 § 3.6.2.12" },
+    { "term": "Private Fire Service Main", "definition": "A private fire service main, as used in this standard, is that pipe and its appurtenances on private property between a source of water and the base of the system riser for water-based fire protection systems; between a source of water and inlets to foam-making systems; between a source of water and the base elbow of private hydrants or monitor nozzles; and used as fire pump suction and discharge piping, beginning at the inlet side of the check valve on a gravity or pressure tank.", "citation": "NFPA 25 § 3.6.3" },
+    { "term": "Sprinkler System", "definition": "A system, commonly activated by heat from a fire, that discharges water over the fire area, consisting of an integrated network of piping designed in accordance with water supply, a water control valve, a waterflow alarm, and a drain.", "citation": "NFPA 25 § 3.6.4" },
+    { "term": "Antifreeze Sprinkler System", "definition": "A wet pipe system using automatic sprinklers that contains a liquid solution to prevent freezing of the system, intended to discharge the solution upon sprinkler operation, followed immediately by water from a water supply.", "citation": "NFPA 25 § 3.6.4.1" },
+    { "term": "Premixed Antifreeze Solution", "definition": "A mixture of antifreeze material with water prepared and factory-mixed by the manufacturer with a quality control procedure to ensure the antifreeze solution remains homogeneous and the concentration is as specified.", "citation": "NFPA 25 § 3.6.4.1.1" },
+    { "term": "Deluge Sprinkler System", "definition": "A sprinkler system employing open sprinklers or nozzles attached to a piping system connected to a water supply through a valve that is opened by operation of a detection system installed in the same areas as the sprinklers or nozzles.", "citation": "NFPA 25 § 3.6.4.2" },
+    { "term": "Dry Pipe Sprinkler System", "definition": "A sprinkler system employing automatic sprinklers attached to a piping system containing air or nitrogen under pressure; the release of which (opening of a sprinkler) permits the water pressure to open a valve known as a dry pipe valve, and water then flows into the piping system and out the opened sprinklers.", "citation": "NFPA 25 § 3.6.4.3" },
+    { "term": "Marine System", "definition": "A sprinkler system installed on a ship, boat, or other floating structure that takes its supply from the water on which the vessel floats.", "citation": "NFPA 25 § 3.6.4.4" },
+    { "term": "Preaction Sprinkler System", "definition": "A sprinkler system employing automatic sprinklers attached to a piping system that contains air that might or might not be under pressure, with a supplemental detection system installed in the same areas as the sprinklers.", "citation": "NFPA 25 § 3.6.4.5" },
+    { "term": "Wet Pipe Sprinkler System", "definition": "A sprinkler system employing automatic sprinklers attached to a piping system containing water and connected to a water supply so water discharges immediately from sprinklers opened by heat from a fire.", "citation": "NFPA 25 § 3.6.4.6" },
+    { "term": "Water Mist System", "definition": "A distribution system connected to a water supply or water and atomizing media supplies, equipped with one or more nozzles capable of delivering water mist intended to control, suppress, or extinguish fires and demonstrated to meet the performance requirements of its listing and the applicable standard.", "citation": "NFPA 25 § 3.6.5" },
+    { "term": "Water Spray System", "definition": "An automatic or manually actuated fixed pipe system connected to a water supply and equipped with water spray nozzles designed to provide a specific water discharge and distribution over the protected surfaces or area.", "citation": "NFPA 25 § 3.6.6" },
+    { "term": "Ultra High-Speed Water Spray System", "definition": "A type of automatic water spray system where water spray is rapidly applied to protect specific hazards where deflagrations are anticipated.", "citation": "NFPA 25 § 3.6.6.1" },
+    { "term": "Water Tank", "definition": "A tank supplying water for water-based fire protection systems.", "citation": "NFPA 25 § 3.6.7" },
+    { "term": "Frequency", "definition": "Minimum and maximum time between events.", "citation": "NFPA 25 § 3.7.1" },
+    { "term": "Daily Frequency", "definition": "Occurring every day.", "citation": "NFPA 25 § 3.7.1.1" },
+    { "term": "Weekly Frequency", "definition": "Occurring once per calendar week.", "citation": "NFPA 25 § 3.7.1.2" },
+    { "term": "Monthly Frequency", "definition": "Occurring once per calendar month.", "citation": "NFPA 25 § 3.7.1.3" },
+    { "term": "Quarterly Frequency", "definition": "Occurring four times per year with a minimum of 2 months and a maximum of 4 months.", "citation": "NFPA 25 § 3.7.1.4" },
+    { "term": "Semiannual Frequency", "definition": "Occurring twice per year with a minimum of 4 months and a maximum of 8 months.", "citation": "NFPA 25 § 3.7.1.5" },
+    { "term": "Annual Frequency", "definition": "Occurring once per year with a minimum of 9 months and a maximum of 15 months.", "citation": "NFPA 25 § 3.7.1.6" },
+    { "term": "Three Years Frequency", "definition": "Occurring once every 36 months with a minimum of 30 months and a maximum of 40 months.", "citation": "NFPA 25 § 3.7.1.7" },
+    { "term": "Five Years Frequency", "definition": "Occurring once every 60 months with a minimum of 54 months and a maximum of 66 months.", "citation": "NFPA 25 § 3.7.1.8" }
+  ],
+  "inspection": [
+    { "question": "Who is responsible for properly maintaining a water-based fire protection system?", "options": ["The Authority Having Jurisdiction (AHJ)", "The property owner or designated representative", "The installing contractor"], "correctIndex": 1, "citation": "NFPA 25 § 4.1.1", "explanation": "The property owner or designated representative is responsible for properly maintaining a water-based fire protection system." },
+    { "question": "Who must perform inspection, testing, and maintenance of water-based fire protection systems?", "options": ["Any building maintenance employee", "Qualified personnel", "Only the original installer"], "correctIndex": 1, "citation": "NFPA 25 § 4.1.1.2", "explanation": "Inspection, testing, and maintenance shall be performed by qualified personnel." },
+    { "question": "At what minimum temperature must water-filled piping be maintained for freeze protection?", "options": ["32 F (0 C)", "40 F (4 C)", "50 F (10 C)"], "correctIndex": 1, "citation": "NFPA 25 § 4.1.2", "explanation": "Water-filled piping must be maintained at a minimum temperature of 40 F (4 C) unless an approved antifreeze solution is utilized." },
+    { "question": "How often must valve enclosures for preaction, deluge, and dry pipe valves subject to freezing be inspected during cold weather?", "options": ["Weekly", "Daily", "Monthly"], "correctIndex": 1, "citation": "NFPA 25 § 4.1.2.5", "explanation": "Valve enclosures subject to freezing shall be inspected daily during cold weather to verify a minimum temperature of 40 F (4 C)." },
+    { "question": "How often must valve enclosures equipped with low-temperature alarms be inspected during cold weather?", "options": ["Daily", "Weekly", "Monthly"], "correctIndex": 1, "citation": "NFPA 25 § 4.1.2.5.1", "explanation": "Valve enclosures equipped with low-temperature alarms shall be allowed to be inspected weekly." },
+    { "question": "How long must subsequent ITM records be retained?", "options": ["6 months", "1 year after the next ITM of that type", "3 years"], "correctIndex": 1, "citation": "NFPA 25 § 4.3.5", "explanation": "Subsequent records shall be retained for 1 year after the next inspection, test, or maintenance of that type required by this standard." },
+    { "question": "How long must as-built installation drawings, hydraulic calculations, original acceptance test records, and device manufacturer data sheets be retained?", "options": ["For the life of the system", "10 years", "5 years"], "correctIndex": 0, "citation": "NFPA 25 § 4.3.4", "explanation": "As-built drawings, hydraulic calculations, original acceptance test records, and device manufacturer data sheets shall be retained for the life of the system." },
+    { "question": "Who must records be made available to upon request?", "options": ["The installing contractor", "The authority having jurisdiction (AHJ)", "The monitoring company"], "correctIndex": 1, "citation": "NFPA 25 § 4.3.3", "explanation": "Records shall be made available to the AHJ upon request." },
+    { "question": "How often must sprinklers be inspected from the floor level?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 5.2.1", "explanation": "Sprinklers shall be inspected from the floor level annually." },
+    { "question": "How often is the supply of spare sprinklers inspected?", "options": ["Quarterly", "Annually", "Monthly"], "correctIndex": 1, "citation": "NFPA 25 § 5.2.1.4", "explanation": "The supply of spare sprinklers shall be inspected annually." },
+    { "question": "How often is sprinkler pipe and fittings inspected from the floor level?", "options": ["Quarterly", "Annually", "Semiannually"], "correctIndex": 1, "citation": "NFPA 25 § 5.2.2", "explanation": "Sprinkler pipe and fittings shall be inspected annually from the floor level." },
+    { "question": "How often are hangers, braces, and supports inspected from the floor level on a sprinkler system?", "options": ["Annually", "Quarterly", "Every 5 years"], "correctIndex": 0, "citation": "NFPA 25 § 5.2.3", "explanation": "Sprinkler pipe hangers, braces, and supports shall be inspected annually from the floor level." },
+    { "question": "How often must waterflow alarm and supervisory signal initiating devices on sprinkler systems be inspected?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 5.2.4", "explanation": "Waterflow alarm and supervisory signal initiating devices shall be inspected quarterly to verify that they are free of physical damage." },
+    { "question": "How often is the hydraulic design information sign inspected?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 5.2.5", "explanation": "The hydraulic design information sign shall be inspected annually." },
+    { "question": "How often is the information sign required by 4.1.9 inspected?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 2, "citation": "NFPA 25 § 5.2.7", "explanation": "The information sign required by 4.1.9 shall be inspected annually." },
+    { "question": "How often is the general information sign required by NFPA 13 inspected?", "options": ["Annually", "Quarterly", "Every 5 years"], "correctIndex": 0, "citation": "NFPA 25 § 5.2.8", "explanation": "The general information sign required by NFPA 13 shall be inspected annually." },
+    { "question": "How often is the antifreeze information sign inspected?", "options": ["Annually", "Quarterly", "Monthly"], "correctIndex": 0, "citation": "NFPA 25 § 5.2.9", "explanation": "The antifreeze information sign required by 4.1.10 shall be inspected annually." },
+    { "question": "How often must standpipe and hose system components be visually inspected?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 6.2.1", "explanation": "Components of standpipe and hose systems shall be visually inspected annually or as specified in Table 6.1.1.2." },
+    { "question": "How often must the hydraulic design information sign on a standpipe system be inspected?", "options": ["Quarterly", "Annually", "Monthly"], "correctIndex": 1, "citation": "NFPA 25 § 6.2.2", "explanation": "The hydraulic design information sign for standpipe systems shall be inspected annually." },
+    { "question": "How often must hose connections be inspected on a standpipe system?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 6.2.3", "explanation": "Hose connections shall be inspected annually." },
+    { "question": "How often must standpipe piping be inspected?", "options": ["Quarterly", "Annually", "Semiannually"], "correctIndex": 1, "citation": "NFPA 25 § 6.2.4", "explanation": "Piping shall be inspected annually." },
+    { "question": "How often is fire hose inspected on a standpipe system (per NFPA 1962)?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 6.2.5", "explanation": "Hose shall be inspected annually as required by NFPA 1962." },
+    { "question": "How often is the hose nozzle inspected?", "options": ["Quarterly only", "Annually and after each use", "Monthly"], "correctIndex": 1, "citation": "NFPA 25 § 6.2.6", "explanation": "Hose nozzles shall be inspected annually and after each use." },
+    { "question": "How often is the hose storage device inspected?", "options": ["Quarterly", "Annually", "Semiannually"], "correctIndex": 1, "citation": "NFPA 25 § 6.2.7", "explanation": "Hose storage devices shall be inspected annually." },
+    { "question": "How often is a standpipe cabinet inspected?", "options": ["Monthly", "Annually", "Quarterly"], "correctIndex": 1, "citation": "NFPA 25 § 6.2.8", "explanation": "Cabinets shall be inspected annually." },
+    { "question": "How often must exposed private fire service main piping and fittings be inspected?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 7.2.2.1.1", "explanation": "Exposed piping shall be inspected annually." },
+    { "question": "How often must mainline strainers on a private fire service main be removed and inspected (independent of flow events)?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 7.2.2.3.2", "explanation": "Mainline strainers shall be removed and inspected annually for plugging, fouling, and damaged or corroded parts." },
+    { "question": "How often must dry barrel and wall hydrants be inspected (in addition to after each operation)?", "options": ["Quarterly", "Annually", "Every 3 years"], "correctIndex": 1, "citation": "NFPA 25 § 7.2.2.4", "explanation": "Dry barrel and wall hydrants shall be inspected annually and after each operation." },
+    { "question": "How often must wet barrel hydrants be inspected (in addition to after each operation)?", "options": ["Annually", "Quarterly", "Semiannually"], "correctIndex": 0, "citation": "NFPA 25 § 7.2.2.5", "explanation": "Wet barrel hydrants shall be inspected annually and after each operation." },
+    { "question": "How often must dry hydrants be inspected?", "options": ["Annually", "At least quarterly", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 7.2.2.6", "explanation": "Dry hydrants shall be inspected at least quarterly and maintained as necessary." },
+    { "question": "How often must monitor nozzles on private fire service mains be inspected?", "options": ["Quarterly", "Semiannually", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 7.2.2.7", "explanation": "Monitor nozzles shall be inspected semiannually." },
+    { "question": "How often must hose houses be inspected?", "options": ["Quarterly", "Annually", "Monthly"], "correctIndex": 0, "citation": "NFPA 25 § 7.2.2.8", "explanation": "Hose houses shall be inspected quarterly." },
+    { "question": "How often is fire pump shaft movement or end play inspected?", "options": ["Weekly", "Annually with the pump operating", "Quarterly"], "correctIndex": 1, "citation": "NFPA 25 § 8.1.1.2.1", "explanation": "Shaft movement or end play shall be inspected annually with the pump operating." },
+    { "question": "How often must fire pump electrical connections be inspected?", "options": ["Quarterly", "Annually", "Every 3 years"], "correctIndex": 1, "citation": "NFPA 25 § 8.1.1.2.2.1", "explanation": "Electrical connections shall be inspected annually and repaired as necessary." },
+    { "question": "How often must engine crankcase breathers on a diesel fire pump be inspected?", "options": ["Weekly", "Monthly", "Quarterly"], "correctIndex": 2, "citation": "NFPA 25 § 8.1.1.2.12", "explanation": "Engine crankcase breathers shall be inspected quarterly." },
+    { "question": "How often must exhaust systems, drain condensate traps, and silencers on a diesel fire pump be inspected?", "options": ["Weekly", "Quarterly", "Annually"], "correctIndex": 2, "citation": "NFPA 25 § 8.1.1.2.13", "explanation": "Exhaust systems, drain condensate traps, and silencers shall be inspected annually." },
+    { "question": "How often must back pressure on the engine turbo be measured for a diesel fire pump?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 8.1.1.2.14", "explanation": "Back pressure on the engine turbos shall be measured annually." },
+    { "question": "How often must fire pump batteries be checked (specific gravity, state of charge, charger rates)?", "options": ["Quarterly", "Monthly", "Annually"], "correctIndex": 2, "citation": "NFPA 25 § 8.1.1.2.15", "explanation": "Batteries shall be checked annually for specific gravity, state of charge, charger rates, terminal cleanliness, and cranking voltage." },
+    { "question": "How often must the diesel pump house/room be visually observed?", "options": ["Daily", "Weekly", "Monthly"], "correctIndex": 1, "citation": "NFPA 25 § 8.2.2 (Table 8.1.1.2)", "explanation": "The pump house/room conditions shall be observed weekly." },
+    { "question": "How often is a diesel engine fire pump electrical system inspected?", "options": ["Weekly", "Monthly", "Quarterly"], "correctIndex": 0, "citation": "NFPA 25 Table 8.1.1.2", "explanation": "The electric system of a diesel engine fire pump is inspected weekly." },
+    { "question": "How often are fire pump suction screens inspected?", "options": ["Weekly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 8.3.3.15", "explanation": "After flow tests or system activations, suction screens shall be inspected and cleared of debris (annual inspection per Table 8.1.1.2)." },
+    { "question": "How often must water level in tanks equipped with supervised water-level alarms (connected to constantly attended location) be inspected?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 9.2.1.1", "explanation": "The water level in tanks equipped with supervised water alarms shall be inspected quarterly." },
+    { "question": "How often must water level in tanks NOT equipped with supervised water-level alarms be inspected?", "options": ["Weekly", "Monthly", "Quarterly"], "correctIndex": 1, "citation": "NFPA 25 § 9.2.1.2", "explanation": "The water level in tanks not equipped with supervised water alarms shall be inspected monthly." },
+    { "question": "How often is the heating system on a water storage tank with supervised low-temperature alarms inspected during heating season?", "options": ["Daily", "Quarterly", "Monthly"], "correctIndex": 1, "citation": "NFPA 25 § 9.2.2.1", "explanation": "Tank heating systems with supervised low-temperature alarms shall be inspected quarterly during the heating season." },
+    { "question": "How often is the heating system on a water storage tank WITHOUT supervised low-temperature alarms inspected during heating season?", "options": ["Daily", "Weekly", "Monthly"], "correctIndex": 0, "citation": "NFPA 25 § 9.2.2.2", "explanation": "Tank heating systems without supervised low-temperature alarms shall be inspected daily during the heating season." },
+    { "question": "How often are temperature alarms on water storage tanks not connected to a constantly attended location inspected during heating season?", "options": ["Daily", "Weekly", "Monthly"], "correctIndex": 1, "citation": "NFPA 25 § 9.2.3.3", "explanation": "Temperature of water in tanks without low-temperature alarms shall be inspected weekly during heating season." },
+    { "question": "How often is the exterior of a water storage tank (foundation, support structure, surrounding area, vents, catwalks, ladders) inspected?", "options": ["Annually", "Quarterly", "Monthly"], "correctIndex": 1, "citation": "NFPA 25 § 9.2.4.1", "explanation": "The exterior of the tank, supporting structure, vents, foundation, catwalks or ladders shall be inspected quarterly." },
+    { "question": "How often are expansion joints on a water storage tank inspected for leaks and cracks?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 9.2.4.3", "explanation": "Expansion joints shall be inspected annually for leaks and cracks." },
+    { "question": "How often are hoops and grillage of wooden water tanks inspected?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 9.2.4.4", "explanation": "The hoops and grillage of wooden tanks shall be inspected annually." },
+    { "question": "How often are painted, coated, or insulated surfaces of a water storage tank inspected?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 9.2.4.5", "explanation": "Exterior painted, coated, or insulated surfaces shall be inspected annually for signs of degradation." },
+    { "question": "How often must the interior of a steel water tank WITHOUT corrosion protection be inspected?", "options": ["Every 3 years", "Every 5 years", "Every 10 years"], "correctIndex": 0, "citation": "NFPA 25 § 9.2.5.1.1", "explanation": "The interior of steel tanks without corrosion protection shall be inspected every 3 years." },
+    { "question": "How often must the interior of water tanks (other than unprotected steel) be inspected?", "options": ["Every 3 years", "Every 5 years", "Every 10 years"], "correctIndex": 1, "citation": "NFPA 25 § 9.2.5.1.2", "explanation": "The interior of all other types of tanks shall be inspected every 5 years." },
+    { "question": "How often must OS&Y isolation valves that are part of an automatic tank fill valve be inspected?", "options": ["Weekly", "Monthly", "Quarterly"], "correctIndex": 1, "citation": "NFPA 25 § 9.5.1.2", "explanation": "Valves secured with locks or electrically supervised shall be inspected monthly." },
+    { "question": "How often is drainage around a water spray fixed system inspected?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 10.2.7", "explanation": "Drainage shall be inspected visually on a quarterly basis." },
+    { "question": "How often are water spray nozzles inspected?", "options": ["Quarterly", "Annually and after each system activation", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 10.2.4", "explanation": "Water spray nozzles shall be inspected annually and after each system activation." },
+    { "question": "How often are water spray system pipe and fittings inspected?", "options": ["Quarterly", "Annually and after each system activation", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 10.2.3", "explanation": "Piping shall be inspected annually and after each system activation." },
+    { "question": "How often are UHSWSS detectors inspected?", "options": ["Weekly", "Monthly", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 10.4.2", "explanation": "All UHSWSS detectors shall be tested and inspected monthly for physical damage and accumulation of deposits on lenses." },
+    { "question": "How often are UHSWSS controllers and valves inspected?", "options": ["Monthly", "Start of each working shift", "Quarterly"], "correctIndex": 1, "citation": "NFPA 25 § 10.4.3", "explanation": "UHSWSS controllers and valves shall be inspected for faults at the start of each working shift." },
+    { "question": "How often is the discharge device location for spray nozzles in a foam-water system inspected?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 0, "citation": "NFPA 25 § 11.2.4", "explanation": "Spray nozzle discharge device location shall be inspected monthly." },
+    { "question": "How often is the discharge device location for sprinklers in a foam-water system inspected?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 2, "citation": "NFPA 25 § 11.2.4", "explanation": "Sprinkler discharge device location shall be inspected annually." },
+    { "question": "How often is drainage in a foam-water system area inspected?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 11.2.7", "explanation": "Drainage in system area shall be inspected quarterly." },
+    { "question": "How often is the foam concentrate strainer inspected?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 11.2.6.4", "explanation": "The foam concentrate strainer shall be inspected quarterly." },
+    { "question": "How often is the foam-water system proportioning system inspected?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 0, "citation": "NFPA 25 § 11.2.8", "explanation": "Foam-water proportioning systems shall be inspected monthly." },
+    { "question": "How often is foam-water system fittings corrosion inspected?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 2, "citation": "NFPA 25 § 11.2.2", "explanation": "Fittings shall be inspected annually for corrosion." },
+    { "question": "How often are foam-water system hangers, braces, and supports inspected?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 11.2.3", "explanation": "Hangers, braces, and supports shall be inspected annually." },
+    { "question": "How often are water mist system distribution piping, tubing, and fittings inspected from floor level?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 12.2.3.1", "explanation": "Water mist system distribution piping, tubing, and fittings shall be inspected annually from the floor level." },
+    { "question": "How often are water mist nozzles inspected from the floor level?", "options": ["Quarterly", "Annually", "Monthly"], "correctIndex": 1, "citation": "NFPA 25 § 12.2.1.1", "explanation": "Water mist nozzles shall be inspected from the floor level annually." },
+    { "question": "How often are water mist system hangers, braces, and supports inspected from the floor level?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 12.2.4.1", "explanation": "Hangers, braces, and supports shall be inspected annually from the floor level." },
+    { "question": "How often must compressed gas cylinders for water mist systems be inspected for proper securement?", "options": ["Monthly", "Quarterly", "Semiannually"], "correctIndex": 1, "citation": "NFPA 25 § 12.2.5.1.1", "explanation": "Quarterly, compressed gas cylinders shall be inspected for proper securement." },
+    { "question": "How often must high-pressure water cylinders in a water mist system be inspected for proper securement?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 12.2.5.1.2", "explanation": "Annually, high-pressure water cylinders shall be inspected for proper securement." },
+    { "question": "How often are unsupervised water levels in water mist high-pressure storage cylinders inspected?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 12.2.5.5.1", "explanation": "Unsupervised water levels in high-pressure cylinders shall be inspected quarterly." },
+    { "question": "How often are supervised water levels in water mist high-pressure storage cylinders inspected?", "options": ["Quarterly", "Semiannually", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 12.2.5.5.2", "explanation": "Supervised water levels in high-pressure cylinders shall be inspected semiannually." },
+    { "question": "How often are water mist enclosure features and interlocks inspected?", "options": ["Monthly", "Quarterly", "Semiannually"], "correctIndex": 2, "citation": "NFPA 25 § 12.2.11", "explanation": "Enclosure features and interlocks shall be inspected semiannually." },
+    { "question": "How often are alarm valve exteriors inspected?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.1.1", "explanation": "Alarm valve exteriors shall be inspected quarterly." },
+    { "question": "How often are alarm valve interiors inspected?", "options": ["Annually", "Every 5 years", "Every 10 years"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.1.2", "explanation": "Alarm valves and their associated strainers, filters, and restriction orifices shall be inspected internally every 5 years." },
+    { "question": "How often are reduced-pressure and reduced-pressure detector backflow prevention assemblies inspected?", "options": ["Weekly", "Monthly", "Quarterly"], "correctIndex": 0, "citation": "NFPA 25 § 13.7.1.1", "explanation": "Reduced-pressure and reduced-pressure detector backflow prevention assemblies shall be inspected weekly to ensure the differential-sensing valve relief port is not continuously discharging." },
+    { "question": "How often must backflow prevention assembly interiors be inspected?", "options": ["Annually", "Every 5 years", "Every 10 years"], "correctIndex": 1, "citation": "NFPA 25 § 13.7.1.3", "explanation": "Backflow prevention assemblies shall be inspected internally every 5 years to verify that all components operate correctly, move freely, and are in good condition." },
+    { "question": "How often must check valves be inspected internally?", "options": ["Annually", "Every 5 years", "Every 10 years"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.2.1", "explanation": "Valves shall be inspected internally every 5 years to verify that all components operate correctly." },
+    { "question": "How often are control valves that are NOT locked or supervised inspected?", "options": ["Weekly", "Monthly", "Quarterly"], "correctIndex": 0, "citation": "NFPA 25 § 13.3.2.1", "explanation": "All valves shall be inspected weekly, except as permitted by 13.3.2.1.1 and 13.3.2.1.2." },
+    { "question": "How often are control valves secured with locks or supervised in accordance with applicable NFPA standards inspected?", "options": ["Weekly", "Monthly", "Quarterly"], "correctIndex": 1, "citation": "NFPA 25 § 13.3.2.1.1", "explanation": "Valves secured with locks or supervised shall be permitted to be inspected monthly." },
+    { "question": "How often are electrically supervised control valves inspected?", "options": ["Weekly", "Monthly", "Quarterly"], "correctIndex": 2, "citation": "NFPA 25 § 13.3.2.1.2", "explanation": "Valves that are electrically supervised shall be permitted to be inspected quarterly." },
+    { "question": "How often is the exterior of a dry pipe valve inspected?", "options": ["Weekly", "Monthly", "Quarterly"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.5.1.2", "explanation": "The dry pipe valve shall be externally inspected monthly to verify it is free of physical damage." },
+    { "question": "How often is the interior of a dry pipe valve inspected?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.5.1.3", "explanation": "The interior of the dry pipe valve shall be inspected annually when the trip test is conducted." },
+    { "question": "How often is the exterior of a deluge valve inspected?", "options": ["Weekly", "Monthly", "Quarterly"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.4.1.1", "explanation": "The deluge valve shall be externally inspected monthly to verify it is free of physical damage." },
+    { "question": "How often is the interior of a deluge valve inspected?", "options": ["Annually", "Annually/5 years", "Every 5 years only"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.4.1.2", "explanation": "The interior of the deluge valve shall be inspected annually when the trip test is conducted; internal inspection of valves resetable without removal of a faceplate is permitted every 5 years." },
+    { "question": "How often is the exterior of a preaction valve inspected?", "options": ["Weekly", "Monthly", "Quarterly"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.3.1.1", "explanation": "The preaction valve shall be externally inspected monthly to verify it is free of physical damage." },
+    { "question": "How often is the interior of a preaction valve inspected?", "options": ["Annually", "Annually/5 years", "Every 5 years only"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.3.1.2", "explanation": "The interior of the preaction valve shall be inspected annually when the trip test is conducted; internal inspection of valves resetable without removal of a faceplate is permitted every 5 years." },
+    { "question": "How often are strainers, filters, and orifices in alarm/deluge/preaction/dry pipe valves inspected internally?", "options": ["Annually", "Every 5 years", "Every 10 years"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.1.2", "explanation": "Strainers, filters, and orifices shall be inspected internally every 5 years unless tests indicate a greater frequency is necessary." },
+    { "question": "How often are fire department connections inspected?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 13.8.1", "explanation": "Fire department connections shall be inspected quarterly." },
+    { "question": "How often must pressure gauges be inspected?", "options": ["Weekly", "Monthly", "Quarterly"], "correctIndex": 1, "citation": "NFPA 25 § 13.2.5.1.1", "explanation": "Gauges shall be inspected monthly to verify they are operable and not physically damaged." },
+    { "question": "How often are gauges monitoring water pressure inspected to verify normal water supply pressure is being maintained?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 13.2.5.1.2", "explanation": "Gauges monitoring water pressure shall be inspected quarterly to verify normal water supply pressure is being maintained." },
+    { "question": "How often are gauges monitoring air or nitrogen pressure on a dry pipe or preaction system inspected?", "options": ["Weekly", "Monthly", "Quarterly"], "correctIndex": 1, "citation": "NFPA 25 § 13.2.5.1.3", "explanation": "Gauges monitoring air or nitrogen pressure shall be inspected monthly." },
+    { "question": "How often are hose valves inspected?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 13.6.1.1", "explanation": "Hose valves shall be inspected quarterly." },
+    { "question": "How often are valve supervisory signal initiating devices inspected for physical damage?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 13.2.6.1", "explanation": "Supervisory signal devices shall be inspected quarterly to verify they are free of physical damage." },
+    { "question": "How often are master pressure-regulating valves inspected?", "options": ["Weekly", "Monthly", "Quarterly"], "correctIndex": 0, "citation": "NFPA 25 § 13.5.4.1", "explanation": "Master pressure-regulating devices shall be inspected weekly." },
+    { "question": "How often are sprinkler system pressure-reducing valves inspected?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 13.5.1.1", "explanation": "Sprinkler system pressure-reducing valves shall be inspected quarterly." },
+    { "question": "How often are hose connection pressure-regulating valves inspected?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 13.5.2.1", "explanation": "Hose connection pressure-regulating devices shall be inspected annually." },
+    { "question": "How often are hose rack pressure-regulating valves inspected?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 13.5.3.1", "explanation": "Hose rack assembly pressure-regulating devices shall be inspected annually." },
+    { "question": "How often is fuel tank, float switch, and supervisory signal interstitial space inspected on a fire pump?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 8.1.1.2.7", "explanation": "Fuel tanks, float switches, and supervisory signals for interstitial space shall be tested quarterly for liquid intrusion." },
+    { "question": "How often are air compressors or nitrogen generators dedicated to fire protection systems inspected?", "options": ["Weekly", "Monthly", "Quarterly"], "correctIndex": 1, "citation": "NFPA 25 § 13.10.2", "explanation": "Air compressors and nitrogen generators dedicated to water-based fire protection systems shall be inspected monthly." },
+    { "question": "How often are automatic detection equipment used to actuate water-based fire protection systems inspected (per NFPA 72)?", "options": ["Per NFPA 72 schedule", "Quarterly", "Every 5 years"], "correctIndex": 0, "citation": "NFPA 25 § 13.9.2", "explanation": "Automatic detection equipment shall be inspected, tested, and maintained in accordance with NFPA 72." },
+    { "question": "How often must the enclosure of a water storage tank automatic fill valve be inspected during cold weather?", "options": ["Daily or weekly", "Monthly", "Quarterly"], "correctIndex": 0, "citation": "NFPA 25 Table 9.5.1.1", "explanation": "Enclosure shall be inspected daily/weekly during cold weather, per Chapter 4." },
+    { "question": "How often is the exterior of an automatic tank fill valve inspected?", "options": ["Weekly", "Monthly", "Quarterly"], "correctIndex": 1, "citation": "NFPA 25 Table 9.5.1.1", "explanation": "Exterior of automatic tank fill valve is inspected monthly per Chapter 13." },
+    { "question": "How often are automatic tank fill valve strainers, filters, and orifices inspected?", "options": ["Annually", "Every 5 years", "Every 10 years"], "correctIndex": 1, "citation": "NFPA 25 Table 9.5.1.1", "explanation": "Strainers, filters, and orifices shall be inspected every 5 years per Chapter 13." },
+    { "question": "How often are escutcheons and coverplates for recessed, flush, and concealed sprinklers inspected for missing items?", "options": ["During each annual inspection", "Monthly", "Quarterly"], "correctIndex": 0, "citation": "NFPA 25 § 5.2.1.5", "explanation": "Escutcheons and coverplates shall be replaced with their listed escutcheon or coverplate if found missing during the annual inspection." },
+    { "question": "How often must heat tracing be inspected and maintained?", "options": ["Annually", "Per manufacturer requirements", "Quarterly"], "correctIndex": 1, "citation": "NFPA 25 § 5.2.6", "explanation": "Heat tracing shall be inspected and maintained in accordance with manufacturer's requirements." },
+    { "question": "What is the inspection frequency for additive storage cylinders in a water mist system?", "options": ["Monthly", "Quarterly/semiannually", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 12.2.7.1 and 12.2.7.2", "explanation": "The storage cylinder is inspected quarterly for external corrosion and semiannually for additive quantity (per Table 12.1.1.2)." },
+    { "question": "How often are unsupervised water levels in recirculation tanks (water mist) inspected?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 0, "citation": "NFPA 25 § 12.2.8.2.1", "explanation": "Unsupervised water levels in recirculation tanks shall be inspected monthly." },
+    { "question": "How often is the moisture trap on a pneumatically operated standby pump in a water mist system inspected?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 0, "citation": "NFPA 25 § 12.2.9.1", "explanation": "Monthly, the moisture trap shall be visually inspected and emptied." },
+    { "question": "How often must the water mist system water supply pressure be visually inspected?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 12.2.10.1", "explanation": "Quarterly, the water supply pressure shall be visually inspected to determine that it is within the water mist manufacturer's specifications." },
+    { "question": "How often must dry pipe and preaction sprinkler piping be inspected internally for ice obstruction in refrigerated spaces below 32 F?", "options": ["Quarterly", "Semiannually", "Annually"], "correctIndex": 2, "citation": "NFPA 25 § 14.4", "explanation": "Dry pipe or preaction sprinkler piping protecting or passing through refrigerated spaces maintained at temperatures below 32 F (0 C) shall be inspected internally on an annual basis for ice obstructions." },
+    { "question": "When must an assessment of the internal condition of piping be conducted (minimum frequency)?", "options": ["Every 3 years", "Every 5 years", "Every 10 years"], "correctIndex": 1, "citation": "NFPA 25 § 14.2.1.1", "explanation": "An assessment of the internal condition of piping shall be conducted at a minimum of every 5 years or in accordance with 14.2.1.2." },
+    { "question": "Which authority must be notified before a fire protection system is shut down for testing?", "options": ["Only the property owner", "The AHJ, fire department (if required), and alarm receiving facility", "Only the alarm-receiving facility"], "correctIndex": 1, "citation": "NFPA 25 § 4.1.4", "explanation": "The property owner or designated representative shall notify the AHJ, the fire department (if required), and the alarm-receiving facility before testing or shutting down a system." }
+  ],
+  "testing": [
+    { "question": "How often must waterflow alarm devices (mechanical type) on a sprinkler system be tested?", "options": ["Monthly", "Quarterly", "Semiannually"], "correctIndex": 1, "citation": "NFPA 25 § 5.3.3.1", "explanation": "Mechanical waterflow alarm devices, including water motor gongs, shall be tested quarterly." },
+    { "question": "How often must vane-type and pressure switch-type waterflow alarm devices be tested?", "options": ["Quarterly", "Semiannually", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 5.3.3.2", "explanation": "Vane-type and pressure switch-type waterflow alarm devices shall be tested semiannually." },
+    { "question": "How often is an antifreeze solution tested for proper concentration?", "options": ["Quarterly", "Semiannually", "Annually before freezing weather"], "correctIndex": 2, "citation": "NFPA 25 § 5.3.4", "explanation": "Annually, before the onset of freezing weather, the antifreeze solution shall be tested." },
+    { "question": "When are standard spray sprinklers first required to be tested after installation?", "options": ["At 25 years and every 10 years thereafter", "At 50 years and every 10 years thereafter", "At 75 years and every 10 years thereafter"], "correctIndex": 1, "citation": "NFPA 25 § 5.3.1.1.1", "explanation": "Where sprinklers have been installed for 50 years, they shall be replaced or representative samples tested; tests then repeated at 10-year intervals." },
+    { "question": "Sprinklers installed for 75 years shall be tested at what frequency thereafter?", "options": ["Every 3 years", "Every 5 years", "Every 10 years"], "correctIndex": 1, "citation": "NFPA 25 § 5.3.1.1.5", "explanation": "Where sprinklers have been installed for 75 years, they shall be replaced or representative samples tested at 5-year intervals." },
+    { "question": "How often are extra-high or greater temperature solder-type sprinklers tested?", "options": ["Every 3 years", "Every 5 years", "Every 10 years"], "correctIndex": 1, "citation": "NFPA 25 § 5.3.1.1.4", "explanation": "Solder-type sprinklers with a temperature classification of extra high (325 F/163 C) or greater shall be tested at 5-year intervals." },
+    { "question": "When are fast-response sprinklers first tested and how often thereafter?", "options": ["At 10 years and every 5 years thereafter", "At 20 years and every 10 years thereafter", "At 50 years and every 10 years thereafter"], "correctIndex": 1, "citation": "NFPA 25 § 5.3.1.1.3", "explanation": "Fast-response sprinklers shall be replaced or representative samples tested at 20 years and retested at 10-year intervals." },
+    { "question": "When are dry sprinklers first tested after installation?", "options": ["At 10 years", "At 15 years", "At 20 years"], "correctIndex": 1, "citation": "NFPA 25 § 5.3.1.1.6", "explanation": "Dry sprinklers that have been installed for 15 years shall be replaced or representative samples tested and retested at 10-year intervals." },
+    { "question": "How often are sprinklers exposed to harsh environments tested?", "options": ["Every 3 years", "Every 5 years", "Every 10 years"], "correctIndex": 1, "citation": "NFPA 25 § 5.3.1.2", "explanation": "Sprinklers exposed to harsh environments shall be tested on a 5-year basis (replaced or representative samples tested)." },
+    { "question": "How often are listed corrosion-resistant sprinklers in harsh environments tested?", "options": ["Every 5 years", "Every 10 years", "Every 20 years"], "correctIndex": 1, "citation": "NFPA 25 § 5.3.1.1.3", "explanation": "Listed corrosion-resistant sprinklers installed in harsh environments shall be permitted to be tested on a 10-year basis." },
+    { "question": "How often must vane-type waterflow alarm devices tested using circulated water be tested by opening the inspector's test connection (minimum)?", "options": ["Annually", "Every 3 years", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 5.3.3.4.2", "explanation": "Vane-type waterflow alarm devices tested semiannually using circulated water shall be tested by opening the inspector's test connection at a minimum frequency of once every 3 years." },
+    { "question": "How often is a flow test conducted on automatic standpipe systems?", "options": ["Every 3 years", "Every 5 years", "Every 10 years"], "correctIndex": 1, "citation": "NFPA 25 § 6.3.1.1", "explanation": "A flow test shall be conducted every 5 years on all automatic standpipe systems." },
+    { "question": "What pressure is used for the hydrostatic test on a manual standpipe or semiautomatic dry standpipe?", "options": ["100 psi above maximum pressure for 1 hour", "200 psi for 2 hours (or 50 psi above max where >150 psi)", "150 psi for 2 hours"], "correctIndex": 1, "citation": "NFPA 25 § 6.3.2.1", "explanation": "Hydrostatic tests of not less than 200 psi for 2 hours, or 50 psi in excess of max pressure where max pressure is in excess of 150 psi, shall be conducted every 5 years." },
+    { "question": "How often must hydrostatic tests be conducted on manual standpipe systems?", "options": ["Every 3 years", "Every 5 years", "Every 10 years"], "correctIndex": 1, "citation": "NFPA 25 § 6.3.2.1", "explanation": "Hydrostatic tests shall be conducted every 5 years on manual standpipe systems and semiautomatic dry standpipe systems." },
+    { "question": "What is the Class I and Class III standpipe system demand at the hydraulically most remote standpipe during flow testing?", "options": ["250 gpm", "500 gpm", "1000 gpm"], "correctIndex": 1, "citation": "NFPA 25 § 6.3.1.2", "explanation": "Class I and Class III standpipe system demand shall include 500 gpm (1892 L/min) for the most remote standpipe and 250 gpm for each additional standpipe." },
+    { "question": "What is the Class II standpipe system demand for the most remote standpipe connection?", "options": ["100 gpm", "250 gpm", "500 gpm"], "correctIndex": 0, "citation": "NFPA 25 § 6.3.1.3", "explanation": "Class II standpipe system demand shall include 100 gpm (379 L/min) for the most remote standpipe connection." },
+    { "question": "How often are exposed and underground piping flow tests conducted on private fire service mains?", "options": ["Every 3 years", "Every 5 years", "Every 10 years"], "correctIndex": 1, "citation": "NFPA 25 § 7.3.1", "explanation": "Underground and exposed piping shall be flow tested at minimum 5-year intervals." },
+    { "question": "How often must hydrants be flow tested?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 7.3.2", "explanation": "Hydrants shall be tested annually to ensure proper functioning." },
+    { "question": "After opening a hydrant, full drainage must take no longer than what duration?", "options": ["30 minutes", "60 minutes", "120 minutes"], "correctIndex": 1, "citation": "NFPA 25 § 7.3.2.4", "explanation": "Full drainage shall take no longer than 60 minutes." },
+    { "question": "What is the test frequency for a diesel engine-driven fire pump (no-flow / churn test)?", "options": ["Weekly", "Monthly", "Annually"], "correctIndex": 0, "citation": "NFPA 25 § 8.3.1.1", "explanation": "A weekly test frequency shall be required for diesel engine-driven fire pumps (no-flow test)." },
+    { "question": "For most electric motor-driven fire pumps NOT in the high-risk categories, what is the no-flow test frequency?", "options": ["Weekly", "Monthly", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 8.3.1.2.2", "explanation": "A monthly test frequency shall be permitted for electric fire pumps not identified in 8.3.1.2.1." },
+    { "question": "How long must a diesel fire pump run during a weekly no-flow test?", "options": ["10 minutes", "20 minutes", "30 minutes"], "correctIndex": 2, "citation": "NFPA 25 § 8.3.2.4", "explanation": "The diesel pump shall run a minimum of 30 minutes." },
+    { "question": "How long must an electric fire pump run during a weekly no-flow test?", "options": ["5 minutes", "10 minutes", "30 minutes"], "correctIndex": 1, "citation": "NFPA 25 § 8.3.2.3", "explanation": "The electric pump shall run a minimum of 10 minutes." },
+    { "question": "How often must an annual flow test of each fire pump assembly be conducted?", "options": ["Quarterly", "Semiannually", "Annually"], "correctIndex": 2, "citation": "NFPA 25 § 8.3.3.1", "explanation": "An annual test of each pump assembly shall be conducted under no-flow, rated flow, and 150 percent of the rated capacity flow." },
+    { "question": "At what flow rates is the annual fire pump test conducted at minimum?", "options": ["100% only", "100% and 150% only", "Churn, 100%, and 150% of rated capacity"], "correctIndex": 2, "citation": "NFPA 25 § 8.3.3.1", "explanation": "An annual test shall be conducted under no-flow (churn), rated flow, and 150 percent of pump rated capacity flow." },
+    { "question": "How accurate must flow meters be calibrated to (annually)?", "options": ["Plus or minus 1 percent", "Plus or minus 3 percent", "Plus or minus 5 percent"], "correctIndex": 1, "citation": "NFPA 25 § 8.3.3.5.3", "explanation": "Flow meters shall be calibrated annually to an accuracy level of plus or minus 3 percent." },
+    { "question": "What is the minimum required net pressure at each flow point for an acceptable fire pump test?", "options": ["75 percent of pump curve", "85 percent of pump curve", "95 percent of original pump curve"], "correctIndex": 2, "citation": "NFPA 25 § 8.3.7.2.3", "explanation": "The net pressure at each flow point shall be at least 95 percent of the original manufacturer's pump curve, unadjusted field test curve, or test curve from the nameplate." },
+    { "question": "How often must diesel fuel be tested for degradation?", "options": ["Quarterly", "Semiannually", "Annually"], "correctIndex": 2, "citation": "NFPA 25 § 8.3.4.1", "explanation": "Diesel fuel shall be tested for degradation no less than annually." },
+    { "question": "How often is the automatic transfer switch tested?", "options": ["Quarterly", "Annually", "Per NFPA 110"], "correctIndex": 1, "citation": "NFPA 25 § 8.3.3.12", "explanation": "Automatic transfer switches shall be tested annually under the criteria in 8.3.3.12 to ensure overcurrent protective devices do not open." },
+    { "question": "How often must engine oil be changed on a diesel fire pump?", "options": ["Every 50 operating hours or annually", "Every 25 operating hours or annually", "Every 100 operating hours or annually"], "correctIndex": 0, "citation": "NFPA 25 § 8.1.1.2.17", "explanation": "Lubricating oil in engines shall be changed every 50 hours of operation or annually." },
+    { "question": "How often must power transmission components with elastomeric materials be replaced?", "options": ["Every 3 years", "Every 5 years or per manufacturer", "Every 10 years"], "correctIndex": 1, "citation": "NFPA 25 § 8.1.1.2.23", "explanation": "Power transmitting components with elastomeric materials shall be replaced every 5 years or as required by the component manufacturer." },
+    { "question": "How often must high-temperature limit switches on tank heating systems be tested?", "options": ["Annually", "Prior to heating season", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 9.3.4", "explanation": "High water temperature limit switches on tank heating systems shall be tested prior to the heating season." },
+    { "question": "How often must water-level indicators on water storage tanks be tested?", "options": ["Annually", "Every 3 years", "Every 5 years"], "correctIndex": 2, "citation": "NFPA 25 § 9.3.1", "explanation": "Level indicators shall be tested every 5 years for accuracy and freedom of movement." },
+    { "question": "How often must low water temperature signals on water storage tanks be tested?", "options": ["Annually", "Prior to the heating season", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 9.3.3", "explanation": "Low water temperature signals shall be tested prior to the heating season." },
+    { "question": "How often must high and low water level signals be tested?", "options": ["Annually", "Quarterly", "Every 5 years"], "correctIndex": 0, "citation": "NFPA 25 § 9.3.5", "explanation": "High and low water level signals shall be tested annually." },
+    { "question": "How often must automatic tank fill valves be tested?", "options": ["Annually", "Quarterly", "Every 5 years"], "correctIndex": 0, "citation": "NFPA 25 § 9.5.3", "explanation": "All automatic tank fill valves shall be tested yearly." },
+    { "question": "How often is a water spray fixed system operational test performed?", "options": ["Quarterly", "Semiannually", "Annually"], "correctIndex": 2, "citation": "NFPA 25 § 10.3.1.1", "explanation": "Per Table 10.1.1.2, manual release, nozzles, strainers, UHSWSS, and the system are tested annually." },
+    { "question": "Under operational test conditions, the water spray heat detection systems exposed to a test heat source shall operate within what time?", "options": ["40 seconds", "60 seconds", "90 seconds"], "correctIndex": 0, "citation": "NFPA 25 § 10.3.3.1.1", "explanation": "Under test conditions, the heat detection systems, where exposed to a heat test source, shall operate within 40 seconds." },
+    { "question": "What is the maximum allowable response time for an Ultra-High-Speed Water Spray System (UHSWSS)?", "options": ["50 milliseconds", "100 milliseconds", "200 milliseconds"], "correctIndex": 1, "citation": "NFPA 25 § 10.4.5.2", "explanation": "The response time shall be in accordance with the requirements of the system but not more than 100 milliseconds." },
+    { "question": "How often is a UHSWSS full operational test conducted?", "options": ["Quarterly", "Semiannually", "Annually (at intervals not exceeding 1 year)"], "correctIndex": 2, "citation": "NFPA 25 § 10.4.1", "explanation": "A full operational test, including measurements of response time, shall be conducted at intervals not exceeding 1 year." },
+    { "question": "How often must the complete foam-water sprinkler system be operational tested?", "options": ["Quarterly", "Semiannually", "Annually"], "correctIndex": 2, "citation": "NFPA 25 § 11.3.2", "explanation": "Per Table 11.1.1.2, the complete foam-water sprinkler system operational test is annual." },
+    { "question": "How often is a foam-water sprinkler system foam concentrate solution (concentration) tested?", "options": ["Quarterly", "Semiannually", "Annually"], "correctIndex": 2, "citation": "NFPA 25 § 11.3.5", "explanation": "Foam-water solution shall be tested annually." },
+    { "question": "How often is the foam-water sprinkler system manual actuation device tested?", "options": ["Quarterly", "Semiannually", "Annually"], "correctIndex": 2, "citation": "NFPA 25 § 11.3.4", "explanation": "Manual actuation devices shall be tested annually." },
+    { "question": "What is the allowable variance for foam concentrate induction rate of a proportioner?", "options": ["Plus or minus 5 percent", "Within minus 0 percent to plus 30 percent (or 1 percentage point, whichever is less)", "Plus or minus 10 percent"], "correctIndex": 1, "citation": "NFPA 25 § 11.3.5.4", "explanation": "The foam concentrate induction rate shall be within minus 0 percent to plus 30 percent of the manufacturer's listed concentration, or plus 1 percentage point, whichever is less." },
+    { "question": "How often is the foam-water bladder tank hydrostatic test performed?", "options": ["Every 5 years", "Every 10 years", "Every 15 years"], "correctIndex": 1, "citation": "NFPA 25 § 11.4.5.2", "explanation": "The foam concentrate bladder tank shall be hydrostatically tested every 10 years at system working pressure." },
+    { "question": "How often is foam-water sight glass replaced?", "options": ["Every 5 years", "Every 10 years", "Every 15 years"], "correctIndex": 1, "citation": "NFPA 25 § 11.4.5.1", "explanation": "Sight glass shall be tested every 10 years per Table 11.1.1.2 (referenced under bladder tank type)." },
+    { "question": "How often are foam concentrate pumps serviced (interval not to exceed)?", "options": ["3 years", "5 years", "10 years"], "correctIndex": 1, "citation": "NFPA 25 § 11.4.7.2", "explanation": "Foam pumps, drive train, and drivers shall be serviced in accordance with the manufacturer's instructions and frequency but at intervals of not more than 5 years." },
+    { "question": "How often are foam-water pressure vacuum vents serviced?", "options": ["Every 3 years", "Every 5 years", "Every 10 years"], "correctIndex": 1, "citation": "NFPA 25 § 11.4.9", "explanation": "The procedures specified in 11.4.9.1 through 11.4.9.13 shall be performed on pressure vacuum vents every 5 years." },
+    { "question": "How often are foam-water mainline strainers and individual discharge device strainers (basket or screen) inspected for damaged and corroded parts?", "options": ["Annually", "Every 5 years", "Every 10 years"], "correctIndex": 1, "citation": "NFPA 25 § 11.2.6.1", "explanation": "Mainline and individual discharge device strainers shall be inspected every 5 years for damaged and corroded parts." },
+    { "question": "How often are water mist hoses tested?", "options": ["Annually", "Every 5 years", "Every 10 years"], "correctIndex": 1, "citation": "NFPA 25 § 12.3.10.1", "explanation": "All hose shall be tested every 5 years." },
+    { "question": "Automatic water mist nozzles that have been installed for 10 years shall be replaced or representative samples tested at what frequency thereafter?", "options": ["Every 3 years", "Every 5 years", "Every 10 years"], "correctIndex": 1, "citation": "NFPA 25 § 12.3.1.2", "explanation": "Automatic water mist nozzles installed for 10 years shall be replaced, or representative samples tested and retested at 5-year intervals." },
+    { "question": "How often are water mist automatic nozzles in harsh environments first tested?", "options": ["5 years (and every 5 years thereafter)", "10 years", "15 years"], "correctIndex": 0, "citation": "NFPA 25 § 12.3.1.3", "explanation": "Water mist nozzles in harsh environments shall be replaced or representative samples tested on a 5-year basis." },
+    { "question": "How often are compressed gas storage cylinders for water mist systems tested?", "options": ["Every 3 years", "Every 5 years", "Every 5 to 12 years"], "correctIndex": 2, "citation": "NFPA 25 § 12.3.6", "explanation": "Gas cylinders shall not be recharged without retesting if more than 5 years have elapsed since the date of last test (5 to 12 year window depending on DOT/regulations)." },
+    { "question": "How often are water mist system control valves operated through their full range?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 12.3.15", "explanation": "Each control valve for a zone of protection shall be operated annually through its full range and returned to its normal position." },
+    { "question": "How often must the water mist system be operationally tested?", "options": ["Quarterly", "Semiannually", "Annually"], "correctIndex": 2, "citation": "NFPA 25 § 12.3.16", "explanation": "Water mist systems shall be operated annually in accordance with the manufacturer's instructions." },
+    { "question": "How often is the dry pipe valve trip tested (with control valve fully open) at minimum?", "options": ["Annually", "Every 3 years (and whenever system is altered)", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.5.2.2", "explanation": "Every 3 years, and whenever the system is altered, the dry pipe valve shall be trip tested with the control valve fully open and the quick-opening device, if provided, in service." },
+    { "question": "How often must dry pipe valves be trip tested (with partially open control valve)?", "options": ["Quarterly", "Annually", "Every 3 years"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.5.2.1", "explanation": "Each dry pipe valve shall be trip tested annually during warm weather." },
+    { "question": "How often must dry pipe valve quick-opening devices be tested?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.5.2.4", "explanation": "Quick-opening devices, if provided, shall be tested quarterly." },
+    { "question": "How often is the dry pipe valve priming water level tested?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.5.2.1", "explanation": "The priming water level shall be tested quarterly." },
+    { "question": "How often are dry pipe systems tested for air leakage?", "options": ["Annually", "Every 3 years", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.5.2.9", "explanation": "Dry pipe systems shall be tested once every 3 years for gas leakage." },
+    { "question": "What pressure test method is used for the dry pipe system air leakage test (pressure test)?", "options": ["20 psi for 2 hours, max 3 psi loss", "40 psi for 2 hours, max 3 psi loss", "60 psi for 2 hours, max 3 psi loss"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.5.2.9", "explanation": "A gas (air or nitrogen) pressure test at 40 psi (3.2 bar) shall be performed for 2 hours; the system shall be permitted to lose up to 3 psi during the test." },
+    { "question": "How often is the dry pipe valve low air pressure alarm tested?", "options": ["Quarterly", "Semiannually", "Annually"], "correctIndex": 2, "citation": "NFPA 25 § 13.4.5.2.6", "explanation": "Low air pressure alarms, if provided, shall be tested annually." },
+    { "question": "How often must the deluge valve be trip tested at full flow (in warm weather)?", "options": ["Quarterly", "Annually", "Every 3 years"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.4.2.3", "explanation": "Each deluge valve shall be trip tested annually at full flow in warm weather and in accordance with the manufacturer's instructions." },
+    { "question": "Full flow trip tests of preaction valves with control valve fully open are conducted on what schedule?", "options": ["Annually", "Every 3 years", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.3.2.2", "explanation": "Every 3 years the preaction valve shall be trip tested with the control valve fully open." },
+    { "question": "How often is the preaction valve trip tested (with control valve partially open)?", "options": ["Annually", "Every 3 years", "Every 5 years"], "correctIndex": 0, "citation": "NFPA 25 § 13.4.3.2.3", "explanation": "During those years when full flow testing is not required, the preaction valve shall be trip tested with the control valve partially open (annually)." },
+    { "question": "How often is the preaction priming water level tested?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.3.2.1", "explanation": "The priming water level in supervised preaction systems shall be tested quarterly." },
+    { "question": "How often are preaction system low air pressure alarms tested?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.3.2.11", "explanation": "Low air pressure alarms, if provided, shall be tested quarterly." },
+    { "question": "How often is a main drain test performed?", "options": ["Quarterly only", "Annually only", "Annually (with quarterly on backflow/PRV systems)"], "correctIndex": 2, "citation": "NFPA 25 § 13.2.3", "explanation": "A main drain test shall be conducted annually for each water supply lead-in. Where the sole water supply is through a backflow preventer or PRV, the main drain test at one system downstream shall be conducted quarterly." },
+    { "question": "How often are gauges replaced (or tested by comparison)?", "options": ["Every 3 years", "Every 5 years", "Every 10 years"], "correctIndex": 1, "citation": "NFPA 25 § 13.2.5.2", "explanation": "Gauges shall be replaced every 5 years or tested every 5 years by comparison with a calibrated gauge." },
+    { "question": "Within what accuracy must gauges remain to be acceptable?", "options": ["1 percent", "3 percent of full scale", "5 percent"], "correctIndex": 1, "citation": "NFPA 25 § 13.2.5.3", "explanation": "Gauges not accurate to within 3 percent of the full scale shall be recalibrated or replaced." },
+    { "question": "How often are control valves operated through their full range and returned to normal position (valve operation test)?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 13.3.3.1", "explanation": "Each control valve shall be operated annually through its full range and returned to its normal position." },
+    { "question": "How often are valve supervisory switches tested?", "options": ["Annually", "Semiannually", "Quarterly"], "correctIndex": 1, "citation": "NFPA 25 § 13.3.3.5.1", "explanation": "Valve supervisory switches shall be tested semiannually." },
+    { "question": "How often are backflow prevention assemblies tested (forward flow test)?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 13.7.2.1", "explanation": "All backflow preventers installed in fire protection system piping shall be exercised annually by conducting a forward flow test at the minimum flow rate of the system demand." },
+    { "question": "What pressure is used to hydrostatically test the piping from the FDC to the fire department check valve every 5 years?", "options": ["100 psi for 2 hours", "150 psi for 2 hours", "200 psi for 2 hours"], "correctIndex": 1, "citation": "NFPA 25 § 13.8.5", "explanation": "The piping from the FDC to the fire department check valve shall be hydrostatically tested at 150 psi (10 bar) for 2 hours at least once every 5 years." },
+    { "question": "How often is a full flow test conducted on sprinkler system pressure-reducing valves?", "options": ["Annually", "Every 5 years", "Every 10 years"], "correctIndex": 1, "citation": "NFPA 25 § 13.5.1.2", "explanation": "A full flow test shall be conducted on each pressure-reducing valve at 5-year intervals." },
+    { "question": "How often is a partial flow test conducted on sprinkler pressure-reducing valves?", "options": ["Quarterly", "Annually", "Every 3 years"], "correctIndex": 1, "citation": "NFPA 25 § 13.5.1.3", "explanation": "A partial flow test adequate to move the valve from its seat shall be conducted annually." },
+    { "question": "How often is the air compressor or nitrogen generator dedicated to fire protection systems tested?", "options": ["Quarterly", "Semiannually", "Annually"], "correctIndex": 2, "citation": "NFPA 25 § 13.10.3", "explanation": "Air compressors or nitrogen generators dedicated to fire protection systems shall be tested annually." },
+    { "question": "How often is the supervisory signal circuitry for high cooling water temperature on a fire pump tested?", "options": ["Quarterly", "Annually", "Every 3 years"], "correctIndex": 1, "citation": "NFPA 25 § 8.1.1.2.8", "explanation": "Supervisory signal circuitry shall be tested annually for high cooling water temperature." },
+    { "question": "How often are fire pump fuel tanks tested for water and foreign materials?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 8.1.1.2.9", "explanation": "Fuel tanks shall be tested annually for water and foreign materials." },
+    { "question": "Voltage readings at the motor must be within what range relative to nameplate to be acceptable?", "options": ["Within 1% below or 2% above", "Within 5% below or 10% above rated", "Within 10% below or 15% above"], "correctIndex": 1, "citation": "NFPA 25 § 8.3.7.2.9", "explanation": "Voltage readings at the motor within 5 percent below or 10 percent above the rated nameplate voltage shall be considered acceptable." },
+    { "question": "How often is the suction tank (gravity, pressure, suction, or reservoir) for water spray serviced per Chapter 9?", "options": ["Annually", "Per Chapter 9 (varies)", "Quarterly"], "correctIndex": 1, "citation": "NFPA 25 § 10.2.9", "explanation": "Water tanks for water spray systems shall follow Chapter 9 for inspection and maintenance requirements." }
+  ],
+  "maintenance": [
+    { "question": "When must a sprinkler be replaced (rather than reinstalled)?", "options": ["Whenever it is removed for any reason", "Only if visibly damaged", "Only after 50 years of service"], "correctIndex": 0, "citation": "NFPA 25 § 5.4.1.1", "explanation": "Where a sprinkler has been removed for any reason, it shall not be reinstalled." },
+    { "question": "How often are sprinklers and automatic spray nozzles protecting commercial-type cooking equipment and ventilating systems replaced?", "options": ["Annually", "Every 3 years", "Every 5 years"], "correctIndex": 0, "citation": "NFPA 25 § 5.4.1.7", "explanation": "Sprinklers and automatic spray nozzles protecting commercial-type cooking equipment shall be replaced annually." },
+    { "question": "What is the minimum number of spare sprinklers for a facility with 300 to 1000 sprinklers?", "options": ["No fewer than 6", "No fewer than 12", "No fewer than 24"], "correctIndex": 1, "citation": "NFPA 25 § 5.4.1.5.4", "explanation": "For protected facilities having 300 to 1000 sprinklers, no fewer than 12 spare sprinklers shall be maintained." },
+    { "question": "What is the minimum number of spare sprinklers for a facility with under 300 sprinklers?", "options": ["No fewer than 3", "No fewer than 6", "No fewer than 12"], "correctIndex": 1, "citation": "NFPA 25 § 5.4.1.5.4", "explanation": "For protected facilities having under 300 sprinklers, no fewer than 6 spare sprinklers shall be maintained." },
+    { "question": "What is the minimum number of spare sprinklers for a facility with over 1000 sprinklers?", "options": ["12", "18", "24"], "correctIndex": 2, "citation": "NFPA 25 § 5.4.1.5.4", "explanation": "For protected facilities having over 1000 sprinklers, no fewer than 24 spare sprinklers shall be maintained." },
+    { "question": "What is the minimum number of spare water mist nozzles for a system having fewer than 50 nozzles?", "options": ["2", "3", "6"], "correctIndex": 1, "citation": "NFPA 25 § 12.4.2.3.3", "explanation": "For water mist systems having fewer than 50 nozzles, the spare stock shall include not fewer than 3 nozzles." },
+    { "question": "How often are hydrants lubricated to ensure stems, caps, plugs, and threads function properly?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 7.4.2.1", "explanation": "Hydrants shall be lubricated annually to ensure that all stems, caps, plugs, and threads are in proper operating condition." },
+    { "question": "How often are monitor nozzles on private fire service mains lubricated?", "options": ["Quarterly", "Annually", "Every 3 years"], "correctIndex": 1, "citation": "NFPA 25 § 7.4.3", "explanation": "Monitor nozzles shall be lubricated annually to ensure proper operating condition." },
+    { "question": "How often is the operating stem of an OS&Y valve lubricated?", "options": ["Quarterly", "Annually", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 13.3.4.1", "explanation": "The operating stems of outside screw and yoke valves shall be lubricated annually." },
+    { "question": "How often must hose valves that do not operate smoothly receive maintenance?", "options": ["Annually/As needed", "Quarterly", "Every 5 years"], "correctIndex": 0, "citation": "NFPA 25 § 13.6.3", "explanation": "Hose valves that do not operate smoothly or open fully shall be lubricated, repaired, or replaced." },
+    { "question": "How often must pump and motor bearings and couplings be greased on a fire pump?", "options": ["Annually or as required", "Quarterly", "Monthly"], "correctIndex": 0, "citation": "NFPA 25 § 8.1.1.2.3", "explanation": "Pump and motor bearings and couplings shall be greased annually or as needed." },
+    { "question": "How often must circulating water filters on a fire pump be replaced?", "options": ["Quarterly", "Semiannually", "Annually"], "correctIndex": 2, "citation": "NFPA 25 § 8.1.1.2.21", "explanation": "Circulating water filters shall be replaced annually." },
+    { "question": "How often must fuel filters be changed on a diesel fire pump?", "options": ["Every 25 hours or annually", "Every 50 operating hours or annually", "Every 100 hours or annually"], "correctIndex": 1, "citation": "NFPA 25 § 8.1.1.2.19", "explanation": "Fuel filters shall be changed as needed, but at a minimum every 50 hours of operation or annually." },
+    { "question": "How often must engine oil filters on a diesel fire pump be changed?", "options": ["Every 25 operating hours or annually", "Every 50 operating hours or annually", "Every 100 operating hours or annually"], "correctIndex": 1, "citation": "NFPA 25 § 8.1.1.2.18", "explanation": "Lubricating oil filters shall be changed every 50 hours of operation or annually." },
+    { "question": "How often is the water tank kept full or at designed water level (maintenance)?", "options": ["Daily", "Continuously", "Quarterly"], "correctIndex": 1, "citation": "NFPA 25 § 9.4.2", "explanation": "The tank shall be maintained full or at the designed water level." },
+    { "question": "How often are exposed exterior surfaces of embankment-supported coated fabric (ESCF) tanks cleaned and painted?", "options": ["Every year", "Every 2 years or per manufacturer", "Every 5 years"], "correctIndex": 1, "citation": "NFPA 25 § 9.4.6.2", "explanation": "The exposed surfaces of ESCF tanks shall be cleaned and painted every 2 years or in accordance with the manufacturer's instructions." },
+    { "question": "How often are strainers in an automatic tank fill valve cleaned?", "options": ["Monthly", "Quarterly", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 9.5.2.3", "explanation": "Strainers shall be cleaned quarterly." },
+    { "question": "How often must mainline strainers in water spray systems be inspected (maintenance)?", "options": ["Annually", "Every 5 years (basket/screen)", "Every 3 years"], "correctIndex": 1, "citation": "NFPA 25 § 10.2.1.7", "explanation": "Mainline strainers shall be removed and inspected every 5 years for damaged and corroded parts." },
+    { "question": "How often is a water mist water tank drained and refilled?", "options": ["Quarterly", "Semiannually", "Annually"], "correctIndex": 2, "citation": "NFPA 25 § 12.4.1.7", "explanation": "Annually, a water tank used to supply a water mist system shall be drained and refilled." },
+    { "question": "How often must pneumatically operated standby pumps in a water mist system be rebuilt?", "options": ["Every 3 years", "Every 5 years or as specified by the manufacturer", "Every 10 years"], "correctIndex": 1, "citation": "NFPA 25 § 12.4.3", "explanation": "Pneumatically operated standby pumps shall be rebuilt every 5 years or as specified by the manufacturer." },
+    { "question": "How often must the interior of a dry pipe valve be cleaned during the annual trip test?", "options": ["Annually with cleaning", "Every 3 years", "Every 5 years"], "correctIndex": 0, "citation": "NFPA 25 § 13.4.5.3.1", "explanation": "During the annual trip test, the interior of the dry pipe valve shall be cleaned thoroughly and parts replaced or repaired as necessary." },
+    { "question": "How often is the interior of the deluge valve cleaned during the annual trip test?", "options": ["Annually with cleaning", "Every 3 years", "Every 5 years"], "correctIndex": 0, "citation": "NFPA 25 § 13.4.4.3.2", "explanation": "During the annual trip test, the interior of the deluge valve shall be cleaned thoroughly and parts replaced or repaired as necessary." },
+    { "question": "Interior cleaning and parts replacement for valves that can be reset without removal of a faceplate (preaction/deluge) shall be permitted every:", "options": ["3 years", "5 years", "10 years"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.4.3.2.1", "explanation": "Interior cleaning and parts replacement or repair shall be permitted every 5 years for valves that can be reset without removal of a faceplate." },
+    { "question": "How often must auxiliary drains in dry pipe sprinkler systems be drained?", "options": ["Monthly", "After each operation, before freezing weather, and as needed", "Quarterly"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.5.3.2", "explanation": "Auxiliary drains in dry pipe sprinkler systems shall be drained after each system operation, before the onset of freezing weather conditions, and thereafter as needed." },
+    { "question": "How often must auxiliary drains in preaction systems be operated?", "options": ["Monthly", "After each system operation and before freezing conditions", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.3.3.3", "explanation": "Auxiliary drains in preaction systems shall be operated after each system operation and before the onset of freezing conditions (and thereafter as needed)." },
+    { "question": "How often must auxiliary drains in deluge systems be operated?", "options": ["Monthly", "After each system operation and before freezing conditions", "Annually"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.4.3.3", "explanation": "Auxiliary drains in deluge systems shall be operated after each system operation and before the onset of freezing conditions and thereafter as needed." },
+    { "question": "What is the maximum time after refilling a dry system that the air supply must restore normal air pressure?", "options": ["15 minutes", "30 minutes", "60 minutes"], "correctIndex": 1, "citation": "NFPA 25 § 13.4.5.2.2.4", "explanation": "When refilling a dry system, the air supply shall be capable of restoring normal air pressure in the system within 30 minutes." },
+    { "question": "How often must oil in oil-requiring air compressors be replaced?", "options": ["Annually", "Quarterly", "Semiannually"], "correctIndex": 0, "citation": "NFPA 25 § 13.10.4.2", "explanation": "Compressors requiring oil shall have the oil replaced on an annual basis unless the manufacturer's instructions require more frequent replacement." },
+    { "question": "What is the maximum allowable duration for a fire protection system to be out of service before a fire watch (or alternative) is required during an impairment?", "options": ["4 hours", "8 hours", "10 hours"], "correctIndex": 2, "citation": "NFPA 25 § 15.5.2(4)", "explanation": "Where a fire protection system is out of service for more than 10 hours in a 24-hour period, the impairment coordinator shall arrange for evacuation, a fire watch, a temporary water supply, or other approved program." },
+    { "question": "Who assigns the impairment coordinator?", "options": ["The AHJ", "The property owner or designated representative", "The fire department"], "correctIndex": 1, "citation": "NFPA 25 § 15.2.1", "explanation": "The property owner or designated representative shall assign an impairment coordinator." },
+    { "question": "Where must the impairment tag be posted?", "options": ["Only at the main entrance", "At each FDC and system control valve (and other locations required by AHJ)", "Only on the riser"], "correctIndex": 1, "citation": "NFPA 25 § 15.3.2", "explanation": "The tag shall be posted at each fire department connection and the system control valve, and other locations required by the AHJ." },
+    { "question": "When a system is restored after an impairment, who must be notified that protection is restored?", "options": ["Only the AHJ", "Supervisors, fire department, property owner/representative, insurance carrier, alarm company, and other AHJs", "Only the alarm company"], "correctIndex": 1, "citation": "NFPA 25 § 15.7", "explanation": "When all impaired equipment is restored, the impairment coordinator shall verify supervisors, fire department, property owner/representative, insurance carrier, alarm company, and other AHJs have been notified, and that the impairment tag has been removed." },
+    { "question": "When must qualified personnel be in attendance during fire pump testing?", "options": ["Only on weekends", "Whenever the pump is in operation (unless automated per 8.3.2.10)", "Only during commissioning"], "correctIndex": 1, "citation": "NFPA 25 § 8.3.2.7", "explanation": "Qualified personnel shall be in attendance whenever the pump is in operation unless automated inspection and testing is performed per 8.3.2.10." }
+  ]
+}
+</script>
+
+<script>
+'use strict';
+
+// ========== STATE ==========
+const STATE_KEY = 'fsm-nfpa25-study-v1';
+const DEFAULT_STATE = {
+  studied: {},        // {category: Set of indices seen}
+  attempts: {},       // {category-idx: [correct?, correct?, ...]}
+  weakSpots: {},      // {category-idx: count of wrong answers}
+  totalAnswered: 0,
+  totalCorrect: 0,
+};
+
+let CONTENT = null;
+let state = loadState();
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STATE_KEY);
+    if(!raw) return JSON.parse(JSON.stringify(DEFAULT_STATE));
+    const s = JSON.parse(raw);
+    // normalize Sets (stored as arrays)
+    for(const k in s.studied){ s.studied[k] = new Set(s.studied[k]||[]); }
+    return Object.assign(JSON.parse(JSON.stringify(DEFAULT_STATE)), s);
+  }catch(e){ return JSON.parse(JSON.stringify(DEFAULT_STATE)); }
+}
+function saveState(){
+  const out = JSON.parse(JSON.stringify(state, (k,v)=> v instanceof Set ? Array.from(v) : v));
+  localStorage.setItem(STATE_KEY, out ? JSON.stringify(out) : '{}');
+}
+function resetState(){
+  if(!confirm('Reset all progress, scores, and weak-spot tracking? This cannot be undone.')) return;
+  state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+  saveState();
+  route();
+}
+
+// ========== CONTENT ==========
+function loadContent(){
+  try{
+    const el = document.getElementById('content-data');
+    if(!el) throw new Error('No content element');
+    CONTENT = JSON.parse(el.textContent);
+    if(!CONTENT.definitions) CONTENT.definitions = [];
+    if(!CONTENT.inspection) CONTENT.inspection = [];
+    if(!CONTENT.testing) CONTENT.testing = [];
+    if(!CONTENT.maintenance) CONTENT.maintenance = [];
+  }catch(e){
+    CONTENT = {edition:'NFPA 25, 2020', definitions:[], inspection:[], testing:[], maintenance:[]};
+  }
+}
+
+// ========== ROUTING ==========
+function parseRoute(){
+  const h = (location.hash||'#/').replace(/^#/,'') || '/';
+  const parts = h.split('/').filter(Boolean);
+  return {path:'/'+parts.join('/'), parts};
+}
+function go(path){ location.hash = '#'+path; }
+window.addEventListener('hashchange', route);
+
+function route(){
+  const r = parseRoute();
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+  app.classList.add('fade-in');
+  setTimeout(()=>app.classList.remove('fade-in'), 260);
+
+  const parts = r.parts;
+  if(parts.length === 0) return renderHome(app);
+
+  const cat = parts[0]; // definitions | inspection | testing | maintenance
+  if(!['definitions','inspection','testing','maintenance'].includes(cat)) return renderHome(app);
+
+  if(cat === 'definitions') return renderFlashcards(app);
+  // ITM categories
+  if(parts.length === 1) return renderModePicker(app, cat);
+  const mode = parts[1]; // study | test
+  if(mode === 'study') return renderStudy(app, cat);
+  if(mode === 'test'){
+    if(parts[2] === 'setup') return renderTestSetup(app, cat);
+    if(parts[2] === 'run') return renderTestRun(app, cat);
+    if(parts[2] === 'results') return renderTestResults(app, cat);
+    return renderTestSetup(app, cat);
+  }
+  renderModePicker(app, cat);
+}
+
+// ========== VIEWS ==========
+function el(tag, attrs={}, ...kids){
+  const e = document.createElement(tag);
+  for(const k in attrs){
+    if(k === 'class') e.className = attrs[k];
+    else if(k === 'html') e.innerHTML = attrs[k];
+    else if(k.startsWith('on')) e.addEventListener(k.slice(2).toLowerCase(), attrs[k]);
+    else if(k === 'dataset'){ for(const d in attrs[k]) e.dataset[d] = attrs[k][d]; }
+    else e.setAttribute(k, attrs[k]);
+  }
+  for(const k of kids){
+    if(k == null) continue;
+    if(typeof k === 'string') e.appendChild(document.createTextNode(k));
+    else e.appendChild(k);
+  }
+  return e;
+}
+
+function categoryMeta(cat){
+  return {
+    definitions: {color:'var(--cyan)', glow:'rgba(0,217,255,0.18)', bg:'rgba(0,217,255,0.10)', label:'Flashcards', icon:'A'},
+    inspection:  {color:'var(--orange)', glow:'rgba(255,107,53,0.20)', bg:'rgba(255,107,53,0.10)', label:'Multiple Choice', icon:'I'},
+    testing:     {color:'var(--amber)', glow:'rgba(255,170,0,0.20)', bg:'rgba(255,170,0,0.10)', label:'Multiple Choice', icon:'T'},
+    maintenance: {color:'var(--green)', glow:'rgba(34,197,94,0.18)', bg:'rgba(34,197,94,0.10)', label:'Multiple Choice', icon:'M'},
+  }[cat];
+}
+
+function renderHome(root){
+  const counts = {
+    definitions: CONTENT.definitions.length,
+    inspection: CONTENT.inspection.length,
+    testing: CONTENT.testing.length,
+    maintenance: CONTENT.maintenance.length,
+  };
+  const total = counts.definitions + counts.inspection + counts.testing + counts.maintenance;
+
+  // Hero
+  root.appendChild(el('div', {class:'hero'},
+    el('div', {class:'eyebrow'}, '⚡ Field-grade NFPA 25 mastery'),
+    el('h1', {html:'Study <span class="accent">the standard</span>. <br/>Pass the test. Run the job.'}),
+    el('p', {}, 'Flashcards for definitions. Multiple-choice for inspection, testing, and maintenance items. Every answer cites NFPA 25 (2020) section so you can verify against the standard itself.')
+  ));
+
+  // Stats
+  root.appendChild(el('div', {class:'stats'},
+    el('div', {class:'stat'},
+      el('div', {class:'stat-num'}, String(total)),
+      el('div', {class:'stat-label'}, 'Total items')
+    ),
+    el('div', {class:'stat'},
+      el('div', {class:'stat-num'}, String(state.totalAnswered)),
+      el('div', {class:'stat-label'}, 'Answered')
+    ),
+    el('div', {class:'stat'},
+      el('div', {class:'stat-num'}, state.totalAnswered ? Math.round(100*state.totalCorrect/state.totalAnswered)+'%' : '—'),
+      el('div', {class:'stat-label'}, 'Accuracy')
+    ),
+    el('div', {class:'stat'},
+      el('div', {class:'stat-num'}, String(Object.keys(state.weakSpots).filter(k=>state.weakSpots[k]>0).length)),
+      el('div', {class:'stat-label'}, 'Weak spots')
+    )
+  ));
+
+  // Cards
+  root.appendChild(el('div', {class:'section-title'}, 'Pick a deck'));
+  const grid = el('div', {class:'cards'});
+  for(const cat of ['definitions','inspection','testing','maintenance']){
+    const meta = categoryMeta(cat);
+    const studiedCount = state.studied[cat] ? state.studied[cat].size : 0;
+    const pct = counts[cat] ? Math.round(100*studiedCount/counts[cat]) : 0;
+    const card = el('button', {
+      class:'card',
+      onclick:()=>go('/'+cat),
+      style:`--card-color:${meta.color};--card-glow:${meta.glow};--card-bg:${meta.bg}`
+    },
+      el('div', {class:'card-icon'}, meta.icon),
+      el('div', {class:'card-title'}, cat[0].toUpperCase()+cat.slice(1)),
+      el('div', {class:'card-desc'}, cardDescription(cat)),
+      el('div', {class:'card-progress'},
+        el('div', {class:'card-progress-bar', style:`width:${pct}%`})
+      ),
+      el('div', {class:'card-meta'},
+        el('span', {class:'card-count'}, counts[cat]+' '+(cat==='definitions'?'terms':'questions')),
+        el('span', {class:'card-cta'}, (studiedCount?`${pct}% studied`:'Start →'))
+      )
+    );
+    grid.appendChild(card);
+  }
+  root.appendChild(grid);
+}
+
+function cardDescription(cat){
+  return {
+    definitions:'Flip through every defined term in NFPA 25 Chapter 3. Tap to reveal the definition and section reference.',
+    inspection:'Multiple-choice questions on inspection frequencies and visual checks across all NFPA 25 system types.',
+    testing:'Multiple-choice questions on test procedures, intervals, and acceptance criteria.',
+    maintenance:'Multiple-choice questions on maintenance tasks, lubrication, replacement intervals, and rebuild triggers.',
+  }[cat];
+}
+
+function renderCrumb(root, ...trail){
+  const c = el('div', {class:'crumb'});
+  trail.forEach((t,i)=>{
+    if(t.path) c.appendChild(el('a', {href:'#'+t.path}, t.label));
+    else c.appendChild(el('span', {}, t.label));
+    if(i < trail.length-1) c.appendChild(el('span', {}, '›'));
+  });
+  root.appendChild(c);
+}
+
+// ---------- FLASHCARDS ----------
+function renderFlashcards(root){
+  const items = CONTENT.definitions;
+  if(!items.length) return renderEmpty(root, 'definitions', 'No definitions loaded yet. The comprehensive question bank may still be generating.');
+  renderCrumb(root, {label:'Home', path:'/'}, {label:'Definitions'});
+
+  let idx = 0; let flipped = false;
+  const wrap = el('div', {class:'flashcard-wrap'});
+  root.appendChild(wrap);
+
+  function render(){
+    wrap.innerHTML = '';
+    const item = items[idx];
+    if(!state.studied.definitions) state.studied.definitions = new Set();
+    state.studied.definitions.add(idx);
+    saveState();
+
+    wrap.appendChild(el('div', {class:'question-meta'},
+      el('span', {}, `Card ${idx+1} of ${items.length}`),
+      el('span', {}, flipped ? 'Definition' : 'Term — tap to reveal')
+    ));
+    wrap.appendChild(el('div', {class:'question-progress'},
+      el('div', {class:'question-progress-bar', style:`width:${100*(idx+1)/items.length}%`})
+    ));
+
+    const card = el('div', {class:'flashcard fade-in', onclick:()=>{ flipped=!flipped; render(); }},
+      el('span', {class:'flashcard-tap-hint'}, flipped ? 'Tap to flip back' : 'Tap to flip'),
+      el('div', {class:'flashcard-side'}, flipped ? 'Definition' : 'Term'),
+      flipped
+        ? el('div', {class:'definition'}, item.definition)
+        : el('div', {class:'term'}, item.term),
+      el('div', {class:'citation'}, item.citation)
+    );
+    wrap.appendChild(card);
+
+    wrap.appendChild(el('div', {class:'question-nav'},
+      el('button', {class:'btn btn-secondary', onclick:()=>{ flipped=false; idx=(idx-1+items.length)%items.length; render(); }}, '← Previous'),
+      el('button', {class:'btn btn-ghost', onclick:()=>{ flipped=false; idx=Math.floor(Math.random()*items.length); render(); }}, 'Shuffle'),
+      el('button', {class:'btn btn-primary', onclick:()=>{ flipped=false; idx=(idx+1)%items.length; render(); }}, 'Next →')
+    ));
+  }
+  render();
+}
+
+// ---------- ITM MODE PICKER ----------
+function renderModePicker(root, cat){
+  renderCrumb(root, {label:'Home', path:'/'}, {label:cat[0].toUpperCase()+cat.slice(1)});
+  const count = CONTENT[cat].length;
+  root.appendChild(el('div', {class:'test-setup'},
+    el('h2', {}, cat[0].toUpperCase()+cat.slice(1)),
+    el('p', {class:'lead'}, `${count} questions in this deck.`),
+    el('div', {class:'mode-picker'},
+      el('button', {class:'mode-option', onclick:()=>go('/'+cat+'/study')},
+        el('h3', {}, 'Study mode'),
+        el('p', {}, 'Walk through every question one at a time. See the correct answer, explanation, and NFPA 25 citation after each. No score — just learn.')
+      ),
+      el('button', {class:'mode-option', onclick:()=>go('/'+cat+'/test')},
+        el('h3', {}, 'Test mode'),
+        el('p', {}, 'Pick a length, get a randomized quiz, see your score at the end with a review of everything you missed.')
+      )
+    )
+  ));
+}
+
+// ---------- STUDY MODE ----------
+function renderStudy(root, cat){
+  const items = CONTENT[cat];
+  if(!items.length) return renderEmpty(root, cat, 'No questions in this deck yet. The comprehensive question bank may still be generating.');
+  renderCrumb(root,
+    {label:'Home', path:'/'},
+    {label:cat[0].toUpperCase()+cat.slice(1), path:'/'+cat},
+    {label:'Study'}
+  );
+
+  let idx = 0; let answered = null;
+  const wrap = el('div', {class:'question-wrap'});
+  root.appendChild(wrap);
+
+  function render(){
+    wrap.innerHTML = '';
+    const q = items[idx];
+    if(!state.studied[cat]) state.studied[cat] = new Set();
+    state.studied[cat].add(idx);
+    saveState();
+
+    wrap.appendChild(el('div', {class:'question-meta'},
+      el('span', {}, `Q${idx+1} of ${items.length}`),
+      el('span', {}, 'Study Mode')
+    ));
+    wrap.appendChild(el('div', {class:'question-progress'},
+      el('div', {class:'question-progress-bar', style:`width:${100*(idx+1)/items.length}%`})
+    ));
+
+    const card = el('div', {class:'question-card fade-in'},
+      el('div', {class:'question-text'}, q.question)
+    );
+    const opts = el('div', {class:'options'});
+    q.options.forEach((opt, i)=>{
+      const b = el('button', {class:'option', onclick:()=>{
+        if(answered !== null) return;
+        answered = i;
+        recordAttempt(cat, idx, i === q.correctIndex);
+        render();
+      }},
+        el('span', {class:'option-letter'}, String.fromCharCode(65+i)),
+        el('span', {}, opt)
+      );
+      if(answered !== null){
+        b.disabled = true;
+        if(i === q.correctIndex) b.classList.add('correct');
+        else if(i === answered) b.classList.add('wrong');
+      }
+      opts.appendChild(b);
+    });
+    card.appendChild(opts);
+
+    if(answered !== null){
+      const correct = answered === q.correctIndex;
+      const fb = el('div', {class:'feedback '+(correct?'correct':'wrong')},
+        el('div', {class:'feedback-label '+(correct?'correct':'wrong')}, correct ? '✓ Correct' : '✗ Incorrect'),
+        el('div', {class:'feedback-text'}, q.explanation || (correct ? 'Nice.' : 'The correct answer is shown in green above.')),
+        el('div', {class:'feedback-cite'}, q.citation || '')
+      );
+      card.appendChild(fb);
+    }
+    wrap.appendChild(card);
+
+    wrap.appendChild(el('div', {class:'question-nav'},
+      el('button', {class:'btn btn-secondary', onclick:()=>{ answered=null; idx=(idx-1+items.length)%items.length; render(); }}, '← Previous'),
+      el('button', {class:'btn btn-ghost', onclick:()=>go('/'+cat)}, 'Exit'),
+      el('button', {class:'btn btn-primary', onclick:()=>{ answered=null; idx=(idx+1)%items.length; render(); }}, 'Next →')
+    ));
+  }
+  render();
+}
+
+function recordAttempt(cat, idx, correct){
+  const key = cat+'-'+idx;
+  if(!state.attempts[key]) state.attempts[key] = [];
+  state.attempts[key].push(correct);
+  state.totalAnswered++;
+  if(correct) state.totalCorrect++;
+  if(!state.weakSpots[key]) state.weakSpots[key] = 0;
+  if(correct) state.weakSpots[key] = Math.max(0, state.weakSpots[key]-1);
+  else state.weakSpots[key]++;
+  saveState();
+}
+
+// ---------- TEST MODE ----------
+let TEST = null; // {cat, qs (array of {qIdx, optionOrder, chosen?}), startedAt}
+
+function renderTestSetup(root, cat){
+  const items = CONTENT[cat];
+  if(!items.length) return renderEmpty(root, cat, 'No questions in this deck yet.');
+  renderCrumb(root,
+    {label:'Home', path:'/'},
+    {label:cat[0].toUpperCase()+cat.slice(1), path:'/'+cat},
+    {label:'Test setup'}
+  );
+
+  const lengths = [
+    {n:10, label:'Quick — 10 questions'},
+    {n:25, label:'Standard — 25 questions'},
+    {n:50, label:'Long — 50 questions'},
+    {n:items.length, label:`Full deck — ${items.length} questions`},
+  ].filter(l => l.n <= items.length || l.n === items.length);
+
+  let weakOnly = false;
+  let chosenN = lengths[0].n;
+
+  const wrap = el('div', {class:'test-setup'});
+  root.appendChild(wrap);
+
+  function render(){
+    wrap.innerHTML = '';
+    wrap.appendChild(el('h2', {}, 'Test Setup'));
+    wrap.appendChild(el('p', {class:'lead'}, `${cat[0].toUpperCase()+cat.slice(1)} — pick how many questions you want.`));
+
+    const opts = el('div', {class:'test-options'});
+    lengths.forEach(l => {
+      const o = el('button', {
+        class: 'test-option' + (chosenN === l.n ? ' selected' : ''),
+        onclick: ()=>{ chosenN = l.n; render(); }
+      },
+        el('span', {class:'test-option-label'}, l.label),
+        el('span', {class:'test-option-sub'}, l.n === items.length ? 'All' : 'Random')
+      );
+      opts.appendChild(o);
+    });
+    wrap.appendChild(opts);
+
+    // Weak-spots toggle
+    const weakCount = Object.keys(state.weakSpots).filter(k=>k.startsWith(cat+'-') && state.weakSpots[k]>0).length;
+    if(weakCount > 0){
+      const tog = el('button', {
+        class:'test-option' + (weakOnly ? ' selected' : ''),
+        onclick:()=>{ weakOnly = !weakOnly; render(); }
+      },
+        el('span', {class:'test-option-label'}, `Focus on my ${weakCount} weak spot${weakCount===1?'':'s'}`),
+        el('span', {class:'test-option-sub'}, weakOnly ? 'On' : 'Off')
+      );
+      wrap.appendChild(el('div', {style:'margin-top:8px'}, tog));
+    }
+
+    wrap.appendChild(el('div', {style:'display:flex;gap:10px;margin-top:24px;justify-content:center;flex-wrap:wrap'},
+      el('button', {class:'btn btn-secondary', onclick:()=>go('/'+cat)}, '← Back'),
+      el('button', {class:'btn btn-primary', onclick:()=>startTest(cat, chosenN, weakOnly)}, 'Start test →')
+    ));
+  }
+  render();
+}
+
+function startTest(cat, n, weakOnly){
+  const items = CONTENT[cat];
+  let pool = items.map((_,i)=>i);
+  if(weakOnly){
+    const weakIdx = pool.filter(i => (state.weakSpots[cat+'-'+i]||0) > 0);
+    if(weakIdx.length >= n) pool = weakIdx;
+    else pool = weakIdx.concat(pool.filter(i => !weakIdx.includes(i))).slice(0, Math.max(n, weakIdx.length));
+  }
+  shuffle(pool);
+  const chosen = pool.slice(0, n);
+  TEST = {
+    cat,
+    startedAt: Date.now(),
+    qs: chosen.map(qIdx => {
+      const order = items[qIdx].options.map((_,i)=>i);
+      shuffle(order);
+      return {qIdx, order, chosen: null};
+    }),
+    pointer: 0,
+  };
+  go('/'+cat+'/test/run');
+}
+
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function renderTestRun(root, cat){
+  if(!TEST || TEST.cat !== cat){ return go('/'+cat+'/test'); }
+  const items = CONTENT[cat];
+  renderCrumb(root,
+    {label:'Home', path:'/'},
+    {label:cat[0].toUpperCase()+cat.slice(1), path:'/'+cat},
+    {label:'Test in progress'}
+  );
+
+  let answered = TEST.qs[TEST.pointer].chosen;
+  const wrap = el('div', {class:'question-wrap'});
+  root.appendChild(wrap);
+
+  function render(){
+    wrap.innerHTML = '';
+    const tq = TEST.qs[TEST.pointer];
+    const q = items[tq.qIdx];
+    const isLast = TEST.pointer === TEST.qs.length-1;
+
+    wrap.appendChild(el('div', {class:'question-meta'},
+      el('span', {}, `Q${TEST.pointer+1} of ${TEST.qs.length}`),
+      el('span', {}, 'Test Mode')
+    ));
+    wrap.appendChild(el('div', {class:'question-progress'},
+      el('div', {class:'question-progress-bar', style:`width:${100*(TEST.pointer+1)/TEST.qs.length}%`})
+    ));
+
+    const card = el('div', {class:'question-card fade-in'},
+      el('div', {class:'question-text'}, q.question)
+    );
+    const opts = el('div', {class:'options'});
+    tq.order.forEach((origIdx, displayIdx) => {
+      const opt = q.options[origIdx];
+      const b = el('button', {class:'option', onclick:()=>{
+        if(tq.chosen !== null) return;
+        tq.chosen = origIdx;
+        answered = origIdx;
+        recordAttempt(cat, tq.qIdx, origIdx === q.correctIndex);
+        render();
+      }},
+        el('span', {class:'option-letter'}, String.fromCharCode(65+displayIdx)),
+        el('span', {}, opt)
+      );
+      if(tq.chosen !== null){
+        b.disabled = true;
+        if(origIdx === q.correctIndex) b.classList.add('correct');
+        else if(origIdx === tq.chosen) b.classList.add('wrong');
+      }
+      opts.appendChild(b);
+    });
+    card.appendChild(opts);
+
+    if(tq.chosen !== null){
+      const correct = tq.chosen === q.correctIndex;
+      card.appendChild(el('div', {class:'feedback '+(correct?'correct':'wrong')},
+        el('div', {class:'feedback-label '+(correct?'correct':'wrong')}, correct ? '✓ Correct' : '✗ Incorrect'),
+        el('div', {class:'feedback-text'}, q.explanation || ''),
+        el('div', {class:'feedback-cite'}, q.citation || '')
+      ));
+    }
+    wrap.appendChild(card);
+
+    wrap.appendChild(el('div', {class:'question-nav'},
+      el('button', {class:'btn btn-ghost', onclick:()=>{
+        if(confirm('Exit the test? Progress will be lost.')) go('/'+cat);
+      }}, 'Exit'),
+      isLast
+        ? el('button', {class:'btn btn-primary', disabled: tq.chosen===null ? 'disabled' : null, onclick:()=>{
+            if(tq.chosen===null) return;
+            go('/'+cat+'/test/results');
+          }}, 'Finish →')
+        : el('button', {class:'btn btn-primary', disabled: tq.chosen===null ? 'disabled' : null, onclick:()=>{
+            if(tq.chosen===null) return;
+            TEST.pointer++; answered = TEST.qs[TEST.pointer].chosen; render();
+          }}, 'Next →')
+    ));
+  }
+  render();
+}
+
+function renderTestResults(root, cat){
+  if(!TEST || TEST.cat !== cat){ return go('/'+cat+'/test'); }
+  const items = CONTENT[cat];
+  renderCrumb(root,
+    {label:'Home', path:'/'},
+    {label:cat[0].toUpperCase()+cat.slice(1), path:'/'+cat},
+    {label:'Results'}
+  );
+
+  const total = TEST.qs.length;
+  const correct = TEST.qs.filter(tq => tq.chosen === items[tq.qIdx].correctIndex).length;
+  const pct = Math.round(100*correct/total);
+  const grade = pct >= 80 ? 'pass' : pct >= 65 ? 'borderline' : 'fail';
+  const gradeLabel = grade === 'pass' ? 'Passing' : grade === 'borderline' ? 'Borderline' : 'Below NICET threshold';
+
+  const wrap = el('div', {class:'results fade-in'});
+  root.appendChild(wrap);
+
+  wrap.appendChild(el('div', {style:'font-size:11px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-top:20px'}, 'Test Complete'));
+  wrap.appendChild(el('div', {class:'results-score'}, pct+'%'));
+  wrap.appendChild(el('div', {class:'results-total'}, `${correct} of ${total} correct`));
+  wrap.appendChild(el('div', {class:'results-grade '+grade}, gradeLabel));
+
+  wrap.appendChild(el('div', {style:'display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:24px'},
+    el('button', {class:'btn btn-secondary', onclick:()=>go('/')}, '← Home'),
+    el('button', {class:'btn btn-secondary', onclick:()=>go('/'+cat)}, cat[0].toUpperCase()+cat.slice(1)),
+    el('button', {class:'btn btn-primary', onclick:()=>go('/'+cat+'/test')}, 'Retake →')
+  ));
+
+  // Review missed items first, then correct ones
+  const missed = TEST.qs.filter(tq => tq.chosen !== items[tq.qIdx].correctIndex);
+  const got = TEST.qs.filter(tq => tq.chosen === items[tq.qIdx].correctIndex);
+
+  if(missed.length){
+    wrap.appendChild(el('div', {class:'section-title', style:'margin-top:20px;color:var(--red)'}, `Missed (${missed.length})`));
+    const list = el('div', {class:'review-list'});
+    missed.forEach(tq => {
+      const q = items[tq.qIdx];
+      list.appendChild(el('div', {class:'review-item'},
+        el('div', {class:'review-q'}, q.question),
+        el('div', {class:'review-a'},
+          el('em', {}, 'Your answer: '+(tq.chosen!==null ? q.options[tq.chosen] : '(none)')),
+          el('br', {}),
+          el('strong', {}, 'Correct: '+q.options[q.correctIndex])
+        ),
+        q.explanation ? el('div', {class:'review-a', style:'margin-top:6px;color:var(--muted)'}, q.explanation) : null,
+        el('div', {class:'review-cite'}, q.citation || '')
+      ));
+    });
+    wrap.appendChild(list);
+  }
+
+  if(got.length){
+    wrap.appendChild(el('div', {class:'section-title', style:'margin-top:30px;color:var(--green)'}, `Correct (${got.length})`));
+    const list = el('div', {class:'review-list'});
+    got.forEach(tq => {
+      const q = items[tq.qIdx];
+      list.appendChild(el('div', {class:'review-item correct'},
+        el('div', {class:'review-q'}, q.question),
+        el('div', {class:'review-a'},
+          el('strong', {}, q.options[q.correctIndex])
+        ),
+        el('div', {class:'review-cite'}, q.citation || '')
+      ));
+    });
+    wrap.appendChild(list);
+  }
+}
+
+function renderEmpty(root, cat, msg){
+  renderCrumb(root, {label:'Home', path:'/'}, {label:cat[0].toUpperCase()+cat.slice(1)});
+  root.appendChild(el('div', {class:'empty-state'},
+    el('h3', {}, 'Content loading'),
+    el('p', {}, msg)
+  ));
+}
+
+// ========== BOOT ==========
+document.getElementById('btn-reset').addEventListener('click', resetState);
+loadContent();
+route();
+</script>
+</body>
+</html>
