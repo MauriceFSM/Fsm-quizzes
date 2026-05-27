@@ -18,8 +18,11 @@
 html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--txt);
   font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
   -webkit-font-smoothing:antialiased;overflow:hidden}
-.stage{position:fixed;inset:0;overflow:hidden;background:#040912}
-.slide{width:1920px;height:1080px;position:absolute;top:50%;left:50%;overflow:hidden;
+.stage{position:fixed;inset:0;overflow:hidden;background:#040912;
+  display:flex;align-items:center;justify-content:center}
+.slide-frame{width:1920px;height:1080px;position:relative;flex-shrink:0;
+  transform:scale(min(calc(100vw / 1920),calc(100vh / 1080)));transform-origin:center center}
+.slide{position:absolute;inset:0;overflow:hidden;
   background:radial-gradient(ellipse at 50% 35%, rgba(63,169,245,0.10) 0%, rgba(63,169,245,0) 55%),
     radial-gradient(ellipse at 20% 90%, rgba(216,90,48,0.06) 0%, rgba(216,90,48,0) 50%),
     linear-gradient(180deg,#07142A 0%,#050D1B 100%);
@@ -134,8 +137,7 @@ table.data tr:last-child td{border-bottom:none}
 .mnav-count{font-size:15px;color:var(--blue-3);letter-spacing:0.1em;
   min-width:70px;text-align:center;font-weight:600;font-family:inherit}
 .mnav-count b{color:var(--blue-2);font-size:17px}
-@media (max-aspect-ratio:16/9){.slide{transform:translate(-50%,-50%) scale(calc(100vw/1920))}}
-@media (min-aspect-ratio:16/9){.slide{transform:translate(-50%,-50%) scale(calc(100vh/1080))}}
+/* Scale handled by static transform with min() above — no media queries needed */
 .divider-slide .body{align-items:center;justify-content:center;text-align:center}
 .divider-slide .modnum{font-size:24px;letter-spacing:0.40em;color:var(--blue-2);font-weight:600;margin-bottom:24px}
 .divider-slide h1.t{font-size:120px}
@@ -176,6 +178,7 @@ table.data tr:last-child td{border-bottom:none}
   <button class="mnav-btn" data-nav="next" aria-label="Next slide">›</button>
 </div>
 <div class="stage">
+<div class="slide-frame">
 
 <!-- SLIDE 1 — TITLE -->
 <section class="slide active divider-slide" data-n="1">
@@ -2344,6 +2347,7 @@ Duration:     60–90 min (OH)</pre>
   <div class="ftr"><span>Course Complete</span><span>NFPA 13 2019 Ed. | Chapters 19 &amp; 27</span></div>
 </section>
 
+</div>
 </div>
 <script>
 const slides=document.querySelectorAll('.slide');
