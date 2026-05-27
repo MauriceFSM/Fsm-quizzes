@@ -1,0 +1,2522 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NFPA 13 Ch.4 &amp; Ch.20 Mastery</title>
+<style>
+:root{
+  --bg:#06101F;--panel:#0D2646;--panel-2:#11305A;--panel-hi:rgba(63,169,245,0.10);
+  --line:rgba(63,169,245,0.30);--line-soft:rgba(63,169,245,0.18);
+  --blue:#3FA9F5;--blue-2:#6CC2FF;--blue-3:#BFE3FF;
+  --orange:#FF7A45;--orange-2:#D85A30;--orange-3:#FFCDB6;
+  --green:#1D9E75;--amber:#FFC25C;
+  --txt:#E6EEF7;--txt-dim:#BFD3E6;--txt-mute:#94A8BD;
+  --lh:#5EBBFF;--oh1:#3DD6CC;--oh2:#4CD884;--eh1:#FFB347;--eh2:#FF7A45;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--txt);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;overflow:hidden}
+.stage{position:fixed;inset:0;display:grid;place-items:center;background:#040912}
+.slide{
+  width:1920px;height:1080px;position:relative;overflow:hidden;
+  background:
+    radial-gradient(ellipse at 50% 35%, rgba(63,169,245,0.10) 0%, rgba(63,169,245,0) 55%),
+    radial-gradient(ellipse at 20% 90%, rgba(216,90,48,0.06) 0%, rgba(216,90,48,0) 50%),
+    linear-gradient(180deg,#07142A 0%,#050D1B 100%);
+  transform-origin:top left;box-shadow:0 30px 80px rgba(0,0,0,0.6);
+  display:none;
+}
+.slide.active{display:block}
+.slide::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(63,169,245,0.05) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(63,169,245,0.05) 1px,transparent 1px);
+  background-size:60px 60px}
+.slide::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;
+  background:linear-gradient(90deg,rgba(63,169,245,0) 0%,#3FA9F5 25%,#3FA9F5 65%,#D85A30 100%);opacity:0.55}
+
+/* corner brackets */
+.b{position:absolute;width:64px;height:64px;border:2px solid var(--line);z-index:1;pointer-events:none}
+.b.tl{top:32px;left:32px;border-right:none;border-bottom:none;border-top-left-radius:8px}
+.b.tr{top:32px;right:32px;border-left:none;border-bottom:none;border-top-right-radius:8px}
+.b.bl{bottom:32px;left:32px;border-right:none;border-top:none;border-bottom-left-radius:8px}
+.b.br{bottom:32px;right:32px;border-left:none;border-top:none;border-bottom-right-radius:8px}
+
+/* header */
+.hdr{position:absolute;top:48px;left:0;right:0;display:flex;justify-content:space-between;
+  align-items:center;padding:0 72px;z-index:5;font-size:16px;letter-spacing:0.14em;font-weight:600}
+.pill{display:inline-flex;align-items:center;padding:10px 20px;border-radius:999px;
+  background:rgba(13,38,70,0.55);border:1.5px solid var(--line);color:var(--blue-2);backdrop-filter:blur(6px)}
+.fsm{display:inline-flex;align-items:center;justify-content:center;padding:10px 22px;border-radius:999px;
+  background:linear-gradient(180deg,#FF7A45 0%,#D85A30 100%);color:#fff;font-weight:800;letter-spacing:0.18em;
+  box-shadow:0 6px 22px rgba(216,90,48,0.35)}
+.snum{font-size:14px;color:rgba(108,194,255,0.65);letter-spacing:0.30em;font-weight:600}
+
+/* footer */
+.ftr{position:absolute;bottom:36px;left:72px;right:72px;display:flex;justify-content:space-between;
+  font-size:14px;letter-spacing:0.12em;color:rgba(191,211,230,0.50);z-index:5}
+.ftr kbd{padding:2px 8px;border-radius:6px;background:rgba(63,169,245,0.10);
+  border:1px solid var(--line);color:var(--blue-3);font-family:inherit;font-size:13px}
+
+/* slide body */
+.body{position:absolute;top:130px;left:72px;right:72px;bottom:90px;z-index:2;display:flex;flex-direction:column}
+h1.t{font-size:84px;line-height:1;font-weight:800;margin:0 0 8px;letter-spacing:-0.02em;color:#fff}
+h1.t em{font-style:normal;color:var(--blue);background:linear-gradient(180deg,#5EBBFF 0%,#2A86E0 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+h1.t.orange em{background:linear-gradient(180deg,#FFA374 0%,#D85A30 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.sub{font-size:24px;color:var(--blue-2);font-weight:500;letter-spacing:0.02em;margin-bottom:36px}
+.lede{font-size:28px;line-height:1.35;color:var(--txt-dim);max-width:1500px}
+
+/* card primitives */
+.card{background:rgba(13,38,70,0.45);border:1.5px solid var(--line-soft);border-radius:16px;
+  padding:28px 32px;position:relative;backdrop-filter:blur(4px)}
+.card h3{font-size:18px;color:var(--blue-2);letter-spacing:0.14em;text-transform:uppercase;margin:0 0 16px;font-weight:700}
+.card p,.card li{font-size:22px;line-height:1.45;color:var(--txt);margin:0 0 10px}
+.card .hi{color:#fff;font-weight:600}
+.card.accent{background:linear-gradient(180deg,rgba(63,169,245,0.14) 0%,rgba(13,38,70,0.45) 100%);
+  border-color:rgba(63,169,245,0.55)}
+.card.warn{background:linear-gradient(180deg,rgba(255,122,69,0.10) 0%,rgba(13,38,70,0.45) 100%);
+  border-color:rgba(255,122,69,0.45);border-left:4px solid #FF7A45}
+.card.warn h3{color:#FFCDB6}
+.card.good{border-left:4px solid var(--blue);background:rgba(63,169,245,0.06)}
+
+/* layout grids */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1;min-height:0}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:22px;flex:1;min-height:0}
+.grid-2-1{display:grid;grid-template-columns:2fr 1fr;gap:24px;flex:1;min-height:0}
+.grid-1-2{display:grid;grid-template-columns:1fr 2fr;gap:24px;flex:1;min-height:0}
+.stack{display:flex;flex-direction:column;gap:18px;flex:1;min-height:0}
+.row{display:flex;gap:18px;align-items:stretch}
+
+/* lists */
+ul.clean{list-style:none;padding:0;margin:0}
+ul.clean li{padding-left:32px;position:relative;font-size:21px;line-height:1.4;margin-bottom:14px;color:var(--txt)}
+ul.clean li::before{content:"";position:absolute;left:0;top:12px;width:18px;height:2px;background:var(--blue)}
+ul.clean li b{color:#fff}
+ol.num{list-style:none;padding:0;margin:0;counter-reset:n}
+ol.num li{counter-increment:n;padding-left:48px;position:relative;font-size:21px;line-height:1.4;
+  margin-bottom:14px;color:var(--txt)}
+ol.num li::before{content:counter(n);position:absolute;left:0;top:-2px;width:32px;height:32px;
+  border-radius:50%;background:var(--blue);color:#06101F;font-weight:800;font-size:16px;
+  display:flex;align-items:center;justify-content:center}
+
+/* hazard ladder */
+.haz-row{display:flex;align-items:center;gap:18px;padding:14px 20px;border-radius:12px;
+  background:rgba(13,38,70,0.40);border:1px solid var(--line-soft);margin-bottom:10px}
+.haz-row .tag{font-weight:800;font-size:18px;color:#06101F;padding:8px 14px;border-radius:8px;min-width:64px;text-align:center}
+.haz-row .desc{font-size:20px;color:var(--txt);flex:1}
+.haz-row.lh .tag{background:var(--lh)}
+.haz-row.oh1 .tag{background:var(--oh1)}
+.haz-row.oh2 .tag{background:var(--oh2)}
+.haz-row.eh1 .tag{background:var(--eh1)}
+.haz-row.eh2 .tag{background:var(--eh2);color:#fff}
+
+/* data table */
+table.data{width:100%;border-collapse:separate;border-spacing:0;font-size:18px;color:var(--txt)}
+table.data th{background:rgba(63,169,245,0.14);color:var(--blue-2);font-weight:700;font-size:14px;
+  letter-spacing:0.14em;text-transform:uppercase;text-align:left;padding:12px 14px;border-bottom:1px solid var(--line)}
+table.data td{padding:11px 14px;border-bottom:1px solid var(--line-soft)}
+table.data td b{color:#fff}
+table.data tr:last-child td{border-bottom:none}
+
+/* chips/keystats */
+.kstat{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:18px;background:rgba(63,169,245,0.08);border:1.5px solid var(--line);border-radius:14px;text-align:center}
+.kstat .n{font-size:64px;font-weight:800;line-height:1;color:var(--blue-2);letter-spacing:-0.02em}
+.kstat .l{font-size:16px;color:var(--txt-dim);margin-top:8px;letter-spacing:0.06em}
+
+/* quiz */
+.quiz-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1;min-height:0}
+.qbox{background:rgba(13,38,70,0.45);border:1.5px solid var(--line-soft);border-radius:14px;padding:18px 22px;display:flex;flex-direction:column;cursor:default}
+.qbox .qn{font-size:13px;letter-spacing:0.16em;color:var(--blue-2);text-transform:uppercase;font-weight:700;margin-bottom:8px}
+.qbox .qt{font-size:18px;color:#fff;font-weight:600;line-height:1.35;margin-bottom:12px}
+.qbox .choices{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
+.qbox .choices li{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;border-radius:8px;
+  background:rgba(63,169,245,0.05);border:1px solid var(--line-soft);font-size:16px;color:var(--txt);cursor:pointer;
+  transition:background 120ms,border-color 120ms;line-height:1.3}
+.qbox .choices li:hover{background:rgba(63,169,245,0.12)}
+.qbox .choices li .k{width:24px;height:24px;border-radius:6px;background:rgba(63,169,245,0.18);
+  color:var(--blue-2);display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0}
+.qbox.revealed .choices li[data-correct]{background:rgba(29,158,117,0.18);border-color:#1D9E75}
+.qbox.revealed .choices li[data-correct] .k{background:#1D9E75;color:#fff}
+.qbox.revealed .choices li[data-wrong]{opacity:0.55}
+.qbox .explain{display:none;font-size:15px;color:var(--blue-3);margin-top:12px;padding:10px 14px;
+  background:rgba(29,158,117,0.10);border-left:3px solid #1D9E75;border-radius:6px;line-height:1.4}
+.qbox.revealed .explain{display:block}
+
+/* progress + nav UI overlays */
+.progress{position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,0.04);z-index:50}
+.progress .fill{height:100%;background:linear-gradient(90deg,#3FA9F5,#D85A30);width:0;transition:width 200ms}
+.navhud{position:fixed;bottom:14px;right:18px;font-size:12px;letter-spacing:0.14em;
+  color:rgba(191,211,230,0.55);z-index:50;background:rgba(6,16,31,0.6);padding:8px 14px;border-radius:999px;
+  border:1px solid var(--line-soft);backdrop-filter:blur(6px)}
+.navhud b{color:var(--blue-2)}
+
+/* responsive scale */
+@media (max-aspect-ratio:16/9){.slide{transform:scale(calc(100vw/1920))}}
+@media (min-aspect-ratio:16/9){.slide{transform:scale(calc(100vh/1080))}}
+
+/* divider slide */
+.divider-slide .body{align-items:center;justify-content:center;text-align:center}
+.divider-slide .modnum{font-size:24px;letter-spacing:0.40em;color:var(--blue-2);font-weight:600;margin-bottom:24px}
+.divider-slide h1.t{font-size:120px}
+.divider-slide .lede{margin:36px auto 0;text-align:center;font-size:32px}
+
+/* numbered process */
+.proc{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.proc .step{background:rgba(13,38,70,0.50);border:1.5px solid var(--line-soft);border-radius:14px;padding:18px 22px;position:relative}
+.proc .step .sn{font-size:48px;font-weight:800;color:rgba(63,169,245,0.22);line-height:1;margin-bottom:4px}
+.proc .step h4{font-size:18px;font-weight:700;color:var(--blue-2);margin:0 0 8px}
+.proc .step p{font-size:15px;line-height:1.4;color:var(--txt);margin:0}
+
+/* keyword pop */
+.kw{color:#fff;font-weight:700}
+.code{font-family:'JetBrains Mono','SF Mono',monospace;color:var(--blue-2);background:rgba(63,169,245,0.10);
+  padding:1px 8px;border-radius:5px;font-size:0.92em}
+.tag-sm{display:inline-block;padding:2px 10px;border-radius:6px;font-size:13px;font-weight:700;letter-spacing:0.08em}
+.tag-sm.lh{background:var(--lh);color:#06101F}
+.tag-sm.oh1{background:var(--oh1);color:#06101F}
+.tag-sm.oh2{background:var(--oh2);color:#06101F}
+.tag-sm.eh1{background:var(--eh1);color:#06101F}
+.tag-sm.eh2{background:var(--eh2);color:#fff}
+
+/* example callout */
+.ex{background:linear-gradient(180deg,rgba(255,122,69,0.10) 0%,rgba(13,38,70,0.45) 100%);
+  border:1.5px solid rgba(255,122,69,0.45);border-radius:14px;padding:18px 22px;margin-top:14px}
+.ex h4{font-size:14px;letter-spacing:0.16em;color:#FFCDB6;text-transform:uppercase;margin:0 0 8px;font-weight:700}
+.ex p{font-size:18px;line-height:1.45;color:var(--txt);margin:0}
+.ex p b{color:#fff}
+
+/* mnemonic box */
+.mnem{background:rgba(29,158,117,0.10);border:1.5px solid rgba(29,158,117,0.45);border-left:4px solid #1D9E75;
+  border-radius:12px;padding:14px 20px;margin-top:14px}
+.mnem b{color:#7AE9C0}
+
+/* big number panel */
+.bignum{display:flex;align-items:center;gap:18px;padding:14px 20px;background:rgba(63,169,245,0.06);
+  border-radius:12px;border:1px solid var(--line-soft);margin-bottom:10px}
+.bignum .v{font-size:36px;font-weight:800;color:var(--blue-2);min-width:130px;line-height:1}
+.bignum .x{font-size:17px;color:var(--txt);line-height:1.3}
+</style>
+</head>
+<body>
+
+<div class="progress"><div class="fill" id="pfill"></div></div>
+<div class="navhud"><b id="curN">1</b> / 61 &nbsp;·&nbsp; <kbd>←</kbd> <kbd>→</kbd></div>
+
+<div class="stage">
+
+<!-- =============== SLIDE 1 — TITLE =============== -->
+<section class="slide active divider-slide" data-n="1">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr">
+    <span class="pill">NFPA 13 — 2019 EDITION</span>
+    <span class="snum">SLIDE 01 / 61</span>
+    <span class="fsm">FSM</span>
+  </div>
+  <div class="body">
+    <div class="modnum">COMPLETE MASTERY COURSE</div>
+    <h1 class="t">General Requirements<br><em>&amp; Storage Protection</em></h1>
+    <div class="lede" style="margin-top:36px">Chapters <b style="color:#fff">4</b> &amp; <b style="color:#fff">20</b> — Beginner to Expert<br>Worked examples · Cumulative quizzes · Real-world scenarios</div>
+    <div style="display:flex;gap:18px;justify-content:center;margin-top:48px;flex-wrap:wrap">
+      <span class="pill" style="font-size:18px;padding:14px 24px">Chapter 4: General Requirements</span>
+      <span class="pill" style="font-size:18px;padding:14px 24px">Chapter 20: Storage Foundations</span>
+      <span class="pill" style="font-size:18px;padding:14px 24px;background:linear-gradient(180deg,rgba(255,122,69,0.18),rgba(216,90,48,0.14));border-color:rgba(255,122,69,0.55);color:#FFCDB6">8 Quizzes Included</span>
+      <span class="pill" style="font-size:18px;padding:14px 24px;background:rgba(255,255,255,0.04);border-color:rgba(191,211,230,0.30);color:#DCE7F2">61 Slides · 6 Modules</span>
+    </div>
+  </div>
+  <div class="ftr"><span>Navigate <kbd>←</kbd> <kbd>→</kbd> <kbd>Space</kbd> · Jump <kbd>1-9</kbd>+<kbd>Enter</kbd></span><span>NFPA 13 2019 Ed. | Chapters 4 &amp; 20</span></div>
+</section>
+
+<!-- =============== SLIDE 2 — WHAT IS NFPA 13 =============== -->
+<section class="slide" data-n="2">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 1 · FOUNDATIONS</span><span class="snum">SLIDE 02 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">What is <em>NFPA 13</em>?</h1>
+    <div class="sub">Knowing which standard you're under is rule #1</div>
+    <div class="grid-3">
+      <div class="card accent">
+        <h3>NFPA 13</h3>
+        <p><b class="hi">Standard for the Installation of Sprinkler Systems</b></p>
+        <p>Commercial, industrial, institutional, high-rise residential. Covers <span class="kw">all occupancies</span> not exclusive to 13R/13D.</p>
+        <p style="color:var(--blue-3);font-weight:600;margin-top:14px">★ This is the standard this course covers.</p>
+      </div>
+      <div class="card">
+        <h3>NFPA 13R</h3>
+        <p>Residential <b class="hi">up to 4 stories</b> above grade plane.</p>
+        <p>Lower-cost system tailored to dwelling-unit fire control, not full property protection. Garages, attics, and concealed spaces often omitted.</p>
+      </div>
+      <div class="card">
+        <h3>NFPA 13D</h3>
+        <p><b class="hi">One- and two-family dwellings</b> and manufactured homes.</p>
+        <p>Life-safety focus. Smallest pipe, simplest design. Frequently uses domestic water supply (multipurpose).</p>
+      </div>
+    </div>
+    <div class="ex"><h4>Why this matters</h4><p>Picking the wrong standard means your design is non-compliant before you draw a single pipe. A 5-story apartment isn't 13R territory <b>(over 4 stories = NFPA 13)</b>. A warehouse never falls under 13R/13D.</p></div>
+  </div>
+  <div class="ftr"><span>Module 1 · Foundations</span><span>NFPA 13 vs. 13R vs. 13D</span></div>
+</section>
+
+<!-- =============== SLIDE 3 — COURSE ROADMAP =============== -->
+<section class="slide" data-n="3">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 1 · FOUNDATIONS</span><span class="snum">SLIDE 03 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Course <em>Roadmap</em></h1>
+    <div class="sub">6 modules · 61 slides · 8 quizzes · 4 worked examples</div>
+    <div class="stack" style="gap:14px">
+      <div class="bignum"><div class="v">M1</div><div class="x"><b class="hi">Foundations</b> — slides 1–5. What NFPA 13 is, why Ch.4 + Ch.20 belong together, pre-course check.</div></div>
+      <div class="bignum"><div class="v">M2</div><div class="x"><b class="hi">Ch. 4 General Requirements</b> — slides 6–28. Owner's cert, occupancy hazards, area limits, water supply, materials. <b style="color:#FFCDB6">2 quizzes inside.</b></div></div>
+      <div class="bignum"><div class="v">M3</div><div class="x"><b class="hi">Bridge</b> — slides 29–30. Why storage needs its own chapter and how Ch.20 hands off to Ch.21–25.</div></div>
+      <div class="bignum"><div class="v">M4</div><div class="x"><b class="hi">Ch. 20 Storage Foundations</b> — slides 31–51. Commodity classes, plastics, pallets, racks, idle pallets, columns. <b style="color:#FFCDB6">2 quizzes inside.</b></div></div>
+      <div class="bignum"><div class="v">M5</div><div class="x"><b class="hi">Putting It Together</b> — slides 52–57. End-to-end design walk-through of a real warehouse + common field mistakes.</div></div>
+      <div class="bignum"><div class="v">M6</div><div class="x"><b class="hi">Mastery Check</b> — slides 58–61. Three-part final exam + 20-rule cheat sheet + next course.</div></div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 1 · Foundations</span><span>Course roadmap</span></div>
+</section>
+
+<!-- =============== SLIDE 4 — WHY CH.4 + CH.20 =============== -->
+<section class="slide" data-n="4">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 1 · FOUNDATIONS</span><span class="snum">SLIDE 04 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Why <em>Ch. 4 + Ch. 20</em> Together?</h1>
+    <div class="sub">Universal rules + the gateway to every storage design</div>
+    <div class="grid-2">
+      <div class="stack">
+        <div class="card accent"><h3>Chapter 4 — The Universal Layer</h3>
+          <p>Applies to <b class="hi">every</b> sprinkler system installed under NFPA 13. Defines:</p>
+          <ul class="clean" style="margin-top:8px">
+            <li>Who provides what info (<b>Owner's Certificate</b>)</li>
+            <li>How <b>occupancy hazard</b> is classified</li>
+            <li>Maximum <b>system protection area</b> per riser</li>
+            <li><b>Water supply</b> documentation</li>
+            <li>Allowable <b>materials, additives, gases</b></li>
+          </ul>
+        </div>
+        <div class="card warn"><h3>If You Skip Chapter 4</h3>
+          <p>You can't size the riser, can't choose the hazard density, can't even legally accept the project. <b class="hi">Every design starts here.</b></p>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="card"><h3>Chapter 20 — The Storage Gateway</h3>
+          <p>The entrance to NFPA 13's storage section. <span class="kw">Ch. 21–25</span> all depend on the decisions made in Ch. 20.</p>
+          <ol class="num" style="margin-top:10px">
+            <li>Identify <b>commodity class</b> (§20.3, §20.4)</li>
+            <li>Identify <b>storage method</b> (§20.5)</li>
+            <li>Set <b>heights/clearances</b> (§20.6)</li>
+            <li>Apply <b>general protection rules</b> (§20.7–20.15)</li>
+            <li>Branch into <b>Ch. 21–25</b> for sprinkler type</li>
+          </ol>
+        </div>
+        <div class="card good"><h3>Together They Govern…</h3>
+          <p style="font-size:23px"><b class="hi">99% of new sprinkler design work</b> performed by an estimator or designer. Master these two chapters and you can navigate every other chapter that branches off them.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 1 · Foundations</span><span>Ch.4 + Ch.20 = universal foundation</span></div>
+</section>
+
+<!-- =============== SLIDE 5 — PRE-COURSE SELF CHECK =============== -->
+<section class="slide" data-n="5">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 1 · FOUNDATIONS</span><span class="snum">SLIDE 05 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Pre-Course <em>Self-Check</em></h1>
+    <div class="sub">5 questions. Honest answers. Tells you where to slow down.</div>
+    <div class="quiz-grid" style="grid-template-columns:1fr 1fr">
+      <div class="qbox"><div class="qn">Q1 · Click to reveal</div><div class="qt">Without looking it up: what's the maximum protection area for a Light Hazard system on one riser?</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>40,000 ft²</li><li data-key="B"><span class="k">B</span>48,000 ft²</li><li data-key="C"><span class="k">C</span>52,000 ft²</li><li data-key="D"><span class="k">D</span>60,000 ft²</li></ul>
+        <div class="explain"><b>52,000 ft²</b> per §4.5.1. Same limit applies to Ordinary Hazard. Extra Hazard drops to 40,000.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q2 · Click to reveal</div><div class="qt">A flow test was performed 14 months ago. Can you use it for design?</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>Yes, always</li><li data-key="B"><span class="k">B</span>No, unless the AHJ approves</li><li data-key="C"><span class="k">C</span>Yes, if pressure is "high enough"</li><li data-key="D"><span class="k">D</span>No, never</li></ul>
+        <div class="explain"><b>§4.6.1.1:</b> 12 months is the cap. Older = re-do or get AHJ written approval. Not your call alone.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q3 · Click to reveal</div><div class="qt">Class III commodity stored on an unreinforced plastic pallet. Protect it as:</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>Class II</li><li data-key="B"><span class="k">B</span>Class III</li><li data-key="C"><span class="k">C</span>Class IV</li><li data-key="D"><span class="k">D</span>Group A plastic</li></ul>
+        <div class="explain"><b>§20.3.2.2.1:</b> Unreinforced plastic pallets push the commodity one class higher. III → IV.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q4 · Click to reveal</div><div class="qt">Column protection per §20.15 triggers when storage height exceeds:</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>10 ft</li><li data-key="B"><span class="k">B</span>12 ft</li><li data-key="C"><span class="k">C</span>15 ft</li><li data-key="D"><span class="k">D</span>20 ft</li></ul>
+        <div class="explain"><b>15 ft</b> AND the column is within/near the rack footprint (§20.15.1).</div>
+      </div>
+    </div>
+    <div class="mnem"><b>Scoring:</b> 4/4 → fast-track through Modules 2–4. 2–3 → standard pace. 0–1 → start at Slide 1 and don't skip the worked examples.</div>
+  </div>
+  <div class="ftr"><span>Module 1 · Foundations</span><span>Pre-course self-check</span></div>
+</section>
+
+<!-- =============== MODULE 2 DIVIDER could go here but skipping to maximize content =============== -->
+
+<!-- =============== SLIDE 6 — §4.1 LEVEL OF PROTECTION =============== -->
+<section class="slide" data-n="6">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §4.1</span><span class="snum">SLIDE 06 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Level of <em>Protection</em></h1>
+    <div class="sub">§4.1 — The first decision before any other</div>
+    <div class="grid-3">
+      <div class="card accent"><h3>The Core Rule</h3>
+        <p>A building protected by an automatic sprinkler system <b class="hi">shall have sprinklers in ALL areas</b> — with only the specific omissions this standard permits.</p>
+        <p style="margin-top:14px">There is <span class="kw">no</span> "partial protection by default." Every square foot must be accounted for.</p>
+      </div>
+      <div class="card"><h3>Limited Area Systems</h3>
+        <p>When partial systems are installed:</p>
+        <ul class="clean" style="margin-top:10px">
+          <li>NFPA 13 requirements still apply <b>"insofar as applicable"</b></li>
+          <li>Must consult the <b>AHJ</b> on a case-by-case basis</li>
+          <li>Common in tenant fit-outs and storage rooms in otherwise non-sprinklered shells</li>
+        </ul>
+      </div>
+      <div class="card warn"><h3>What Chapter 4 Defines</h3>
+        <p><b class="hi">Who</b> is responsible. <b class="hi">What</b> info must be provided. <b class="hi">Where</b> sprinklers must go.</p>
+        <p style="margin-top:14px">No design work begins without first determining hazard classification and coverage requirements.</p>
+      </div>
+    </div>
+    <div class="mnem"><b>Mental model:</b> Ch. 4 is the project intake — what you must KNOW before you draw. Ch. 19 is the design method — HOW you draw. Ch. 20+ is WHAT you draw for storage.</div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 4</span><span>§4.1 Level of Protection</span></div>
+</section>
+
+<!-- =============== SLIDE 7 — PERMITTED OMISSIONS =============== -->
+<section class="slide" data-n="7">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §9.3 OMISSIONS</span><span class="snum">SLIDE 07 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Permitted <em>Omissions</em></h1>
+    <div class="sub">§4.1.1 references §9.3 — the actual list of where sprinklers may be omitted</div>
+    <div class="grid-2">
+      <div class="card"><h3>Concealed Spaces</h3>
+        <ul class="clean">
+          <li><b>Noncombustible/limited-combustible</b> spaces with minimal combustible loading (§9.3.1)</li>
+          <li>Spaces filled with <b>noncombustible insulation</b> (§9.3.4)</li>
+          <li>Wood-joist concealed spaces meeting volume and area limits (§9.3.6)</li>
+          <li>Spaces above lay-in ceilings that are noncombustible and not used for storage</li>
+        </ul>
+      </div>
+      <div class="card"><h3>Small Spaces</h3>
+        <ul class="clean">
+          <li><b>Bathrooms ≤ 55 ft²</b> in dwelling units of Light Hazard occupancies (§9.3.17)</li>
+          <li><b>Closets ≤ 24 ft²</b> with least dimension ≤ 3 ft in dwelling units</li>
+          <li><b>Vestibules</b> and similar small noncombustible spaces with no combustibles</li>
+        </ul>
+      </div>
+      <div class="card"><h3>Special Areas</h3>
+        <ul class="clean">
+          <li><b>Electrical rooms</b> ≤ 2 hr fire-rated, dedicated, dry-type equipment only (§9.3.10)</li>
+          <li><b>Elevator machine rooms</b> with conditions (§9.3.9 — coordinate with NFPA 13/72/elevator code)</li>
+          <li><b>Walk-in freezers</b> protected with dry/preaction or alternative (§9.3.12)</li>
+          <li><b>Open parking structures</b> meeting building-code openness criteria</li>
+        </ul>
+      </div>
+      <div class="card warn"><h3>The Big Caveat</h3>
+        <p>Each omission has <b class="hi">specific conditions</b>. "Concealed space" alone is not enough — the construction type, combustible loading, ventilation, and use of the space all matter.</p>
+        <p style="margin-top:12px"><b style="color:#FFCDB6">Always cite the exact §9.3 subsection</b> when you tell a GC "no sprinklers here." If you can't cite it, install the sprinkler.</p>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 4 / Ch. 9</span><span>§9.3 Permitted Omissions</span></div>
+</section>
+
+<!-- =============== SLIDE 8 — §4.2 OWNER'S CERTIFICATE =============== -->
+<section class="slide" data-n="8">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §4.2</span><span class="snum">SLIDE 08 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">The <em>Owner's Certificate</em></h1>
+    <div class="sub">§4.2 — Required before any design work begins</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>What the Owner Must Provide</h3>
+        <ol class="num" style="margin-top:6px">
+          <li><b class="hi">Intended use</b> of the building — materials stored, maximum storage height</li>
+          <li><b class="hi">Preliminary plan</b> of the building with design concepts for sprinkler layout</li>
+          <li><b class="hi">Water supply information</b> as identified in §5.2.2 (now §4.6)</li>
+          <li><b class="hi">Special water supply knowledge</b> — environmental conditions, corrosion risks, MIC <span style="color:var(--blue-2);font-size:0.85em">(Microbiologically Influenced Corrosion)</span></li>
+        </ol>
+      </div>
+      <div class="card"><h3>Why This Comes First</h3>
+        <p>Submitted to the <b class="hi">sprinkler system installer</b> <em>prior to layout and detailing</em>.</p>
+        <p style="margin-top:14px">Without these 4 items, the designer cannot:</p>
+        <ul class="clean" style="margin-top:6px">
+          <li>Classify the occupancy hazard</li>
+          <li>Size the water supply</li>
+          <li>Determine sprinkler type and placement</li>
+        </ul>
+        <div class="ex" style="margin-top:14px"><h4>Real world</h4><p>If the owner's cert is <b>incomplete or unsigned</b>, the design is invalid. Always get it in writing before drawing a single pipe.</p></div>
+      </div>
+    </div>
+    <div class="mnem"><b>Mnemonic — "U-P-W-S":</b> <b>U</b>se · <b>P</b>lan · <b>W</b>ater · <b>S</b>pecial conditions. Four inputs, no work without them.</div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 4</span><span>§4.2 Owner's Certificate</span></div>
+</section>
+
+<!-- =============== SLIDE 9 — OWNER'S CERT EXAMPLE =============== -->
+<section class="slide" data-n="9">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §4.2 EXAMPLE</span><span class="snum">SLIDE 09 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Owner's Cert <em>in Practice</em></h1>
+    <div class="sub">A real example, annotated</div>
+    <div class="grid-2-1">
+      <div class="card" style="background:rgba(255,255,255,0.03)">
+        <h3 style="color:var(--orange-3)">Sample Document — Acme Warehouse #3</h3>
+        <p style="font-family:'JetBrains Mono',monospace;font-size:17px;line-height:1.5;color:var(--txt);background:rgba(0,0,0,0.25);padding:18px;border-radius:8px;margin-top:8px">
+          <b style="color:var(--blue-2)">USE:</b> Distribution warehouse. Stored goods = cartoned small appliances<br>(toaster ovens, microwaves) on wood pallets. <b style="color:#FFC25C">▶ Class IV commodity ✓</b><br><br>
+          <b style="color:var(--blue-2)">HEIGHT:</b> Max storage height 22 ft. Building eave 28 ft.<br><b style="color:#FFC25C">▶ High-piled storage — Ch. 20 required ✓</b><br><br>
+          <b style="color:var(--blue-2)">PLAN:</b> See attached A-101 dated 2026-03-15. Double-row<br>racks 8-ft aisles. <b style="color:#FFC25C">▶ Drives in-rack & flue-space rules ✓</b><br><br>
+          <b style="color:var(--blue-2)">WATER:</b> City main, hydrant test attached (2026-04-02):<br>static 78 psi, residual 64 psi @ 1,250 gpm. <b style="color:#FFC25C">▶ &lt;12 mo old ✓</b><br><br>
+          <b style="color:var(--blue-2)">SPECIAL:</b> Building unheated above mezzanine. <b style="color:#FFC25C">▶ Dry pipe / antifreeze needed ✓</b><br>
+          MIC history: None reported. Source water = treated municipal.<br><br>
+          <b style="color:var(--blue-2)">SIGNED:</b> J. Owner — 2026-04-10
+        </p>
+      </div>
+      <div class="stack">
+        <div class="card good"><h3>What This Tells You</h3>
+          <ul class="clean">
+            <li>Hazard: <b>storage</b>, not occupancy</li>
+            <li>Commodity: <b>Class IV</b></li>
+            <li>Storage method: <b>rack</b> — need flue spaces</li>
+            <li>Heated? <b>No</b> at upper levels — dry pipe required</li>
+            <li>Water: <b>usable</b>, &lt;12 months old</li>
+          </ul>
+        </div>
+        <div class="card warn"><h3>What's STILL Missing</h3>
+          <ul class="clean">
+            <li>Pallet type (wood/plastic/reinforced?)</li>
+            <li>Aisle width verification</li>
+            <li>Mezzanine size + open vs closed</li>
+            <li>Any high-challenge commodity tucked in?</li>
+          </ul>
+          <p style="color:#FFCDB6;margin-top:10px">→ Send <b>follow-up RFI</b> before design.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 4</span><span>§4.2 Owner's Certificate — example</span></div>
+</section>
+
+<!-- =============== SLIDE 10 — §4.3 OCCUPANCY OVERVIEW =============== -->
+<section class="slide" data-n="10">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §4.3</span><span class="snum">SLIDE 10 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Occupancy Hazard <em>Classifications</em></h1>
+    <div class="sub">§4.3 — Five tiers of fire risk that drive design density & water supply</div>
+    <div class="grid-1-2">
+      <div class="stack">
+        <div class="haz-row lh"><span class="tag">LH</span><span class="desc"><b>Light Hazard</b> — low quantity & combustibility</span></div>
+        <div class="haz-row oh1"><span class="tag">OH1</span><span class="desc"><b>Ordinary Hazard Gp 1</b> — moderate qty, low combustibility</span></div>
+        <div class="haz-row oh2"><span class="tag">OH2</span><span class="desc"><b>Ordinary Hazard Gp 2</b> — moderate-high qty &amp; combustibility</span></div>
+        <div class="haz-row eh1"><span class="tag">EH1</span><span class="desc"><b>Extra Hazard Gp 1</b> — very high combustibility, rapid fire</span></div>
+        <div class="haz-row eh2"><span class="tag">EH2</span><span class="desc"><b>Extra Hazard Gp 2</b> — flammable liquids OR extensive shielding</span></div>
+        <div class="mnem"><b>Key rule (§4.3.1.1–4.3.1.2):</b> Classifications relate to <b>sprinkler design &amp; water supply ONLY</b>. They are NOT a general occupancy hazard rating, NOT a code-enforcement label.</div>
+      </div>
+      <div class="card accent">
+        <h3>What Drives the Class</h3>
+        <p style="font-size:23px">Three variables, judged together:</p>
+        <ol class="num" style="margin-top:14px">
+          <li><b class="hi">Quantity</b> of combustibles per unit area (fire load)</li>
+          <li><b class="hi">Combustibility</b> — how easily it ignites, how fast it spreads</li>
+          <li><b class="hi">Rate of heat release</b> — does the fire grow slowly or explosively?</li>
+        </ol>
+        <p style="margin-top:18px;font-size:23px">Each class has a matching design <b>density (gpm/ft²)</b> and <b>area (ft²)</b> on the density/area curves (Ch. 19).</p>
+        <div class="ex"><h4>Why this matters</h4><p>Misclassify <b>down</b> (say OH1 when you should be OH2) and you under-design. Misclassify <b>up</b> and the owner pays for capacity they never need.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 4</span><span>§4.3 Occupancy Hazard Overview</span></div>
+</section>
+
+<!-- =============== SLIDE 11 — LIGHT HAZARD =============== -->
+<section class="slide" data-n="11">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §4.3.2 LIGHT HAZARD</span><span class="snum">SLIDE 11 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">§4.3.2 — <em>Light Hazard</em></h1>
+    <div class="sub"><span class="tag-sm lh">LH</span> &nbsp; The mildest tier — slow-developing fires, low fuel load</div>
+    <div class="grid-2">
+      <div class="card"><h3>Definition (§4.3.2)</h3>
+        <p>Occupancies where the <b class="hi">quantity and/or combustibility</b> of contents is low and fires with relatively <b class="hi">low rates of heat release</b> are expected.</p>
+        <h3 style="margin-top:18px">Typical Occupancies</h3>
+        <ul class="clean">
+          <li>Offices, business spaces</li>
+          <li>Churches, schools (classroom areas)</li>
+          <li>Hospitals, nursing homes (patient areas)</li>
+          <li>Museums, libraries (reading areas)</li>
+          <li>Theaters &amp; auditoriums (seating)</li>
+          <li>Residential — except large unprotected areas</li>
+        </ul>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>Density / Area Design Point</h3>
+          <div style="display:flex;gap:18px;margin-top:8px">
+            <div class="kstat"><div class="n">0.10</div><div class="l">gpm/ft²</div></div>
+            <div class="kstat"><div class="n">1,500</div><div class="l">ft² area</div></div>
+            <div class="kstat"><div class="n">52,000</div><div class="l">ft² max sys</div></div>
+          </div>
+          <p style="margin-top:14px;font-size:18px;color:var(--txt-dim)">Density/area curve runs from 0.10 gpm/ft² at 1,500 ft² to 0.07 at 3,000 ft² (Fig. 19.2.3.1.1).</p>
+        </div>
+        <div class="card good"><h3>What to Watch For</h3>
+          <p>"It's just an office" can hide:</p>
+          <ul class="clean" style="margin-top:6px">
+            <li><b>Open file rooms</b> — sometimes push toward OH1</li>
+            <li><b>Large IT/server rooms</b> — special hazard</li>
+            <li><b>Print/copy centers</b> with bulk paper storage</li>
+          </ul>
+          <p style="color:var(--orange-3);margin-top:10px">When in doubt: walk the space.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 4</span><span>§4.3.2 Light Hazard</span></div>
+</section>
+
+<!-- =============== SLIDE 12 — OH1 =============== -->
+<section class="slide" data-n="12">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §4.3.3 OH1</span><span class="snum">SLIDE 12 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">§4.3.3 — <em>Ordinary Hazard Gp 1</em></h1>
+    <div class="sub"><span class="tag-sm oh1">OH1</span> &nbsp; Moderate quantity, low combustibility, stockpiles ≤ 8 ft</div>
+    <div class="grid-2">
+      <div class="card"><h3>Definition</h3>
+        <p>Combustibility of contents is <b class="hi">low to moderate</b>, quantity is moderate, stockpiles do <b class="hi">not exceed 8 ft</b> (2.4 m), and fires with <b class="hi">moderate rates of heat release</b> are expected.</p>
+        <h3 style="margin-top:18px">Typical Occupancies</h3>
+        <ul class="clean">
+          <li>Automobile parking garages &amp; showrooms</li>
+          <li>Bakeries, beverage manufacturing</li>
+          <li>Canneries, dairy products</li>
+          <li>Electronic plants, glass manufacturing</li>
+          <li>Laundries, restaurants (service areas)</li>
+        </ul>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>Density / Area Design Point</h3>
+          <div style="display:flex;gap:18px;margin-top:8px">
+            <div class="kstat"><div class="n">0.15</div><div class="l">gpm/ft²</div></div>
+            <div class="kstat"><div class="n">1,500</div><div class="l">ft² area</div></div>
+            <div class="kstat"><div class="n">52,000</div><div class="l">ft² max sys</div></div>
+          </div>
+          <p style="margin-top:14px;font-size:18px;color:var(--txt-dim)">Curve runs 0.15 at 1,500 ft² → 0.10 at 3,900 ft². Hose 250 gpm. Duration 60–90 min.</p>
+        </div>
+        <div class="ex"><h4>The 8-ft trap</h4>
+          <p>The "8 ft stockpiles" wording is part of the <b>OH1 occupancy definition</b>, NOT a license to skip Ch. 20. If you have <em>storage</em> as the primary use, you use Ch. 20 — not §4.3.3 — even if heights are under 8 ft.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 4</span><span>§4.3.3 Ordinary Hazard Group 1</span></div>
+</section>
+
+<!-- =============== SLIDE 13 — OH2 =============== -->
+<section class="slide" data-n="13">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §4.3.4 OH2</span><span class="snum">SLIDE 13 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">§4.3.4 — <em>Ordinary Hazard Gp 2</em></h1>
+    <div class="sub"><span class="tag-sm oh2">OH2</span> &nbsp; Moderate-to-high quantity &amp; combustibility, stockpiles ≤ 12 ft</div>
+    <div class="grid-2">
+      <div class="card"><h3>Definition</h3>
+        <p>Quantity and combustibility of contents are <b class="hi">moderate to high</b>, stockpiles do <b class="hi">not exceed 12 ft</b> (3.7 m), and fires with <b class="hi">moderate-to-high rates of heat release</b> are expected.</p>
+        <h3 style="margin-top:18px">Typical Occupancies</h3>
+        <ul class="clean">
+          <li>Cereal mills, chemical plants (ordinary)</li>
+          <li>Confectionery products manufacturing</li>
+          <li>Dry cleaners, feed mills, leather goods</li>
+          <li>Machine shops, metal working</li>
+          <li>Paper and pulp mills, paper-process plants</li>
+          <li>Printing &amp; publishing, repair garages</li>
+          <li>Stages, textile manufacturing, tobacco products</li>
+          <li>Wood-machining, wood-product assembly</li>
+        </ul>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>Density / Area Design Point</h3>
+          <div style="display:flex;gap:18px;margin-top:8px">
+            <div class="kstat"><div class="n">0.20</div><div class="l">gpm/ft²</div></div>
+            <div class="kstat"><div class="n">1,500</div><div class="l">ft² area</div></div>
+            <div class="kstat"><div class="n">52,000</div><div class="l">ft² max sys</div></div>
+          </div>
+          <p style="margin-top:14px;font-size:18px;color:var(--txt-dim)">Curve runs 0.20 at 1,500 ft² → 0.15 at 3,900 ft². Hose 250 gpm. Duration 60–90 min.</p>
+        </div>
+        <div class="mnem"><b>OH1 vs OH2 in plain English:</b> If you can see how the fire would jump (paper, wood, packaging) and there's a lot of it, you're OH2. If it's mostly metal/glass/concrete with packaging incidental, you're OH1.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 4</span><span>§4.3.4 Ordinary Hazard Group 2</span></div>
+</section>
+
+<!-- =============== SLIDE 14 — EH1 =============== -->
+<section class="slide" data-n="14">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §4.3.5 EH1</span><span class="snum">SLIDE 14 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t orange">§4.3.5 — <em>Extra Hazard Gp 1</em></h1>
+    <div class="sub"><span class="tag-sm eh1">EH1</span> &nbsp; Very high combustibility — rapid-developing fires, dust, lint, fast spread</div>
+    <div class="grid-2">
+      <div class="card"><h3>Definition</h3>
+        <p>Quantity and combustibility of contents are <b class="hi">very high</b>. Dust, lint, or other materials are present that introduce the probability of <b class="hi">rapidly developing fires</b> with <b class="hi">high rates of heat release</b> — but with little or no flammable/combustible liquids.</p>
+        <h3 style="margin-top:18px">Typical Occupancies</h3>
+        <ul class="clean">
+          <li>Aircraft hangars (excl. fueling areas)</li>
+          <li>Combustible hydraulic fluid use areas</li>
+          <li>Die casting, metal extruding</li>
+          <li>Plywood and particleboard manufacturing</li>
+          <li>Printing (heatset web offset)</li>
+          <li>Rubber reclaiming, compounding, drying</li>
+          <li>Sawmills, textile picking/opening</li>
+          <li>Upholstering with plastic foams</li>
+        </ul>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>Density / Area Design Point</h3>
+          <div style="display:flex;gap:18px;margin-top:8px">
+            <div class="kstat"><div class="n">0.30</div><div class="l">gpm/ft²</div></div>
+            <div class="kstat"><div class="n">2,500</div><div class="l">ft² area</div></div>
+            <div class="kstat" style="background:rgba(255,122,69,0.10);border-color:rgba(255,122,69,0.45)"><div class="n" style="color:#FFCDB6">40,000</div><div class="l">ft² max sys</div></div>
+          </div>
+          <p style="margin-top:14px;font-size:18px;color:var(--txt-dim)">Curve runs 0.30 at 2,500 ft² → 0.20 at 5,000 ft². Hose 250–500 gpm. Duration 90–120 min.</p>
+        </div>
+        <div class="card warn"><h3>System Limit Drop</h3>
+          <p>Notice: max system area drops from <b>52,000 ft²</b> (LH/OH) to <b style="color:#FFCDB6">40,000 ft²</b> at EH. Single-riser coverage shrinks — bigger buildings need more risers.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 4</span><span>§4.3.5 Extra Hazard Group 1</span></div>
+</section>
+
+<!-- =============== SLIDE 15 — EH2 =============== -->
+<section class="slide" data-n="15">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §4.3.6 EH2</span><span class="snum">SLIDE 15 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t orange">§4.3.6 — <em>Extra Hazard Gp 2</em></h1>
+    <div class="sub"><span class="tag-sm eh2">EH2</span> &nbsp; The top tier — flammable/combustible liquids OR extensive shielding of combustibles</div>
+    <div class="grid-2">
+      <div class="card"><h3>Definition</h3>
+        <p>Occupancies with <b class="hi">moderate to substantial</b> amounts of flammable or combustible liquids, OR occupancies where <b class="hi">extensive shielding of combustibles</b> is present.</p>
+        <h3 style="margin-top:18px">Typical Occupancies</h3>
+        <ul class="clean">
+          <li>Asphalt saturating</li>
+          <li>Flammable liquids spraying</li>
+          <li>Flow coating</li>
+          <li>Manufactured-home or modular building assembly with combustible interiors exposed</li>
+          <li>Open oil quenching</li>
+          <li>Plastics processing</li>
+          <li>Solvent cleaning</li>
+          <li>Varnish &amp; paint dipping</li>
+        </ul>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>Density / Area Design Point</h3>
+          <div style="display:flex;gap:18px;margin-top:8px">
+            <div class="kstat" style="background:rgba(255,122,69,0.10);border-color:rgba(255,122,69,0.45)"><div class="n" style="color:#FFCDB6">0.40</div><div class="l">gpm/ft²</div></div>
+            <div class="kstat" style="background:rgba(255,122,69,0.10);border-color:rgba(255,122,69,0.45)"><div class="n" style="color:#FFCDB6">2,500</div><div class="l">ft² area</div></div>
+            <div class="kstat" style="background:rgba(255,122,69,0.10);border-color:rgba(255,122,69,0.45)"><div class="n" style="color:#FFCDB6">40,000</div><div class="l">ft² max sys</div></div>
+          </div>
+          <p style="margin-top:14px;font-size:18px;color:var(--txt-dim)">Curve runs 0.40 at 2,500 ft² → 0.30 at 5,000 ft². Hose typically 500 gpm. Duration up to 120 min.</p>
+        </div>
+        <div class="card warn"><h3>Shielding Matters</h3>
+          <p>EH2 isn't only flammable liquids. <b class="hi">Extensive shielding</b> — overhead racks, conveyor systems hiding combustibles from sprinkler spray — also pushes you into EH2 even without liquids on site.</p>
+          <p style="color:#FFCDB6;margin-top:10px;font-weight:600">When sprinkler spray can't reach the fuel, density alone won't save the design.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 4</span><span>§4.3.6 Extra Hazard Group 2</span></div>
+</section>
+
+<!-- =============== SLIDE 16 — HAZARD DECISION TREE =============== -->
+<section class="slide" data-n="16">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · DECISION TREE</span><span class="snum">SLIDE 16 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Hazard <em>Decision Tree</em></h1>
+    <div class="sub">Walk top-to-bottom. First "yes" wins.</div>
+    <div class="grid-2-1">
+      <div class="card" style="font-family:'JetBrains Mono','SF Mono',monospace;font-size:17px;line-height:1.85;background:rgba(0,0,0,0.30)">
+<pre style="margin:0;color:var(--txt);white-space:pre-wrap">START → Is this <b style="color:#FFCDB6">primary-use STORAGE</b>?
+  │   YES → <span style="color:#FFCDB6">STOP. Go to Chapter 20.</span> Ch. 4 §4.3 does not apply.
+  │   NO  ↓
+
+Is there <b style="color:#FFCDB6">flam/comb liquid</b> use,
+OR <b style="color:#FFCDB6">extensive shielding</b> of combustibles?
+  │   YES → <span class="tag-sm eh2">EH2</span>  (§4.3.6)
+  │   NO  ↓
+
+Is there <b style="color:#FFCDB6">dust, lint</b>, or other very-high-
+combustibility material with rapid HRR?
+  │   YES → <span class="tag-sm eh1">EH1</span>  (§4.3.5)
+  │   NO  ↓
+
+Is combustibility <b style="color:#FFCDB6">moderate-to-high</b>
+with stockpiles ≤ 12 ft?
+  │   YES → <span class="tag-sm oh2">OH2</span>  (§4.3.4)
+  │   NO  ↓
+
+Is combustibility <b style="color:#FFCDB6">low-to-moderate</b>
+with stockpiles ≤ 8 ft?
+  │   YES → <span class="tag-sm oh1">OH1</span>  (§4.3.3)
+  │   NO  ↓
+
+Default: <span class="tag-sm lh">LH</span>  (§4.3.2)</pre>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>Tie-Breaker Rules</h3>
+          <ul class="clean">
+            <li>If <b>any portion</b> of a space meets a higher hazard, the higher hazard governs that portion (§4.5.3)</li>
+            <li>If the occupancy is <b>not listed</b> in §4.3.2–4.3.6, judge by the three drivers: quantity, combustibility, HRR</li>
+            <li>The <b>AHJ has final say</b> when borderline</li>
+          </ul>
+        </div>
+        <div class="card warn"><h3>Most Common Mistake</h3>
+          <p>Calling an auto repair shop "OH1" because cars are "mostly metal." The <b class="hi">tires, fluids, plastics, and shop combustibles</b> push it to OH2 (per the §4.3.4 list).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 4</span><span>Hazard classification — decision tree</span></div>
+</section>
+
+<!-- =============== SLIDE 17 — WORKED EXAMPLE =============== -->
+<section class="slide" data-n="17">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · WORKED EXAMPLE</span><span class="snum">SLIDE 17 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Worked Example — <em>Classify 5 Occupancies</em></h1>
+    <div class="sub">Stop, think, then check your answer against the analysis</div>
+    <div class="grid-2">
+      <div class="stack">
+        <div class="card"><h3>① Suburban Dental Office</h3>
+          <p>2,500 ft² office build-out. Operatories with dental chairs, sterilizer, X-ray room, small lab.</p>
+          <p style="margin-top:8px"><b style="color:#7AE9C0">→ <span class="tag-sm lh">LH</span></b> — low fuel load, low combustibility, mostly metal/glass/finishes. Slow HRR expected.</p>
+        </div>
+        <div class="card"><h3>② Indoor Parking Garage (commercial)</h3>
+          <p>Three levels, ~120 cars typical. No fueling. Concrete deck on concrete columns.</p>
+          <p style="margin-top:8px"><b style="color:#7AE9C0">→ <span class="tag-sm oh1">OH1</span></b> — §4.3.3 explicitly lists auto parking garages. Cars contain combustibles but moderate qty, low-to-mod HRR.</p>
+        </div>
+        <div class="card"><h3>③ Print Shop — Heat-Set Web Offset</h3>
+          <p>Commercial printer, rolls of paper, ink/solvent feed, oven for ink cure.</p>
+          <p style="margin-top:8px"><b style="color:#FFCDB6">→ <span class="tag-sm eh1">EH1</span></b> — §4.3.5 lists "printing (heatset web offset)" by name. Rapid fire potential from web speed + ink solvents.</p>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="card"><h3>④ Auto Body Spray Booth Area</h3>
+          <p>Open spray booths using flammable solvent-based paints. Drying area adjacent.</p>
+          <p style="margin-top:8px"><b style="color:#FFCDB6">→ <span class="tag-sm eh2">EH2</span></b> — §4.3.6 names "flammable liquids spraying." Liquids fueling rapid fire growth = top tier.</p>
+        </div>
+        <div class="card"><h3>⑤ Distribution Warehouse, Cardboard Boxes Stored 18 ft</h3>
+          <p>Cartoned small electronics, rack storage, 18 ft high.</p>
+          <p style="margin-top:8px"><b style="color:#FFC25C">→ NOT a §4.3 occupancy hazard.</b> Primary use = storage above misc-storage thresholds. <b class="hi">Apply Chapter 20</b>, then branch to Ch. 21/22/23 for sprinkler design.</p>
+        </div>
+        <div class="mnem"><b>Pattern:</b> If "things are kept here for later use" is the building's purpose → storage chapter. If "things happen here" (work, dwelling, gathering) → occupancy hazard.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 4</span><span>Worked example — classify 5 occupancies</span></div>
+</section>
+
+<!-- =============== SLIDE 18 — QUIZ 1 =============== -->
+<section class="slide" data-n="18">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · QUIZ 1</span><span class="snum">SLIDE 18 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Quiz 1 — <em>Hazard Classifications</em></h1>
+    <div class="sub">Click any choice to reveal the answer + why others are wrong</div>
+    <div class="quiz-grid">
+      <div class="qbox"><div class="qn">Q1 — Recall</div><div class="qt">Which occupancy class permits stockpiles of low-combustibility contents up to 8 ft (2.4 m)?</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>Light Hazard</li><li data-key="B"><span class="k">B</span>Ordinary Hazard Group 1</li><li data-key="C"><span class="k">C</span>Ordinary Hazard Group 2</li><li data-key="D"><span class="k">D</span>Extra Hazard Group 1</li></ul>
+        <div class="explain"><b>B — OH1 (§4.3.3).</b> The 8-ft stockpile language is part of the OH1 occupancy definition. LH has no specific height. OH2 goes to 12 ft. EH is not defined by stockpile height.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q2 — Recall</div><div class="qt">Extra Hazard Group 2 is specifically triggered by which condition?</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>Dust or lint present</li><li data-key="B"><span class="k">B</span>Rapidly developing fire potential</li><li data-key="C"><span class="k">C</span>Flammable/combustible liquids OR extensive shielding</li><li data-key="D"><span class="k">D</span>Storage height exceeding 12 ft</li></ul>
+        <div class="explain"><b>C — EH2 (§4.3.6).</b> Dust/lint and rapid HRR are EH1 triggers. Storage height belongs to Ch. 20, not Ch. 4 occupancy hazard.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q3 — Concept</div><div class="qt">Occupancy classifications in NFPA 13 are intended to classify what specifically?</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>General occupancy hazard for building codes</li><li data-key="B"><span class="k">B</span>Sprinkler design, installation &amp; water supply requirements only</li><li data-key="C"><span class="k">C</span>Fire alarm system design</li><li data-key="D"><span class="k">D</span>Building construction type</li></ul>
+        <div class="explain"><b>B — §4.3.1.1–4.3.1.2.</b> These are sprinkler-only classifications. Don't let a building official borrow them for IBC use-group decisions.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q4 — Application</div><div class="qt">A commercial auto repair shop with brake fluid, oil, and tires on shelves is most appropriately:</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>OH1 — "mostly metal cars"</li><li data-key="B"><span class="k">B</span>OH2 — listed under §4.3.4 (repair garages)</li><li data-key="C"><span class="k">C</span>EH1 — flammable liquids on site</li><li data-key="D"><span class="k">D</span>EH2 — extensive shielding</li></ul>
+        <div class="explain"><b>B — OH2.</b> "Repair garages" is named in the §4.3.4 list. EH1/EH2 reserved for spraying, dipping, or process-scale flammable liquid use.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 4</span><span>Quiz 1 — Hazard Classifications</span></div>
+</section>
+
+<!-- =============== SLIDE 19 — MISC & LOW-PILED =============== -->
+<section class="slide" data-n="19">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §4.3.1</span><span class="snum">SLIDE 19 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Miscellaneous &amp; <em>Low-Piled Storage</em></h1>
+    <div class="sub">§4.3.1.4 – 4.3.1.8 — When small storage stays under Ch. 4 instead of Ch. 20</div>
+    <div class="grid-2">
+      <div class="stack">
+        <div class="card accent"><h3>Miscellaneous Storage Limits (§4.3.1.4)</h3>
+          <ul class="clean">
+            <li>Must NOT exceed <b>10% of building area</b> OR <b>4,000 ft²</b> (whichever is greater) of sprinklered area</li>
+            <li>No single pile or area &gt; <b>1,000 ft²</b> (93 m²)</li>
+            <li>Must be separated from other piles by at least <b>25 ft</b> (7.6 m)</li>
+          </ul>
+        </div>
+        <div class="card"><h3>Low-Piled Key Thresholds (§4.3.1.5)</h3>
+          <ul class="clean">
+            <li><b>Class I–IV at ≤ 12 ft</b> on solid shelf racks → in-rack sprinklers per §25.6.1 + ceiling protection</li>
+            <li><b>Group A plastics at ≤ 5 ft</b> on solid shelf racks → same rule applies</li>
+            <li><b>Max design area</b> for misc/low-piled: <b>3,000 ft²</b> (279 m²) — except tire storage</li>
+          </ul>
+        </div>
+        <div class="card warn"><h3>Tire Storage Special Rule</h3>
+          <p>Miscellaneous tire piles limited to <b class="hi">2,000 ft²</b> and pile width <b class="hi">≤ 25 ft</b> in the direction of wheel holes (§4.3.1.6).</p>
+        </div>
+      </div>
+      <div class="card"><h3>Why "Miscellaneous" Exists</h3>
+        <p>Real buildings have a back room with a few pallets of paper or a small parts cage. Forcing those into full Ch. 20 protection would be wasteful.</p>
+        <p style="margin-top:14px"><b class="hi">§4.3.1 is the relief valve</b> — if your storage fits within the three limits above, you can stay under Ch. 4 occupancy design and just add some hose/duration per Table 4.3.1.7.1.</p>
+        <div class="mnem"><b>3-rule check:</b> <b>10%/4k</b> total · <b>1k</b> per pile · <b>25 ft</b> separation. If any one fails, go to Ch. 20.</div>
+        <div class="ex"><h4>Example</h4><p>50,000 ft² office building wants 3 pallets of copy paper in a 600 ft² supply room. 10% of building = 5,000 ft² (more than 4,000) and 600 &lt; 1,000 — eligible as misc storage if separation is met.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 4</span><span>§4.3.1 Misc &amp; Low-Piled Storage</span></div>
+</section>
+
+<!-- =============== SLIDE 20 — TABLE 4.3.1.7.1 =============== -->
+<section class="slide" data-n="20">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · TABLE 4.3.1.7.1</span><span class="snum">SLIDE 20 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Discharge <em>Criteria Table</em></h1>
+    <div class="sub">Table 4.3.1.7.1 — Misc and low-piled storage hose &amp; duration</div>
+    <div class="grid-2-1">
+      <div class="card" style="padding:18px 22px">
+        <table class="data">
+          <thead><tr><th>Commodity</th><th>Max Storage Ht</th><th>Design Curve</th><th>Total Hose</th><th>Duration</th></tr></thead>
+          <tbody>
+            <tr><td><b>Class I–IV</b></td><td>≤ 12 ft</td><td><span class="tag-sm oh1">OH1</span></td><td>250 gpm</td><td>60–90 min</td></tr>
+            <tr><td><b>Class I–III</b></td><td>&gt; 10–12 ft</td><td><span class="tag-sm oh2">OH2</span></td><td>250 gpm</td><td>60–90 min</td></tr>
+            <tr><td><b>Class IV (rack)</b></td><td>&gt; 10–12 ft</td><td><span class="tag-sm eh1">EH1</span></td><td>500 gpm</td><td>90–120 min</td></tr>
+            <tr><td><b>Cartoned Gp A plastic</b></td><td>≤ 5 ft</td><td><span class="tag-sm oh2">OH2</span></td><td>250 gpm</td><td>60–90 min</td></tr>
+            <tr><td><b>Cartoned Gp A plastic</b></td><td>&gt; 5–10 ft</td><td><span class="tag-sm eh1">EH1</span></td><td>500 gpm</td><td>90–120 min</td></tr>
+            <tr><td><b>Exposed Gp A plastic</b></td><td>≤ 5 ft</td><td><span class="tag-sm eh1">EH1</span></td><td>500 gpm</td><td>90–120 min</td></tr>
+            <tr><td><b>Exposed Gp A plastic</b></td><td>&gt; 5–10 ft</td><td><span class="tag-sm eh2">EH2</span></td><td>500 gpm</td><td>90–120 min</td></tr>
+            <tr><td><b>Rubber tires (floor)</b></td><td>&gt; 5–12 ft</td><td><span class="tag-sm eh1">EH1</span></td><td>500 gpm</td><td>90–120 min</td></tr>
+            <tr><td><b>Idle wood pallets</b></td><td>see §20.14</td><td colspan="3">Refer to Chapter 20 — never miscellaneous</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>How to Read This</h3>
+          <p>Once your storage fits the §4.3.1 size rules, this table tells you:</p>
+          <ul class="clean" style="margin-top:8px">
+            <li>Which <b>design curve</b> (LH/OH1/OH2/EH1/EH2)</li>
+            <li>Hose stream allowance (added to sprinkler demand)</li>
+            <li>Water supply <b>duration</b></li>
+          </ul>
+          <p style="color:var(--blue-3);margin-top:10px">Density values come from Ch. 19 curves for that hazard class.</p>
+        </div>
+        <div class="card warn"><h3>Common Trap</h3>
+          <p>Exposed (uncartoned) Group A plastic <b class="hi">at any height jumps to EH1+</b>. The carton is your buffer — lose it and the design changes.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 4</span><span>Table 4.3.1.7.1 — discharge criteria</span></div>
+</section>
+
+<!-- =============== SLIDE 21 — §4.4 WORKING PLANS =============== -->
+<section class="slide" data-n="21">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §4.4</span><span class="snum">SLIDE 21 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Working <em>Plans</em></h1>
+    <div class="sub">§4.4 — What must appear on submitted drawings</div>
+    <div class="grid-2">
+      <div class="card"><h3>Plan Information (§4.4)</h3>
+        <ul class="clean">
+          <li>Name &amp; address of <b>owner</b>, <b>occupant</b>, <b>contractor</b></li>
+          <li><b>Scale</b> of drawings (typical ⅛" or ¼" = 1'-0")</li>
+          <li><b>North arrow</b> + key plan</li>
+          <li>Full <b>dimensions</b> of building/area, ceiling construction, slopes</li>
+          <li>Type of <b>sprinklers</b> (K-factor, temperature, response, orientation)</li>
+          <li><b>Piping</b> sizes, lengths, fitting count</li>
+          <li>Hanger types, locations, pipe support details</li>
+          <li><b>Hydraulic calc</b> summary node / reference point</li>
+          <li><b>Hazard classification</b> and design density/area</li>
+          <li>Water supply source, flow test data, assumptions</li>
+        </ul>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>Calculations Submittal</h3>
+          <p>Hydraulic calculations must accompany the drawings and include:</p>
+          <ul class="clean" style="margin-top:6px">
+            <li>Summary sheet with system identifier</li>
+            <li>Detailed nodes, flows, pressures</li>
+            <li>Graph plot — supply vs demand curve</li>
+            <li>K-factor selection rationale</li>
+            <li>Hose stream allowance</li>
+          </ul>
+        </div>
+        <div class="card warn"><h3>If You Omit Any of This</h3>
+          <p>AHJ reject. Project schedule slips. Worse: your stamp is on an <b class="hi">incomplete record</b>. NFPA 13 §4.4 is the AHJ's checklist — match it line-for-line.</p>
+        </div>
+        <div class="mnem"><b>Pro tip:</b> Many AHJs publish their own plan-review checklist that mirrors §4.4. Pull it before submittal.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 4</span><span>§4.4 Working Plans</span></div>
+</section>
+
+<!-- =============== SLIDE 22 — §4.5 PROTECTION AREA =============== -->
+<section class="slide" data-n="22">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §4.5</span><span class="snum">SLIDE 22 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">System <em>Protection Area</em> Limits</h1>
+    <div class="sub">§4.5 — Maximum floor area per single sprinkler system / riser</div>
+    <div class="grid-2">
+      <div class="card accent" style="padding:24px 28px">
+        <h3>Per Hazard Type</h3>
+        <table class="data" style="margin-top:6px">
+          <thead><tr><th>Hazard Type</th><th>Max Area (per system)</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tag-sm lh">LH</span> Light Hazard</td><td><b>52,000 ft²</b> (4,831 m²)</td></tr>
+            <tr><td><span class="tag-sm oh1">OH1</span> Ordinary Hazard 1</td><td><b>52,000 ft²</b></td></tr>
+            <tr><td><span class="tag-sm oh2">OH2</span> Ordinary Hazard 2</td><td><b>52,000 ft²</b></td></tr>
+            <tr><td><span class="tag-sm eh1">EH1</span> Extra Hazard 1</td><td><b style="color:#FFCDB6">40,000 ft²</b> (3,716 m²)</td></tr>
+            <tr><td><span class="tag-sm eh2">EH2</span> Extra Hazard 2</td><td><b style="color:#FFCDB6">40,000 ft²</b></td></tr>
+            <tr><td><b>High-piled storage</b> (Ch. 20)</td><td><b style="color:#FFCDB6">40,000 ft²</b></td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:14px;font-size:18px;color:var(--txt-dim)">These limits apply <b>per riser / per single system</b>. Bigger buildings = more risers.</p>
+      </div>
+      <div class="stack">
+        <div class="card"><h3>What Counts in the Area?</h3>
+          <ul class="clean">
+            <li>All <b>sprinklered</b> floor area served by that system</li>
+            <li>Multiple connected floors of LH/OH count <b>cumulatively</b>, unless feeding through approved isolation</li>
+            <li>Mezzanines have their own rules (next slide)</li>
+            <li>Combined LH/OH areas can total 52,000 ft²</li>
+          </ul>
+        </div>
+        <div class="card warn"><h3>Why the Limit Exists</h3>
+          <p>If one system fires, the whole system drains. Bigger systems = longer fill / pressure-loss / drain-down = worse fire response. <b class="hi">52,000 / 40,000</b> balances economy and reliability.</p>
+        </div>
+        <div class="ex"><h4>Real-world</h4><p>A 90,000 ft² LH office can't be one system — must be split with detached risers / floor-control valves. Plan riser locations early.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 4</span><span>§4.5 Protection Area Limits</span></div>
+</section>
+
+<!-- =============== SLIDE 23 — §4.5.2 MEZZANINE =============== -->
+<section class="slide" data-n="23">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §4.5.2</span><span class="snum">SLIDE 23 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t"><em>Mezzanine</em> Rules</h1>
+    <div class="sub">§4.5.2 — When mezzanine area counts toward your 52,000/40,000 cap</div>
+    <div class="grid-3">
+      <div class="card"><h3>Scenario 1 — Single System</h3>
+        <p>One system covers the main floor AND the open mezzanine above.</p>
+        <p style="margin-top:14px;color:#7AE9C0;font-weight:600">✓ Mezzanine area NOT counted toward §4.5.1 limit.</p>
+        <p style="margin-top:10px;color:var(--txt-dim);font-size:18px">The mezzanine sprinklers are "free area" because they're on the same demand.</p>
+      </div>
+      <div class="card"><h3>Scenario 2 — Multi-System, Same Boundary</h3>
+        <p>Multiple systems share a common boundary, mezzanine fully within one system's coverage.</p>
+        <p style="margin-top:14px;color:#7AE9C0;font-weight:600">✓ Mezzanine area NOT counted.</p>
+        <p style="margin-top:10px;color:var(--txt-dim);font-size:18px">Contained within one system's vertical column.</p>
+      </div>
+      <div class="card warn"><h3>Scenario 3 — Different System Feeds Mezzanine</h3>
+        <p>The mezzanine is fed by a <b class="hi">different</b> system than the floor below it.</p>
+        <p style="margin-top:14px;color:#FFCDB6;font-weight:600">✗ Mezzanine area ADDED to supplying system — must still meet §4.5.1.</p>
+        <p style="margin-top:10px;color:var(--txt-dim);font-size:18px">Common gotcha in multi-tenant fit-outs.</p>
+      </div>
+    </div>
+    <div class="ex"><h4>Worked check</h4><p>A 50,000 ft² OH1 ground floor has a 4,000 ft² open mezzanine. If <b>one system</b> feeds both: total stays at 50,000 — fine. If a <b>separate</b> mezzanine system: that mezzanine system sees only 4,000 ft² — also fine, well under 52,000.</p></div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 4</span><span>§4.5.2 Mezzanine Rules</span></div>
+</section>
+
+<!-- =============== SLIDE 24 — §4.5.3 MIXED HAZARD =============== -->
+<section class="slide" data-n="24">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §4.5.3</span><span class="snum">SLIDE 24 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t"><em>Mixed Hazard</em> Systems</h1>
+    <div class="sub">§4.5.3 — Combining different hazards on one system</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>The Two Rules</h3>
+        <ol class="num" style="margin-top:8px">
+          <li>The portion designed to the <b class="hi">higher hazard</b> shall not exceed its own area limit (EH portion ≤ 40,000 ft²).</li>
+          <li>The <b class="hi">total combined system</b> shall not exceed the largest applicable limit (52,000 ft²).</li>
+        </ol>
+        <div class="mnem" style="margin-top:14px"><b>Plain English:</b> The EH zone obeys EH rules. The OH zone obeys OH rules. The sum doesn't get bigger because you mixed.</div>
+      </div>
+      <div class="card"><h3>Visual</h3>
+        <pre style="font-family:'JetBrains Mono',monospace;font-size:16px;line-height:1.5;color:var(--txt);background:rgba(0,0,0,0.25);padding:14px 18px;border-radius:8px;margin:0">┌──────────────────────────────────┐
+│  OH2  ·  35,000 ft²              │  ← OH2 portion (under 52k)
+│                                  │
+├──────────────────────────────────┤
+│  EH1  ·  15,000 ft²              │  ← EH1 portion (under 40k ✓)
+└──────────────────────────────────┘
+       TOTAL = 50,000 ft² ≤ 52,000 ft² ✓
+
+─────── Both rules satisfied ───────</pre>
+        <p style="margin-top:12px;color:var(--orange-3)">If the EH1 portion was 45,000 ft², rule #1 fails — must split into two systems.</p>
+      </div>
+    </div>
+    <div class="card warn" style="margin-top:18px"><h3>Why Designers Get This Wrong</h3>
+      <p>They assume "total ≤ 52,000 means I can put 50,000 ft² of EH on one riser." <b class="hi">No.</b> The EH portion is capped at 40,000 regardless of the combined total.</p>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 4</span><span>§4.5.3 Mixed Hazard Systems</span></div>
+</section>
+
+<!-- =============== SLIDE 25 — §4.6 WATER SUPPLY =============== -->
+<section class="slide" data-n="25">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §4.6</span><span class="snum">SLIDE 25 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Water Supply <em>Requirements</em></h1>
+    <div class="sub">§4.6 — What must be documented before design</div>
+    <div class="grid-2-1">
+      <div class="card"><h3>§4.6.1 — Water Supply Capacity Information (9 required items)</h3>
+        <ol class="num" style="margin-top:8px">
+          <li>Location &amp; elevation of <b>static and residual test gauge</b> relative to riser reference point</li>
+          <li><b>Flow location</b></li>
+          <li><b>Static pressure</b> in psi (bar)</li>
+          <li><b>Residual pressure</b> in psi (bar)</li>
+          <li><b>Flow</b> in gpm (L/min)</li>
+          <li><b>Date</b> of test</li>
+          <li><b>Time</b> of test</li>
+          <li><b>Name</b> of person who conducted or supplied the test</li>
+          <li>Other sources of water supply with <b>pressure or elevation</b></li>
+        </ol>
+      </div>
+      <div class="stack">
+        <div class="card accent" style="text-align:center">
+          <div style="display:flex;gap:18px;justify-content:center">
+            <div class="kstat"><div class="n">12</div><div class="l">months max test age (§4.6.1.1)</div></div>
+            <div class="kstat"><div class="n">9</div><div class="l">required items</div></div>
+          </div>
+        </div>
+        <div class="card warn"><h3>§4.6.1.1 — The 12-Month Rule</h3>
+          <p>If the flow test is <b class="hi">older than 12 months</b> at plan submittal, it must be re-done — unless the AHJ specifically approves otherwise <b>in writing</b>.</p>
+        </div>
+        <div class="card good"><h3>§4.6.2 — Water Treatment</h3>
+          <p>If treatment is provided, document:</p>
+          <ul class="clean" style="margin-top:6px">
+            <li><b>Condition</b> requiring treatment</li>
+            <li><b>Type</b> of treatment</li>
+            <li><b>Details</b> of treatment plan</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 4</span><span>§4.6 Water Supply</span></div>
+</section>
+
+<!-- =============== SLIDE 26 — FLOW TEST ANATOMY =============== -->
+<section class="slide" data-n="26">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · FLOW TEST</span><span class="snum">SLIDE 26 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Flow Test <em>Anatomy</em></h1>
+    <div class="sub">What the numbers mean &amp; how to read a report</div>
+    <div class="grid-2">
+      <div class="card" style="font-family:'JetBrains Mono',monospace;font-size:16px;background:rgba(0,0,0,0.30)">
+        <h3 style="font-family:'Inter',sans-serif">Example Test Report</h3>
+        <pre style="margin:0;color:var(--txt);line-height:1.55;white-space:pre-wrap">FIRE HYDRANT FLOW TEST
+─────────────────────────────────
+Project:    Acme Warehouse #3
+Date:       2026-04-02   Time: 10:14 AM
+Tested by:  Smith Hydrant Co. — J. Smith
+
+<b style="color:#5EBBFF">STATIC HYDRANT</b>  (gauge, no flow)
+  Elevation:  Grade
+  Pressure:   <b style="color:#fff">78 psi</b>
+
+<b style="color:#5EBBFF">FLOW HYDRANT</b>   (downstream, flowing)
+  Outlet:     2½" — Pitot reading 32 psi
+  Flow:       <b style="color:#fff">1,250 gpm</b>
+
+<b style="color:#5EBBFF">RESIDUAL</b>      (static gauge during flow)
+  Pressure:   <b style="color:#fff">64 psi</b>
+
+Notes: Hydrant in good condition. Confirmed
+       with city water dept, system at
+       normal operating pressure.</pre>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>Reading the Three Numbers</h3>
+          <ul class="clean">
+            <li><b>Static (78 psi)</b> — pressure when nothing's flowing. Your "best case."</li>
+            <li><b>Residual (64 psi)</b> — pressure at the same point WHILE 1,250 gpm flows. Reality during a fire.</li>
+            <li><b>Flow (1,250 gpm)</b> — how much the system can give up at that residual.</li>
+          </ul>
+        </div>
+        <div class="card good"><h3>How You Use It</h3>
+          <p>Plot static and (flow, residual) on log-log paper or hydraulic software. Project a <b class="hi">supply curve</b>. Your demand curve must sit <b class="hi">under</b> the supply curve at the required flow.</p>
+        </div>
+        <div class="card warn"><h3>What Invalidates It</h3>
+          <ul class="clean">
+            <li>Older than 12 months (§4.6.1.1)</li>
+            <li>Tested during off-peak — peak demand could be lower</li>
+            <li>Wrong hydrants (test not representative of project location)</li>
+            <li>Missing required §4.6.1 fields</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 4</span><span>Flow Test Anatomy</span></div>
+</section>
+
+<!-- =============== SLIDE 27 — §4.7-4.10 MATERIALS =============== -->
+<section class="slide" data-n="27">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §4.7 – §4.10</span><span class="snum">SLIDE 27 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Materials &amp; <em>Additives</em></h1>
+    <div class="sub">What goes in the system (and what doesn't)</div>
+    <div class="grid-2">
+      <div class="stack">
+        <div class="card warn"><h3>§4.7 — Prohibited Additives</h3>
+          <ul class="clean">
+            <li><b class="hi">Sodium silicate</b> or its derivatives — PROHIBITED</li>
+            <li><b class="hi">Brine</b> — PROHIBITED</li>
+            <li><b class="hi">Similar leak-stopping chemicals</b> — PROHIBITED</li>
+          </ul>
+          <p style="margin-top:10px;color:#FFCDB6">These damage sprinkler components and void the design.</p>
+        </div>
+        <div class="card"><h3>§4.8 — Air &amp; Gas</h3>
+          <p>Air used to charge, maintain, or supervise a system may be replaced with <b class="hi">nitrogen</b> or other approved gas.</p>
+          <p style="margin-top:8px;color:var(--blue-3);font-size:18px">Nitrogen extends sprinkler/pipe life in dry &amp; preaction systems — reduces oxygen-driven corrosion.</p>
+        </div>
+        <div class="card"><h3>§4.9 — Pipe Support</h3>
+          <p>Sprinkler system components <b class="hi">shall not support</b> non-sprinkler components unless explicitly permitted by this standard.</p>
+          <p style="margin-top:8px;color:var(--orange-3);font-size:18px">No hanging conduit, ductwork, cable trays from your sprinkler pipe.</p>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>§4.10 — Material Definitions</h3>
+          <p><b style="color:#fff">Noncombustible (§4.10.1):</b><br>Will not ignite, burn, or support combustion under fire/heat conditions — OR passes <b class="hi">ASTM E136</b> (750°C furnace test) — OR passes ASTM E2652.</p>
+          <p style="margin-top:14px"><b style="color:#fff">Limited-Combustible (§4.10.2):</b><br>Does NOT qualify as noncombustible BUT has potential heat <b class="hi">≤ 3,500 Btu/lb</b> (8,141 kJ/kg) per NFPA 259, AND meets one of:</p>
+          <ul class="clean" style="margin-top:6px">
+            <li>Noncombustible base + surface ≤ ⅛" thick with flame spread ≤ 50 (ASTM E84 / UL 723)</li>
+            <li>OR all surfaces: flame spread ≤ 25, no progressive combustion</li>
+          </ul>
+        </div>
+        <div class="mnem"><b>§4.10.1.2 / §4.10.2.4:</b> Wherever "limited-combustible" is used in NFPA 13, it also includes "noncombustible." (Limited-combustible is a superset.)</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 4</span><span>§4.7–4.10 Materials &amp; Additives</span></div>
+</section>
+
+<!-- =============== SLIDE 28 — QUIZ 2 =============== -->
+<section class="slide" data-n="28">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · QUIZ 2</span><span class="snum">SLIDE 28 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Quiz 2 — <em>System Limits, Water, Materials</em></h1>
+    <div class="sub">Click any choice for instant feedback</div>
+    <div class="quiz-grid">
+      <div class="qbox"><div class="qn">Q1 — Recall</div><div class="qt">Maximum floor area per riser for an Extra Hazard system?</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>52,000 ft²</li><li data-key="B"><span class="k">B</span>40,000 ft²</li><li data-key="C"><span class="k">C</span>30,000 ft²</li><li data-key="D"><span class="k">D</span>25,000 ft²</li></ul>
+        <div class="explain"><b>B — 40,000 ft² (§4.5.1).</b> 52,000 is the LH/OH limit. Anything smaller is house-rules.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q2 — Recall</div><div class="qt">A single miscellaneous storage pile must not exceed what size?</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>500 ft²</li><li data-key="B"><span class="k">B</span>1,000 ft²</li><li data-key="C"><span class="k">C</span>2,000 ft² (tire-pile rule)</li><li data-key="D"><span class="k">D</span>4,000 ft²</li></ul>
+        <div class="explain"><b>B — 1,000 ft² per pile (§4.3.1.4.2).</b> 4,000 is the total misc allowance for the building. 2,000 applies only to tires.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q3 — Application</div><div class="qt">Flow test from 14 months ago. Acceptable for design?</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>Yes, &lt;18 months is fine</li><li data-key="B"><span class="k">B</span>Yes, always</li><li data-key="C"><span class="k">C</span>No, unless AHJ approves in writing</li><li data-key="D"><span class="k">D</span>No, no exceptions</li></ul>
+        <div class="explain"><b>C — §4.6.1.1.</b> 12 months is the cap. Older = redo or get written AHJ approval. Not your call alone.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q4 — Concept</div><div class="qt">Mixed: 30,000 ft² OH2 + 35,000 ft² EH1 on one riser. Compliant?</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>Yes — EH portion under 40,000</li><li data-key="B"><span class="k">B</span>No — total 65k exceeds 52,000 ft² (§4.5.3)</li><li data-key="C"><span class="k">C</span>Yes — sum under 100,000</li><li data-key="D"><span class="k">D</span>Depends on the AHJ</li></ul>
+        <div class="explain"><b>B.</b> Total 65,000 ft² blows past the 52k cap. Must split. The EH cap of 40k is independently OK — but rule #2 (total ≤ 52k) fails.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 4</span><span>Quiz 2 — Limits, Water, Materials</span></div>
+</section>
+
+<!-- =============== SLIDE 29 — BRIDGE: WHY STORAGE GETS ITS OWN CH =============== -->
+<section class="slide" data-n="29">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 3 · BRIDGE</span><span class="snum">SLIDE 29 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Why Storage <em>Needs Its Own Chapter</em></h1>
+    <div class="sub">Where Chapter 4 occupancy classification stops working</div>
+    <div class="grid-2">
+      <div class="card warn"><h3>Ch. 4's Blind Spots</h3>
+        <p>Occupancy hazard works fine for offices, garages, factories. It breaks down when:</p>
+        <ul class="clean" style="margin-top:10px">
+          <li><b>Storage HEIGHT</b> dominates fire behavior — a 25-ft pile burns very differently than a 6-ft pile of the same product</li>
+          <li><b>Packaging</b> changes fuel: a cardboard box vs the plastic bin holding the same widget</li>
+          <li><b>Pallet</b> material is itself fuel — plastic pallets shift the entire fire curve</li>
+          <li><b>Rack flue spaces</b> create vertical chimneys you can't model with floor-area density</li>
+          <li><b>Shielding</b> by upper rack levels prevents sprinkler spray from reaching lower fires</li>
+        </ul>
+      </div>
+      <div class="card accent"><h3>What Ch. 20 Adds</h3>
+        <ul class="clean">
+          <li><b>Commodity classes</b> I, II, III, IV + Group A/B/C plastics — fuel taxonomy</li>
+          <li><b>Storage methods</b> — solid pile, palletized, rack types</li>
+          <li><b>Height &amp; clearance</b> rules — storage height vs ceiling matters</li>
+          <li><b>Idle pallet</b> rules — your "empty" pallets are fuel</li>
+          <li><b>Column protection</b> — structural steel needs cooling, not just suppression</li>
+          <li><b>Mixed commodity</b> rules — how the worst pallet drives the whole rack</li>
+        </ul>
+        <div class="mnem" style="margin-top:14px"><b>Ch. 4 vs Ch. 20:</b> Ch. 4 = WHAT the building is used for. Ch. 20 = WHAT &amp; HOW stuff is stored. Storage is its own physics.</div>
+      </div>
+    </div>
+    <div class="ex"><h4>Concrete case</h4><p>Same product — cartoned canned goods — protects very differently if it's on shelves in a grocery aisle (LH/OH1 territory) vs 24 ft high in a distribution rack (Ch. 20, possibly EH-equivalent with K-25 ESFR ceiling sprinklers).</p></div>
+  </div>
+  <div class="ftr"><span>Module 3 · Bridge</span><span>Why storage needs Ch. 20</span></div>
+</section>
+
+<!-- =============== SLIDE 30 — MAP CH.20 → CH.21-25 =============== -->
+<section class="slide" data-n="30">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 3 · STORAGE MAP</span><span class="snum">SLIDE 30 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Map — <em>Ch. 20 to Ch. 21–25</em></h1>
+    <div class="sub">Ch. 20 is the front door. The next chapters are the rooms.</div>
+    <div class="card" style="font-family:'JetBrains Mono',monospace;font-size:17px;background:rgba(0,0,0,0.30);flex:1">
+<pre style="margin:0;color:var(--txt);line-height:1.7;white-space:pre-wrap">
+                       ┌─────────────────────────────────────┐
+                       │   CHAPTER 20 — General Storage      │
+                       │   • Commodity class (§20.3, 20.4)   │
+                       │   • Storage method  (§20.5)         │
+                       │   • Heights/clear   (§20.6)         │
+                       │   • Common rules    (§20.7–20.15)   │
+                       └────────────────┬────────────────────┘
+                                        │
+              ┌─────────────────────────┼─────────────────────────┐
+              │                         │                         │
+              ▼                         ▼                         ▼
+    ┌─────────────────┐      ┌─────────────────┐       ┌─────────────────┐
+    │  CHAPTER 21     │      │  CHAPTER 22     │       │  CHAPTER 23     │
+    │  <b style="color:#5EBBFF">CMDA</b>           │      │  <b style="color:#5EBBFF">CMSA</b>           │       │  <b style="color:#5EBBFF">ESFR</b>           │
+    │  Control Mode   │      │  Control Mode   │       │  Early Suppress │
+    │  Density / Area │      │  Specific App.  │       │  Fast Response  │
+    │  Most common    │      │  K-11.2/K-14    │       │  K-14 to K-25   │
+    │  designs        │      │  Larger orifice │       │  Suppress fast  │
+    └─────────────────┘      └─────────────────┘       └─────────────────┘
+                                        │
+                                        ▼
+                          ┌──────────────────────────┐
+                          │  CHAPTER 24 — Special    │
+                          │  • Solid shelving        │
+                          │  • Compact storage       │
+                          │  • Aerosol products      │
+                          │  • Idle plastic pallets  │
+                          │  • Hanging garments      │
+                          └──────────────────────────┘
+
+                          ┌──────────────────────────┐
+                          │  CHAPTER 25 — In-Rack    │
+                          │  Sprinklers              │
+                          │  • Single/double/multi   │
+                          │  • Rules for placement   │
+                          │  • Used with Ch. 21–24   │
+                          └──────────────────────────┘
+</pre>
+    </div>
+    <div class="mnem"><b>How you'll use this:</b> Ch. 20 outputs a <b>commodity class + storage configuration</b>. That combo points to a row in a Ch. 21/22/23 table — that's where you get density, K-factor, and sprinkler count. Ch. 25 layers in-rack on top when ceiling alone won't suffice.</div>
+  </div>
+  <div class="ftr"><span>Module 3 · Bridge</span><span>Storage chapter map</span></div>
+</section>
+
+<!-- =============== SLIDE 31 — §20.1-20.2 6-STEP PROCESS =============== -->
+<section class="slide" data-n="31">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · §20.1–20.2</span><span class="snum">SLIDE 31 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Chapter 20 — <em>The 6-Step Process</em></h1>
+    <div class="sub">§20.2 — The framework you follow on every storage design</div>
+    <div class="proc">
+      <div class="step"><div class="sn">01</div><h4>Identify Commodity Class</h4><p>Classify the stored product using <b>§20.3 and §20.4</b> — Class I–IV or Group A/B/C plastic. Don't forget pallet upclassing.</p></div>
+      <div class="step"><div class="sn">02</div><h4>Identify Storage Method</h4><p>Determine how it's stored: solid-piled, palletized, shelf, single/double/multi-row rack — per <b>§20.5</b>.</p></div>
+      <div class="step"><div class="sn">03</div><h4>Establish Heights &amp; Clearances</h4><p>Set storage height, building height, sprinkler clearance per <b>§20.6</b>. The 18" minimum below sprinklers is here.</p></div>
+      <div class="step"><div class="sn">04</div><h4>Define General Protection Criteria</h4><p>Apply rules common to all storage — <b>§20.7 through §20.15</b>: columns, idle pallets, hose, separation, mixed commodities.</p></div>
+      <div class="step"><div class="sn">05</div><h4>Select System Technology</h4><p>Choose sprinkler family: <b>CMDA</b>, <b>CMSA</b>, <b>ESFR</b>, in-rack — per <b>Chapters 21–25</b>. Picks density, K-factor, design area.</p></div>
+      <div class="step"><div class="sn">06</div><h4>Design &amp; Install</h4><p>Complete the hydraulic design and install per the remainder of NFPA 13 (Ch. 8 piping, Ch. 16 hangers, etc.).</p></div>
+    </div>
+    <div class="card warn" style="margin-top:18px"><h3>Why This Sequence Is Mandatory</h3>
+      <p>Step 4 (general rules) before step 5 (sprinkler type) is the most-skipped order. Designers jump to "we'll use ESFR" before they verify rack flue spaces, idle pallet location, or column proximity. <b class="hi">Skip a step and your protection criteria are wrong.</b></p>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 20</span><span>§20.2 — 6-step storage process</span></div>
+</section>
+
+<!-- =============== SLIDE 32 — K-FACTOR PRIMER =============== -->
+<section class="slide" data-n="32">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · K-FACTOR</span><span class="snum">SLIDE 32 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">K-Factor — <em>What It Means</em></h1>
+    <div class="sub">A primer before Ch. 20 starts throwing K-numbers at you</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>The Formula</h3>
+        <p style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:42px;color:#fff;margin:18px 0">Q = K √P</p>
+        <ul class="clean">
+          <li><b>Q</b> = flow in gpm (gallons per minute)</li>
+          <li><b>K</b> = sprinkler discharge coefficient (the K-factor)</li>
+          <li><b>P</b> = pressure at the sprinkler in psi</li>
+        </ul>
+        <p style="margin-top:14px">A bigger K means more flow at the same pressure. Or the same flow at a lower pressure. Bigger orifice = bigger K.</p>
+      </div>
+      <div class="card"><h3>K-Factor Cheat Sheet</h3>
+        <table class="data">
+          <thead><tr><th>K (US)</th><th>K (metric)</th><th>Typical Use</th></tr></thead>
+          <tbody>
+            <tr><td><b>K-5.6</b></td><td>K-80</td><td>Standard LH/OH ceiling — most common</td></tr>
+            <tr><td><b>K-8.0</b></td><td>K-115</td><td>OH2, light storage</td></tr>
+            <tr><td><b>K-11.2</b></td><td>K-160</td><td>Storage, CMSA</td></tr>
+            <tr><td><b>K-14.0</b></td><td>K-200</td><td>Storage, ESFR</td></tr>
+            <tr><td><b>K-16.8</b></td><td>K-240</td><td>ESFR, high-challenge storage</td></tr>
+            <tr><td><b>K-22.4 / 25.2</b></td><td>K-320 / K-360</td><td>ESFR, tallest/most demanding storage</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="ex"><h4>Why bigger K matters in storage</h4><p>A K-14 ESFR at 50 psi delivers ~99 gpm per sprinkler. A K-5.6 at the same 50 psi only gives ~40 gpm. To put out a tall stack fire, you need <b>fewer but bigger</b> sprinklers driving a heavy spray that can punch through the thermal plume.</p></div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 20</span><span>K-factor primer</span></div>
+</section>
+
+<!-- =============== SLIDE 33 — SPRINKLER TYPE PRIMER =============== -->
+<section class="slide" data-n="33">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · SPRINKLER TYPES</span><span class="snum">SLIDE 33 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Sprinkler <em>Families</em></h1>
+    <div class="sub">CMDA · CMSA · ESFR · In-Rack — the four storage tools</div>
+    <div class="grid-2">
+      <div class="stack">
+        <div class="card"><h3>CMDA — Control Mode Density / Area (Ch. 21)</h3>
+          <p>Traditional approach: deliver a <b class="hi">density (gpm/ft²)</b> over a <b class="hi">design area (ft²)</b>. Most flexible — works for nearly any commodity / configuration if you size it.</p>
+          <p style="margin-top:8px;color:var(--blue-3);font-size:18px">Trade-off: requires more sprinklers operating simultaneously than ESFR.</p>
+        </div>
+        <div class="card"><h3>CMSA — Control Mode Specific Application (Ch. 22)</h3>
+          <p>Specific listed sprinklers (typically K-11.2 / K-14) at fixed flow per sprinkler over a specific number of design sprinklers. <b class="hi">Larger orifice, larger droplets</b>, better cooling.</p>
+          <p style="margin-top:8px;color:var(--blue-3);font-size:18px">Often called the "old large drop" approach.</p>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>ESFR — Early Suppression Fast Response (Ch. 23)</h3>
+          <p>Goal isn't <em>control</em> — it's <b class="hi">suppression</b>. Fast-response thermal element + high-momentum spray that penetrates the fire plume before it grows.</p>
+          <p style="margin-top:8px;color:var(--blue-3);font-size:18px">Strict installation rules — ceiling slope, clearance, obstructions all limited.</p>
+        </div>
+        <div class="card"><h3>In-Rack (Ch. 25)</h3>
+          <p>Sprinklers <b class="hi">inside</b> the rack flue spaces or transverse aisles. Used when ceiling protection alone can't reach lower-rack fires.</p>
+          <p style="margin-top:8px;color:var(--blue-3);font-size:18px">Always paired with ceiling protection — never replaces it.</p>
+        </div>
+        <div class="mnem"><b>How to choose:</b> ESFR is fastest &amp; cleanest when the building can host it (slopes, ceiling height, clearance). CMDA / CMSA when ESFR doesn't fit. In-rack when ceiling-only can't suppress.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 20</span><span>Sprinkler types primer</span></div>
+</section>
+
+<!-- =============== SLIDE 34 — §20.3 COMMODITY CLASSIFICATION =============== -->
+<section class="slide" data-n="34">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · §20.3</span><span class="snum">SLIDE 34 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Commodity <em>Classification</em> Rules</h1>
+    <div class="sub">§20.3 — How to assign a class to a real product</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>What You Must Consider (§20.3.1.1)</h3>
+        <ol class="num" style="margin-top:6px">
+          <li><b class="hi">Type &amp; amount</b> of product materials — the product itself</li>
+          <li><b class="hi">Type &amp; amount</b> of primary packaging — the carton or container</li>
+          <li><b class="hi">Type</b> of pallet — wood, metal, plastic (reinforced or not)</li>
+        </ol>
+        <p style="margin-top:14px">All three together set the class. Two products that look identical in a catalog can be different classes because of pallet or packaging changes.</p>
+      </div>
+      <div class="card"><h3>Three-Step Classification</h3>
+        <ol class="num">
+          <li><b>Identify base class</b> from §20.4 — what is the product itself + packaging?</li>
+          <li><b>Apply pallet upclass</b> per §20.3.2 — wood/metal = no change, plastic = +1 or +2</li>
+          <li><b>Check mixed commodity rule</b> §20.3.3 — if mixed, highest class governs unless &lt;10% exception applies</li>
+        </ol>
+        <div class="ex" style="margin-top:14px"><h4>Conservatism</h4><p>When in doubt, classify <b>higher</b>. The cost of one extra class in design is small. The cost of under-protection is a building.</p></div>
+      </div>
+    </div>
+    <div class="card warn" style="margin-top:18px"><h3>The "Outside the List" Problem</h3>
+      <p>Real warehouses store products NFPA 13 doesn't list by name. Apply the three-step framework, document your reasoning, and confirm with the AHJ. <b class="hi">Never guess silently</b> — your assumption goes on the drawings.</p>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 20</span><span>§20.3 Commodity Classification</span></div>
+</section>
+
+<!-- =============== SLIDE 35 — §20.4 CLASSES I-IV OVERVIEW =============== -->
+<section class="slide" data-n="35">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · §20.4</span><span class="snum">SLIDE 35 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Commodity <em>Classes I–IV</em></h1>
+    <div class="sub">§20.4 — The fuel taxonomy that drives every storage design</div>
+    <div class="stack" style="gap:10px">
+      <div class="card good" style="border-left-color:var(--lh)"><h3 style="color:#5EBBFF">Class I (§20.4.1)</h3>
+        <p><b class="hi">Noncombustible</b> products on wood pallets, OR in single-layer corrugated cartons with/without cardboard dividers, OR shrink-wrapped/paper-wrapped as a unit load.</p>
+      </div>
+      <div class="card good" style="border-left-color:var(--oh1)"><h3 style="color:#3DD6CC">Class II (§20.4.2)</h3>
+        <p><b class="hi">Noncombustible</b> products in slatted wooden crates, solid wood boxes, multiple-layered corrugated cartons, or equivalent combustible packaging.</p>
+      </div>
+      <div class="card good" style="border-left-color:var(--oh2)"><h3 style="color:#4CD884">Class III (§20.4.3)</h3>
+        <p>Products fashioned from <b class="hi">wood, paper, natural fibers, or Group C plastics</b> — with or without cartons/pallets. May contain <b>≤ 5%</b> Group A plastic (by weight nonexpanded OR by volume expanded).</p>
+      </div>
+      <div class="card good" style="border-left-color:var(--eh1)"><h3 style="color:#FFB347">Class IV (§20.4.4)</h3>
+        <p>Class I–III products containing an appreciable amount of <b class="hi">Group A plastic</b> in cartoned or expanded form, OR products of Group B plastics, OR products of free-flowing Group A plastic.</p>
+      </div>
+    </div>
+    <div class="mnem"><b>Hazard direction:</b> Class I → Class IV = increasing fire load. Class IV is the highest of the I–IV ladder. Plastics (Group A unexposed/exposed) sit ABOVE Class IV.</div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 20</span><span>§20.4 Commodity Classes I–IV</span></div>
+</section>
+
+<!-- =============== SLIDE 36 — CLASS I-II EXAMPLES =============== -->
+<section class="slide" data-n="36">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · CLASS I–II EXAMPLES</span><span class="snum">SLIDE 36 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Class I &amp; II — <em>Real Products</em></h1>
+    <div class="sub">What these classes actually look like on a warehouse floor</div>
+    <div class="grid-2">
+      <div class="card" style="border-left:4px solid var(--lh)"><h3 style="color:#5EBBFF">Class I — Noncombustible Examples</h3>
+        <ul class="clean">
+          <li><b>Canned food</b> (metal cans) on wood pallets — shrink-wrapped</li>
+          <li><b>Glass containers</b> (bottles, jars) in single-layer corrugated trays</li>
+          <li><b>Bricks, ceramic tile, masonry units</b> on wood pallets</li>
+          <li><b>Gypsum board</b>, plaster products</li>
+          <li><b>Paint in METAL containers</b> only (no flammable solvents)</li>
+          <li><b>Beverages</b> in metal cans (not aluminum cans of beer with cardboard tray multi-packs — that's higher)</li>
+          <li><b>Powdered detergents</b> in metal cans</li>
+        </ul>
+        <p style="color:var(--orange-3);margin-top:10px;font-size:18px"><b>Disqualifier:</b> any meaningful combustible packaging beyond a single-layer carton bumps it up.</p>
+      </div>
+      <div class="card" style="border-left:4px solid var(--oh1)"><h3 style="color:#3DD6CC">Class II — Same Products, More Packaging</h3>
+        <ul class="clean">
+          <li><b>Canned goods</b> in <em>multi-layer</em> corrugated cartons</li>
+          <li><b>Glass bottles</b> in slatted wooden crates (think old-school milk crate)</li>
+          <li><b>Lightbulbs</b> in solid wood boxes</li>
+          <li><b>Frozen food</b> in waxed cardboard cartons</li>
+          <li><b>Beverage cases</b> when wrapped/boxed at multiple layers</li>
+        </ul>
+        <div class="mnem" style="margin-top:14px"><b>Memory hook:</b> Same NONCOMBUSTIBLE product as Class I, but the BOX got bigger / sturdier / wood-framed. The product didn't change — the fuel around it did.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 20</span><span>Class I &amp; II examples</span></div>
+</section>
+
+<!-- =============== SLIDE 37 — CLASS III-IV EXAMPLES =============== -->
+<section class="slide" data-n="37">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · CLASS III–IV EXAMPLES</span><span class="snum">SLIDE 37 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Class III &amp; IV — <em>Real Products</em></h1>
+    <div class="sub">Where most warehouse goods actually live</div>
+    <div class="grid-2">
+      <div class="card" style="border-left:4px solid var(--oh2)"><h3 style="color:#4CD884">Class III — Combustible Product Itself</h3>
+        <ul class="clean">
+          <li><b>Wood furniture</b> (assembled or knock-down) on wood pallets</li>
+          <li><b>Paper products</b> — books, magazines, copy paper, printed material</li>
+          <li><b>Leather goods</b> — bags, jackets, shoes</li>
+          <li><b>Natural-fiber textiles</b> — cotton, wool, jute, linen</li>
+          <li><b>Tobacco products</b></li>
+          <li><b>Cardboard boxes</b> (empty or full of Class I/II)</li>
+          <li>PVC (rigid), melamine, phenolic — <b>Group C plastics</b>, treated as Class III</li>
+        </ul>
+        <p style="color:var(--orange-3);margin-top:10px;font-size:18px"><b>5% Group A rule:</b> may contain up to 5% Group A plastic (by weight if non-expanded, by volume if expanded). Above 5% = Class IV.</p>
+      </div>
+      <div class="card" style="border-left:4px solid var(--eh1)"><h3 style="color:#FFB347">Class IV — Plastics Enter the Picture</h3>
+        <ul class="clean">
+          <li><b>Class I–III products</b> with appreciable Group A plastic packaging — e.g., bottles in plastic crates</li>
+          <li><b>Cartoned small appliances</b> (toasters, microwaves, hair dryers) — plastic shells inside boxes</li>
+          <li><b>Wax-coated paper</b> containers</li>
+          <li><b>Group B plastics</b> products (cellulosics, chloroprene, flexible PVC) by themselves</li>
+          <li><b>Free-flowing Group A plastic</b> (pellets, powder) in cartons or bags</li>
+          <li><b>Ammunition</b> (small caliber, properly packaged)</li>
+        </ul>
+        <div class="mnem" style="margin-top:14px"><b>The Class IV "tell":</b> the box contains <em>any</em> notable Group A plastic. Once Group A is part of the package, the fire dynamics change.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 20</span><span>Class III &amp; IV examples</span></div>
+</section>
+
+<!-- =============== SLIDE 38 — GROUP A/B/C PLASTICS =============== -->
+<section class="slide" data-n="38">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · §20.4.5–7</span><span class="snum">SLIDE 38 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t orange">Group A, B &amp; <em>C Plastics</em></h1>
+    <div class="sub">§20.4.5 – 20.4.7 — Plastic commodity sub-classes</div>
+    <div class="grid-3">
+      <div class="card warn"><h3 style="color:#FF7A45">Group A — Highest Fire Hazard</h3>
+        <p>Plastics not classified as Group B or C. Includes:</p>
+        <p style="margin-top:8px;color:var(--txt-dim);font-size:18px"><b>ABS, acrylic, fiberglass (FRP), nylon, PET, polycarbonate, polypropylene, polystyrene, polyurethane (foam &amp; non-foam), PVC (rigid), PVDC.</b></p>
+        <p style="margin-top:14px;color:#fff;font-weight:600">Sub-types:</p>
+        <ul class="clean">
+          <li><b>Expanded</b> (foam) — most severe</li>
+          <li><b>Nonexpanded</b> (solid) — moderately severe</li>
+          <li><b>Cartoned vs Exposed</b> affects design dramatically</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left:4px solid var(--eh1)"><h3 style="color:#FFC25C">Group B — Moderate</h3>
+        <p>Less flammable than A but more than C:</p>
+        <p style="margin-top:8px;color:var(--txt-dim);font-size:18px">Cellulosics (acetate, butyrate, propionate), chloroprene rubber, natural &amp; nitrile rubber (if expanded), <b>flexible PVC</b>.</p>
+        <p style="margin-top:14px;color:#fff;font-weight:600">Key facts:</p>
+        <ul class="clean">
+          <li>Still requires elevated protection</li>
+          <li>Does NOT trigger Group A plastic rules</li>
+          <li>Used in <b>Class IV</b> commodity classification</li>
+        </ul>
+      </div>
+      <div class="card" style="border-left:4px solid var(--oh1)"><h3 style="color:#5EBBFF">Group C — Lowest</h3>
+        <p>Plastics that burn slowly with limited fire propagation:</p>
+        <p style="margin-top:8px;color:var(--txt-dim);font-size:18px">Fluoroplastics (PTFE, ETFE), melamine, phenolic, <b>polyvinyl chloride (rigid, heavy)</b>.</p>
+        <p style="margin-top:14px;color:#fff;font-weight:600">Key facts:</p>
+        <ul class="clean">
+          <li>Treated like wood/paper → <b>Class III</b></li>
+          <li>Does NOT elevate commodity class</li>
+          <li>Most fire-resistant plastic group</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card warn" style="margin-top:18px"><h3>The Big One</h3>
+      <p><b class="hi">Group A expanded plastic</b> (foam) is the most demanding commodity NFPA 13 protects. It is what drives ESFR K-25 designs and in-rack sprinklers in high-pile storage.</p>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 20</span><span>§20.4.5–7 Group A / B / C plastics</span></div>
+</section>
+
+<!-- =============== SLIDE 39 — PALLET UPCLASS MATRIX =============== -->
+<section class="slide" data-n="39">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · §20.3.2 PALLETS</span><span class="snum">SLIDE 39 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Pallet <em>Upclass Matrix</em></h1>
+    <div class="sub">§20.3.2 — How pallet material changes the commodity class</div>
+    <div class="grid-2-1">
+      <div class="card" style="padding:18px 22px">
+        <h3>Class as a Function of Pallet</h3>
+        <table class="data" style="margin-top:6px">
+          <thead><tr><th>Starting Class</th><th>Wood / Metal</th><th>Unreinforced Plastic (+1)</th><th>Reinforced Plastic (+2)</th></tr></thead>
+          <tbody>
+            <tr><td><b>Class I</b></td><td><span class="tag-sm lh">I</span></td><td><span class="tag-sm oh1">II</span></td><td><span class="tag-sm oh2">III</span></td></tr>
+            <tr><td><b>Class II</b></td><td><span class="tag-sm oh1">II</span></td><td><span class="tag-sm oh2">III</span></td><td><span class="tag-sm eh1">IV</span></td></tr>
+            <tr><td><b>Class III</b></td><td><span class="tag-sm oh2">III</span></td><td><span class="tag-sm eh1">IV</span></td><td><span style="background:#FF7A45;color:#fff;padding:2px 10px;border-radius:6px;font-size:13px;font-weight:700">IV + Gp A criteria</span></td></tr>
+            <tr><td><b>Class IV</b></td><td><span class="tag-sm eh1">IV</span></td><td><span class="tag-sm eh1">IV*</span></td><td><span style="background:#FF7A45;color:#fff;padding:2px 10px;border-radius:6px;font-size:13px;font-weight:700">Group A plastic criteria</span></td></tr>
+            <tr><td><b>Group A plastic</b></td><td colspan="3" style="color:var(--orange-3)"><b>No further upclass</b> — already top of ladder (§20.3.2.2.3)</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:14px;font-size:16px;color:var(--txt-dim)">* Class IV is the ceiling of the Class I–IV ladder. For reinforced plastic pallets carrying Class III/IV, you alternatively use Group A plastic protection criteria one class higher.</p>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>Why Plastic Pallets Matter</h3>
+          <p>A plastic pallet is itself <b>Group A plastic fuel</b>. Empty plastic pallets stacked in storage are some of the worst fire loads in NFPA 13.</p>
+        </div>
+        <div class="card warn"><h3>The "Unmarked Pallet" Rule</h3>
+          <p>If a plastic pallet isn't <b class="hi">permanently marked</b> as unreinforced (and the manufacturer hasn't certified it), <b class="hi">treat it as reinforced</b> (+2 classes) per §20.3.2.2.2.2.</p>
+          <p style="color:#FFCDB6;margin-top:8px"><b>When in doubt — upgrade.</b></p>
+        </div>
+        <div class="mnem"><b>Memory:</b> <b>W</b>ood/Metal = 0, <b>U</b>nreinforced plastic = <b>+1</b>, <b>R</b>einforced plastic = <b>+2</b>. (W-U-R: 0-1-2.)</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 20</span><span>§20.3.2 Pallet upclass matrix</span></div>
+</section>
+
+<!-- =============== SLIDE 40 — §20.3.3 MIXED COMMODITIES =============== -->
+<section class="slide" data-n="40">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · §20.3.3</span><span class="snum">SLIDE 40 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t"><em>Mixed Commodities</em></h1>
+    <div class="sub">§20.3.3 — When one rack holds different classes</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>The Default Rule</h3>
+        <p>When commodities of different classes are stored together, design protection for the <b class="hi">highest class present</b> in any rack area.</p>
+        <p style="margin-top:14px">Why: any pallet of the higher class can start a worst-case fire. The whole rack sees that demand.</p>
+      </div>
+      <div class="card"><h3>The "≤10% Exception" (§20.3.3.2)</h3>
+        <p>You may design to the <b class="hi">lower class</b> if ALL of these are true:</p>
+        <ul class="clean" style="margin-top:8px">
+          <li>The higher-class commodity occupies <b>≤ 10%</b> of any 40,000 ft² rack area</li>
+          <li>The higher-class commodity does NOT exceed <b>10 pallet loads</b></li>
+          <li>The higher-class is <b>randomly distributed</b> (not concentrated in one zone)</li>
+          <li>You document it on the drawings AND control it operationally</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card warn" style="margin-top:18px"><h3>Operational Reality</h3>
+      <p>The exception is <b class="hi">administrative</b>. It requires the owner to control where the higher-class goes. The moment a forklift driver puts 11 plastic-pallet loads in one bay, your design is non-compliant. <b>Most real designs ignore the exception and just design to the highest class</b> — simpler, more robust, no operational dependency.</p>
+    </div>
+    <div class="mnem"><b>Rule of thumb:</b> Design to the worst pallet in the rack. The 10% exception is a paper saving, not an engineering saving.</div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 20</span><span>§20.3.3 Mixed Commodities</span></div>
+</section>
+
+<!-- =============== SLIDE 41 — WORKED EXAMPLE: SKU CLASSIFICATION =============== -->
+<section class="slide" data-n="41">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · WORKED EXAMPLE</span><span class="snum">SLIDE 41 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Worked Example — <em>Classify 5 SKUs</em></h1>
+    <div class="sub">Apply the 3-step framework: product · packaging · pallet</div>
+    <div class="grid-2">
+      <div class="stack">
+        <div class="card"><h3>① Canned Tomato Sauce — Wood Pallet</h3>
+          <p>Steel cans, multi-layer corrugated cartons, wood pallet.</p>
+          <p style="margin-top:8px"><b style="color:#7AE9C0">→ Class II</b> — noncombustible product in multi-layer carton. Wood pallet = no upclass.</p>
+        </div>
+        <div class="card"><h3>② Office Copy Paper — Wood Pallet</h3>
+          <p>500-sheet reams shrink-wrapped, cartoned 10/case, wood pallet.</p>
+          <p style="margin-top:8px"><b style="color:#FFC25C">→ Class III</b> — paper is the product itself. Class III by §20.4.3. No upclass (wood pallet).</p>
+        </div>
+        <div class="card"><h3>③ Cartoned Toaster Ovens — Unreinforced Plastic Pallet</h3>
+          <p>Plastic-shell appliance in expanded polystyrene packing inside cardboard box, on unreinforced plastic pallet.</p>
+          <p style="margin-top:8px"><b style="color:#FFCDB6">→ Class IV + 1 = treat as Group A criteria.</b> Base is Class IV (Group A plastic in carton). +1 for unreinforced plastic pallet pushes above the Class IV ceiling — use Group A plastic protection per §20.3.2.2.</p>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="card"><h3>④ Empty Plastic Bins (HDPE), Stacked — Wood Pallet</h3>
+          <p>Storage tote bins, polyethylene, stacked nested 30 high.</p>
+          <p style="margin-top:8px"><b style="color:#FFCDB6">→ Group A plastic (exposed)</b> — the product IS Group A plastic and it's uncartoned. Top tier from the start. No pallet upclass needed.</p>
+        </div>
+        <div class="card"><h3>⑤ Wine in Glass Bottles — Reinforced Plastic Pallet</h3>
+          <p>Bottles in cardboard 6-pack carriers in single-layer corrugated trays, on reinforced plastic pallet.</p>
+          <p style="margin-top:8px"><b style="color:#FFC25C">→ Class I base + 2 = Class III.</b> Glass on wood pallets would be Class I. Reinforced plastic pallet = +2 → Class III. (Note: if a wood-pallet alt is available operationally, big savings.)</p>
+        </div>
+        <div class="mnem"><b>Lesson:</b> The pallet often costs MORE design margin than the product. A switch from reinforced plastic to wood pallets can drop two commodity classes — millions of gallons of design water saved over a system's life.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 20</span><span>Worked example — 5 SKUs</span></div>
+</section>
+
+<!-- =============== SLIDE 42 — QUIZ 3 =============== -->
+<section class="slide" data-n="42">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · QUIZ 3</span><span class="snum">SLIDE 42 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Quiz 3 — <em>Commodity Classification</em></h1>
+    <div class="sub">Click any choice for instant feedback</div>
+    <div class="quiz-grid">
+      <div class="qbox"><div class="qn">Q1 — Recall</div><div class="qt">Noncombustible product in multi-layered corrugated cartons on wood pallets is:</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>Class I</li><li data-key="B"><span class="k">B</span>Class II</li><li data-key="C"><span class="k">C</span>Class III</li><li data-key="D"><span class="k">D</span>Class IV</li></ul>
+        <div class="explain"><b>B — Class II (§20.4.2).</b> Noncombustible product + multi-layer corrugated puts you in Class II. Class I requires single-layer or shrink-wrap only.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q2 — Application</div><div class="qt">Cotton towels (natural fiber) in cardboard boxes on wood pallets:</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>Class I</li><li data-key="B"><span class="k">B</span>Class II</li><li data-key="C"><span class="k">C</span>Class III</li><li data-key="D"><span class="k">D</span>Class IV</li></ul>
+        <div class="explain"><b>C — Class III (§20.4.3).</b> Natural fibers are the product itself = Class III. Cardboard adds no further bump. Wood pallet = no upclass.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q3 — Concept</div><div class="qt">Which plastic group has the HIGHEST fire hazard?</div>
+        <ul class="choices" data-correct="A"><li data-key="A"><span class="k">A</span>Group A (especially expanded)</li><li data-key="B"><span class="k">B</span>Group B</li><li data-key="C"><span class="k">C</span>Group C</li><li data-key="D"><span class="k">D</span>All groups equal</li></ul>
+        <div class="explain"><b>A — Group A expanded (§20.4.5).</b> Expanded Group A (foam) is the most demanding commodity NFPA 13 protects. Drives ESFR K-25 and in-rack designs.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q4 — Application</div><div class="qt">Class II product on an UNMARKED plastic pallet. Per §20.3.2.2.2.2, treat the pallet as:</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>Unreinforced (most economical assumption)</li><li data-key="B"><span class="k">B</span>Reinforced (+2 classes → IV)</li><li data-key="C"><span class="k">C</span>Wood-equivalent</li><li data-key="D"><span class="k">D</span>Cannot use — must test</li></ul>
+        <div class="explain"><b>B.</b> Unmarked = assume reinforced (conservative). Class II + 2 = Class IV. The standard biases toward over-protection when info is missing.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 20</span><span>Quiz 3 — Commodity Classification</span></div>
+</section>
+
+<!-- =============== SLIDE 43 — §20.5 STORAGE METHODS =============== -->
+<section class="slide" data-n="43">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · §20.5</span><span class="snum">SLIDE 43 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Storage <em>Methods</em></h1>
+    <div class="sub">§20.5 — How stuff sits on the floor or in the rack drives sprinkler choice</div>
+    <div class="grid-3">
+      <div class="card"><h3>Solid-Piled</h3>
+        <p>Product stacked directly, <b class="hi">no pallets, no racks</b>. Bales of cardboard, drums on the floor.</p>
+        <p style="margin-top:8px;color:var(--blue-3);font-size:18px">No flue spaces — fire ventilation differs from racks. Often requires higher density.</p>
+      </div>
+      <div class="card"><h3>Palletized</h3>
+        <p>Product on pallets <b class="hi">on the floor</b> (no rack structure). Stacked directly pallet-on-pallet typical.</p>
+        <p style="margin-top:8px;color:var(--blue-3);font-size:18px">Pallet upclass rules apply. Height limited by stacking stability.</p>
+      </div>
+      <div class="card"><h3>Bin Box &amp; Shelf</h3>
+        <p><b>Bin Box:</b> open-top containers on shelves or floor.<br><b>Shelf:</b> flat shelf, less than 30" deep typically.</p>
+        <p style="margin-top:8px;color:var(--blue-3);font-size:18px">Shelf storage triggers in-rack rules above 12 ft Class I-IV (§4.3.1.5).</p>
+      </div>
+      <div class="card" style="border-left:4px solid var(--blue)"><h3>Single-Row Rack</h3>
+        <p><b class="hi">One pallet deep</b>. Forklift access from one side only. Transverse flue every 8–10 ft.</p>
+        <p style="margin-top:8px;color:var(--blue-3);font-size:18px">Easiest rack to protect — flues are wide open.</p>
+      </div>
+      <div class="card" style="border-left:4px solid var(--blue)"><h3>Double-Row Rack</h3>
+        <p><b class="hi">Two pallets deep</b>, accessed from both sides. Shared longitudinal flue space between rows.</p>
+        <p style="margin-top:8px;color:var(--blue-3);font-size:18px">The longitudinal flue is critical for in-rack sprinkler placement.</p>
+      </div>
+      <div class="card warn"><h3>Multi-Row Rack</h3>
+        <p><b class="hi">3+ rows deep</b>, limited aisle access. Includes drive-in, drive-through, push-back, flow-through.</p>
+        <p style="margin-top:8px;color:#FFCDB6;font-size:18px">Hardest to protect — sprinkler spray can't reach interior. Often requires in-rack at multiple levels.</p>
+      </div>
+    </div>
+    <div class="card accent" style="margin-top:14px"><h3>Why Method Matters</h3>
+      <p>Same commodity, same height, same building → very different sprinkler systems based on storage method. <b class="hi">Single-row of Class IV at 20 ft</b> ≠ <b class="hi">drive-in rack of Class IV at 20 ft</b>. The drive-in needs in-rack sprinklers; the single-row might be fine with ESFR ceiling-only.</p>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 20</span><span>§20.5 Storage Methods</span></div>
+</section>
+
+<!-- =============== SLIDE 44 — RACK CONFIGURATIONS VISUAL =============== -->
+<section class="slide" data-n="44">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · RACK ANATOMY</span><span class="snum">SLIDE 44 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Rack <em>Anatomy</em></h1>
+    <div class="sub">Flue spaces — the most-misunderstood feature in storage protection</div>
+    <div class="grid-2">
+      <div class="card" style="font-family:'JetBrains Mono',monospace;font-size:15px;background:rgba(0,0,0,0.30)">
+        <h3 style="font-family:'Inter',sans-serif">Plan View — Double-Row Rack</h3>
+<pre style="margin:0;color:var(--txt);line-height:1.55;white-space:pre-wrap">         AISLE (typ. 8 ft)
+    ═══════════════════════════════
+    │ P │ P │ P │ P │ P │ P │ P │     ← Row 1 (face)
+    │   │   │   │   │   │   │   │
+    │ <b style="color:#FFC25C">←—— longitudinal flue ——→</b> │     ← 6" min between rows
+    │   │   │   │   │   │   │   │
+    │ P │ P │ P │ P │ P │ P │ P │     ← Row 2 (back)
+    ═══════════════════════════════
+         AISLE
+                  ↑
+          Transverse flues
+       (3" min vertical gaps
+       between pallets, side-
+       to-side across row)</pre>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>Flue Definitions</h3>
+          <ul class="clean">
+            <li><b>Transverse flue</b> — the side-to-side gap between adjacent pallets in the same row. Travels <b>vertically</b> up the rack. Typical minimum: <b>3"</b>.</li>
+            <li><b>Longitudinal flue</b> — the back-to-back gap between the two rows of a double-row rack. Travels vertically. Typical minimum: <b>6"</b>.</li>
+          </ul>
+        </div>
+        <div class="card warn"><h3>Why Flues Save Lives</h3>
+          <p>Hot gases rise through flues, triggering sprinklers near the fire. Water also <b class="hi">falls down</b> through flues to reach lower pallets.</p>
+          <p style="margin-top:10px;color:#FFCDB6">Block a flue with a pallet sticking out and the rack becomes a closed-box chimney. Fire grows; spray can't reach.</p>
+        </div>
+        <div class="mnem"><b>Field check:</b> Walk the aisle. You should see <b>vertical light gaps</b> between every pallet face and at the row-to-row centerline. If you can't, flues are blocked.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 20</span><span>Rack flue space anatomy</span></div>
+</section>
+
+<!-- =============== SLIDE 45 — §20.6 HEIGHTS & CLEARANCES =============== -->
+<section class="slide" data-n="45">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · §20.6</span><span class="snum">SLIDE 45 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Heights &amp; <em>Clearances</em></h1>
+    <div class="sub">§20.6 — The vertical geometry that drives sprinkler selection</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>The Three Heights You Track</h3>
+        <ul class="clean">
+          <li><b>Storage Height</b> — top of the highest pallet to the floor. The number used to look up design tables.</li>
+          <li><b>Building Height</b> — floor to the underside of the roof deck (NOT to the ridge).</li>
+          <li><b>Clearance</b> — distance from top of storage to the sprinkler deflector.</li>
+        </ul>
+        <div class="ex" style="margin-top:14px"><h4>Why deck-not-ridge</h4><p>Deck = where sprinklers and spray live. Ridge is structure. Calculations are deck-relative.</p></div>
+      </div>
+      <div class="stack">
+        <div class="card warn"><h3>The 18" Minimum Clearance (§8.6.6 / §20.6)</h3>
+          <p>A <b class="hi">minimum 18" (457 mm)</b> clearance must be maintained between the top of storage and the sprinkler deflectors.</p>
+          <p style="margin-top:8px;color:#FFCDB6">Less clearance = spray pattern can't form. The sprinkler's "umbrella" has no room to open.</p>
+        </div>
+        <div class="card"><h3>ESFR Clearance Rules</h3>
+          <p>ESFR ceilings have specific tables (Ch. 23) for max ceiling height vs storage height vs K-factor. Examples:</p>
+          <ul class="clean" style="margin-top:6px">
+            <li>K-14.0 ESFR: 25 ft storage → 30 ft ceiling, 50 psi</li>
+            <li>K-16.8 ESFR: 25 ft storage → 32 ft ceiling, 60 psi</li>
+            <li>K-22.4 ESFR: up to 45 ft storage → 48 ft ceiling</li>
+          </ul>
+        </div>
+        <div class="mnem"><b>Field reality:</b> 18" sounds like a lot until you see a forklift driver overshoot. Always design with a buffer — call out a 24" effective clearance to absorb operations.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 20</span><span>§20.6 Heights &amp; Clearances</span></div>
+</section>
+
+<!-- =============== SLIDE 46 — §20.7-20.8 ADJACENT HAZARDS =============== -->
+<section class="slide" data-n="46">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · §20.7 – §20.8</span><span class="snum">SLIDE 46 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Adjacent Hazards &amp; <em>Building Construction</em></h1>
+    <div class="sub">§20.7 &amp; §20.8 — Context the storage area lives inside</div>
+    <div class="grid-2">
+      <div class="card"><h3>§20.7 — Adjacent Hazards</h3>
+        <p>When storage shares a building with other hazards:</p>
+        <ul class="clean" style="margin-top:8px">
+          <li>The storage system protects the <b>storage area</b> + 25 ft buffer into adjacent space</li>
+          <li>The adjacent occupancy gets its own system if it triggers Ch. 4 hazard rules independently</li>
+          <li>At the boundary, the <b>higher demand governs</b></li>
+        </ul>
+        <p style="color:var(--orange-3);margin-top:10px">A 35-ft Class IV storage area next to a Light Hazard office: design the boundary 25 ft into the office to storage criteria.</p>
+      </div>
+      <div class="card"><h3>§20.8 — Building Construction</h3>
+        <p>Building construction (combustible vs noncombustible deck, truss type, ceiling height variations) affects:</p>
+        <ul class="clean" style="margin-top:8px">
+          <li>Whether <b>obstruction rules</b> apply to bottom-chord of trusses</li>
+          <li>Need for <b>noncombustible draft curtains</b> around large openings</li>
+          <li>Sprinkler <b>orientation</b> (upright vs pendant) where deck is combustible</li>
+        </ul>
+        <p style="color:var(--orange-3);margin-top:10px">Combustible wood-deck overhead = sprinklers must be close to deck (within 1–6") to wet structure during fire.</p>
+      </div>
+    </div>
+    <div class="card warn" style="margin-top:18px"><h3>Real-World Trap</h3>
+      <p>The architect adds a "small" wood mezzanine above a storage area to fix a square-footage shortage. Now the storage system has a <b class="hi">combustible obstruction</b> overhead that drastically changes sprinkler layout. <b>Catch this at design</b>, not at the inspection.</p>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 20</span><span>§20.7–20.8 Adjacent &amp; Construction</span></div>
+</section>
+
+<!-- =============== SLIDE 47 — §20.9-20.12 COMMON PROTECTION =============== -->
+<section class="slide" data-n="47">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · §20.9 – §20.12</span><span class="snum">SLIDE 47 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Common <em>Protection Rules</em></h1>
+    <div class="sub">§20.9 – §20.12 — The "small print" that applies to every storage design</div>
+    <div class="grid-2">
+      <div class="stack">
+        <div class="card"><h3>§20.9 — Discharge Considerations</h3>
+          <p>All storage sprinkler systems must include hose-stream and water-supply duration per the applicable design table (Ch. 21–25).</p>
+          <ul class="clean" style="margin-top:6px">
+            <li>Hose typically 250 or 500 gpm</li>
+            <li>Duration <b>60 to 120 minutes</b> depending on hazard</li>
+            <li>Hose is in <b>addition to</b> sprinkler demand</li>
+          </ul>
+        </div>
+        <div class="card"><h3>§20.10 — Hose Connections</h3>
+          <p>Inside hose stations or standpipe outlets required when required by the building code OR when the AHJ deems necessary for manual fire fighting access.</p>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>§20.11 — Separation Between Storage Areas</h3>
+          <p>When two different storage configurations share a building:</p>
+          <ul class="clean" style="margin-top:6px">
+            <li>Design each area to its own criteria</li>
+            <li>Maintain physical separation OR design the boundary to the higher criteria</li>
+            <li>"Soft" separation (painted line) is not separation — must be physical</li>
+          </ul>
+        </div>
+        <div class="card warn"><h3>§20.12 — Aisles</h3>
+          <p>Minimum aisle widths matter for sprinkler coverage and fire-department access. Typical: <b class="hi">≥ 8 ft</b> between racks for standard storage; narrower aisles trigger more in-rack sprinklers.</p>
+          <p style="color:#FFCDB6;margin-top:8px">Tighter aisles ≠ cheaper protection. Often the opposite.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 20</span><span>§20.9–20.12 Common rules</span></div>
+</section>
+
+<!-- =============== SLIDE 48 — §20.13-20.14 IDLE WOOD PALLETS =============== -->
+<section class="slide" data-n="48">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · §20.13 – §20.14 (wood)</span><span class="snum">SLIDE 48 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Idle <em>Wood Pallets</em></h1>
+    <div class="sub">§20.13 Combustible Loading &amp; §20.14 — Empty pallets are fuel</div>
+    <div class="grid-2">
+      <div class="card warn"><h3>The Problem</h3>
+        <p>A stack of empty wood pallets is <b class="hi">one of the worst</b> fire loads in any warehouse — high surface area, air gaps acting as flue, dry wood, vertical stack feeding rapid spread.</p>
+        <p style="margin-top:10px;color:#FFCDB6">Treating empty pallets like "not real storage" is how warehouses burn down.</p>
+      </div>
+      <div class="card accent"><h3>§20.14.1 — Wood Pallet Storage Limits</h3>
+        <p>Idle wood pallets stored <b>indoors</b>:</p>
+        <ul class="clean" style="margin-top:8px">
+          <li>Max <b>6 ft</b> high in piles unprotected — increase if sprinkler design accommodates</li>
+          <li><b>50 pallets per pile</b> default limit without special protection</li>
+          <li>Piles separated by <b>≥ 8 ft</b> OR <b>25 ft of clear space / commodity</b></li>
+          <li>Treated as separate storage zone, NOT misc storage</li>
+        </ul>
+      </div>
+    </div>
+    <div class="grid-2" style="margin-top:14px">
+      <div class="card"><h3>Outdoor Storage</h3>
+        <p>Outdoor idle pallets must be separated from buildings/lot lines per §20.14.1.2 (typically <b>≥ 50 ft</b> from buildings, more for larger piles).</p>
+      </div>
+      <div class="card good"><h3>Best Practice</h3>
+        <ul class="clean">
+          <li><b>Dedicate a zone</b> for idle pallets — don't scatter them through the racks</li>
+          <li><b>Bundle &amp; tie</b> piles for stability</li>
+          <li><b>Inventory rotation</b> — don't let pallets accumulate beyond design assumptions</li>
+          <li><b>Train forklift operators</b> on the rule — they're the ones who stack them</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 20</span><span>§20.13–20.14 Idle wood pallets</span></div>
+</section>
+
+<!-- =============== SLIDE 49 — IDLE PLASTIC PALLETS =============== -->
+<section class="slide" data-n="49">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · §20.14 (plastic)</span><span class="snum">SLIDE 49 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t orange">Idle <em>Plastic Pallets</em></h1>
+    <div class="sub">§20.14.2 — The most hazardous "empty" storage in NFPA 13</div>
+    <div class="grid-2">
+      <div class="card warn"><h3>§20.14.2.2.4.2 — Storage Without Cutoffs</h3>
+        <p>Max storage height <b class="hi">10 ft</b> unless a specific approved system design applies (table options follow).</p>
+        <p style="margin-top:10px">Why so restrictive: idle plastic pallets are <b>Group A plastic + air gaps + vertical stack</b> — the worst fire load combination in the standard.</p>
+      </div>
+      <div class="card accent"><h3>Table 20.14.2.2.3 — ESFR Options for Taller Storage</h3>
+        <table class="data" style="margin-top:6px">
+          <thead><tr><th>K-Factor</th><th>Max Storage Ht</th><th>Max Ceiling Ht</th><th>Min Pressure</th></tr></thead>
+          <tbody>
+            <tr><td><b>K-14.0</b></td><td>25 ft</td><td>30 ft</td><td>50 psi</td></tr>
+            <tr><td><b>K-16.8</b></td><td>25 ft</td><td>32 ft</td><td>60 psi</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:10px;font-size:18px;color:var(--txt-dim)">Higher K + higher pressure earns higher allowable storage.</p>
+      </div>
+    </div>
+    <div class="card good" style="margin-top:14px"><h3>§20.14.2.2.4.3 — "No Impact" Exception</h3>
+      <p>Plastic pallets have <b class="hi">no impact</b> on system design when ALL of:</p>
+      <ul class="clean" style="margin-top:8px">
+        <li>Pallet storage <b>≤ 4 ft high</b></li>
+        <li><b>High-temperature</b> sprinklers used</li>
+        <li>Piles separated by <b>8 ft</b> OR <b>25 ft of commodity</b></li>
+      </ul>
+      <p style="margin-top:10px;color:#7AE9C0;font-weight:600">All three required — not "any of." The exception is a precise carve-out.</p>
+    </div>
+    <div class="mnem"><b>Pro tip:</b> Don't store idle plastic pallets indoors if you can avoid it. Outdoor pallet yards with separation distances are dramatically cheaper than indoor design margin.</div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 20</span><span>§20.14.2 Idle plastic pallets</span></div>
+</section>
+
+<!-- =============== SLIDE 50 — §20.15 COLUMN PROTECTION =============== -->
+<section class="slide" data-n="50">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · §20.15</span><span class="snum">SLIDE 50 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Column <em>Protection</em></h1>
+    <div class="sub">§20.15 — Cooling steel so the building stays standing</div>
+    <div class="grid-2-1">
+      <div class="card"><h3>Trigger (§20.15.1)</h3>
+        <p>Column protection is required when BOTH:</p>
+        <ul class="clean" style="margin-top:6px">
+          <li>Storage height exceeds <b>15 ft</b></li>
+          <li>A structural column is <b>within the rack footprint</b> OR within <b>12 in.</b> of the rack footprint</li>
+        </ul>
+        <h3 style="margin-top:18px">4 Compliance Options</h3>
+        <ul class="clean">
+          <li>In-rack sprinklers adjacent to column</li>
+          <li>Sidewall sprinkler at 15 ft directing spray at column</li>
+          <li>Increased ceiling density per Table 20.15.1</li>
+          <li>CMSA or ESFR system providing equivalent protection</li>
+        </ul>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>Table 20.15.1 — Ceiling Density Option</h3>
+          <table class="data" style="margin-top:6px">
+            <thead><tr><th>Commodity</th><th>4 ft Aisle</th><th>8 ft Aisle</th></tr></thead>
+            <tbody>
+              <tr><td>Class I</td><td>0.37 gpm/ft²</td><td>0.33 gpm/ft²</td></tr>
+              <tr><td>Class II</td><td>0.43 gpm/ft²</td><td>0.38 gpm/ft²</td></tr>
+              <tr><td>Class III</td><td>0.52 gpm/ft²</td><td>0.45 gpm/ft²</td></tr>
+              <tr><td>Class IV / Gp A</td><td><b style="color:#FFCDB6">0.68 gpm/ft²</b></td><td><b style="color:#FFCDB6">0.57 gpm/ft²</b></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card warn"><h3>Why It Matters</h3>
+          <p>Steel loses ~50% strength at 1100°F. An unprotected column in a deep-seated fire can <b class="hi">buckle</b>, dropping the roof and ending the fire department's interior attack — or worse.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 20</span><span>§20.15 Column Protection</span></div>
+</section>
+
+<!-- =============== SLIDE 51 — QUIZ 4 =============== -->
+<section class="slide" data-n="51">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · QUIZ 4</span><span class="snum">SLIDE 51 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Quiz 4 — <em>Storage Configurations &amp; Hazards</em></h1>
+    <div class="sub">Click any choice for instant feedback</div>
+    <div class="quiz-grid">
+      <div class="qbox"><div class="qn">Q1 — Recall</div><div class="qt">Column protection is required when storage height exceeds:</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>10 ft</li><li data-key="B"><span class="k">B</span>12 ft</li><li data-key="C"><span class="k">C</span>15 ft</li><li data-key="D"><span class="k">D</span>20 ft</li></ul>
+        <div class="explain"><b>C — 15 ft (§20.15.1).</b> AND the column is within / near the rack footprint. Both conditions required.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q2 — Recall</div><div class="qt">Idle plastic pallets stored without cutoffs: maximum storage height?</div>
+        <ul class="choices" data-correct="A"><li data-key="A"><span class="k">A</span>10 ft</li><li data-key="B"><span class="k">B</span>15 ft</li><li data-key="C"><span class="k">C</span>20 ft</li><li data-key="D"><span class="k">D</span>25 ft</li></ul>
+        <div class="explain"><b>A — 10 ft (§20.14.2.2.4.2).</b> ESFR K-14/K-16.8 designs unlock higher storage but require specific system criteria.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q3 — Application</div><div class="qt">"No impact" exception for plastic pallets requires all of which?</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>4 ft high, standard sprinklers</li><li data-key="B"><span class="k">B</span>≤ 4 ft high, high-temp sprinklers, 8 ft separation</li><li data-key="C"><span class="k">C</span>6 ft, ESFR only</li><li data-key="D"><span class="k">D</span>12 ft, ordinary-temp sprinklers</li></ul>
+        <div class="explain"><b>B — §20.14.2.2.4.3.</b> All three conditions required. Standard-temp doesn't qualify — high-temp sprinklers are part of the package.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q4 — Application</div><div class="qt">Per Table 20.15.1, ceiling density for Class IV / Group A with a 4 ft aisle is:</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>0.37 gpm/ft²</li><li data-key="B"><span class="k">B</span>0.52 gpm/ft²</li><li data-key="C"><span class="k">C</span>0.68 gpm/ft²</li><li data-key="D"><span class="k">D</span>0.57 gpm/ft² (that's the 8-ft aisle value)</li></ul>
+        <div class="explain"><b>C — 0.68 gpm/ft².</b> Narrow aisles concentrate heat — density goes up. Wider aisles (8 ft) allow ventilation — 0.57.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 20</span><span>Quiz 4 — Storage Configurations</span></div>
+</section>
+
+<!-- =============== SLIDE 52 — WALKTHROUGH PT 1 =============== -->
+<section class="slide" data-n="52">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 5 · WALKTHROUGH 1/5</span><span class="snum">SLIDE 52 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">End-to-End: <em>Project Setup</em></h1>
+    <div class="sub">Acme Distribution — Putting Ch. 4 + Ch. 20 to work</div>
+    <div class="grid-2">
+      <div class="card"><h3>The Brief</h3>
+        <ul class="clean">
+          <li><b>Building:</b> 120,000 ft² distribution warehouse, single story, eave 32 ft, flat noncombustible metal deck</li>
+          <li><b>Use:</b> 3rd-party logistics — mixed SKUs across 90% of the floor</li>
+          <li><b>Storage:</b> Double-row racks, 8 ft aisles, max storage 26 ft</li>
+          <li><b>Mezzanine:</b> 5,000 ft² office mezzanine over receiving (one corner)</li>
+          <li><b>Water:</b> City main, fresh flow test: static 82 psi, residual 68 psi @ 1,400 gpm</li>
+          <li><b>Owner:</b> Multi-tenant, may change SKUs quarterly</li>
+        </ul>
+      </div>
+      <div class="card accent"><h3>What Ch. 4 §4.2 Asks For</h3>
+        <ol class="num">
+          <li><b>Intended use</b> ✓ — distribution warehouse, max storage 26 ft</li>
+          <li><b>Preliminary plan</b> ✓ — A-101, rack layout shown</li>
+          <li><b>Water supply</b> ✓ — flow test 2 months old, within §4.6.1.1</li>
+          <li><b>Special conditions</b> — heated? unheated dock area? MIC history? <b style="color:#FFCDB6">RFI required.</b></li>
+        </ol>
+        <p style="margin-top:14px;color:var(--orange-3)">Open question: SKU mix can change quarterly. <b>Design to the highest plausible commodity</b> the owner could store, not just the day-one inventory.</p>
+      </div>
+    </div>
+    <div class="card warn" style="margin-top:14px"><h3>First Decision</h3>
+      <p>This is <b class="hi">primary-use storage</b>. §4.3 occupancy hazard does not apply. Go to <b>Chapter 20</b>. (The 5,000 ft² office mezzanine is its own occupancy — separate system or separately calculated area.)</p>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 5 · Apply</span><span>End-to-end Pt. 1 — project setup</span></div>
+</section>
+
+<!-- =============== SLIDE 53 — WALKTHROUGH PT 2 =============== -->
+<section class="slide" data-n="53">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 5 · WALKTHROUGH 2/5</span><span class="snum">SLIDE 53 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Pt. 2 — <em>Commodity Analysis</em></h1>
+    <div class="sub">Step 1 of the §20.2 process: classify what's actually being stored</div>
+    <div class="grid-2">
+      <div class="card"><h3>SKU Audit from the Owner</h3>
+        <table class="data">
+          <thead><tr><th>Category</th><th>% of Volume</th><th>Pallet</th></tr></thead>
+          <tbody>
+            <tr><td>Cartoned small appliances</td><td>40%</td><td>Wood</td></tr>
+            <tr><td>Paper products (reams, boxes)</td><td>25%</td><td>Wood</td></tr>
+            <tr><td>Plastic-bodied toys, cartoned</td><td>20%</td><td>Wood</td></tr>
+            <tr><td>Canned goods (food)</td><td>10%</td><td>Wood</td></tr>
+            <tr><td>Empty HDPE bins (returns)</td><td>5%</td><td>Mixed</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card accent"><h3>Class-by-Class Analysis</h3>
+        <ul class="clean">
+          <li><b>Appliances (40%):</b> Class IV — Group A plastic interior in cartons</li>
+          <li><b>Paper (25%):</b> Class III</li>
+          <li><b>Plastic toys cartoned (20%):</b> Class IV (Group A in cartons)</li>
+          <li><b>Canned goods (10%):</b> Class II (multi-layer corrugated)</li>
+          <li><b>HDPE bins (5%):</b> <span style="color:#FF7A45;font-weight:700">Group A plastic — exposed</span></li>
+        </ul>
+        <p style="margin-top:14px;color:var(--orange-3)"><b>Highest present:</b> Exposed Group A plastic (5% of volume).</p>
+      </div>
+    </div>
+    <div class="card warn" style="margin-top:14px"><h3>Mixed Commodity Decision</h3>
+      <p>The HDPE bins are 5% by volume — under the 10% threshold of §20.3.3.2. <b>Could</b> use the exception and design to Class IV. <b class="hi">Should not</b> — the owner says SKU mix changes quarterly. Design to the worst plausible: <b style="color:#FFCDB6">Group A plastic exposed</b>.</p>
+      <p style="margin-top:8px;color:#FFCDB6">Pays for itself in flexibility. The owner doesn't have to call you every time the SKU list changes.</p>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 5 · Apply</span><span>End-to-end Pt. 2 — commodities</span></div>
+</section>
+
+<!-- =============== SLIDE 54 — WALKTHROUGH PT 3 =============== -->
+<section class="slide" data-n="54">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 5 · WALKTHROUGH 3/5</span><span class="snum">SLIDE 54 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Pt. 3 — <em>Storage Configuration</em></h1>
+    <div class="sub">Steps 2–4 of the §20.2 process: method, heights, common rules</div>
+    <div class="grid-2">
+      <div class="stack">
+        <div class="card"><h3>Step 2 — Storage Method (§20.5)</h3>
+          <p><b>Double-row rack</b>, 8 ft aisles, transverse flues every pallet, longitudinal flue at row centerline.</p>
+        </div>
+        <div class="card"><h3>Step 3 — Heights &amp; Clearances (§20.6)</h3>
+          <ul class="clean">
+            <li>Storage height: <b>26 ft</b></li>
+            <li>Building deck: <b>32 ft</b></li>
+            <li>Sprinkler clearance: 32 − 26 = <b>6 ft</b> ✓ (well above 18" min)</li>
+            <li>Aisle width: <b>8 ft</b> (standard for ESFR)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>Step 4 — Common Rules (§20.7–20.15)</h3>
+          <ul class="clean">
+            <li><b>§20.11 separation:</b> Rack area separated from mezzanine area — different design hands off at boundary</li>
+            <li><b>§20.13 combustible loading:</b> SKUs are stable — no special action</li>
+            <li><b>§20.14 idle pallets:</b> Need a dedicated outdoor pallet area to keep stacks out of the rack zone</li>
+            <li><b>§20.15 columns:</b> Storage exceeds 15 ft AND building has columns inside rack rows — <b style="color:#FFCDB6">column protection required</b></li>
+          </ul>
+        </div>
+        <div class="card warn"><h3>Column Decision</h3>
+          <p>With ESFR likely (next slide), we'll use the <b>"ESFR provides equivalent protection"</b> option from §20.15.1 — no extra ceiling density or in-rack columns required if the ESFR design table accounts for it.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 5 · Apply</span><span>End-to-end Pt. 3 — configuration</span></div>
+</section>
+
+<!-- =============== SLIDE 55 — WALKTHROUGH PT 4 =============== -->
+<section class="slide" data-n="55">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 5 · WALKTHROUGH 4/5</span><span class="snum">SLIDE 55 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Pt. 4 — <em>Sprinkler Selection</em></h1>
+    <div class="sub">Step 5 of §20.2: pick the technology + look up density</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>Why ESFR Wins Here</h3>
+        <ul class="clean">
+          <li>Storage 26 ft &lt; deck 32 ft → ESFR clearance ratio works</li>
+          <li>Building has noncombustible flat metal deck → ESFR allowed</li>
+          <li>Double-row rack with proper flues → ESFR can suppress without in-rack</li>
+          <li>Group A plastic exposed at 26 ft → CMDA/CMSA densities would be punishing</li>
+          <li>Future flexibility — ESFR handles SKU changes within its class envelope</li>
+        </ul>
+      </div>
+      <div class="card"><h3>Ch. 23 Table Pick (representative)</h3>
+        <p>For exposed Group A plastic at 25 ft storage, 30 ft ceiling, in-rack not required:</p>
+        <table class="data" style="margin-top:8px">
+          <thead><tr><th>K-Factor</th><th>Pressure</th><th>Storage Ht</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>K-16.8 EC pendant</td><td>60 psi</td><td>≤ 25 ft</td><td>Standard pick at this scale</td></tr>
+            <tr><td>K-22.4 EC pendant</td><td>40 psi</td><td>≤ 30 ft</td><td>Drops required pressure</td></tr>
+            <tr><td>K-25.2 EC pendant</td><td>40 psi</td><td>≤ 35 ft</td><td>Future-proof option</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:8px;color:var(--orange-3)">Confirm with the actual NFPA 13 2019 table — values shown are representative.</p>
+      </div>
+    </div>
+    <div class="card good" style="margin-top:14px"><h3>The Pick — and Why</h3>
+      <p><b class="hi">K-16.8 ESFR pendant, 60 psi, 12-sprinkler design</b>. Hose 250 gpm. Duration 60 min. Hits the budget without needing exotic K-25 sprinklers; leaves room in the water supply for the 5,000 ft² mezzanine LH design.</p>
+      <p style="margin-top:8px"><b>Storage demand:</b> 12 × K-16.8 √60 = ~12 × 130 = ~1,560 gpm + 250 hose = <b>1,810 gpm</b>. Supply gives ~1,400 gpm at 68 psi — <b style="color:#FFCDB6">water supply is short by ~410 gpm.</b> A fire pump is required.</p>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 5 · Apply</span><span>End-to-end Pt. 4 — sprinkler selection</span></div>
+</section>
+
+<!-- =============== SLIDE 56 — WALKTHROUGH PT 5: COMMON MISTAKES =============== -->
+<section class="slide" data-n="56">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 5 · WALKTHROUGH 5/5</span><span class="snum">SLIDE 56 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Pt. 5 — <em>Common Field Mistakes</em></h1>
+    <div class="sub">Real failures designers make on the Acme-style project</div>
+    <div class="grid-2">
+      <div class="stack">
+        <div class="card warn"><h3>① "Just design to Class IV — it's only 5% plastic"</h3>
+          <p>Treating the §20.3.3 exception as a default. Owner changes SKUs, exception fails, system under-designed. <b class="hi">Design for the worst plausible.</b></p>
+        </div>
+        <div class="card warn"><h3>② Pallet type assumed from a phone call</h3>
+          <p>"Owner said wood pallets" → drawings show wood → operations buys reinforced plastic on sale. The class jumps two. <b class="hi">Get it on the owner's cert in writing.</b></p>
+        </div>
+        <div class="card warn"><h3>③ Forgetting idle pallet storage</h3>
+          <p>The 200 empty pallets piled in the back corner are not in the design. First fire inspection flags them. Project halts.</p>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="card warn"><h3>④ Mezzanine area added to system without §4.5.2 check</h3>
+          <p>The 5,000 ft² office mezzanine is fed by a separate system but boundary not declared. <b class="hi">§4.5.2 Scenario 3 trap.</b></p>
+        </div>
+        <div class="card warn"><h3>⑤ ESFR slope/obstruction not field-verified</h3>
+          <p>The drawings show clean deck. The roof has a 1:12 slope and HVAC duct work. ESFR listings have strict limits — often missed at design stage.</p>
+        </div>
+        <div class="card warn"><h3>⑥ Flue space not enforced</h3>
+          <p>Forklift drivers crowd pallets to fit more inventory. Transverse flues drop to 1". In-rack rules now triggered AFTER the system is installed.</p>
+        </div>
+        <div class="card good"><h3>How to Prevent</h3>
+          <ul class="clean">
+            <li><b>Operational MOU</b> with the owner — pallet rules in writing</li>
+            <li><b>Annual ITM walkthrough</b> includes flue inspection</li>
+            <li><b>Drawings show pallet type</b> &amp; commodity assumption explicitly</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 5 · Apply</span><span>End-to-end Pt. 5 — field mistakes</span></div>
+</section>
+
+<!-- =============== SLIDE 57 — REFERENCE LIBRARY =============== -->
+<section class="slide" data-n="57">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 5 · REFERENCE</span><span class="snum">SLIDE 57 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Reference <em>Library</em></h1>
+    <div class="sub">Where masters go for deeper info</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>Primary Sources</h3>
+        <ul class="clean">
+          <li><b>NFPA 13 (2019 edition)</b> — the code itself, every chapter</li>
+          <li><b>NFPA 13 Handbook (2019)</b> — annotated code with commentary &amp; examples</li>
+          <li><b>NFPA 25</b> — Inspection, Testing &amp; Maintenance (downstream of 13)</li>
+          <li><b>NFPA 20</b> — Stationary Fire Pumps</li>
+          <li><b>NFPA 24</b> — Underground water mains &amp; appurtenances</li>
+          <li><b>NFPA 22</b> — Water tanks for private fire protection</li>
+        </ul>
+      </div>
+      <div class="card"><h3>Complementary Standards</h3>
+        <ul class="clean">
+          <li><b>FM Global Data Sheet 2-0</b> — Installation guidelines</li>
+          <li><b>FM Global DS 8-9</b> — Storage of Class 1–4 commodities</li>
+          <li><b>FM Global DS 8-1 / 8-3</b> — Specific storage occupancies</li>
+          <li><b>UL Listings</b> — Each ESFR/CMSA sprinkler model has specific installation criteria</li>
+          <li><b>Manufacturer technical data sheets</b> — Tyco / Viking / Reliable / Globe</li>
+        </ul>
+      </div>
+      <div class="card good"><h3>Training &amp; Continuing Ed</h3>
+        <ul class="clean">
+          <li><b>NICET</b> Levels I–IV in fire protection</li>
+          <li><b>AFSA</b> seminars &amp; correspondence courses</li>
+          <li><b>NFSA</b> training &amp; technical advisory service</li>
+          <li><b>SFPE</b> conferences &amp; chapter meetings</li>
+          <li><b>Fire System Mastery (FSM)</b> — these courses + CE for IL OSFM renewal</li>
+        </ul>
+      </div>
+      <div class="card warn"><h3>What's Next in FSM</h3>
+        <ul class="clean">
+          <li><b>Ch. 21</b> — CMDA design (density/area method)</li>
+          <li><b>Ch. 22</b> — CMSA sprinklers</li>
+          <li><b>Ch. 23</b> — ESFR detailed application</li>
+          <li><b>Ch. 24</b> — Special storage configurations</li>
+          <li><b>Ch. 25</b> — In-rack sprinklers</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 5 · Apply</span><span>Reference library</span></div>
+</section>
+
+<!-- =============== SLIDE 58 — FINAL EXAM PT 1 (CH 4) =============== -->
+<section class="slide" data-n="58">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 6 · FINAL — CH. 4</span><span class="snum">SLIDE 58 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Final Exam Pt. 1 — <em>Chapter 4 Cumulative</em></h1>
+    <div class="sub">Mixed difficulty. Click to reveal.</div>
+    <div class="quiz-grid">
+      <div class="qbox"><div class="qn">Q1</div><div class="qt">Which four inputs must be in the owner's certificate per §4.2?</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>Use, plan, AHJ contact, water</li><li data-key="B"><span class="k">B</span>Use, plan, water supply, special water conditions</li><li data-key="C"><span class="k">C</span>Use, hazard class, water, sprinkler type</li><li data-key="D"><span class="k">D</span>Plan, water, owner phone, occupancy load</li></ul>
+        <div class="explain"><b>B — U-P-W-S.</b> Intended use · Preliminary plan · Water supply info · Special water-supply knowledge (corrosion, MIC, environmental).</div>
+      </div>
+      <div class="qbox"><div class="qn">Q2</div><div class="qt">A 65,000 ft² Light Hazard building is being designed. Per §4.5, what's the riser strategy?</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>One system covers all 65,000 ft²</li><li data-key="B"><span class="k">B</span>Cannot be sprinklered — too large</li><li data-key="C"><span class="k">C</span>Split into ≥ 2 systems; each ≤ 52,000 ft²</li><li data-key="D"><span class="k">D</span>One system if pressure is adequate</li></ul>
+        <div class="explain"><b>C — §4.5.1.</b> 52,000 ft² is the hard cap per system regardless of pressure. Must split.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q3</div><div class="qt">Which is NOT a permitted omission per §9.3?</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>Bathrooms ≤ 55 ft² in dwelling units</li><li data-key="B"><span class="k">B</span>Closets ≤ 24 ft² in dwellings</li><li data-key="C"><span class="k">C</span>Electrical rooms larger than 100 ft² with combustible content</li><li data-key="D"><span class="k">D</span>Concealed spaces filled with noncombustible insulation</li></ul>
+        <div class="explain"><b>C.</b> Electrical rooms only qualify for omission when they're ≤2hr-rated, dedicated, dry-type. Combustible content disqualifies them. A and B name actual permitted omissions; D is the noncombustible-insulation rule.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q4</div><div class="qt">Limited-combustible material must have potential heat NOT exceeding:</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>1,500 Btu/lb</li><li data-key="B"><span class="k">B</span>2,500 Btu/lb</li><li data-key="C"><span class="k">C</span>3,500 Btu/lb</li><li data-key="D"><span class="k">D</span>5,000 Btu/lb</li></ul>
+        <div class="explain"><b>C — 3,500 Btu/lb (§4.10.2), tested per NFPA 259.</b> Plus flame-spread surface limits.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 6 · Mastery</span><span>Final Pt. 1 — Ch. 4 cumulative</span></div>
+</section>
+
+<!-- =============== SLIDE 59 — FINAL EXAM PT 2 (CH 20) =============== -->
+<section class="slide" data-n="59">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 6 · FINAL — CH. 20</span><span class="snum">SLIDE 59 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Final Exam Pt. 2 — <em>Chapter 20 Cumulative</em></h1>
+    <div class="sub">Storage taxonomy + special hazards</div>
+    <div class="quiz-grid">
+      <div class="qbox"><div class="qn">Q1</div><div class="qt">The three factors that determine commodity classification per §20.3.1.1 are:</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>Building height, aisle width, sprinkler type</li><li data-key="B"><span class="k">B</span>Product, primary packaging, pallet type</li><li data-key="C"><span class="k">C</span>Density, area, K-factor</li><li data-key="D"><span class="k">D</span>Class, Group, AHJ</li></ul>
+        <div class="explain"><b>B.</b> The product itself, the packaging around it, and the pallet under it. All three matter — change any one and the class can change.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q2</div><div class="qt">Cartoned cellulosic plastics are which group?</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>Group A (highest hazard)</li><li data-key="B"><span class="k">B</span>Group B (moderate)</li><li data-key="C"><span class="k">C</span>Group C (lowest)</li><li data-key="D"><span class="k">D</span>Not classified by NFPA 13</li></ul>
+        <div class="explain"><b>B — Group B (§20.4.6).</b> Cellulosics (acetate, butyrate, propionate) are Group B. Treated more strictly than Group C but don't trigger Group A plastic rules.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q3</div><div class="qt">A double-row rack stores Class III commodity on reinforced plastic pallets. Design as:</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>Class III (no change)</li><li data-key="B"><span class="k">B</span>Class IV</li><li data-key="C"><span class="k">C</span>Group A plastic protection criteria</li><li data-key="D"><span class="k">D</span>Group B plastic</li></ul>
+        <div class="explain"><b>C.</b> Class III + 2 (reinforced plastic pallet) exceeds the Class IV ceiling — use Group A plastic protection per §20.3.2.2 alternative.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q4</div><div class="qt">Idle wood pallets stored indoors are typically limited to a pile height of:</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>4 ft</li><li data-key="B"><span class="k">B</span>6 ft (default before special protection)</li><li data-key="C"><span class="k">C</span>10 ft</li><li data-key="D"><span class="k">D</span>15 ft</li></ul>
+        <div class="explain"><b>B — §20.14.1.</b> 6 ft is the default indoor limit for unprotected idle wood pallet piles. Special protection allows taller storage but you don't get there by default.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 6 · Mastery</span><span>Final Pt. 2 — Ch. 20 cumulative</span></div>
+</section>
+
+<!-- =============== SLIDE 60 — FINAL EXAM PT 3 (SCENARIO) =============== -->
+<section class="slide" data-n="60">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 6 · FINAL — SCENARIOS</span><span class="snum">SLIDE 60 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Final Exam Pt. 3 — <em>Scenario Application</em></h1>
+    <div class="sub">The "real warehouse on Monday morning" test</div>
+    <div class="quiz-grid">
+      <div class="qbox"><div class="qn">Q1 — Scenario</div><div class="qt">Owner calls: they just bought 200 used plastic pallets at auction. No markings. Storing them next to the existing wood pallet pile (8 ft, indoors). Action?</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>OK — combined pile counts as wood</li><li data-key="B"><span class="k">B</span>Move them outside, no further action</li><li data-key="C"><span class="k">C</span>Unmarked plastic = treat as reinforced. Indoor storage at 8 ft likely needs design changes or relocation per §20.14.2</li><li data-key="D"><span class="k">D</span>Test them with a torch</li></ul>
+        <div class="explain"><b>C.</b> Unmarked plastic pallets default to "reinforced" per §20.3.2.2.2.2. Idle plastic pallets without cutoffs cap at 10 ft — likely OK on height but must be separated from wood pallets and the rack zone. Confirm sprinkler design covers it OR relocate outdoors.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q2 — Scenario</div><div class="qt">A 24-month-old hydrant flow test is the only data available. Project is on an aggressive schedule. What's the path?</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>Use it — water supply doesn't change that fast</li><li data-key="B"><span class="k">B</span>Refuse the project</li><li data-key="C"><span class="k">C</span>Schedule a new test OR submit a §4.6.1.1 written-approval request to the AHJ with justification</li><li data-key="D"><span class="k">D</span>Use static pressure only, ignore residual</li></ul>
+        <div class="explain"><b>C.</b> 12 months is the cap. Best to re-test (cheap, ~$500–$1,500, week of turnaround). If truly impossible, AHJ can grant written approval per §4.6.1.1 — but you must document the request.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q3 — Scenario</div><div class="qt">Existing 35,000 ft² OH2 system. Tenant wants to add 15,000 ft² of EH1 process to the same building, fed from the same riser. Compliant?</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>Yes — combined 50,000 &lt; 52,000</li><li data-key="B"><span class="k">B</span>No — EH portion under 40,000 ✓ BUT total 50,000 ≤ 52,000 ✓ — actually YES, compliant per §4.5.3</li><li data-key="C"><span class="k">C</span>No — must split into two systems</li><li data-key="D"><span class="k">D</span>Depends on whether mezzanines exist</li></ul>
+        <div class="explain"><b>B.</b> Both §4.5.3 rules pass: EH portion 15k &lt; 40k cap; total 50k &lt; 52k cap. Compliant. But verify the EH design demand doesn't exceed the existing OH2 hydraulic capacity — adding EH usually means a hydraulic re-calc and possibly a fire pump upgrade.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q4 — Scenario</div><div class="qt">A 22-ft-tall rack of cartoned canned food (Class II on wood pallets) has steel building columns INSIDE the rack rows. Owner wants the cheapest option. What's the play?</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>No column protection — it's only Class II</li><li data-key="B"><span class="k">B</span>Column protection IS required (storage &gt; 15 ft + column in rack); §20.15.1 offers 4 paths — increased ceiling density per Table 20.15.1 is often cheapest</li><li data-key="C"><span class="k">C</span>Move the racks 12.1 in. away from the columns</li><li data-key="D"><span class="k">D</span>Wrap columns with intumescent coating</li></ul>
+        <div class="explain"><b>B.</b> 22 ft &gt; 15 ft AND column inside rack footprint = triggers §20.15.1. For Class II at 4 ft aisle, table density is 0.43 gpm/ft² — moderate bump. C "12.1 in." is a cute idea (must be within 12") but practically impossible. Intumescent paint is not a §20.15 listed option.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 6 · Mastery</span><span>Final Pt. 3 — scenario application</span></div>
+</section>
+
+<!-- =============== SLIDE 61 — MASTERY CHEAT SHEET =============== -->
+<section class="slide" data-n="61">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 6 · CHEAT SHEET</span><span class="snum">SLIDE 61 / 61</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Mastery <em>Cheat Sheet</em></h1>
+    <div class="sub">20 rules that cover 90% of Ch. 4 + Ch. 20 design decisions</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>Chapter 4 — Universal Rules</h3>
+        <ol class="num" style="margin-top:6px;font-size:18px">
+          <li><b>Sprinklers in ALL areas</b> — only §9.3 omissions exempt (§4.1)</li>
+          <li><b>Owner's cert</b> required: use · plan · water · special (§4.2)</li>
+          <li><b>5 hazard tiers:</b> LH · OH1 · OH2 · EH1 · EH2 (§4.3.2–6)</li>
+          <li><b>Densities:</b> 0.10 · 0.15 · 0.20 · 0.30 · 0.40 gpm/ft²</li>
+          <li><b>Misc storage:</b> 10%/4k total · 1k per pile · 25 ft apart (§4.3.1)</li>
+          <li><b>Max area / system:</b> 52,000 (LH/OH) · 40,000 (EH/storage) (§4.5)</li>
+          <li><b>Mezzanine:</b> not counted if single system; counted if separate (§4.5.2)</li>
+          <li><b>Mixed hazard:</b> EH ≤ 40k AND total ≤ 52k (§4.5.3)</li>
+          <li><b>Flow test:</b> &lt; 12 months OR written AHJ approval (§4.6.1.1)</li>
+          <li><b>9 water supply items</b> always required (§4.6.1)</li>
+          <li><b>Prohibited:</b> sodium silicate · brine · leak-stoppers (§4.7)</li>
+          <li><b>Limited-combustible:</b> ≤ 3,500 Btu/lb + flame-spread limits (§4.10)</li>
+        </ol>
+      </div>
+      <div class="card"><h3>Chapter 20 — Storage Rules</h3>
+        <ol class="num" start="13" style="margin-top:6px;font-size:18px">
+          <li><b>6-step process:</b> commodity · method · height · common rules · sprinkler · install (§20.2)</li>
+          <li><b>Classify by 3:</b> product · packaging · pallet (§20.3.1.1)</li>
+          <li><b>Classes I–IV:</b> noncombustible → wood/paper/Gp C → Gp A plastic / Gp B (§20.4)</li>
+          <li><b>Pallet upclass:</b> wood/metal = 0 · unreinforced = +1 · reinforced = +2 (§20.3.2.2)</li>
+          <li><b>Unmarked plastic pallet</b> = treat as reinforced (§20.3.2.2.2.2)</li>
+          <li><b>Group A plastic</b> is the top — no further upclass (§20.3.2.2.3)</li>
+          <li><b>Mixed commodity:</b> design to highest class present (§20.3.3)</li>
+          <li><b>18" clearance</b> below sprinklers minimum (§20.6)</li>
+          <li><b>Idle wood pallets:</b> 6 ft default indoor pile limit (§20.14.1)</li>
+          <li><b>Idle plastic pallets:</b> 10 ft max without cutoffs (§20.14.2.2.4.2)</li>
+          <li><b>Plastic-pallet no-impact:</b> ≤ 4 ft + high-temp + 8 ft sep (§20.14.2.2.4.3)</li>
+          <li><b>Column protection:</b> &gt; 15 ft storage + column in/near rack (§20.15)</li>
+        </ol>
+      </div>
+    </div>
+    <div class="card good" style="margin-top:14px"><h3>What's Next — Continue Your Mastery</h3>
+      <p style="display:flex;gap:18px;flex-wrap:wrap;margin:0">
+        <span class="pill" style="font-size:16px">Ch. 21 — CMDA Design</span>
+        <span class="pill" style="font-size:16px">Ch. 22 — CMSA Sprinklers</span>
+        <span class="pill" style="font-size:16px">Ch. 23 — ESFR Application</span>
+        <span class="pill" style="font-size:16px">Ch. 24 — Special Storage</span>
+        <span class="pill" style="font-size:16px">Ch. 25 — In-Rack Sprinklers</span>
+      </p>
+      <p style="margin-top:12px;color:var(--blue-3)">You've completed the foundation. Every chapter that follows builds on what you just learned.</p>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 6 · Mastery</span><span>Cheat sheet · End of course</span></div>
+</section>
+
+</div>
+
+<script>
+const slides=document.querySelectorAll('.slide');
+const fill=document.getElementById('pfill');
+const curN=document.getElementById('curN');
+let idx=0;const N=slides.length;const TOTAL=61;
+function show(n){
+  n=Math.max(0,Math.min(slides.length-1,n));
+  slides[idx].classList.remove('active');
+  slides[n].classList.add('active');
+  idx=n;
+  const num=parseInt(slides[n].dataset.n,10)||(n+1);
+  curN.textContent=num;
+  fill.style.width=(num/TOTAL*100)+'%';
+  history.replaceState(null,'','#'+num);
+}
+function next(){show(idx+1)}
+function prev(){show(idx-1)}
+let jumpBuf='';
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '||e.key==='j'){e.preventDefault();next()}
+  else if(e.key==='ArrowLeft'||e.key==='PageUp'||e.key==='k'){e.preventDefault();prev()}
+  else if(e.key==='Home'){e.preventDefault();show(0)}
+  else if(e.key==='End'){e.preventDefault();show(slides.length-1)}
+  else if(/^[0-9]$/.test(e.key)){jumpBuf+=e.key}
+  else if(e.key==='Enter'&&jumpBuf){
+    const n=parseInt(jumpBuf,10);jumpBuf='';
+    for(let i=0;i<slides.length;i++)if(parseInt(slides[i].dataset.n,10)===n){show(i);break}
+  }else{jumpBuf=''}
+});
+document.addEventListener('click',e=>{
+  const li=e.target.closest('.qbox .choices li');
+  if(li){
+    const ul=li.parentElement;const qbox=li.closest('.qbox');
+    const correct=ul.dataset.correct;
+    [...ul.children].forEach(c=>{
+      if(c.dataset.key===correct)c.dataset.correct='1';else c.dataset.wrong='1';
+    });
+    qbox.classList.add('revealed');
+    return;
+  }
+});
+// initial hash
+const h=parseInt(location.hash.replace('#',''),10);
+if(h&&h>=1&&h<=TOTAL){for(let i=0;i<slides.length;i++)if(parseInt(slides[i].dataset.n,10)===h){idx=i;break}slides[0].classList.remove('active');slides[idx].classList.add('active');curN.textContent=h;fill.style.width=(h/TOTAL*100)+'%';}
+else{curN.textContent=1;fill.style.width=(1/TOTAL*100)+'%';}
+</script>
+
+</body>
+</html>
