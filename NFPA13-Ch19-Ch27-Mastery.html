@@ -18,12 +18,12 @@
 html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--txt);
   font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
   -webkit-font-smoothing:antialiased;overflow:hidden}
-.stage{position:fixed;inset:0;display:grid;place-items:center;background:#040912}
-.slide{width:1920px;height:1080px;position:relative;overflow:hidden;
+.stage{position:fixed;inset:0;overflow:hidden;background:#040912}
+.slide{width:1920px;height:1080px;position:absolute;top:50%;left:50%;overflow:hidden;
   background:radial-gradient(ellipse at 50% 35%, rgba(63,169,245,0.10) 0%, rgba(63,169,245,0) 55%),
     radial-gradient(ellipse at 20% 90%, rgba(216,90,48,0.06) 0%, rgba(216,90,48,0) 50%),
     linear-gradient(180deg,#07142A 0%,#050D1B 100%);
-  transform-origin:center center;box-shadow:0 30px 80px rgba(0,0,0,0.6);display:none}
+  box-shadow:0 30px 80px rgba(0,0,0,0.6);display:none}
 .slide.active{display:block}
 .slide::before{content:"";position:absolute;inset:0;pointer-events:none;
   background-image:linear-gradient(rgba(63,169,245,0.05) 1px,transparent 1px),
@@ -119,12 +119,23 @@ table.data tr:last-child td{border-bottom:none}
 .qbox.revealed .explain{display:block}
 .progress{position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,0.04);z-index:50}
 .progress .fill{height:100%;background:linear-gradient(90deg,#3FA9F5,#D85A30);width:0;transition:width 200ms}
-.navhud{position:fixed;bottom:14px;right:18px;font-size:12px;letter-spacing:0.14em;
-  color:rgba(191,211,230,0.55);z-index:50;background:rgba(6,16,31,0.6);padding:8px 14px;border-radius:999px;
-  border:1px solid var(--line-soft);backdrop-filter:blur(6px)}
-.navhud b{color:var(--blue-2)}
-@media (max-aspect-ratio:16/9){.slide{transform:scale(calc(100vw/1920))}}
-@media (min-aspect-ratio:16/9){.slide{transform:scale(calc(100vh/1080))}}
+.mobile-nav{position:fixed;bottom:max(18px,env(safe-area-inset-bottom));left:50%;
+  transform:translateX(-50%);display:flex;align-items:center;gap:14px;z-index:200;
+  background:rgba(6,16,31,0.88);border:1.5px solid rgba(63,169,245,0.4);
+  border-radius:999px;padding:8px 16px;backdrop-filter:blur(10px);
+  box-shadow:0 4px 24px rgba(0,0,0,0.5)}
+.mnav-btn{width:48px;height:48px;border-radius:50%;border:none;
+  background:rgba(63,169,245,0.18);color:var(--blue-2);
+  font-size:30px;font-weight:700;line-height:1;padding:0;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  -webkit-tap-highlight-color:transparent;font-family:inherit;
+  transition:background 120ms,transform 120ms;touch-action:manipulation}
+.mnav-btn:active{background:rgba(63,169,245,0.45);transform:scale(0.92)}
+.mnav-count{font-size:15px;color:var(--blue-3);letter-spacing:0.1em;
+  min-width:70px;text-align:center;font-weight:600;font-family:inherit}
+.mnav-count b{color:var(--blue-2);font-size:17px}
+@media (max-aspect-ratio:16/9){.slide{transform:translate(-50%,-50%) scale(calc(100vw/1920))}}
+@media (min-aspect-ratio:16/9){.slide{transform:translate(-50%,-50%) scale(calc(100vh/1080))}}
 .divider-slide .body{align-items:center;justify-content:center;text-align:center}
 .divider-slide .modnum{font-size:24px;letter-spacing:0.40em;color:var(--blue-2);font-weight:600;margin-bottom:24px}
 .divider-slide h1.t{font-size:120px}
@@ -159,7 +170,11 @@ table.data tr:last-child td{border-bottom:none}
 </head>
 <body>
 <div class="progress"><div class="fill" id="pfill"></div></div>
-<div class="navhud"><b id="curN">1</b> / 60 &nbsp;·&nbsp; <kbd>←</kbd> <kbd>→</kbd></div>
+<div class="mobile-nav">
+  <button class="mnav-btn" data-nav="prev" aria-label="Previous slide">‹</button>
+  <div class="mnav-count"><b id="curN">1</b> / 60</div>
+  <button class="mnav-btn" data-nav="next" aria-label="Next slide">›</button>
+</div>
 <div class="stage">
 
 <!-- SLIDE 1 — TITLE -->
@@ -2366,6 +2381,26 @@ document.addEventListener('click',e=>{
     qbox.classList.add('revealed');return;
   }
 });
+document.querySelectorAll('.mnav-btn').forEach(btn=>{
+  btn.addEventListener('click',e=>{
+    e.preventDefault();e.stopPropagation();
+    if(btn.dataset.nav==='prev')prev();else next();
+  });
+});
+let tx0=0,ty0=0,tT=0;
+document.addEventListener('touchstart',e=>{
+  tx0=e.touches[0].clientX;ty0=e.touches[0].clientY;tT=Date.now();
+},{passive:true});
+document.addEventListener('touchend',e=>{
+  if(e.target.closest('.qbox .choices li'))return;
+  if(e.target.closest('.mnav-btn'))return;
+  const dx=e.changedTouches[0].clientX-tx0;
+  const dy=e.changedTouches[0].clientY-ty0;
+  const dt=Date.now()-tT;
+  if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)&&dt<600){
+    if(dx<0)next();else prev();
+  }
+},{passive:true});
 const h=parseInt(location.hash.replace('#',''),10);
 if(h&&h>=1&&h<=TOTAL){for(let i=0;i<slides.length;i++)if(parseInt(slides[i].dataset.n,10)===h){idx=i;break}slides[0].classList.remove('active');slides[idx].classList.add('active');curN.textContent=h;fill.style.width=(h/TOTAL*100)+'%';}
 else{curN.textContent=1;fill.style.width=(1/TOTAL*100)+'%';}
