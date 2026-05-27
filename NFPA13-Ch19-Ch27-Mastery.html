@@ -1,0 +1,2374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NFPA 13 Ch.19 &amp; Ch.27 Mastery</title>
+<style>
+:root{
+  --bg:#06101F;--panel:#0D2646;--panel-2:#11305A;--panel-hi:rgba(63,169,245,0.10);
+  --line:rgba(63,169,245,0.30);--line-soft:rgba(63,169,245,0.18);
+  --blue:#3FA9F5;--blue-2:#6CC2FF;--blue-3:#BFE3FF;
+  --orange:#FF7A45;--orange-2:#D85A30;--orange-3:#FFCDB6;
+  --green:#1D9E75;--amber:#FFC25C;
+  --txt:#E6EEF7;--txt-dim:#BFD3E6;--txt-mute:#94A8BD;
+  --lh:#5EBBFF;--oh1:#3DD6CC;--oh2:#4CD884;--eh1:#FFB347;--eh2:#FF7A45;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%;background:var(--bg);color:var(--txt);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;overflow:hidden}
+.stage{position:fixed;inset:0;display:grid;place-items:center;background:#040912}
+.slide{width:1920px;height:1080px;position:relative;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 35%, rgba(63,169,245,0.10) 0%, rgba(63,169,245,0) 55%),
+    radial-gradient(ellipse at 20% 90%, rgba(216,90,48,0.06) 0%, rgba(216,90,48,0) 50%),
+    linear-gradient(180deg,#07142A 0%,#050D1B 100%);
+  transform-origin:top left;box-shadow:0 30px 80px rgba(0,0,0,0.6);display:none}
+.slide.active{display:block}
+.slide::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(63,169,245,0.05) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(63,169,245,0.05) 1px,transparent 1px);
+  background-size:60px 60px}
+.slide::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;
+  background:linear-gradient(90deg,rgba(63,169,245,0) 0%,#3FA9F5 25%,#3FA9F5 65%,#D85A30 100%);opacity:0.55}
+.b{position:absolute;width:64px;height:64px;border:2px solid var(--line);z-index:1;pointer-events:none}
+.b.tl{top:32px;left:32px;border-right:none;border-bottom:none;border-top-left-radius:8px}
+.b.tr{top:32px;right:32px;border-left:none;border-bottom:none;border-top-right-radius:8px}
+.b.bl{bottom:32px;left:32px;border-right:none;border-top:none;border-bottom-left-radius:8px}
+.b.br{bottom:32px;right:32px;border-left:none;border-top:none;border-bottom-right-radius:8px}
+.hdr{position:absolute;top:48px;left:0;right:0;display:flex;justify-content:space-between;
+  align-items:center;padding:0 72px;z-index:5;font-size:16px;letter-spacing:0.14em;font-weight:600}
+.pill{display:inline-flex;align-items:center;padding:10px 20px;border-radius:999px;
+  background:rgba(13,38,70,0.55);border:1.5px solid var(--line);color:var(--blue-2);backdrop-filter:blur(6px)}
+.fsm{display:inline-flex;align-items:center;justify-content:center;padding:10px 22px;border-radius:999px;
+  background:linear-gradient(180deg,#FF7A45 0%,#D85A30 100%);color:#fff;font-weight:800;letter-spacing:0.18em;
+  box-shadow:0 6px 22px rgba(216,90,48,0.35)}
+.snum{font-size:14px;color:rgba(108,194,255,0.65);letter-spacing:0.30em;font-weight:600}
+.ftr{position:absolute;bottom:36px;left:72px;right:72px;display:flex;justify-content:space-between;
+  font-size:14px;letter-spacing:0.12em;color:rgba(191,211,230,0.50);z-index:5}
+.ftr kbd{padding:2px 8px;border-radius:6px;background:rgba(63,169,245,0.10);
+  border:1px solid var(--line);color:var(--blue-3);font-family:inherit;font-size:13px}
+.body{position:absolute;top:130px;left:72px;right:72px;bottom:90px;z-index:2;display:flex;flex-direction:column}
+h1.t{font-size:84px;line-height:1;font-weight:800;margin:0 0 8px;letter-spacing:-0.02em;color:#fff}
+h1.t em{font-style:normal;color:var(--blue);background:linear-gradient(180deg,#5EBBFF 0%,#2A86E0 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+h1.t.orange em{background:linear-gradient(180deg,#FFA374 0%,#D85A30 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.sub{font-size:24px;color:var(--blue-2);font-weight:500;letter-spacing:0.02em;margin-bottom:36px}
+.lede{font-size:28px;line-height:1.35;color:var(--txt-dim);max-width:1500px}
+.card{background:rgba(13,38,70,0.45);border:1.5px solid var(--line-soft);border-radius:16px;
+  padding:28px 32px;position:relative;backdrop-filter:blur(4px)}
+.card h3{font-size:18px;color:var(--blue-2);letter-spacing:0.14em;text-transform:uppercase;margin:0 0 16px;font-weight:700}
+.card p,.card li{font-size:22px;line-height:1.45;color:var(--txt);margin:0 0 10px}
+.card .hi{color:#fff;font-weight:600}
+.card.accent{background:linear-gradient(180deg,rgba(63,169,245,0.14) 0%,rgba(13,38,70,0.45) 100%);
+  border-color:rgba(63,169,245,0.55)}
+.card.warn{background:linear-gradient(180deg,rgba(255,122,69,0.10) 0%,rgba(13,38,70,0.45) 100%);
+  border-color:rgba(255,122,69,0.45);border-left:4px solid #FF7A45}
+.card.warn h3{color:#FFCDB6}
+.card.good{border-left:4px solid var(--blue);background:rgba(63,169,245,0.06)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px;flex:1;min-height:0}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:22px;flex:1;min-height:0}
+.grid-2-1{display:grid;grid-template-columns:2fr 1fr;gap:24px;flex:1;min-height:0}
+.grid-1-2{display:grid;grid-template-columns:1fr 2fr;gap:24px;flex:1;min-height:0}
+.stack{display:flex;flex-direction:column;gap:18px;flex:1;min-height:0}
+.row{display:flex;gap:18px;align-items:stretch}
+ul.clean{list-style:none;padding:0;margin:0}
+ul.clean li{padding-left:32px;position:relative;font-size:21px;line-height:1.4;margin-bottom:14px;color:var(--txt)}
+ul.clean li::before{content:"";position:absolute;left:0;top:12px;width:18px;height:2px;background:var(--blue)}
+ul.clean li b{color:#fff}
+ol.num{list-style:none;padding:0;margin:0;counter-reset:n}
+ol.num li{counter-increment:n;padding-left:48px;position:relative;font-size:21px;line-height:1.4;
+  margin-bottom:14px;color:var(--txt)}
+ol.num li::before{content:counter(n);position:absolute;left:0;top:-2px;width:32px;height:32px;
+  border-radius:50%;background:var(--blue);color:#06101F;font-weight:800;font-size:16px;
+  display:flex;align-items:center;justify-content:center}
+.haz-row{display:flex;align-items:center;gap:18px;padding:14px 20px;border-radius:12px;
+  background:rgba(13,38,70,0.40);border:1px solid var(--line-soft);margin-bottom:10px}
+.haz-row .tag{font-weight:800;font-size:18px;color:#06101F;padding:8px 14px;border-radius:8px;min-width:64px;text-align:center}
+.haz-row .desc{font-size:20px;color:var(--txt);flex:1}
+.haz-row.lh .tag{background:var(--lh)}.haz-row.oh1 .tag{background:var(--oh1)}
+.haz-row.oh2 .tag{background:var(--oh2)}.haz-row.eh1 .tag{background:var(--eh1)}
+.haz-row.eh2 .tag{background:var(--eh2);color:#fff}
+table.data{width:100%;border-collapse:separate;border-spacing:0;font-size:18px;color:var(--txt)}
+table.data th{background:rgba(63,169,245,0.14);color:var(--blue-2);font-weight:700;font-size:14px;
+  letter-spacing:0.14em;text-transform:uppercase;text-align:left;padding:12px 14px;border-bottom:1px solid var(--line)}
+table.data td{padding:11px 14px;border-bottom:1px solid var(--line-soft)}
+table.data td b{color:#fff}
+table.data tr:last-child td{border-bottom:none}
+.kstat{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:18px;background:rgba(63,169,245,0.08);border:1.5px solid var(--line);border-radius:14px;text-align:center}
+.kstat .n{font-size:64px;font-weight:800;line-height:1;color:var(--blue-2);letter-spacing:-0.02em}
+.kstat .l{font-size:16px;color:var(--txt-dim);margin-top:8px;letter-spacing:0.06em}
+.quiz-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1;min-height:0}
+.qbox{background:rgba(13,38,70,0.45);border:1.5px solid var(--line-soft);border-radius:14px;padding:18px 22px;display:flex;flex-direction:column}
+.qbox .qn{font-size:13px;letter-spacing:0.16em;color:var(--blue-2);text-transform:uppercase;font-weight:700;margin-bottom:8px}
+.qbox .qt{font-size:18px;color:#fff;font-weight:600;line-height:1.35;margin-bottom:12px}
+.qbox .choices{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
+.qbox .choices li{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;border-radius:8px;
+  background:rgba(63,169,245,0.05);border:1px solid var(--line-soft);font-size:16px;color:var(--txt);cursor:pointer;
+  transition:background 120ms,border-color 120ms;line-height:1.3}
+.qbox .choices li:hover{background:rgba(63,169,245,0.12)}
+.qbox .choices li .k{width:24px;height:24px;border-radius:6px;background:rgba(63,169,245,0.18);
+  color:var(--blue-2);display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0}
+.qbox.revealed .choices li[data-correct]{background:rgba(29,158,117,0.18);border-color:#1D9E75}
+.qbox.revealed .choices li[data-correct] .k{background:#1D9E75;color:#fff}
+.qbox.revealed .choices li[data-wrong]{opacity:0.55}
+.qbox .explain{display:none;font-size:15px;color:var(--blue-3);margin-top:12px;padding:10px 14px;
+  background:rgba(29,158,117,0.10);border-left:3px solid #1D9E75;border-radius:6px;line-height:1.4}
+.qbox.revealed .explain{display:block}
+.progress{position:fixed;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,0.04);z-index:50}
+.progress .fill{height:100%;background:linear-gradient(90deg,#3FA9F5,#D85A30);width:0;transition:width 200ms}
+.navhud{position:fixed;bottom:14px;right:18px;font-size:12px;letter-spacing:0.14em;
+  color:rgba(191,211,230,0.55);z-index:50;background:rgba(6,16,31,0.6);padding:8px 14px;border-radius:999px;
+  border:1px solid var(--line-soft);backdrop-filter:blur(6px)}
+.navhud b{color:var(--blue-2)}
+@media (max-aspect-ratio:16/9){.slide{transform:scale(calc(100vw/1920))}}
+@media (min-aspect-ratio:16/9){.slide{transform:scale(calc(100vh/1080))}}
+.divider-slide .body{align-items:center;justify-content:center;text-align:center}
+.divider-slide .modnum{font-size:24px;letter-spacing:0.40em;color:var(--blue-2);font-weight:600;margin-bottom:24px}
+.divider-slide h1.t{font-size:120px}
+.divider-slide .lede{margin:36px auto 0;text-align:center;font-size:32px}
+.proc{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.proc .step{background:rgba(13,38,70,0.50);border:1.5px solid var(--line-soft);border-radius:14px;padding:18px 22px;position:relative}
+.proc .step .sn{font-size:48px;font-weight:800;color:rgba(63,169,245,0.22);line-height:1;margin-bottom:4px}
+.proc .step h4{font-size:18px;font-weight:700;color:var(--blue-2);margin:0 0 8px}
+.proc .step p{font-size:15px;line-height:1.4;color:var(--txt);margin:0}
+.kw{color:#fff;font-weight:700}
+.code{font-family:'JetBrains Mono','SF Mono',monospace;color:var(--blue-2);background:rgba(63,169,245,0.10);
+  padding:1px 8px;border-radius:5px;font-size:0.92em}
+.tag-sm{display:inline-block;padding:2px 10px;border-radius:6px;font-size:13px;font-weight:700;letter-spacing:0.08em}
+.tag-sm.lh{background:var(--lh);color:#06101F}.tag-sm.oh1{background:var(--oh1);color:#06101F}
+.tag-sm.oh2{background:var(--oh2);color:#06101F}.tag-sm.eh1{background:var(--eh1);color:#06101F}
+.tag-sm.eh2{background:var(--eh2);color:#fff}
+.ex{background:linear-gradient(180deg,rgba(255,122,69,0.10) 0%,rgba(13,38,70,0.45) 100%);
+  border:1.5px solid rgba(255,122,69,0.45);border-radius:14px;padding:18px 22px;margin-top:14px}
+.ex h4{font-size:14px;letter-spacing:0.16em;color:#FFCDB6;text-transform:uppercase;margin:0 0 8px;font-weight:700}
+.ex p{font-size:18px;line-height:1.45;color:var(--txt);margin:0}
+.ex p b{color:#fff}
+.mnem{background:rgba(29,158,117,0.10);border:1.5px solid rgba(29,158,117,0.45);border-left:4px solid #1D9E75;
+  border-radius:12px;padding:14px 20px;margin-top:14px}
+.mnem b{color:#7AE9C0}
+.bignum{display:flex;align-items:center;gap:18px;padding:14px 20px;background:rgba(63,169,245,0.06);
+  border-radius:12px;border:1px solid var(--line-soft);margin-bottom:10px}
+.bignum .v{font-size:36px;font-weight:800;color:var(--blue-2);min-width:130px;line-height:1}
+.bignum .x{font-size:17px;color:var(--txt);line-height:1.3}
+.eqn{font-family:'JetBrains Mono','SF Mono',monospace;font-size:42px;color:#fff;text-align:center;
+  margin:14px 0;padding:16px;background:rgba(0,0,0,0.25);border-radius:10px;border:1px solid var(--line-soft)}
+</style>
+</head>
+<body>
+<div class="progress"><div class="fill" id="pfill"></div></div>
+<div class="navhud"><b id="curN">1</b> / 60 &nbsp;·&nbsp; <kbd>←</kbd> <kbd>→</kbd></div>
+<div class="stage">
+
+<!-- SLIDE 1 — TITLE -->
+<section class="slide active divider-slide" data-n="1">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">NFPA 13 — 2019 EDITION</span><span class="snum">SLIDE 01 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <div class="modnum">COMPLETE MASTERY COURSE</div>
+    <h1 class="t">Design Approaches<br><em>&amp; Plans &amp; Calculations</em></h1>
+    <div class="lede" style="margin-top:36px">Chapters <b style="color:#fff">19</b> &amp; <b style="color:#fff">27</b> — Beginner to Expert<br>Hydraulic math · Worked calculations · Real form sheets</div>
+    <div style="display:flex;gap:18px;justify-content:center;margin-top:48px;flex-wrap:wrap">
+      <span class="pill" style="font-size:18px;padding:14px 24px">Chapter 19: Design Approaches</span>
+      <span class="pill" style="font-size:18px;padding:14px 24px">Chapter 27: Plans &amp; Calculations</span>
+      <span class="pill" style="font-size:18px;padding:14px 24px;background:linear-gradient(180deg,rgba(255,122,69,0.18),rgba(216,90,48,0.14));border-color:rgba(255,122,69,0.55);color:#FFCDB6">6 Quizzes Included</span>
+      <span class="pill" style="font-size:18px;padding:14px 24px;background:rgba(255,255,255,0.04);border-color:rgba(191,211,230,0.30);color:#DCE7F2">60 Slides · 10 Modules</span>
+    </div>
+  </div>
+  <div class="ftr"><span>Navigate <kbd>←</kbd> <kbd>→</kbd> <kbd>Space</kbd> · Jump <kbd>1-9</kbd>+<kbd>Enter</kbd></span><span>NFPA 13 2019 Ed. | Chapters 19 &amp; 27</span></div>
+</section>
+
+<!-- SLIDE 2 — WHAT NFPA 13 IS -->
+<section class="slide" data-n="2">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 1 · FOUNDATIONS</span><span class="snum">SLIDE 02 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Why <em>Ch. 19 + Ch. 27</em> Together?</h1>
+    <div class="sub">Two chapters, one workflow: what water you need, and how you prove it</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>Chapter 19 — The "WHAT"</h3>
+        <p>Chapter 19 tells you the <b class="hi">water demand</b> the system must deliver:</p>
+        <ul class="clean" style="margin-top:8px">
+          <li>Which <b>design approach</b> (pipe schedule vs hydraulic)</li>
+          <li>Which <b>hazard class</b> (LH, OH1, OH2, EH1, EH2)</li>
+          <li>The required <b>density × area</b> on the curves</li>
+          <li>How much <b>hose stream</b> to add</li>
+          <li>For how <b>long</b> the supply must hold</li>
+        </ul>
+      </div>
+      <div class="card"><h3>Chapter 27 — The "HOW TO PROVE IT"</h3>
+        <p>Chapter 27 tells you how to <b class="hi">document and calculate</b>:</p>
+        <ul class="clean" style="margin-top:8px">
+          <li>The <b>47-item working plans</b> checklist (§27.1.3)</li>
+          <li>The <b>Hazen-Williams</b> friction calculation</li>
+          <li>The <b>1.2√A</b> design-area shape rule</li>
+          <li>The <b>4 required form sheets</b> for AHJ submittal</li>
+          <li>The <b>Q¹·⁸⁵ graph</b> proving supply &gt; demand</li>
+        </ul>
+      </div>
+    </div>
+    <div class="mnem"><b>Mental model:</b> Ch. 19 = "your project needs 800 gpm at 65 psi for 90 minutes." Ch. 27 = "here are the drawings, math, and forms that prove the water supply can deliver it."</div>
+  </div>
+  <div class="ftr"><span>Module 1 · Foundations</span><span>Ch. 19 + Ch. 27 workflow</span></div>
+</section>
+
+<!-- SLIDE 3 — SYSTEM ANATOMY -->
+<section class="slide" data-n="3">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 1 · ANATOMY</span><span class="snum">SLIDE 03 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">System <em>Anatomy</em></h1>
+    <div class="sub">Every calculation in Ch. 19 &amp; 27 refers to these components</div>
+    <div class="grid-2">
+      <div class="card" style="font-family:'JetBrains Mono',monospace;font-size:15px;background:rgba(0,0,0,0.30)">
+<pre style="margin:0;color:var(--txt);line-height:1.7;white-space:pre-wrap">                  ╔══════════════════╗
+                  ║   <b style="color:#5EBBFF">SPRINKLERS</b>     ║
+                  ╚════════╤═════════╝
+                           │ branch lines
+            ┌──────────────┼──────────────┐
+            │              │              │
+       ─────┴──────────────┴──────────────┴─────    <span style="color:#FFC25C">← Branch Lines</span>
+            │              │              │
+       ─────┼──────────────┼──────────────┼─────    <span style="color:#FFC25C">← Cross Main</span>
+                           │
+                           │
+                           │
+                       ╔═══╧════╗                   <span style="color:#FFC25C">← System Riser</span>
+                       ║ ALARM  ║
+                       ║ CHECK  ║
+                       ╚═══╤════╝
+                           │
+                       ╔═══╧════╗                   <span style="color:#FFC25C">← Control Valve</span>
+                       ╚═══╤════╝
+                           │
+                  ════════╧═══════════              <span style="color:#FFC25C">← Underground Lead-In</span>
+                           │
+                   <b style="color:#5EBBFF">CITY MAIN / TANK / PUMP</b>            <span style="color:#FFC25C">← Water Supply</span></pre>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>The 5 Hydraulic Reference Points</h3>
+          <ul class="clean">
+            <li><b>Water Supply</b> — source of all flow (city main, tank, pump)</li>
+            <li><b>System Riser</b> — vertical pipe up the building; "base of riser" is the standard reference</li>
+            <li><b>Cross Main</b> — horizontal pipe feeding the branch lines</li>
+            <li><b>Branch Lines</b> — smaller pipes that sprinklers thread onto</li>
+            <li><b>Sprinklers</b> — discharge devices, each protects a coverage area</li>
+          </ul>
+        </div>
+        <div class="card good"><h3>Why this matters</h3>
+          <p>Hydraulic calculations work <b class="hi">backward</b> — start at the most remote sprinkler, accumulate pressure losses through branch lines, cross main, and riser, end at the water supply. Knowing the component names is the bare minimum.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 1 · Foundations</span><span>System anatomy</span></div>
+</section>
+
+<!-- SLIDE 4 — K-FACTOR PRIMER -->
+<section class="slide" data-n="4">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 1 · K-FACTOR</span><span class="snum">SLIDE 04 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">K-Factor — <em>The Core Equation</em></h1>
+    <div class="sub">Every sprinkler discharge calculation starts here</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>The Formula</h3>
+        <div class="eqn">Q = K √P</div>
+        <ul class="clean">
+          <li><b>Q</b> = flow in gpm (gallons per minute)</li>
+          <li><b>K</b> = sprinkler discharge coefficient (the K-factor)</li>
+          <li><b>P</b> = pressure at the sprinkler in psi</li>
+        </ul>
+        <p style="margin-top:14px">Bigger K = more flow at the same pressure. K is determined by the sprinkler's orifice size and is on the sprinkler nameplate.</p>
+      </div>
+      <div class="card"><h3>K-Factor Cheat Sheet</h3>
+        <table class="data">
+          <thead><tr><th>K (US)</th><th>K (metric)</th><th>Typical Use</th></tr></thead>
+          <tbody>
+            <tr><td><b>K-5.6</b></td><td>K-80</td><td>Standard LH/OH ceiling — most common</td></tr>
+            <tr><td><b>K-8.0</b></td><td>K-115</td><td>OH2, light storage, residential</td></tr>
+            <tr><td><b>K-11.2</b></td><td>K-160</td><td>Storage, CMSA, EH</td></tr>
+            <tr><td><b>K-14.0</b></td><td>K-200</td><td>Storage, ESFR</td></tr>
+            <tr><td><b>K-16.8</b></td><td>K-240</td><td>ESFR, high-challenge storage</td></tr>
+            <tr><td><b>K-22.4 / 25.2</b></td><td>K-320 / K-360</td><td>Largest ESFR for tall storage</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="ex"><h4>Worked check</h4><p>A K-5.6 sprinkler at <b>7 psi</b> (the minimum operating pressure for most spray sprinklers) discharges: Q = 5.6 × √7 = 5.6 × 2.65 = <b>14.8 gpm</b>. At 50 psi: Q = 5.6 × √50 = <b>39.6 gpm</b>. Pressure quadruples → flow doubles.</p></div>
+  </div>
+  <div class="ftr"><span>Module 1 · Foundations</span><span>K-factor primer</span></div>
+</section>
+
+<!-- SLIDE 5 — PRE-COURSE SELF CHECK -->
+<section class="slide" data-n="5">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 1 · SELF-CHECK</span><span class="snum">SLIDE 05 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Pre-Course <em>Self-Check</em></h1>
+    <div class="sub">5 questions. Click any choice to reveal the answer.</div>
+    <div class="quiz-grid">
+      <div class="qbox"><div class="qn">Q1</div><div class="qt">Without looking: when is pipe schedule design NOT permitted in NFPA 13?</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>For any new Light Hazard system</li><li data-key="B"><span class="k">B</span>For new Extra Hazard systems</li><li data-key="C"><span class="k">C</span>For systems &lt; 5,000 ft²</li><li data-key="D"><span class="k">D</span>For Ordinary Hazard Group 1</li></ul>
+        <div class="explain"><b>B — §19.3.2.</b> New EH systems must be hydraulically calculated. Additions to <em>existing</em> EH pipe-schedule systems are the only EH exception.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q2</div><div class="qt">Q = K √P. For a K-5.6 sprinkler at 7 psi:</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>~7 gpm</li><li data-key="B"><span class="k">B</span>~10 gpm</li><li data-key="C"><span class="k">C</span>~14.8 gpm</li><li data-key="D"><span class="k">D</span>~25 gpm</li></ul>
+        <div class="explain"><b>C — 14.8 gpm.</b> Q = 5.6 × √7 ≈ 14.8. The minimum-operating-pressure value worth memorizing.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q3</div><div class="qt">The design-area shape rule L ≥ 1.2 √A defines:</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>Maximum sprinkler spacing</li><li data-key="B"><span class="k">B</span>Minimum dimension parallel to branch lines</li><li data-key="C"><span class="k">C</span>Allowable pipe schedule pipe count</li><li data-key="D"><span class="k">D</span>Hose stream allowance</li></ul>
+        <div class="explain"><b>B — §27.2.4.2.1.</b> The design-area rectangle must have one side (along branch lines) ≥ 1.2√A. Worst-case branch loading.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q4</div><div class="qt">Hazen-Williams C-value for black steel wet-pipe system:</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>100</li><li data-key="B"><span class="k">B</span>110</li><li data-key="C"><span class="k">C</span>120</li><li data-key="D"><span class="k">D</span>150</li></ul>
+        <div class="explain"><b>C — 120.</b> Table 27.2.4.8.1. Dry systems drop to 100. Copper and listed plastic = 150.</div>
+      </div>
+    </div>
+    <div class="mnem"><b>Scoring:</b> 4/4 → skim Modules 2–4. 2–3 → standard pace. 0–1 → take it slow; the math compounds quickly if you skip foundations.</div>
+  </div>
+  <div class="ftr"><span>Module 1 · Foundations</span><span>Pre-course self-check</span></div>
+</section>
+
+<!-- SLIDE 6 — PIPE SCHEDULE VS HYDRAULIC -->
+<section class="slide" data-n="6">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §19.3.1.1</span><span class="snum">SLIDE 06 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Two Ways to <em>Size a System</em></h1>
+    <div class="sub">Pipe Schedule vs Hydraulic — Chapter 19 sets the rules</div>
+    <div class="grid-2">
+      <div class="card good"><h3>Method 1 — Pipe Schedule</h3>
+        <p>Pipe sizes are <b class="hi">selected from a lookup table</b> based on the number of sprinklers each pipe must feed. No flow or pressure calculation required.</p>
+        <ul class="clean" style="margin-top:14px">
+          <li>Simpler — count sprinklers, look up pipe size</li>
+          <li>Limited to <b>LH and OH</b> (and additions to existing EH)</li>
+          <li>Often <b>oversized</b> compared to hydraulic</li>
+          <li>Tables: <b>27.5.2.2.1</b> (LH steel) and <b>27.5.3.4</b> (OH steel)</li>
+        </ul>
+        <p style="margin-top:12px;color:var(--blue-3)">→ §19.3.2, §27.5 — limited to LH/OH</p>
+      </div>
+      <div class="card warn"><h3>Method 2 — Hydraulic Calculation</h3>
+        <p>Every pipe section is <b class="hi">sized by calculating actual flow and pressure loss</b> from the most remote sprinkler back to the water supply.</p>
+        <ul class="clean" style="margin-top:14px">
+          <li>Rigorous — uses Hazen-Williams + elevation + fittings</li>
+          <li><b>Required</b> for EH, K-factors other than nominal 5.6, and unlisted piping materials</li>
+          <li>Optimizes pipe size — often cheaper construction</li>
+          <li>Generates the formal <b>4-sheet calc package</b> for AHJ</li>
+        </ul>
+        <p style="margin-top:12px;color:#FFCDB6">→ §19.3.3, §27.2 — required for EH and most modern designs</p>
+      </div>
+    </div>
+    <div class="mnem"><b>§19.3.1.1 — the supersession rule:</b> A hydraulically calculated system <b>supersedes the pipe schedule rules</b> in Chapter 27. Once you go hydraulic, you are no longer bound by the schedule limits.</div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 19</span><span>Pipe schedule vs hydraulic</span></div>
+</section>
+
+<!-- SLIDE 7 — LIGHT HAZARD -->
+<section class="slide" data-n="7">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §19.3.1.2.4(1) LH</span><span class="snum">SLIDE 07 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">§19.3.1.2 — <em>Light Hazard</em></h1>
+    <div class="sub"><span class="tag-sm lh">LH</span> &nbsp; Lowest density tier — slow-developing fires, low fuel load</div>
+    <div class="grid-2">
+      <div class="card"><h3>Definition</h3>
+        <p>Quantity and/or combustibility of contents is <b class="hi">low</b>. Fires with relatively <b class="hi">low rates of heat release</b> are expected.</p>
+        <h3 style="margin-top:18px">Typical Occupancies</h3>
+        <ul class="clean">
+          <li>Offices, business spaces</li>
+          <li>Churches, schools (classroom areas)</li>
+          <li>Hospitals, nursing homes (patient areas)</li>
+          <li>Museums, libraries (reading areas)</li>
+          <li>Residential — limited unprotected areas</li>
+        </ul>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>Density / Area Design Point</h3>
+          <div style="display:flex;gap:18px;margin-top:8px">
+            <div class="kstat"><div class="n">0.10</div><div class="l">gpm/ft²</div></div>
+            <div class="kstat"><div class="n">1,500</div><div class="l">ft² min area</div></div>
+            <div class="kstat"><div class="n">30</div><div class="l">min duration</div></div>
+          </div>
+          <p style="margin-top:14px;font-size:18px;color:var(--txt-dim)">Curve runs 0.10 gpm/ft² at 1,500 ft² down to 0.07 at 3,000 ft² (Fig. 19.3.3.1.1).</p>
+        </div>
+        <div class="card good"><h3>Hose &amp; Duration (Table 19.3.3.1.2)</h3>
+          <ul class="clean">
+            <li>Inside hose: 0, 50, or 100 gpm</li>
+            <li>Total inside + outside hose: <b>100 gpm</b></li>
+            <li>Supply duration: <b>30 minutes</b></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 19</span><span>§19.3.1.2.4(1) Light Hazard</span></div>
+</section>
+
+<!-- SLIDE 8 — OH1 -->
+<section class="slide" data-n="8">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §19.3.1.2.4(2) OH1</span><span class="snum">SLIDE 08 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">§19.3 — <em>Ordinary Hazard Gp 1</em></h1>
+    <div class="sub"><span class="tag-sm oh1">OH1</span> &nbsp; Low-to-moderate combustibility, moderate fuel, stockpiles ≤ 8 ft</div>
+    <div class="grid-2">
+      <div class="card"><h3>Typical Occupancies</h3>
+        <ul class="clean">
+          <li>Automobile parking garages &amp; showrooms</li>
+          <li>Bakeries, beverage manufacturing</li>
+          <li>Canneries, dairy products</li>
+          <li>Electronic plants, glass manufacturing</li>
+          <li>Laundries, restaurants (service areas)</li>
+        </ul>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>Density / Area Design Point</h3>
+          <div style="display:flex;gap:18px;margin-top:8px">
+            <div class="kstat"><div class="n">0.15</div><div class="l">gpm/ft²</div></div>
+            <div class="kstat"><div class="n">1,500</div><div class="l">ft² min area</div></div>
+            <div class="kstat"><div class="n">60-90</div><div class="l">min duration</div></div>
+          </div>
+          <p style="margin-top:14px;font-size:18px;color:var(--txt-dim)">Curve runs 0.15 at 1,500 ft² → 0.10 at 3,900 ft². Hose 250 gpm total.</p>
+        </div>
+      </div>
+    </div>
+    <div class="card warn" style="margin-top:14px"><h3>The 8-ft Stockpile Note</h3>
+      <p>"Stockpiles ≤ 8 ft" is part of the OH1 occupancy definition — it's a characteristic of OH1 occupancies, not a separate rule. Storage above misc-storage thresholds (Ch. 4 §4.3.1) goes to <b class="hi">Chapter 20</b>, not §19.3.</p>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 19</span><span>§19.3.1.2.4(2) OH1</span></div>
+</section>
+
+<!-- SLIDE 9 — OH2 -->
+<section class="slide" data-n="9">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §19.3.1.2.4(2) OH2</span><span class="snum">SLIDE 09 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">§19.3 — <em>Ordinary Hazard Gp 2</em></h1>
+    <div class="sub"><span class="tag-sm oh2">OH2</span> &nbsp; Moderate-to-high quantity &amp; combustibility, stockpiles ≤ 12 ft</div>
+    <div class="grid-2">
+      <div class="card"><h3>Typical Occupancies</h3>
+        <ul class="clean">
+          <li>Cereal mills, chemical plants (ordinary)</li>
+          <li>Confectionery manufacturing</li>
+          <li>Dry cleaners, feed mills, leather goods</li>
+          <li>Machine shops, metal working</li>
+          <li>Paper / pulp / publishing operations</li>
+          <li>Repair garages, stages, textiles</li>
+          <li>Wood-machining, wood-product assembly</li>
+        </ul>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>Density / Area Design Point</h3>
+          <div style="display:flex;gap:18px;margin-top:8px">
+            <div class="kstat"><div class="n">0.20</div><div class="l">gpm/ft²</div></div>
+            <div class="kstat"><div class="n">1,500</div><div class="l">ft² min area</div></div>
+            <div class="kstat"><div class="n">60-90</div><div class="l">min duration</div></div>
+          </div>
+          <p style="margin-top:14px;font-size:18px;color:var(--txt-dim)">Curve runs 0.20 at 1,500 ft² → 0.15 at 3,900 ft². Hose 250 gpm.</p>
+        </div>
+        <div class="mnem"><b>OH1 vs OH2 quick rule:</b> If you can SEE how the fire would spread (cardboard, paper, wood, packaging) and there's a LOT of it → OH2. If it's mostly metal/glass with packaging incidental → OH1.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 19</span><span>§19.3.1.2.4(2) OH2</span></div>
+</section>
+
+<!-- SLIDE 10 — EH1 -->
+<section class="slide" data-n="10">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §19.3.1.2.4(3) EH1</span><span class="snum">SLIDE 10 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t orange">§19.3 — <em>Extra Hazard Gp 1</em></h1>
+    <div class="sub"><span class="tag-sm eh1">EH1</span> &nbsp; Very high combustibility, rapid HRR — no flammable liquids</div>
+    <div class="grid-2">
+      <div class="card"><h3>Typical Occupancies</h3>
+        <ul class="clean">
+          <li>Aircraft hangars (excl. fueling areas)</li>
+          <li>Combustible hydraulic fluid use areas</li>
+          <li>Die casting, metal extruding</li>
+          <li>Plywood and particleboard manufacturing</li>
+          <li>Printing (heatset web offset)</li>
+          <li>Rubber reclaiming, compounding, drying</li>
+          <li>Sawmills, textile picking/opening</li>
+          <li>Upholstering with plastic foams</li>
+        </ul>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>Density / Area Design Point</h3>
+          <div style="display:flex;gap:18px;margin-top:8px">
+            <div class="kstat" style="background:rgba(255,122,69,0.10);border-color:rgba(255,122,69,0.45)"><div class="n" style="color:#FFCDB6">0.30</div><div class="l">gpm/ft²</div></div>
+            <div class="kstat" style="background:rgba(255,122,69,0.10);border-color:rgba(255,122,69,0.45)"><div class="n" style="color:#FFCDB6">2,500</div><div class="l">ft² min area</div></div>
+            <div class="kstat" style="background:rgba(255,122,69,0.10);border-color:rgba(255,122,69,0.45)"><div class="n" style="color:#FFCDB6">90-120</div><div class="l">min duration</div></div>
+          </div>
+          <p style="margin-top:14px;font-size:18px;color:var(--txt-dim)">Curve 0.30 at 2,500 ft² → 0.20 at 5,000 ft². Hose 500 gpm.</p>
+        </div>
+        <div class="card warn"><h3>Always Hydraulic</h3>
+          <p>EH1 systems <b class="hi">cannot use pipe schedule</b>. Hydraulic calculation is required regardless of size (§19.3.2). Pipe-schedule additions only allowed for <em>existing</em> EH schedule systems.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 19</span><span>§19.3.1.2.4(3) EH1</span></div>
+</section>
+
+<!-- SLIDE 11 — EH2 -->
+<section class="slide" data-n="11">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §19.3.1.2.4(3) EH2</span><span class="snum">SLIDE 11 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t orange">§19.3 — <em>Extra Hazard Gp 2</em></h1>
+    <div class="sub"><span class="tag-sm eh2">EH2</span> &nbsp; Flammable/combustible liquids OR extensive shielding</div>
+    <div class="grid-2">
+      <div class="card"><h3>Typical Occupancies</h3>
+        <ul class="clean">
+          <li>Asphalt saturating</li>
+          <li>Flammable liquids spraying</li>
+          <li>Flow coating</li>
+          <li>Manufactured-home / modular assembly with combustible interiors</li>
+          <li>Open oil quenching</li>
+          <li>Plastics processing</li>
+          <li>Solvent cleaning</li>
+          <li>Varnish &amp; paint dipping</li>
+        </ul>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>Density / Area Design Point</h3>
+          <div style="display:flex;gap:18px;margin-top:8px">
+            <div class="kstat" style="background:rgba(255,122,69,0.10);border-color:rgba(255,122,69,0.45)"><div class="n" style="color:#FFCDB6">0.40</div><div class="l">gpm/ft²</div></div>
+            <div class="kstat" style="background:rgba(255,122,69,0.10);border-color:rgba(255,122,69,0.45)"><div class="n" style="color:#FFCDB6">2,500</div><div class="l">ft² min area</div></div>
+            <div class="kstat" style="background:rgba(255,122,69,0.10);border-color:rgba(255,122,69,0.45)"><div class="n" style="color:#FFCDB6">90-120</div><div class="l">min duration</div></div>
+          </div>
+          <p style="margin-top:14px;font-size:18px;color:var(--txt-dim)">Curve 0.40 at 2,500 ft² → 0.30 at 5,000 ft². Hose 500 gpm.</p>
+        </div>
+        <div class="card warn"><h3>Shielding Trigger</h3>
+          <p>EH2 isn't only flammable liquids. <b class="hi">Extensive shielding</b> of combustibles (conveyors, overhead racks blocking spray) also drives the hazard up. When spray can't reach the fuel, density alone won't help.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 19</span><span>§19.3.1.2.4(3) EH2</span></div>
+</section>
+
+<!-- SLIDE 12 — WHEN PIPE SCHEDULE IS ALLOWED -->
+<section class="slide" data-n="12">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §19.3.2</span><span class="snum">SLIDE 12 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">When Pipe Schedule <em>is Allowed</em></h1>
+    <div class="sub">§19.3.2.3 — Three permitted use cases, and one big "no"</div>
+    <div class="grid-2">
+      <div class="card good"><h3>§19.3.2.3 — Permitted Uses</h3>
+        <ol class="num" style="margin-top:6px">
+          <li><b class="hi">Light and Ordinary Hazard</b> occupancies — using pipe sizes from §27.5</li>
+          <li>Additions or modifications to <b class="hi">existing</b> Extra Hazard pipe-schedule systems</li>
+          <li>New systems of <b class="hi">5,000 ft²</b> (465 m²) or less</li>
+        </ol>
+        <p style="margin-top:14px;color:var(--blue-3)">Most LH/OH offices and retail spaces qualify for pipe schedule. It's the legacy path.</p>
+      </div>
+      <div class="card warn"><h3>§27.5.1.2 — Pipe Schedule DOES NOT Apply When…</h3>
+        <ul class="clean">
+          <li>Extra Hazard Groups 1 &amp; 2 (new systems)</li>
+          <li>K-factors <b>other than nominal 5.6</b></li>
+          <li>Listed piping material not in Table 7.3.1.1</li>
+          <li>Antifreeze systems (separate hydraulic requirements)</li>
+          <li>Foam-water sprinkler systems</li>
+        </ul>
+        <p style="margin-top:10px;color:#FFCDB6">Any of these → hydraulic calc required.</p>
+      </div>
+    </div>
+    <div class="mnem"><b>In practice today:</b> Most new designs are hydraulic anyway — software makes it cheap, and the resulting pipe is smaller (less material, easier install). Pipe schedule lives mostly in small LH retrofits and tenant fit-outs.</div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 19</span><span>§19.3.2.3 When pipe schedule is allowed</span></div>
+</section>
+
+<!-- SLIDE 13 — WATER DEMAND FUNDAMENTALS -->
+<section class="slide" data-n="13">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · §19.2 / Table 19.3.2.1</span><span class="snum">SLIDE 13 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Water Demand <em>Fundamentals</em></h1>
+    <div class="sub">Three components: flow + hose, at sufficient pressure, for a minimum duration</div>
+    <div class="card" style="padding:18px 22px"><h3>Table 19.3.2.1 — Pipe Schedule Systems</h3>
+      <table class="data" style="margin-top:6px">
+        <thead><tr><th>Occupancy</th><th>Min Residual Pressure</th><th>Flow @ Base of Riser (incl. hose)</th><th>Duration (min)</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag-sm lh">LH</span> Light Hazard</td><td><b>15 psi</b> (1 bar)</td><td>500–750 gpm (1,900–2,850 L/min)</td><td>30–60</td></tr>
+          <tr><td><span class="tag-sm oh1">OH1</span><span class="tag-sm oh2" style="margin-left:6px">OH2</span> Ordinary Hazard</td><td><b>20 psi</b> (1.4 bar)</td><td>850–1,500 gpm (3,200–5,700 L/min)</td><td>60–90</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:10px;font-size:18px;color:var(--txt-dim)">EH not shown because EH cannot use pipe schedule. For hydraulic, duration follows Table 19.3.3.1.2.</p>
+    </div>
+    <div class="grid-2" style="margin-top:14px">
+      <div class="card good"><h3>§19.3.2.5 — Lower Duration Rule</h3>
+        <p>The shorter duration in Table 19.3.2.1 is permitted <b class="hi">ONLY when</b> the waterflow alarm AND supervisory devices are electrically supervised and monitored at a <b class="hi">constantly attended location</b>.</p>
+        <p style="margin-top:8px;color:var(--blue-3)">Translation: 24/7 monitored alarm → 30 min OK; not monitored → 60 min.</p>
+      </div>
+      <div class="card accent"><h3>§19.2.5.1 — Supply Duration</h3>
+        <p>The minimum water supply <b class="hi">must remain available</b> for the FULL duration specified — at the demand flow.</p>
+        <p style="margin-top:8px">This applies equally to <b>tanks, pumps, and city supplies</b>. A 30,000-gallon tank lasts 30 minutes at 1,000 gpm — not 60.</p>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 19</span><span>Water demand fundamentals</span></div>
+</section>
+
+<!-- SLIDE 14 — QUIZ 1 -->
+<section class="slide" data-n="14">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 2 · QUIZ 1</span><span class="snum">SLIDE 14 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Quiz 1 — <em>Approaches &amp; Hazards</em></h1>
+    <div class="sub">Click any choice for instant feedback</div>
+    <div class="quiz-grid">
+      <div class="qbox"><div class="qn">Q1 — Recall</div><div class="qt">Light Hazard density/area design point is:</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>0.07 gpm/ft² over 1,500 ft²</li><li data-key="B"><span class="k">B</span>0.10 gpm/ft² over 1,500 ft²</li><li data-key="C"><span class="k">C</span>0.15 gpm/ft² over 1,500 ft²</li><li data-key="D"><span class="k">D</span>0.10 gpm/ft² over 3,000 ft²</li></ul>
+        <div class="explain"><b>B — §19.3.3.1.</b> Light Hazard starts at 0.10 gpm/ft² over 1,500 ft² and the curve decreases to 0.07 at 3,000 ft².</div>
+      </div>
+      <div class="qbox"><div class="qn">Q2 — Concept</div><div class="qt">Per §19.3.1.1, when a system is hydraulically calculated:</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>Pipe schedule rules still apply as a backup</li><li data-key="B"><span class="k">B</span>Hydraulic calc supersedes pipe schedule rules</li><li data-key="C"><span class="k">C</span>Both must be shown on drawings</li><li data-key="D"><span class="k">D</span>The AHJ chooses which to use</li></ul>
+        <div class="explain"><b>B.</b> Hydraulic supersedes. Once you calc the pipe sizes by flow and pressure, you're not bound by the schedule tables.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q3 — Application</div><div class="qt">A new 4,800 ft² Extra Hazard system. May it use pipe schedule?</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>Yes — under 5,000 ft² exemption</li><li data-key="B"><span class="k">B</span>No — new EH always requires hydraulic</li><li data-key="C"><span class="k">C</span>Yes — if AHJ approves</li><li data-key="D"><span class="k">D</span>Only if K-5.6 sprinklers are used</li></ul>
+        <div class="explain"><b>B — §19.3.2.</b> The 5,000 ft² allowance applies to LH/OH. New EH systems always require hydraulic calc, regardless of size.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q4 — Recall</div><div class="qt">Pipe schedule LH duration of 30 minutes (instead of 60) is permitted only when:</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>Building is &lt; 3 stories</li><li data-key="B"><span class="k">B</span>City main is on the same block</li><li data-key="C"><span class="k">C</span>Waterflow + supervisory devices monitored at attended location</li><li data-key="D"><span class="k">D</span>The system uses K-5.6 sprinklers</li></ul>
+        <div class="explain"><b>C — §19.3.2.5.</b> 24/7 monitored alarm + supervisory unlocks the shorter duration. Otherwise 60 min.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 2 · Ch. 19</span><span>Quiz 1 — Approaches &amp; Hazards</span></div>
+</section>
+
+<!-- SLIDE 15 — DENSITY/AREA CURVE CONCEPT -->
+<section class="slide" data-n="15">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 3 · §19.3.3.1</span><span class="snum">SLIDE 15 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Density / Area <em>Curve Concept</em></h1>
+    <div class="sub">Figure 19.3.3.1.1 — Trading water intensity for area coverage</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>What the Curve Does</h3>
+        <p>Each hazard tier has a <b class="hi">downward-sloping curve</b> on the density (gpm/ft²) vs area (ft²) chart.</p>
+        <ul class="clean" style="margin-top:14px">
+          <li>Higher density → smaller area must be calculated</li>
+          <li>Lower density → larger area must be calculated</li>
+          <li>The total <b>flow demand</b> from sprinklers stays roughly equivalent across the curve</li>
+        </ul>
+        <p style="margin-top:14px">The design just needs to land on <b class="hi">any single point</b> on the curve (§19.3.3.2.1.2).</p>
+      </div>
+      <div class="card"><h3>Curve Endpoints (Typical Starting Values)</h3>
+        <table class="data" style="font-size:17px">
+          <thead><tr><th>Hazard</th><th>Density start</th><th>Min area</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tag-sm lh">LH</span></td><td>0.10 gpm/ft²</td><td>1,500 ft²</td></tr>
+            <tr><td><span class="tag-sm oh1">OH1</span></td><td>0.15 gpm/ft²</td><td>1,500 ft²</td></tr>
+            <tr><td><span class="tag-sm oh2">OH2</span></td><td>0.20 gpm/ft²</td><td>1,500 ft²</td></tr>
+            <tr><td><span class="tag-sm eh1">EH1</span></td><td>0.30 gpm/ft²</td><td>2,500 ft²</td></tr>
+            <tr><td><span class="tag-sm eh2">EH2</span></td><td>0.40 gpm/ft²</td><td>2,500 ft²</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:10px;color:var(--orange-3);font-size:18px">EH minimums jump to 2,500 ft² — bigger fires need more sprinklers operating.</p>
+      </div>
+    </div>
+    <div class="mnem"><b>Why a curve, not a single point?</b> Lower density over a larger area protects against an undetected fire that spreads. Higher density over a smaller area protects against a fast-growing fire that's caught quickly. The curve gives the designer flexibility — pick what fits the building.</div>
+  </div>
+  <div class="ftr"><span>Module 3 · Ch. 19</span><span>Density/area curve concept</span></div>
+</section>
+
+<!-- SLIDE 16 — READING THE CURVE WORKED -->
+<section class="slide" data-n="16">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 3 · WORKED CURVE</span><span class="snum">SLIDE 16 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Reading the Curve — <em>Worked Example</em></h1>
+    <div class="sub">An OH2 design — same building, two valid points</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>Option A — High Density, Smaller Area</h3>
+        <ul class="clean">
+          <li>Density: <b>0.20 gpm/ft²</b></li>
+          <li>Area: <b>1,500 ft²</b> (minimum)</li>
+          <li>Total flow: 0.20 × 1,500 = <b>300 gpm</b> (sprinklers only)</li>
+          <li>Sprinklers covering 130 ft² each → <b>~12 sprinklers</b></li>
+        </ul>
+        <p style="margin-top:10px;color:var(--blue-3)">Best when ceiling is low and detection is fast.</p>
+      </div>
+      <div class="card"><h3>Option B — Lower Density, Larger Area</h3>
+        <ul class="clean">
+          <li>Density: <b>0.15 gpm/ft²</b></li>
+          <li>Area: <b>3,900 ft²</b> (the curve endpoint for OH2)</li>
+          <li>Total flow: 0.15 × 3,900 = <b>585 gpm</b> (sprinklers only)</li>
+          <li>Sprinklers covering 130 ft² each → <b>~30 sprinklers</b></li>
+        </ul>
+        <p style="margin-top:10px;color:var(--orange-3)">Lower density per sprinkler but many more sprinklers.</p>
+      </div>
+    </div>
+    <div class="card warn" style="margin-top:14px"><h3>The Trade-off</h3>
+      <p>Option A: 12 sprinklers at higher pressure, smaller pipes, lower total demand. <b>Usually wins on cost.</b><br>
+      Option B: 30 sprinklers at lower pressure each, bigger pipes, higher total demand. Useful when ceiling is high or pipe pressure is limited.<br>
+      <span class="kw">Both satisfy §19.3.3.2.1.2</span> — you only need ONE valid point on the curve.</p>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 3 · Ch. 19</span><span>Reading the density/area curve</span></div>
+</section>
+
+<!-- SLIDE 17 — SINGLE POINT RULE -->
+<section class="slide" data-n="17">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 3 · §19.3.3.2.1.2</span><span class="snum">SLIDE 17 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">The <em>Single-Point Rule</em></h1>
+    <div class="sub">§19.3.3.2.1.2 — You don't have to satisfy every point on the curve</div>
+    <div class="grid-2-1">
+      <div class="card accent"><h3>The Rule</h3>
+        <p>"The calculation must satisfy <b class="hi">any single point</b> on the appropriate curve. It is not required to meet every point simultaneously."</p>
+        <p style="margin-top:14px">This is one of the most-misunderstood concepts in NFPA 13.</p>
+        <h3 style="margin-top:18px">What It Means Practically</h3>
+        <ul class="clean">
+          <li>You pick the design density (your choice within the curve)</li>
+          <li>You pick the design area (your choice within the curve)</li>
+          <li>The COMBINATION you picked must land <b>on or above</b> the curve</li>
+          <li>You don't have to prove water for a different density/area combo</li>
+        </ul>
+      </div>
+      <div class="stack">
+        <div class="card"><h3>Why It Matters</h3>
+          <p>A reviewer who insists "your 0.20 density doesn't satisfy what 0.15 over 3,900 would need" is misreading the code. Either combo is valid.</p>
+        </div>
+        <div class="card warn"><h3>The Catch</h3>
+          <p>Choosing the EASIEST point doesn't mean choosing the CHEAPEST. Run both density/area extremes if pipe sizing is borderline. Sometimes a higher density saves pipe.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 3 · Ch. 19</span><span>§19.3.3.2.1.2 Single-point rule</span></div>
+</section>
+
+<!-- SLIDE 18 — MIN AREAS -->
+<section class="slide" data-n="18">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 3 · §19.3.3.1.4</span><span class="snum">SLIDE 18 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t"><em>Minimum Areas</em> Rule</h1>
+    <div class="sub">§19.3.3.1.4 — Floor of the curve</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>The Two Floors</h3>
+        <p>The density/area curve cannot drop below certain minimum areas — even if higher density would mathematically support it.</p>
+        <div style="display:flex;gap:18px;margin-top:14px;justify-content:center">
+          <div class="kstat"><div class="n">1,500</div><div class="l">ft² min · LH &amp; OH</div></div>
+          <div class="kstat" style="background:rgba(255,122,69,0.10);border-color:rgba(255,122,69,0.45)"><div class="n" style="color:#FFCDB6">2,500</div><div class="l">ft² min · EH 1 &amp; 2</div></div>
+        </div>
+      </div>
+      <div class="card"><h3>Why the Floor Exists</h3>
+        <p>Fires don't politely stay in the area you calculated. The minimum area requires the system to handle a credible fire that could grow beyond a few sprinklers.</p>
+        <p style="margin-top:14px">EH minimums are higher because:</p>
+        <ul class="clean" style="margin-top:6px">
+          <li>EH fires <b>grow faster</b></li>
+          <li>More sprinklers will operate before control is achieved</li>
+          <li>2,500 ft² ≈ <b>16 to 20 sprinklers</b> at typical 130 ft² coverage</li>
+        </ul>
+      </div>
+    </div>
+    <div class="ex"><h4>Counter-example</h4><p>You CAN'T design an OH2 system at 0.30 gpm/ft² over 1,000 ft². The math says 300 gpm total — same as 0.20 × 1,500. But §19.3.3.1.4 says the area can't drop below 1,500 ft². The rule isn't about flow, it's about <b>credible fire size</b>.</p></div>
+  </div>
+  <div class="ftr"><span>Module 3 · Ch. 19</span><span>§19.3.3.1.4 Minimum areas</span></div>
+</section>
+
+<!-- SLIDE 19 — QR REDUCTION -->
+<section class="slide" data-n="19">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 3 · §19.3.3.2.3</span><span class="snum">SLIDE 19 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Quick-Response <em>Sprinkler Reduction</em></h1>
+    <div class="sub">§19.3.3.2.3 — Faster-acting sprinklers earn smaller design areas</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>All 4 Conditions Required (§19.3.3.2.3.1)</h3>
+        <ol class="num" style="margin-top:6px">
+          <li><b class="hi">Wet pipe</b> system only</li>
+          <li><b class="hi">Light or Ordinary Hazard</b> occupancy</li>
+          <li>Maximum ceiling height <b class="hi">20 ft</b> (6.1 m)</li>
+          <li><b class="hi">QR sprinklers throughout</b> the system (or portion with same hydraulic basis)</li>
+        </ol>
+        <p style="margin-top:10px;color:#FFCDB6">Miss any one — no reduction allowed.</p>
+      </div>
+      <div class="card"><h3>The Reduction Formula</h3>
+        <div class="eqn" style="font-size:32px">y = −3x + 55</div>
+        <p style="font-size:18px;text-align:center;color:var(--txt-dim)">where x = ceiling height (ft), y = % reduction</p>
+        <table class="data" style="margin-top:14px">
+          <thead><tr><th>Ceiling</th><th>Reduction</th></tr></thead>
+          <tbody>
+            <tr><td>&lt; 10 ft</td><td><b>40%</b> (flat cap per §19.3.3.2.3.1)</td></tr>
+            <tr><td>10 ft</td><td>25%</td></tr>
+            <tr><td>15 ft</td><td>10%</td></tr>
+            <tr><td>18 ft</td><td>1%</td></tr>
+            <tr><td>≥ 20 ft</td><td><b>0%</b> (no reduction)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="mnem"><b>Why QR earns it:</b> Quick-response sprinklers activate sooner, so fewer sprinklers will likely open before the fire is controlled. The reduced design area reflects that statistical reality.</div>
+  </div>
+  <div class="ftr"><span>Module 3 · Ch. 19</span><span>§19.3.3.2.3 QR reduction</span></div>
+</section>
+
+<!-- SLIDE 20 — DRY PIPE INCREASE -->
+<section class="slide" data-n="20">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 3 · §19.3.3.2.5</span><span class="snum">SLIDE 20 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Dry Pipe <em>Area Increase</em></h1>
+    <div class="sub">§19.3.3.2.5 — Dry systems get penalized; here's why</div>
+    <div class="grid-2">
+      <div class="card warn"><h3>The Rule</h3>
+        <p>For <b class="hi">dry pipe and double-interlock preaction systems</b>, the design area shall be <b class="hi">increased by 30%</b>, without revising the density.</p>
+        <p style="margin-top:14px;color:#FFCDB6">No exceptions for size or hazard — if it's dry or double-interlock, the area goes up.</p>
+      </div>
+      <div class="card"><h3>Why the Penalty</h3>
+        <p>Between sprinkler activation and water arrival, a dry system has a <b class="hi">delay</b> while air is exhausted. During that delay:</p>
+        <ul class="clean" style="margin-top:8px">
+          <li>More sprinklers operate from heat</li>
+          <li>Fire spreads to nearby sprinklers</li>
+          <li>The effective "design area" enlarges</li>
+        </ul>
+        <p style="margin-top:14px">30% increase is the NFPA estimate of that effective enlargement.</p>
+      </div>
+    </div>
+    <div class="ex"><h4>Worked numbers</h4><p>OH2 wet-pipe design: 0.20 gpm/ft² over 1,500 ft² = 300 gpm sprinkler demand.<br>Same OH2 as DRY pipe: 0.20 gpm/ft² over <b>1,500 × 1.30 = 1,950 ft²</b> = <b>390 gpm</b> sprinkler demand. <b style="color:#FFCDB6">30% more water needed</b> just because the system is dry.</p></div>
+    <div class="mnem"><b>Design implication:</b> If you can use wet pipe (heated building, no freeze risk), do it. The 30% area penalty on dry pipe ripples through pipe sizing, water supply, and pump sizing.</div>
+  </div>
+  <div class="ftr"><span>Module 3 · Ch. 19</span><span>§19.3.3.2.5 Dry pipe area increase</span></div>
+</section>
+
+<!-- SLIDE 21 — HIGH-TEMP REDUCTION -->
+<section class="slide" data-n="21">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 3 · §19.3.3.2.4</span><span class="snum">SLIDE 21 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">High-Temp <em>Sprinkler Reduction</em></h1>
+    <div class="sub">§19.3.3.2.4 — High-temperature sprinklers earn a smaller design area in EH</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>The Rule</h3>
+        <p>In <b class="hi">Extra Hazard</b> occupancies, when high-temperature sprinklers are used, the design area may be reduced by <b class="hi">25%</b>.</p>
+        <p style="margin-top:14px">Floor: the reduced area shall not be less than <b class="hi">2,000 ft²</b>.</p>
+        <p style="margin-top:14px;color:var(--blue-3)">Only applies to EH — not LH/OH.</p>
+      </div>
+      <div class="card"><h3>Why High-Temp Earns It</h3>
+        <p>High-temperature sprinklers (286°F vs the standard 165°F) <b class="hi">resist opening</b> from heat — so fewer sprinklers operate around the fire's edges before the design area is reached.</p>
+        <p style="margin-top:14px">The trade-off: a slightly slower response, but more sprinklers stay closed to deliver flow where it counts.</p>
+      </div>
+    </div>
+    <div class="ex"><h4>Stacking with dry pipe</h4><p>EH1 dry pipe with high-temp: start at 2,500 ft² base → ×1.30 (dry) = 3,250 ft² → ×0.75 (high-temp) = <b>2,437 ft²</b>. The 30% increase and 25% reduction don't cancel cleanly — they multiply. And they cannot drop below 2,000 ft².</p></div>
+  </div>
+  <div class="ftr"><span>Module 3 · Ch. 19</span><span>§19.3.3.2.4 High-temp reduction</span></div>
+</section>
+
+<!-- SLIDE 22 — QUIZ 2 -->
+<section class="slide" data-n="22">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 3 · QUIZ 2</span><span class="snum">SLIDE 22 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Quiz 2 — <em>Density/Area &amp; Reductions</em></h1>
+    <div class="sub">Click any choice for instant feedback</div>
+    <div class="quiz-grid">
+      <div class="qbox"><div class="qn">Q1</div><div class="qt">Per §19.3.3.2.1.2, a hydraulic calc must satisfy:</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>Every point on the density/area curve</li><li data-key="B"><span class="k">B</span>Any single point on the appropriate curve</li><li data-key="C"><span class="k">C</span>The lowest density point only</li><li data-key="D"><span class="k">D</span>The highest area point only</li></ul>
+        <div class="explain"><b>B.</b> Any single valid point satisfies the curve. The reviewer asking you to prove other points doesn't know the code.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q2</div><div class="qt">QR sprinkler reduction is allowed when:</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>Any system using QR sprinklers</li><li data-key="B"><span class="k">B</span>Dry pipe EH systems with ceiling &lt;30 ft</li><li data-key="C"><span class="k">C</span>Wet pipe LH/OH with ceiling ≤20 ft, QR throughout</li><li data-key="D"><span class="k">D</span>Only LH offices</li></ul>
+        <div class="explain"><b>C — §19.3.3.2.3.1.</b> All four conditions: wet pipe, LH/OH only, ceiling ≤20 ft, QR throughout.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q3</div><div class="qt">Dry pipe system: how much does design area change?</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>Decrease 30%</li><li data-key="B"><span class="k">B</span>Increase 30%</li><li data-key="C"><span class="k">C</span>No change</li><li data-key="D"><span class="k">D</span>Increase 50%</li></ul>
+        <div class="explain"><b>B — §19.3.3.2.5.</b> 30% area increase to account for delivery delay. Density does NOT change.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q4</div><div class="qt">High-temp sprinklers in EH allow what reduction?</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>10% density reduction</li><li data-key="B"><span class="k">B</span>25% area reduction, floor 2,000 ft²</li><li data-key="C"><span class="k">C</span>40% area reduction</li><li data-key="D"><span class="k">D</span>No reduction permitted</li></ul>
+        <div class="explain"><b>B — §19.3.3.2.4.</b> 25% area reduction in EH for high-temp sprinklers. Cannot drop below 2,000 ft².</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 3 · Ch. 19</span><span>Quiz 2 — Density/Area</span></div>
+</section>
+
+<!-- SLIDE 23 — PIPE SCHEDULE LH -->
+<section class="slide" data-n="23">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · §27.5 LH</span><span class="snum">SLIDE 23 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Pipe Schedule — <em>Light Hazard</em></h1>
+    <div class="sub">Table 27.5.2.2.1 — Max sprinklers per pipe size (steel)</div>
+    <div class="grid-2">
+      <div class="card" style="padding:18px 22px"><h3>Steel Pipe Schedule — LH</h3>
+        <table class="data">
+          <thead><tr><th>Pipe Size</th><th>Max Sprinklers</th><th>Typical Use</th></tr></thead>
+          <tbody>
+            <tr><td><b>1 in.</b> (25 mm)</td><td>2 sprinklers</td><td>End of branch line</td></tr>
+            <tr><td><b>1¼ in.</b> (32 mm)</td><td>3 sprinklers</td><td>Branch line</td></tr>
+            <tr><td><b>1½ in.</b> (40 mm)</td><td>5 sprinklers</td><td>Branch line</td></tr>
+            <tr><td><b>2 in.</b> (50 mm)</td><td>10 sprinklers</td><td>Branch line / small main</td></tr>
+            <tr><td><b>2½ in.</b> (65 mm)</td><td>30 sprinklers</td><td>Cross main</td></tr>
+            <tr><td><b>3 in.</b> (80 mm)</td><td>60 sprinklers</td><td>Cross main / small system</td></tr>
+            <tr><td><b>3½ in.</b> (90 mm)</td><td>100 sprinklers</td><td>Cross main / riser</td></tr>
+            <tr><td><b>4 in.</b> (100 mm)</td><td>See §4.5</td><td>Riser feed</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>How to Use It</h3>
+          <ol class="num" style="margin-top:6px">
+            <li>Count sprinklers served by each pipe segment</li>
+            <li>Choose the smallest pipe size that allows that count</li>
+            <li>Move upstream — count <b>cumulative</b> sprinklers fed</li>
+            <li>Size each segment by the count it carries</li>
+          </ol>
+        </div>
+        <div class="card good"><h3>Common Use Cases</h3>
+          <ul class="clean">
+            <li>Office tenant fit-outs (small, LH)</li>
+            <li>Retail back-of-house</li>
+            <li>Hotels and condos (LH dwelling areas)</li>
+            <li>Small libraries and offices &lt;5,000 ft²</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 19/27</span><span>Pipe schedule — LH</span></div>
+</section>
+
+<!-- SLIDE 24 — PIPE SCHEDULE OH -->
+<section class="slide" data-n="24">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · §27.5 OH</span><span class="snum">SLIDE 24 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Pipe Schedule — <em>Ordinary Hazard</em></h1>
+    <div class="sub">Table 27.5.3.4 — Max sprinklers per pipe size (steel)</div>
+    <div class="grid-2">
+      <div class="card" style="padding:18px 22px"><h3>Steel Pipe Schedule — OH</h3>
+        <table class="data">
+          <thead><tr><th>Pipe Size</th><th>Max Sprinklers</th><th>vs LH</th></tr></thead>
+          <tbody>
+            <tr><td><b>1 in.</b></td><td>2 sprinklers</td><td>same</td></tr>
+            <tr><td><b>1¼ in.</b></td><td>3 sprinklers</td><td>same</td></tr>
+            <tr><td><b>1½ in.</b></td><td>5 sprinklers</td><td>same</td></tr>
+            <tr><td><b>2 in.</b></td><td>10 sprinklers</td><td>same</td></tr>
+            <tr><td><b>2½ in.</b></td><td><b style="color:#FFC25C">20</b> sprinklers</td><td style="color:#FFCDB6">vs 30 LH ↓</td></tr>
+            <tr><td><b>3 in.</b></td><td><b style="color:#FFC25C">40</b> sprinklers</td><td style="color:#FFCDB6">vs 60 LH ↓</td></tr>
+            <tr><td><b>3½ in.</b></td><td><b style="color:#FFC25C">65</b> sprinklers</td><td style="color:#FFCDB6">vs 100 LH ↓</td></tr>
+            <tr><td><b>4 in.</b></td><td>100 sprinklers</td><td>(LH refers to §4.5)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="stack">
+        <div class="card warn"><h3>Why OH Counts Drop</h3>
+          <p>OH design density is <b>1.5×</b> (OH1) or <b>2×</b> (OH2) higher than LH. Each pipe must carry more flow per sprinkler, so the same pipe size carries fewer sprinklers.</p>
+        </div>
+        <div class="card accent"><h3>§27.5.3.1 — Branch Line Limit</h3>
+          <p>Branch lines shall <b class="hi">not exceed 8 sprinklers</b> on either side of a cross main for ordinary hazard. So even 2-in. pipe (rated for 10) caps at 8 per side.</p>
+          <p style="margin-top:8px;color:var(--blue-3)">Copper pipe (Table 27.5.3.4) permits slightly higher counts.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 19/27</span><span>Pipe schedule — OH</span></div>
+</section>
+
+<!-- SLIDE 25 — HOSE STREAM ALLOWANCES -->
+<section class="slide" data-n="25">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · §19.2.6 / Table 19.3.3.1.2</span><span class="snum">SLIDE 25 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Hose Stream <em>Allowances</em></h1>
+    <div class="sub">§19.2.6 — Adding fire department water to the demand</div>
+    <div class="card" style="padding:18px 22px"><h3>Table 19.3.3.1.2 — Hose &amp; Duration</h3>
+      <table class="data" style="margin-top:6px">
+        <thead><tr><th>Occupancy</th><th>Inside Hose (gpm)</th><th>Total Inside + Outside (gpm)</th><th>Duration (min)</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag-sm lh">LH</span> Light Hazard</td><td>0, 50, or 100</td><td><b>100 gpm</b> (380 L/min)</td><td>30</td></tr>
+          <tr><td><span class="tag-sm oh1">OH1</span> <span class="tag-sm oh2" style="margin-left:6px">OH2</span> Ordinary</td><td>0, 50, or 100</td><td><b>250 gpm</b> (950 L/min)</td><td>60–90</td></tr>
+          <tr><td><span class="tag-sm eh1">EH1</span> <span class="tag-sm eh2" style="margin-left:6px">EH2</span> Extra</td><td>0, 50, or 100</td><td><b style="color:#FFCDB6">500 gpm</b> (1,900 L/min)</td><td>90–120</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid-2" style="margin-top:14px">
+      <div class="card accent"><h3>How to Apply</h3>
+        <ul class="clean">
+          <li>Hose stream is added <b class="hi">at the base of the riser</b>, not at the sprinkler</li>
+          <li>Total demand = sprinkler flow <b>+</b> hose stream allowance</li>
+          <li>Water supply must deliver this total for the duration shown</li>
+        </ul>
+      </div>
+      <div class="card good"><h3>§19.2.6.3 — Inside Hose Stations</h3>
+        <p>Where inside 1½" hose connections are planned or required:</p>
+        <ul class="clean" style="margin-top:6px">
+          <li><b>Single station:</b> add 50 gpm (190 L/min)</li>
+          <li><b>Multiple stations:</b> add 100 gpm (380 L/min)</li>
+        </ul>
+        <p style="margin-top:8px;color:var(--blue-3)">Counts as part of the "inside hose" in the table — not added separately.</p>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 19</span><span>Hose stream allowances</span></div>
+</section>
+
+<!-- SLIDE 26 — QUIZ 3 -->
+<section class="slide" data-n="26">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 4 · QUIZ 3</span><span class="snum">SLIDE 26 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Quiz 3 — <em>Pipe Schedule &amp; Hose</em></h1>
+    <div class="sub">Click any choice for instant feedback</div>
+    <div class="quiz-grid">
+      <div class="qbox"><div class="qn">Q1</div><div class="qt">In a Light Hazard system, 2-in. steel branch line can serve a maximum of:</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>5 sprinklers</li><li data-key="B"><span class="k">B</span>8 sprinklers</li><li data-key="C"><span class="k">C</span>10 sprinklers</li><li data-key="D"><span class="k">D</span>15 sprinklers</li></ul>
+        <div class="explain"><b>C — 10 (Table 27.5.2.2.1).</b> Same for OH per pipe-size limit, but OH has the additional 8-per-side cross-main rule (§27.5.3.1).</div>
+      </div>
+      <div class="qbox"><div class="qn">Q2</div><div class="qt">Total hose stream allowance for an Ordinary Hazard system:</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>100 gpm</li><li data-key="B"><span class="k">B</span>150 gpm</li><li data-key="C"><span class="k">C</span>250 gpm</li><li data-key="D"><span class="k">D</span>500 gpm</li></ul>
+        <div class="explain"><b>C — Table 19.3.3.1.2.</b> 250 gpm total (inside + outside). LH = 100, EH = 500.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q3</div><div class="qt">An OH branch line under pipe schedule, attached one side of a cross main, maximum sprinklers?</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>10 (per pipe size)</li><li data-key="B"><span class="k">B</span>8 (per §27.5.3.1)</li><li data-key="C"><span class="k">C</span>20</li><li data-key="D"><span class="k">D</span>No limit</li></ul>
+        <div class="explain"><b>B — §27.5.3.1.</b> Even if pipe size allows 10, branch lines shall not exceed 8 sprinklers on either side of a cross main for OH.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q4</div><div class="qt">Hose stream allowance is added to the demand at:</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>Each sprinkler</li><li data-key="B"><span class="k">B</span>The most remote branch line</li><li data-key="C"><span class="k">C</span>The base of the riser</li><li data-key="D"><span class="k">D</span>The hydraulic reference point only</li></ul>
+        <div class="explain"><b>C — §19.2.6.</b> Hose is added at the base of the riser, after sprinkler demand has been calculated upstream.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 4 · Ch. 19</span><span>Quiz 3 — Pipe Schedule &amp; Hose</span></div>
+</section>
+
+<!-- SLIDE 27 — BRIDGE CH 19 -> 27 -->
+<section class="slide" data-n="27">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">BRIDGE · CH. 19 → CH. 27</span><span class="snum">SLIDE 27 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Bridge — <em>From Demand to Documentation</em></h1>
+    <div class="sub">Where Chapter 19 hands off to Chapter 27</div>
+    <div class="card" style="font-family:'JetBrains Mono',monospace;font-size:16px;background:rgba(0,0,0,0.30);flex:1">
+<pre style="margin:0;color:var(--txt);line-height:1.7;white-space:pre-wrap">
+          ┌─────────────────────────────────────────────┐
+          │   <b style="color:#5EBBFF">CHAPTER 19 — DESIGN APPROACHES</b>            │
+          │                                             │
+          │   <b style="color:#FFC25C">OUTPUTS</b>:                                    │
+          │   • Hazard class      (LH/OH1/OH2/EH1/EH2)  │
+          │   • Design approach   (pipe sched | hydr.)  │
+          │   • Density (gpm/ft²) and Area (ft²)        │
+          │   • Hose allowance    (100 / 250 / 500 gpm) │
+          │   • Duration          (30 / 60-90 / 90-120) │
+          └──────────────────────┬──────────────────────┘
+                                 │
+                                 │   "Here is what the water supply
+                                 │    must deliver to control the fire."
+                                 ▼
+          ┌─────────────────────────────────────────────┐
+          │   <b style="color:#5EBBFF">CHAPTER 27 — PLANS &amp; CALCULATIONS</b>         │
+          │                                             │
+          │   <b style="color:#FFC25C">DOCUMENTS &amp; PROVES IT</b>:                    │
+          │   • <b>§27.1</b>  Working plans (47 items)        │
+          │   • <b>§27.2</b>  Hydraulic calc procedures       │
+          │   • <b>§27.4</b>  Calculation form sheets (×4)    │
+          │   • <b>§27.5</b>  Pipe schedule tables (LH/OH)    │
+          │                                             │
+          │   <b style="color:#FFC25C">DELIVERABLE</b>: AHJ-ready submittal package  │
+          └─────────────────────────────────────────────┘
+</pre>
+    </div>
+    <div class="mnem"><b>The relationship:</b> Ch. 19 says "you need X gpm at Y psi for Z minutes." Ch. 27 says "here is the math, drawings, and forms that prove your design delivers it." Skip Ch. 19 → you don't know what to target. Skip Ch. 27 → AHJ rejects your submittal.</div>
+  </div>
+  <div class="ftr"><span>Bridge</span><span>Ch. 19 → Ch. 27</span></div>
+</section>
+
+<!-- SLIDE 28 — HYDRAULIC 4-STEP OVERVIEW -->
+<section class="slide" data-n="28">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 5 · §27.2.1</span><span class="snum">SLIDE 28 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">The Hydraulic Method — <em>4 Steps</em></h1>
+    <div class="sub">§27.2.1.1 — Start at the most remote sprinkler, work back to the supply</div>
+    <div class="proc">
+      <div class="step"><div class="sn">01</div><h4>Select Design Area</h4><p>Identify the <b>most hydraulically demanding remote area</b> per §27.2.4.1 and §19.3.3.2. The "remote area" is the area furthest from the supply, hydraulically — not always physically.</p></div>
+      <div class="step"><div class="sn">02</div><h4>Calculate Sprinkler Flows</h4><p>Each sprinkler in the design area must discharge at the required <b>density × coverage area</b>. Q = density × A_coverage per sprinkler (§27.2.4.7.1).</p></div>
+      <div class="step"><div class="sn">03</div><h4>Calculate Friction Losses</h4><p>Use <b>Hazen-Williams</b> to find pressure drop in every pipe segment from remote sprinkler back to the riser (§27.2.2.1.1). Add elevation changes.</p></div>
+      <div class="step"><div class="sn">04</div><h4>Verify Water Supply</h4><p>Total demand (sprinklers + hose) must fall <b>below the available water supply curve</b> on Q¹·⁸⁵ graph paper (§27.4.4).</p></div>
+    </div>
+    <div class="grid-2" style="margin-top:14px">
+      <div class="card accent"><h3>§27.2.1.2 — Minimum Pipe Size</h3>
+        <p>Pipe sizes shall be <b class="hi">no less than 1 in. (25 mm) nominal</b> for steel or galvanized; <b class="hi">¾ in. (20 mm)</b> for copper listed for fire sprinkler service.</p>
+      </div>
+      <div class="card warn"><h3>§27.2.1.4 — Velocity Limit</h3>
+        <p>Unless required by other NFPA standards, pipe velocity in a hydraulic calc is <b>limited only by the available water supply</b>. Industry practice keeps velocity ≤ 32 fps to avoid noise and erosion.</p>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 5 · Ch. 27</span><span>Hydraulic 4-step method</span></div>
+</section>
+
+<!-- SLIDE 29 — 1.2√A RULE -->
+<section class="slide" data-n="29">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 5 · §27.2.4.2.1</span><span class="snum">SLIDE 29 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">The <em>1.2 √A</em> Rule</h1>
+    <div class="sub">§27.2.4.2.1 — Shaping the design area rectangle</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>The Rule</h3>
+        <p>The design area must be shaped as a <b class="hi">rectangle</b> — and one side must satisfy:</p>
+        <div class="eqn" style="font-size:36px">L ≥ 1.2 × √A</div>
+        <ul class="clean">
+          <li><b>L</b> = dimension <b>parallel to branch lines</b> (ft)</li>
+          <li><b>A</b> = required area of sprinkler operation (ft²)</li>
+        </ul>
+        <p style="margin-top:14px">This guarantees the design captures the <b class="hi">worst-case branch-line loading</b>.</p>
+      </div>
+      <div class="card"><h3>Worked Examples</h3>
+        <table class="data">
+          <thead><tr><th>Design Area A</th><th>√A</th><th>L Minimum</th></tr></thead>
+          <tbody>
+            <tr><td>1,500 ft² (LH)</td><td>38.7</td><td><b>46.5 ft</b></td></tr>
+            <tr><td>1,500 ft² (OH)</td><td>38.7</td><td><b>46.5 ft</b></td></tr>
+            <tr><td>2,500 ft² (EH)</td><td>50.0</td><td><b>60.0 ft</b></td></tr>
+            <tr><td>3,000 ft² (LH endpoint)</td><td>54.8</td><td><b>65.7 ft</b></td></tr>
+            <tr><td>3,900 ft² (OH endpoint)</td><td>62.4</td><td><b>74.9 ft</b></td></tr>
+            <tr><td>5,000 ft² (EH endpoint)</td><td>70.7</td><td><b>84.9 ft</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card good" style="margin-top:14px"><h3>The Three Companion Rules</h3>
+      <ul class="clean">
+        <li><b>§27.2.4.2.1</b> — Area shall include sprinklers on <b>both sides</b> of the cross main</li>
+        <li><b>§27.2.4.2.2</b> — Any fractional sprinkler result rounds <b>UP</b> to the next whole sprinkler</li>
+        <li><b>§27.2.4.2.3</b> — If branch lines don't have enough sprinklers to satisfy 1.2√A, the design area extends to <b>adjacent branch lines on the same cross main</b></li>
+      </ul>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 5 · Ch. 27</span><span>§27.2.4.2.1 The 1.2√A rule</span></div>
+</section>
+
+<!-- SLIDE 30 — Q=K√P + DENSITY -->
+<section class="slide" data-n="30">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 5 · §27.2.2.5</span><span class="snum">SLIDE 30 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Sprinkler Flow — <em>Two Equations Together</em></h1>
+    <div class="sub">Density × coverage tells you what you need; Q = K√P tells you what pressure delivers it</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>Equation 1 — Required Flow</h3>
+        <div class="eqn" style="font-size:32px">Q_required = density × A_cov</div>
+        <p>Each sprinkler must deliver at least this flow to meet the density target across its coverage area.</p>
+        <p style="margin-top:14px"><b>Example — OH2 at 130 ft² coverage:</b></p>
+        <p style="font-family:'JetBrains Mono',monospace;font-size:18px;color:var(--blue-2);margin-top:6px">Q_req = 0.20 × 130 = <b style="color:#fff">26 gpm</b></p>
+      </div>
+      <div class="card"><h3>Equation 2 — Pressure to Deliver It</h3>
+        <div class="eqn" style="font-size:32px">Q = K √P  →  P = (Q/K)²</div>
+        <p>For a K-5.6 sprinkler delivering 26 gpm:</p>
+        <p style="font-family:'JetBrains Mono',monospace;font-size:18px;color:var(--blue-2);margin-top:6px">P = (26 / 5.6)² = 4.64² = <b style="color:#fff">21.5 psi</b></p>
+        <p style="margin-top:14px;color:var(--orange-3)">If your starting pressure is below 21.5 psi at the most remote sprinkler, density is not met.</p>
+      </div>
+    </div>
+    <div class="ex"><h4>Why both equations matter</h4>
+      <p>Density × area gives you a <b>flow target</b>. K-factor + pressure tells you whether that flow is actually achievable at the available pressure. If a sprinkler needs 26 gpm but only 7 psi is available, you're not delivering 26 gpm — you're delivering 14.8 gpm and the design fails. <b class="hi">Both equations must balance at every sprinkler.</b></p>
+    </div>
+    <div class="mnem"><b>§27.2.2.5 — flow calculation rule:</b> The discharge flow used in calculations is determined from the <b>calculated pressure</b>, not the minimum 7 psi. If pressure builds up upstream, flow increases accordingly.</div>
+  </div>
+  <div class="ftr"><span>Module 5 · Ch. 27</span><span>Q = K√P + density × area</span></div>
+</section>
+
+<!-- SLIDE 31 — HAZEN WILLIAMS -->
+<section class="slide" data-n="31">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 5 · §27.2.2.1.1</span><span class="snum">SLIDE 31 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Hazen-Williams — <em>The Core Equation</em></h1>
+    <div class="sub">§27.2.2.1.1 — Friction loss in every pipe segment</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>The Formula</h3>
+        <div class="eqn" style="font-size:30px">p = 4.52 × Q¹·⁸⁵ / (C¹·⁸⁵ × d⁴·⁸⁷)</div>
+        <ul class="clean">
+          <li><b>p</b> = frictional resistance (psi/ft of pipe)</li>
+          <li><b>Q</b> = flow in gallons per minute (gpm)</li>
+          <li><b>C</b> = Hazen-Williams roughness coefficient</li>
+          <li><b>d</b> = actual internal pipe diameter (inches)</li>
+        </ul>
+        <p style="margin-top:14px;color:var(--blue-3)">Total pressure loss per segment = p × pipe length (incl. fitting equivalents).</p>
+      </div>
+      <div class="card"><h3>What the Math Tells You</h3>
+        <ul class="clean">
+          <li><b>Flow term:</b> Q¹·⁸⁵ — double the flow = 3.6× the loss</li>
+          <li><b>Diameter term:</b> d⁴·⁸⁷ — go up one pipe size = 6× LESS loss</li>
+          <li><b>C term:</b> dirty/dry pipe (lower C) = more loss</li>
+        </ul>
+        <p style="margin-top:14px"><b class="hi">Lesson:</b> bumping a single segment one pipe size often costs less than the extra pump pressure to push through a smaller one.</p>
+      </div>
+    </div>
+    <div class="ex"><h4>Worked snippet</h4><p>10 ft of <b>1-in. steel wet pipe</b> (d ≈ 1.049", C = 120) carrying 25 gpm:<br>
+      <span style="font-family:'JetBrains Mono',monospace;color:var(--blue-2)">p = 4.52 × 25¹·⁸⁵ / (120¹·⁸⁵ × 1.049⁴·⁸⁷) = 4.52 × 397 / (8,940 × 1.26) ≈ <b style="color:#fff">0.16 psi/ft</b></span><br>
+      Over 10 ft → ~<b>1.6 psi loss</b>. Try the same flow in 2-in. pipe (d=2.067): loss drops to ~0.06 psi/ft. Bigger pipe = dramatic loss reduction.</p>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 5 · Ch. 27</span><span>Hazen-Williams formula</span></div>
+</section>
+
+<!-- SLIDE 32 — C VALUES -->
+<section class="slide" data-n="32">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 5 · Table 27.2.4.8.1</span><span class="snum">SLIDE 32 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Hazen-Williams <em>C-Values</em></h1>
+    <div class="sub">Table 27.2.4.8.1 — Roughness coefficients by pipe type and condition</div>
+    <div class="grid-2-1">
+      <div class="card" style="padding:18px 22px">
+        <table class="data">
+          <thead><tr><th>Pipe Type</th><th>Condition</th><th>C Value</th></tr></thead>
+          <tbody>
+            <tr><td><b>Black steel</b></td><td>Wet systems (incl. deluge)</td><td><b style="color:#5EBBFF">120</b></td></tr>
+            <tr><td><b>Black steel</b></td><td>Dry / preaction systems</td><td>100</td></tr>
+            <tr><td><b>Galvanized steel</b></td><td>Wet systems</td><td><b style="color:#5EBBFF">120</b></td></tr>
+            <tr><td><b>Galvanized steel</b></td><td>Dry systems</td><td>100</td></tr>
+            <tr><td><b>Copper tube</b></td><td>All conditions</td><td><b style="color:#5EBBFF">150</b></td></tr>
+            <tr><td><b>Brass / stainless steel</b></td><td>All conditions</td><td><b style="color:#5EBBFF">150</b></td></tr>
+            <tr><td><b>Listed plastic pipe</b></td><td>All conditions (CPVC, PEX, etc.)</td><td><b style="color:#5EBBFF">150</b></td></tr>
+            <tr><td><b>Unlined cast / ductile iron</b></td><td>Underground</td><td>100</td></tr>
+            <tr><td><b>Cement-lined cast / ductile iron</b></td><td>Underground</td><td><b style="color:#5EBBFF">140</b></td></tr>
+            <tr><td><b>Asbestos cement</b></td><td>Underground</td><td><b style="color:#5EBBFF">140</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>The Three You'll See Most</h3>
+          <ul class="clean">
+            <li><b>120</b> — wet black steel (most common)</li>
+            <li><b>100</b> — dry black steel (corrosion penalty)</li>
+            <li><b>150</b> — copper &amp; plastic (smoothest)</li>
+          </ul>
+        </div>
+        <div class="card warn"><h3>The Dry-Pipe Trap</h3>
+          <p>Dry steel drops to C=100 because of oxidation buildup. <b class="hi">Same pipe in wet service = 120</b>. The drop of 20 points in C is significant — roughly equivalent to losing one pipe-size of capacity.</p>
+        </div>
+        <div class="mnem"><b>Memory:</b> <b>1-5-0</b> for smooth (copper/plastic) · <b>1-2-0</b> for normal steel · <b>1-0-0</b> for dry steel.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 5 · Ch. 27</span><span>Hazen-Williams C-values</span></div>
+</section>
+
+<!-- SLIDE 33 — FITTINGS / EQUIVALENT LENGTH -->
+<section class="slide" data-n="33">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 5 · §27.2.3 / Table 27.2.3.1.1</span><span class="snum">SLIDE 33 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Fittings — <em>Equivalent Length Method</em></h1>
+    <div class="sub">§27.2.3 — Counting elbows, tees, and valves as "extra pipe"</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>The Concept</h3>
+        <p>Fittings cause pressure loss because of turbulence. NFPA 13 converts each fitting type into an <b class="hi">equivalent length of straight pipe</b> that would cause the same loss.</p>
+        <div class="eqn" style="font-size:24px">Total Length = Pipe Length + Σ(Fittings Eq. Length)</div>
+        <p style="margin-top:8px">You then apply Hazen-Williams to that total length.</p>
+      </div>
+      <div class="card"><h3>Table 27.2.3.1.1 Examples (1-in. pipe)</h3>
+        <table class="data">
+          <thead><tr><th>Fitting</th><th>Eq. Length</th></tr></thead>
+          <tbody>
+            <tr><td><b>90° standard elbow</b></td><td>2 ft</td></tr>
+            <tr><td><b>45° elbow</b></td><td>1 ft</td></tr>
+            <tr><td><b>Tee (flow through branch)</b></td><td>5 ft</td></tr>
+            <tr><td><b>Tee (flow through run)</b></td><td>—</td></tr>
+            <tr><td><b>Gate valve</b></td><td>1 ft</td></tr>
+            <tr><td><b>Butterfly valve</b></td><td>6 ft</td></tr>
+            <tr><td><b>Swing check valve</b></td><td>5 ft</td></tr>
+            <tr><td><b>Alarm check valve</b></td><td>varies (per manufacturer)</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:8px;font-size:18px;color:var(--txt-dim)">Equivalent lengths scale with pipe diameter. A 4-in. 90° elbow is 10 ft equivalent.</p>
+      </div>
+    </div>
+    <div class="ex"><h4>Worked example</h4><p>A 25-ft branch line with 3× 90° standard ells (1-in.): equivalent length = 25 + (3 × 2) = <b>31 ft</b>. Apply Hazen-Williams to 31 ft, not 25. Forgetting fittings is the most common source of under-calculated systems.</p></div>
+    <div class="mnem"><b>§27.2.3.1.1 — C-correction:</b> Equivalent lengths in the table are based on C=120. If your pipe C is different, multiply equivalent length by (C_actual / 120)¹·⁸⁵. Smooth pipe (C=150) has slightly higher equivalent length than the table shows.</div>
+  </div>
+  <div class="ftr"><span>Module 5 · Ch. 27</span><span>Fittings — equivalent length method</span></div>
+</section>
+
+<!-- SLIDE 34 — ELEVATION + JUNCTION BALANCE -->
+<section class="slide" data-n="34">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 5 · §27.2.4.8 / §27.2.2.4.1</span><span class="snum">SLIDE 34 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Elevation &amp; <em>Junction Balance</em></h1>
+    <div class="sub">Two often-skipped pressure adjustments</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>Elevation Pressure (§27.2.4.8.1)</h3>
+        <p>Add or subtract <b class="hi">0.433 psi per foot</b> of elevation change between nodes.</p>
+        <div class="eqn" style="font-size:24px">ΔP_elev = 0.433 × Δh (psi/ft × ft)</div>
+        <ul class="clean">
+          <li><b>Going UP</b> the system → ADD 0.433 psi/ft</li>
+          <li><b>Going DOWN</b> the system → SUBTRACT 0.433 psi/ft</li>
+        </ul>
+        <p style="margin-top:14px;color:var(--blue-3)">A 30-ft elevation rise from grade to roof = 13.0 psi of pressure used up just to lift the water.</p>
+      </div>
+      <div class="card warn"><h3>Pressure Balance at Junctions (§27.2.2.4.1)</h3>
+        <p>At every hydraulic junction, pressures arriving from different paths must <b class="hi">balance within 0.5 psi (0.03 bar)</b>.</p>
+        <p style="margin-top:14px">If two paths converge with mismatched pressure:</p>
+        <ul class="clean" style="margin-top:6px">
+          <li>Use the <b>highest pressure</b> (carries forward conservatively)</li>
+          <li>Adjust the flow in the higher-pressure path UP using K = Q/√P relationship</li>
+          <li>Recalculate until both paths agree within 0.5 psi</li>
+        </ul>
+      </div>
+    </div>
+    <div class="ex"><h4>Why the 0.5 psi tolerance</h4><p>Hydraulic software iterates until junctions balance. The 0.5 psi tolerance is large enough to be achievable in finite iterations but small enough that the resulting design is accurate. Hand calcs sometimes show 1+ psi imbalance — that's a red flag for the reviewer.</p></div>
+  </div>
+  <div class="ftr"><span>Module 5 · Ch. 27</span><span>Elevation &amp; junction balance</span></div>
+</section>
+
+<!-- SLIDE 35 — QUIZ 4 -->
+<section class="slide" data-n="35">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 5 · QUIZ 4</span><span class="snum">SLIDE 35 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Quiz 4 — <em>Hydraulic Math</em></h1>
+    <div class="sub">Click any choice for instant feedback</div>
+    <div class="quiz-grid">
+      <div class="qbox"><div class="qn">Q1</div><div class="qt">In the design-area rule L ≥ 1.2 √A, L represents:</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>Length of the most remote sprinkler</li><li data-key="B"><span class="k">B</span>Dimension parallel to branch lines</li><li data-key="C"><span class="k">C</span>Branch line spacing</li><li data-key="D"><span class="k">D</span>Cross-main length</li></ul>
+        <div class="explain"><b>B — §27.2.4.2.1.</b> The dimension parallel to branch lines must be at least 1.2 × √A. Captures worst-case branch-line loading.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q2</div><div class="qt">Hazen-Williams C value for black steel in a wet pipe system:</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>100</li><li data-key="B"><span class="k">B</span>110</li><li data-key="C"><span class="k">C</span>120</li><li data-key="D"><span class="k">D</span>150</li></ul>
+        <div class="explain"><b>C — 120 (Table 27.2.4.8.1).</b> Dry drops to 100. Copper/plastic = 150.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q3</div><div class="qt">Pressures at a hydraulic junction must balance within:</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>0.1 psi</li><li data-key="B"><span class="k">B</span>0.5 psi</li><li data-key="C"><span class="k">C</span>1.0 psi</li><li data-key="D"><span class="k">D</span>5.0 psi</li></ul>
+        <div class="explain"><b>B — §27.2.2.4.1.</b> 0.5 psi (0.03 bar) tolerance. Highest pressure carries forward; adjust flows accordingly.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q4</div><div class="qt">Elevation gain of 50 ft above the riser base costs how much pressure?</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>5.0 psi</li><li data-key="B"><span class="k">B</span>15.0 psi</li><li data-key="C"><span class="k">C</span>21.7 psi</li><li data-key="D"><span class="k">D</span>50 psi</li></ul>
+        <div class="explain"><b>C — §27.2.4.8.1.</b> 0.433 psi/ft × 50 ft = 21.65 psi. Roughly half a psi per foot of height.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 5 · Ch. 27</span><span>Quiz 4 — Hydraulic Math</span></div>
+</section>
+
+<!-- SLIDE 36 — WORKED CALC SETUP -->
+<section class="slide" data-n="36">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 6 · WORKED CALC SETUP</span><span class="snum">SLIDE 36 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Worked Calc — <em>Project Setup</em></h1>
+    <div class="sub">A real OH1 retail box, 60×120 ft, ceiling 14 ft, K-5.6 quick-response</div>
+    <div class="grid-2">
+      <div class="card"><h3>Project Inputs</h3>
+        <ul class="clean">
+          <li><b>Occupancy:</b> Retail mercantile · <span class="tag-sm oh1">OH1</span></li>
+          <li><b>Density / Area chosen:</b> 0.15 gpm/ft² over 1,500 ft²</li>
+          <li><b>QR reduction:</b> 14 ft ceiling → y = -3(14)+55 = 13% → area becomes <b>1,305 ft²</b> (1,500 × 0.87)</li>
+          <li><b>Sprinklers:</b> K-5.6 pendant, 130 ft² coverage each</li>
+          <li><b># sprinklers in design area:</b> 1,305 / 130 = 10.04 → <b>11 sprinklers</b> (rounded up)</li>
+          <li><b>Pipe:</b> Black steel, wet system, C = 120</li>
+        </ul>
+      </div>
+      <div class="card accent"><h3>Per-Sprinkler Targets</h3>
+        <ul class="clean">
+          <li><b>Required flow per sprinkler:</b> 0.15 × 130 = <b>19.5 gpm</b></li>
+          <li><b>Required pressure (K-5.6):</b> P = (19.5/5.6)² = <b>12.13 psi</b></li>
+          <li><b>Most remote sprinkler:</b> design at <b>≥ 7 psi minimum</b> AND ≥ 12.13 psi for density</li>
+          <li><b>Total sprinkler demand (approx):</b> 11 × 19.5 = <b>~215 gpm</b> (will rise as pressures vary)</li>
+          <li><b>Hose stream:</b> + 250 gpm (OH from Table 19.3.3.1.2)</li>
+          <li><b>Total demand at base of riser:</b> ~465 gpm at the calc pressure</li>
+        </ul>
+      </div>
+    </div>
+    <div class="ex"><h4>Layout assumption</h4><p>11 sprinklers arranged across 2 branch lines × 6 wide, on one side of the cross main. Spacing 10×13 ft → 130 ft²/sprinkler. 1.2√A check: 1.2 × √1,305 = 43.3 ft → need ≥ 4 sprinklers along branch lines (4 × 10 ft = 40 ft, NG). Adjust to 5 sprinklers × 10 ft = 50 ft along branches → <b>satisfies 1.2√A</b>. 11 total sprinklers = 5 + 6 across two adjacent branch lines.</p></div>
+  </div>
+  <div class="ftr"><span>Module 6 · Worked Calc</span><span>Setup — OH1 retail box</span></div>
+</section>
+
+<!-- SLIDE 37 — WORKED CALC: SPRINKLER 1 (REMOTE) -->
+<section class="slide" data-n="37">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 6 · CALC PT.1</span><span class="snum">SLIDE 37 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Calc Pt.1 — <em>The Most Remote Sprinkler</em></h1>
+    <div class="sub">Start here. Build up pressure as you walk toward the riser.</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>Sprinkler #1 (Most Remote)</h3>
+        <ul class="clean">
+          <li><b>Coverage:</b> 130 ft²</li>
+          <li><b>Required Q (density × area):</b> 0.15 × 130 = <b>19.5 gpm</b></li>
+          <li><b>K-factor:</b> K-5.6</li>
+          <li><b>Required P:</b> P = (Q/K)² = (19.5/5.6)² = <b>12.13 psi</b></li>
+        </ul>
+        <p style="margin-top:14px;color:var(--blue-3)">This is the starting pressure for the calculation. Every upstream pipe segment adds friction and elevation losses.</p>
+      </div>
+      <div class="card"><h3>Calc Worksheet Snapshot</h3>
+        <pre style="font-family:'JetBrains Mono',monospace;font-size:15px;line-height:1.55;color:var(--txt);background:rgba(0,0,0,0.30);padding:12px 14px;border-radius:8px;margin:0">NODE | DESCRIPTION       | Q (gpm) | P (psi)
+─────┼───────────────────┼─────────┼────────
+  1  | Sprinkler #1      |  19.50  |  12.13   ← start
+     | (most remote)     |         |
+─────┼───────────────────┼─────────┼────────
+  2  | Sprinkler #2      |  ?      |  ?       ← next
+     | (1¼" branch line) |         |
+─────┼───────────────────┼─────────┼────────
+  ⋮  | continue toward   |         |
+     | the cross main    |         |</pre>
+        <p style="margin-top:10px;color:var(--orange-3);font-size:18px">Walk one segment at a time. Each row builds on the previous.</p>
+      </div>
+    </div>
+    <div class="mnem"><b>The §27.2.4.7.6 rule:</b> The calculated pressure at each sprinkler — NOT the minimum 7 psi — determines its discharge. As pressure rises upstream, downstream sprinklers will actually flow MORE than the required minimum. The math must close at every node.</div>
+  </div>
+  <div class="ftr"><span>Module 6 · Worked Calc</span><span>Pt. 1 — Most remote sprinkler</span></div>
+</section>
+
+<!-- SLIDE 38 — WORKED CALC: BRANCH LINE -->
+<section class="slide" data-n="38">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 6 · CALC PT.2</span><span class="snum">SLIDE 38 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Calc Pt.2 — <em>Walking the Branch Line</em></h1>
+    <div class="sub">Each segment adds friction loss and a new sprinkler flow</div>
+    <div class="card" style="padding:18px 22px;flex:1">
+      <h3>Branch Line Walk — 5 sprinklers, 10 ft apart, 1-in. steel (assumed)</h3>
+      <pre style="font-family:'JetBrains Mono',monospace;font-size:14px;line-height:1.6;color:var(--txt);background:rgba(0,0,0,0.30);padding:14px 18px;border-radius:8px;margin:0;overflow-x:auto">
+SEG | NODES |  Q     |  L_eq  | C   | d     | p (psi/ft) | ΔP_fric | ΔP_elev | P_arrived | Q_added | Q_total
+────┼───────┼────────┼────────┼─────┼───────┼────────────┼─────────┼─────────┼───────────┼─────────┼─────────
+ 1  | 1→2   | 19.5   | 10 ft  | 120 | 1.049 |  0.10      |  1.00   |   0     |  13.13    | <b style="color:#5EBBFF">19.96</b>   | 39.46
+ 2  | 2→3   | 39.46  | 10 ft  | 120 | 1.049 |  0.36      |  3.60   |   0     |  16.73    | <b style="color:#5EBBFF">22.50</b>   | 61.96
+ 3  | 3→4   | 61.96  | 10 ft  | 120 | 1.380 |  0.18      |  1.80   |   0     |  18.53    | <b style="color:#5EBBFF">23.71</b>   | 85.67   <span style="color:#FFC25C">← upsized to 1¼"</span>
+ 4  | 4→5   | 85.67  | 10 ft  | 120 | 1.610 |  0.16      |  1.60   |   0     |  20.13    | <b style="color:#5EBBFF">24.71</b>   | 110.38  <span style="color:#FFC25C">← upsized to 1½"</span>
+ 5  | 5→CM  | 110.38 | 10 ft  | 120 | 2.067 |  0.10      |  1.00   |   0     |  21.13    |   —     | 110.38  <span style="color:#FFC25C">← upsized to 2"</span>
+────┴───────┴────────┴────────┴─────┴───────┴────────────┴─────────┴─────────┴───────────┴─────────┴─────────
+                                                          Branch line arrives at cross main with:
+                                                          <b style="color:#fff">Q = 110.38 gpm @ 21.13 psi</b>
+                                                          (vs starting 19.50 gpm @ 12.13 psi)</pre>
+    </div>
+    <div class="grid-2" style="margin-top:14px">
+      <div class="card accent"><h3>What Just Happened</h3>
+        <p>Pressure built from 12.13 psi at the remote sprinkler to 21.13 psi at the cross main. Each sprinkler in turn opens, sees the higher pressure, and discharges more than 19.5 gpm. The downstream sprinklers get the design density easily; the most remote one was the limiting case.</p>
+      </div>
+      <div class="card warn"><h3>Pipe Upsizing Decision</h3>
+        <p>The first two segments were 1-in. (0.10 → 0.36 psi/ft). The third segment was upsized to 1¼" to keep losses reasonable. Upsizing decisions are designer judgment, but most software auto-optimizes for minimum total pipe cost vs. supply margin.</p>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 6 · Worked Calc</span><span>Pt. 2 — Branch line</span></div>
+</section>
+
+<!-- SLIDE 39 — WORKED CALC: CROSS MAIN + RISER -->
+<section class="slide" data-n="39">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 6 · CALC PT.3</span><span class="snum">SLIDE 39 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Calc Pt.3 — <em>Cross Main &amp; Riser</em></h1>
+    <div class="sub">Combining branch flows · adding the riser to base-of-riser</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>Cross Main Junction</h3>
+        <p>The cross main receives flow from BOTH branch lines (5 + 6 sprinkler arms):</p>
+        <ul class="clean" style="margin-top:8px">
+          <li>Branch 1 (5 sprinklers) → 110.4 gpm @ 21.13 psi</li>
+          <li>Branch 2 (6 sprinklers) → 138.6 gpm @ ~22.5 psi (similar walk)</li>
+          <li>At junction: <b class="hi">balance pressures</b> within 0.5 psi (§27.2.2.4.1)</li>
+          <li>Combined cross-main flow: <b class="hi">~249 gpm</b></li>
+        </ul>
+        <p style="margin-top:14px;color:var(--blue-3)">Use the higher arriving pressure (22.5 psi) and recalc branch 1's flow upward.</p>
+      </div>
+      <div class="card"><h3>Cross Main → Riser</h3>
+        <pre style="font-family:'JetBrains Mono',monospace;font-size:14px;line-height:1.55;color:var(--txt);background:rgba(0,0,0,0.30);padding:12px 14px;border-radius:8px;margin:0">SEG  | DESCRIPTION   | Q gpm  | P psi
+─────┼───────────────┼────────┼──────
+ BL1 | Branch 1      | 110.4  | 22.5
+ BL2 | Branch 2      | 138.6  | 22.5
+ CM  | Cross main    | 249.0  | 22.5
+ CM→R| To riser  4"  | 249.0  | 23.8  (+1.3 fric)
+ R↑  | Riser 30 ft   | 249.0  | 36.8  (+13 elev)
+─────┴───────────────┴────────┴──────
+            <b style="color:#fff">At base of riser: 249 gpm @ 36.8 psi</b></pre>
+      </div>
+    </div>
+    <div class="card warn" style="margin-top:14px"><h3>Sprinklers + Hose = System Demand</h3>
+      <p>The 249 gpm above is <b>sprinkler demand only</b>. Now add the hose stream allowance at the base of riser:</p>
+      <pre style="font-family:'JetBrains Mono',monospace;font-size:16px;color:var(--txt);margin-top:8px">Sprinkler demand at base of riser:  <b style="color:#fff">249.0 gpm @ 36.8 psi</b>
+Hose stream (OH per Table 19.3.3.1.2): <b style="color:#FFCDB6">+ 250 gpm</b>
+─────────────────────────────────────────────────────────
+System demand at base of riser:       <b style="color:#FFCDB6">499 gpm @ 36.8 psi</b></pre>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 6 · Worked Calc</span><span>Pt. 3 — Cross main &amp; riser</span></div>
+</section>
+
+<!-- SLIDE 40 — WORKED CALC: TOTAL DEMAND -->
+<section class="slide" data-n="40">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 6 · CALC PT.4</span><span class="snum">SLIDE 40 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Calc Pt.4 — <em>Total Demand Check</em></h1>
+    <div class="sub">Putting it all on one summary line</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>The Final Demand Point</h3>
+        <div style="display:flex;gap:18px;margin-top:8px;justify-content:center">
+          <div class="kstat"><div class="n">499</div><div class="l">gpm (sprinkler + hose)</div></div>
+          <div class="kstat"><div class="n">36.8</div><div class="l">psi at base of riser</div></div>
+          <div class="kstat"><div class="n">60-90</div><div class="l">min duration (OH)</div></div>
+        </div>
+        <p style="margin-top:18px">This is the <b class="hi">demand point</b> that will be plotted on the Q¹·⁸⁵ graph against the supply curve.</p>
+      </div>
+      <div class="card good"><h3>Sanity Checks</h3>
+        <ul class="clean">
+          <li><b>Most remote pressure ≥ required:</b> 12.13 psi ≥ 12.13 ✓</li>
+          <li><b>All sprinklers meet density:</b> downstream see higher P, more flow ✓</li>
+          <li><b>1.2√A satisfied:</b> 50 ft branch length ≥ 1.2 × √1,305 = 43.3 ft ✓</li>
+          <li><b>Pressure balance:</b> branches balance within 0.5 psi at cross main ✓</li>
+          <li><b>Velocity:</b> 4-in. pipe at 499 gpm = 12.7 fps (well under 32 fps) ✓</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card warn" style="margin-top:14px"><h3>Now the Question — Does the Water Supply Deliver?</h3>
+      <p>If the water supply at the building's lead-in delivers <b class="hi">≥ 499 gpm at ≥ 36.8 psi</b>, the design passes.</p>
+      <p style="margin-top:8px">If the supply is <b class="hi">below either threshold</b>, you need a fire pump or stored water (tank). The next slides show how to verify on the Q¹·⁸⁵ graph.</p>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 6 · Worked Calc</span><span>Pt. 4 — Total demand check</span></div>
+</section>
+
+<!-- SLIDE 41 — Q^1.85 GRAPH PAPER CONCEPT -->
+<section class="slide" data-n="41">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 7 · §27.4.4</span><span class="snum">SLIDE 41 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Q¹·⁸⁵ Graph — <em>Why That Exponent</em></h1>
+    <div class="sub">§27.4.4 — A coordinate trick that makes supply curves straight lines</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>The Setup</h3>
+        <p>Plot the water supply curve and the system demand point on a special semi-exponential graph paper.</p>
+        <ul class="clean" style="margin-top:14px">
+          <li><b>Y-axis:</b> Pressure (psi), linear scale</li>
+          <li><b>X-axis:</b> Flow (gpm), scaled as Q¹·⁸⁵</li>
+        </ul>
+        <p style="margin-top:14px">Because Hazen-Williams loss is proportional to Q¹·⁸⁵, the water supply curve <b class="hi">plots as a straight line</b> on this paper — a visual gift.</p>
+      </div>
+      <div class="card"><h3>Why It's Useful</h3>
+        <ul class="clean">
+          <li><b>Visualize</b> margin between supply and demand instantly</li>
+          <li><b>Project</b> supply at any flow — extend the straight line</li>
+          <li><b>Compare</b> multiple demand points (sprinkler-only, sprinkler+hose, sprinkler+hose+inside hose)</li>
+          <li><b>Show</b> the AHJ a clean pass/fail visual</li>
+        </ul>
+        <p style="margin-top:14px;color:var(--blue-3)">Hydraulic software generates this automatically. Knowing what it shows is mandatory for review.</p>
+      </div>
+    </div>
+    <div class="mnem"><b>Why 1.85?</b> Hazen-Williams: friction loss ∝ Q¹·⁸⁵. Pressure on Y-axis is linear, so a Q¹·⁸⁵-scaled X-axis turns the curved supply equation into a straight line. Pure math hack — but indispensable for visualization.</div>
+  </div>
+  <div class="ftr"><span>Module 7 · Water Supply</span><span>Q¹·⁸⁵ graph paper concept</span></div>
+</section>
+
+<!-- SLIDE 42 — PLOTTING SUPPLY CURVE -->
+<section class="slide" data-n="42">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 7 · §27.4.4</span><span class="snum">SLIDE 42 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Plotting the <em>Supply Curve</em></h1>
+    <div class="sub">From two flow-test points to a usable straight line</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>From the Flow Test, Two Points</h3>
+        <p>A standard hydrant flow test gives you:</p>
+        <ul class="clean" style="margin-top:8px">
+          <li><b>Static pressure</b> at the test gauge (Q = 0) — Point A</li>
+          <li><b>Residual pressure</b> at the test gauge AT the measured flow rate Q_test — Point B</li>
+        </ul>
+        <p style="margin-top:14px">Two points define a line. On Q¹·⁸⁵ paper, the supply curve runs from A (at Q=0) sloping down to B (at Q_test) and continues.</p>
+      </div>
+      <div class="card"><h3>Worked Example</h3>
+        <p>Test results from Slide 26 (Ch. 4 course):</p>
+        <ul class="clean" style="margin-top:8px">
+          <li>Static: <b>78 psi</b> at Q = 0</li>
+          <li>Residual: <b>64 psi</b> at Q = 1,250 gpm</li>
+        </ul>
+        <p style="margin-top:14px"><b>Plot on Q¹·⁸⁵ paper:</b></p>
+        <pre style="font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--txt);background:rgba(0,0,0,0.30);padding:10px 14px;border-radius:6px;margin-top:6px">  P (psi)
+  ↑
+80├─●A (static, Q=0)
+  │   ╲
+  │    ╲
+60│     ●B (residual, Q=1250)
+  │      ╲
+  │       ╲___ supply curve
+  │           ╲___
+40├──────────────╲────────
+  └────────────────────→ Q¹·⁸⁵
+  0   500  1k  2k  3k  4k</pre>
+      </div>
+    </div>
+    <div class="mnem"><b>Extending the line:</b> If a 1,250 gpm test gave 64 psi residual, projecting the line forward tells you what the supply could deliver at higher flows. The supply isn't infinite — at some point the line crosses 0 psi (theoretical limit). Most calcs show the supply curve from 0 to maybe 4× the test flow.</div>
+  </div>
+  <div class="ftr"><span>Module 7 · Water Supply</span><span>Plotting the supply curve</span></div>
+</section>
+
+<!-- SLIDE 43 — DEMAND VS SUPPLY -->
+<section class="slide" data-n="43">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 7 · §27.4.4</span><span class="snum">SLIDE 43 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Demand vs Supply — <em>Pass or Fail</em></h1>
+    <div class="sub">The visual moment of truth</div>
+    <div class="grid-2">
+      <div class="card good"><h3>PASS Criterion</h3>
+        <p>The system demand point must fall <b class="hi">below and to the left</b> of the water supply curve.</p>
+        <p style="margin-top:14px"><b>From our worked example:</b></p>
+        <ul class="clean" style="margin-top:6px">
+          <li>Demand: 499 gpm @ 36.8 psi</li>
+          <li>Supply at 499 gpm (project from 78/64 line): ~72 psi</li>
+          <li>Margin: 72 − 36.8 = <b style="color:#7AE9C0">35.2 psi available</b></li>
+        </ul>
+        <p style="margin-top:14px;color:#7AE9C0;font-weight:700">PASS — supply exceeds demand by wide margin.</p>
+      </div>
+      <div class="card warn"><h3>FAIL Scenarios</h3>
+        <ul class="clean">
+          <li><b>Demand pressure &gt; Supply pressure at that flow</b> — need a pump</li>
+          <li><b>Demand flow &gt; max supply flow</b> — supply curve cuts off; need tank + pump</li>
+          <li><b>Margin &lt; 5 psi</b> — technically passes but risky as pipe ages, C drops</li>
+        </ul>
+        <p style="margin-top:14px;color:#FFCDB6">Common practice: maintain ≥ <b>10 psi safety margin</b> in design unless using software-validated calcs.</p>
+      </div>
+    </div>
+    <div class="ex"><h4>Visual</h4><pre style="font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--txt);background:rgba(0,0,0,0.25);padding:10px 14px;border-radius:8px;margin:0">  P (psi)
+  ↑
+80├─●A (static)
+  │   ╲
+72│    ╲_____________●  ← supply at Q=499 gpm (72 psi)
+  │      ╲
+60│       ●B residual                ← <b style="color:#7AE9C0">35.2 psi MARGIN</b>
+  │        ╲
+36.8├──────────────────●  ← system demand (499 gpm, 36.8 psi)
+  │         ╲___
+20│             ╲___
+  │                 ╲___
+  └─────────────┬────────→ Q¹·⁸⁵
+  0    250 500 1k        4k</pre></div>
+  </div>
+  <div class="ftr"><span>Module 7 · Water Supply</span><span>Demand vs supply — pass/fail</span></div>
+</section>
+
+<!-- SLIDE 44 — WHEN SUPPLY FAILS -->
+<section class="slide" data-n="44">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 7 · WHEN SUPPLY FAILS</span><span class="snum">SLIDE 44 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">When Supply <em>Falls Short</em></h1>
+    <div class="sub">Three classic remedies — and when to pick which</div>
+    <div class="grid-3">
+      <div class="card"><h3>① Fire Pump (NFPA 20)</h3>
+        <p>Most common remedy. Pump adds pressure to a supply that has enough <b class="hi">flow</b> but insufficient <b class="hi">pressure</b>.</p>
+        <ul class="clean" style="margin-top:8px">
+          <li>City has flow, lacks psi</li>
+          <li>Pump rated by design demand + safety</li>
+          <li>Electric or diesel driver</li>
+          <li>Sized at: rated flow, rated psi, 150% capacity</li>
+        </ul>
+      </div>
+      <div class="card"><h3>② Water Tank (NFPA 22)</h3>
+        <p>Used when the supply has insufficient <b class="hi">flow</b> regardless of pressure. The tank stores water; gravity or pump delivers it.</p>
+        <ul class="clean" style="margin-top:8px">
+          <li>Volume = demand flow × duration</li>
+          <li>Common in rural or industrial sites</li>
+          <li>Elevated tank → gravity head</li>
+          <li>Ground tank → pump from tank to riser</li>
+        </ul>
+      </div>
+      <div class="card"><h3>③ Tank + Pump Combo</h3>
+        <p>When you need both flow AND pressure. Most common for high-hazard or remote sites.</p>
+        <ul class="clean" style="margin-top:8px">
+          <li>Suction tank dedicated to fire service</li>
+          <li>Fire pump pulls from tank</li>
+          <li>Tank refilled by lower-flow city service</li>
+          <li>Most expensive but most reliable</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card accent" style="margin-top:14px"><h3>Quick Decision Tree</h3>
+      <p><b>Supply flow OK, pressure too low?</b> → Fire pump.<br>
+      <b>Supply flow too low?</b> → Tank for storage volume, possibly + pump.<br>
+      <b>Supply unreliable / not available?</b> → Tank + pump combo, dedicated fire service.</p>
+      <p style="margin-top:10px;color:var(--orange-3)">Always size the pump so its rated point lies at or above the system demand on the supply graph.</p>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 7 · Water Supply</span><span>When supply falls short</span></div>
+</section>
+
+<!-- SLIDE 45 — DOCUMENTATION 47-CHECKLIST PT.1 -->
+<section class="slide" data-n="45">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 8 · §27.1.3 PT.1</span><span class="snum">SLIDE 45 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Working Plans — <em>47-Item Checklist Pt. 1</em></h1>
+    <div class="sub">§27.1.3 items 1–24 — identification, geometry, sprinklers</div>
+    <div class="grid-2">
+      <div class="card"><h3>Identification &amp; Geometry (items 1–10)</h3>
+        <ol class="num" style="font-size:18px">
+          <li>Name of owner and occupant</li>
+          <li>Location, including street address</li>
+          <li>Point of compass (north arrow)</li>
+          <li>Full height cross section showing structural info</li>
+          <li>Construction details with ceiling/roof</li>
+          <li>Occupancy class of each area</li>
+          <li>Location of partitions, fire walls</li>
+          <li>Location of any concealed spaces &amp; attics</li>
+          <li>Any small enclosures requiring sprinklers</li>
+          <li>Size of city main, dead-end or circulating</li>
+        </ol>
+      </div>
+      <div class="card accent"><h3>Sprinklers &amp; Piping (items 11–24)</h3>
+        <ol class="num" start="11" style="font-size:18px">
+          <li>City main test results</li>
+          <li>Other water sources with pressures</li>
+          <li>Sprinkler make, type, model</li>
+          <li>K-factor, temperature rating, orientation</li>
+          <li>Total sprinkler count and area</li>
+          <li>Number of sprinklers per heating zone</li>
+          <li>Make/type/model of drainage equipment</li>
+          <li>Make/type/model of alarm equipment</li>
+          <li>Pipe type and wall thickness schedule</li>
+          <li>Nominal pipe sizes and cut lengths</li>
+          <li>Type of fittings and joints</li>
+          <li>Hanger types &amp; spacing</li>
+          <li>Sway brace details for seismic</li>
+          <li>Number of sprinklers in each branch</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 8 · Documentation</span><span>§27.1.3 47-item checklist Pt. 1</span></div>
+</section>
+
+<!-- SLIDE 46 — 47-ITEM CHECKLIST PT 2 -->
+<section class="slide" data-n="46">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 8 · §27.1.3 PT.2</span><span class="snum">SLIDE 46 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Working Plans — <em>47-Item Checklist Pt. 2</em></h1>
+    <div class="sub">§27.1.3 items 25–47 — hydraulic, supply, system data</div>
+    <div class="grid-2">
+      <div class="card"><h3>Hydraulic Data (items 25–38)</h3>
+        <ol class="num" start="25" style="font-size:18px">
+          <li>Total area protected by each system</li>
+          <li>Sprinkler heat collectors/pans where used</li>
+          <li>Type of fittings (welded, threaded, grooved)</li>
+          <li>Type and location of valves</li>
+          <li>FDC location and type</li>
+          <li>Drains and locations</li>
+          <li>Test connections</li>
+          <li>Alarm valve, dry valve, preaction valve location</li>
+          <li>For hydraulic systems: hydraulic data nameplate info</li>
+          <li>Hydraulically most demanding area</li>
+          <li>Test pressure and date</li>
+          <li>Hydraulic reference points</li>
+          <li>Minimum density and design area of application</li>
+          <li>Total water quantity and pressure at common reference</li>
+        </ol>
+      </div>
+      <div class="card accent"><h3>Supply &amp; System Details (items 39–47)</h3>
+        <ol class="num" start="39" style="font-size:18px">
+          <li>Hose stream allowance included</li>
+          <li>Inside hose station locations</li>
+          <li>Standpipe connections (if any)</li>
+          <li>Underground piping (separate from §10)</li>
+          <li>Fire pump make/model/rating</li>
+          <li>Storage tank capacity &amp; elevation</li>
+          <li>Pressure tanks (if any)</li>
+          <li>Special systems (deluge, foam, water mist)</li>
+          <li><b class="hi">Edition year of NFPA 13</b> to which the system is designed</li>
+        </ol>
+        <div class="mnem" style="margin-top:14px"><b>§27.1.4 — Companion document:</b> A signed copy of the <b>owner's certificate</b> must accompany the working plans submittal, along with manufacturer's installation instructions for any specially listed equipment.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 8 · Documentation</span><span>§27.1.3 47-item checklist Pt. 2</span></div>
+</section>
+
+<!-- SLIDE 47 — 4 FORM SHEETS -->
+<section class="slide" data-n="47">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 8 · §27.4.5</span><span class="snum">SLIDE 47 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">The 4 Required <em>Form Sheets</em></h1>
+    <div class="sub">§27.4.5.1.1 — Every hydraulic submittal needs all four, in order</div>
+    <div class="grid-2">
+      <div class="card good"><h3>Sheet 1 — Summary (§27.4.5.2)</h3>
+        <p>The cover sheet. Shows the top-level numbers and project ID.</p>
+        <ul class="clean" style="margin-top:6px;font-size:19px">
+          <li>Project name, location, drawing number, date</li>
+          <li>Occupancy / commodity classification</li>
+          <li>Design area, density, # of sprinklers calc'd</li>
+          <li>Total water requirements (sprinklers + hose)</li>
+          <li>Water supply: static, residual, test flow, date</li>
+          <li>Elevation of highest calculated sprinkler</li>
+          <li>Ceiling height (for QR reduction documentation)</li>
+        </ul>
+      </div>
+      <div class="card accent"><h3>Sheet 2 — Graph (§27.4.5.3)</h3>
+        <p>The Q¹·⁸⁵ supply-vs-demand visual.</p>
+        <ul class="clean" style="margin-top:6px;font-size:19px">
+          <li>Water supply curve (from flow test)</li>
+          <li>Sprinkler system demand point plotted</li>
+          <li>Hose demand shown separately</li>
+          <li>In-rack demand (if applicable)</li>
+          <li>Additional fire pump pressure (if applicable)</li>
+        </ul>
+      </div>
+      <div class="card"><h3>Sheet 3 — Supply/Node Analysis (§27.4.5.4)</h3>
+        <p>The map between nodes and the field.</p>
+        <ul class="clean" style="margin-top:6px;font-size:19px">
+          <li>Node tags tied back to shop drawings</li>
+          <li>Elevation at each node in ft (m)</li>
+          <li>K-factor for all flowing nodes (sprinklers)</li>
+        </ul>
+      </div>
+      <div class="card warn"><h3>Sheet 4 — Detailed Worksheets (§27.4.5.5-5.6)</h3>
+        <p>The raw math.</p>
+        <ul class="clean" style="margin-top:6px;font-size:19px">
+          <li>Pressure and discharge at each node</li>
+          <li>Each pipe segment: flow, pipe size, length, friction loss</li>
+          <li>Elevation change psi at each segment</li>
+        </ul>
+      </div>
+    </div>
+    <div class="mnem"><b>§27.4.5.1.2 — Order is mandatory:</b> Data must be presented in the order shown in Figures 27.4.5.1.2(a) through (d). Reordering the forms is not permitted. AHJs use the standard order to find what they need quickly.</div>
+  </div>
+  <div class="ftr"><span>Module 8 · Documentation</span><span>§27.4.5 The 4 form sheets</span></div>
+</section>
+
+<!-- SLIDE 48 — READING A REAL CALC -->
+<section class="slide" data-n="48">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 8 · REAL CALC</span><span class="snum">SLIDE 48 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Reading a <em>Real Calc Submittal</em></h1>
+    <div class="sub">What an AHJ reviewer scans for in 60 seconds</div>
+    <div class="grid-2">
+      <div class="card" style="font-family:'JetBrains Mono',monospace;font-size:14px;background:rgba(0,0,0,0.30)">
+        <h3 style="font-family:'Inter',sans-serif">Summary Sheet Excerpt</h3>
+<pre style="margin:0;color:var(--txt);line-height:1.55;white-space:pre-wrap">PROJECT: Acme Retail Box
+LOCATION: 1234 Main St, Anytown IL
+NFPA 13 EDITION: <b style="color:#5EBBFF">2019</b>
+
+OCCUPANCY: Mercantile · <b style="color:#5EBBFF">OH1</b>
+DESIGN APPROACH: Hydraulic
+
+DESIGN POINT (Fig. 19.3.3.1.1):
+  Density:     <b style="color:#fff">0.15 gpm/ft²</b>
+  Area:        1,500 ft² · QR red. <b style="color:#FFC25C">→ 1,305 ft²</b>
+  Sprinklers:  K-5.6 QR @ 130 ft²/spk
+  # spk calc:  <b style="color:#fff">11</b>
+
+DEMAND AT BASE OF RISER:
+  Sprinklers:  249.0 gpm @ 36.8 psi
+  Hose:        + 250 gpm
+  TOTAL:       <b style="color:#FFCDB6">499 gpm @ 36.8 psi</b>
+
+WATER SUPPLY:
+  Static:      78 psi (Q=0)
+  Residual:    64 psi @ 1,250 gpm
+  Test date:   2026-04-02 (within 12 mo ✓)
+  Tested by:   Smith Hydrant Co.
+
+MARGIN:      35.2 psi <b style="color:#7AE9C0">PASS</b></pre>
+      </div>
+      <div class="stack">
+        <div class="card accent"><h3>The Reviewer's 60-Second Pass</h3>
+          <ol class="num" style="font-size:18px">
+            <li>NFPA 13 edition cited? (avoid mismatch with adopted version)</li>
+            <li>Hazard class makes sense for occupancy?</li>
+            <li>Density/area chosen lands on the curve?</li>
+            <li>QR reduction conditions met?</li>
+            <li>Flow test &lt;12 months old?</li>
+            <li>Demand point passes the supply curve with margin?</li>
+            <li>Hose stream + duration correct for hazard?</li>
+            <li>K-factor consistent with sprinkler model on plans?</li>
+          </ol>
+        </div>
+        <div class="card warn"><h3>Quick Rejects</h3>
+          <p>Reviewers reject for:</p>
+          <ul class="clean" style="margin-top:6px">
+            <li>Missing or wrong NFPA edition</li>
+            <li>Demand exceeds supply with no pump shown</li>
+            <li>Flow test &gt;12 months without written AHJ waiver</li>
+            <li>Working plans missing 47-item details</li>
+            <li>Form sheets out of order</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 8 · Documentation</span><span>Reading a real calc submittal</span></div>
+</section>
+
+<!-- SLIDE 49 — QUIZ 5 -->
+<section class="slide" data-n="49">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 8 · QUIZ 5</span><span class="snum">SLIDE 49 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Quiz 5 — <em>Water Supply &amp; Documentation</em></h1>
+    <div class="sub">Click any choice for instant feedback</div>
+    <div class="quiz-grid">
+      <div class="qbox"><div class="qn">Q1</div><div class="qt">A demand of 499 gpm @ 36.8 psi against a supply giving 72 psi at 499 gpm. Result:</div>
+        <ul class="choices" data-correct="A"><li data-key="A"><span class="k">A</span>PASS — supply exceeds demand pressure</li><li data-key="B"><span class="k">B</span>FAIL — needs a fire pump</li><li data-key="C"><span class="k">C</span>Need additional testing</li><li data-key="D"><span class="k">D</span>Reduce design area</li></ul>
+        <div class="explain"><b>A.</b> Supply at the design flow exceeds the required pressure. 35.2 psi margin — passes cleanly.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q2</div><div class="qt">Why is the X-axis of the hydraulic graph scaled as Q¹·⁸⁵?</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>To make the demand point easy to find</li><li data-key="B"><span class="k">B</span>To match SI units</li><li data-key="C"><span class="k">C</span>So the water supply curve plots as a straight line (Hazen-Williams)</li><li data-key="D"><span class="k">D</span>Arbitrary convention</li></ul>
+        <div class="explain"><b>C — §27.4.5.3.</b> Hazen-Williams friction loss ∝ Q¹·⁸⁵, so the scale linearizes the supply curve for visual comparison.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q3</div><div class="qt">Per §27.4.5.1.2, the four form sheets must be:</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>In any order convenient for the AHJ</li><li data-key="B"><span class="k">B</span>In the order shown in Figures 27.4.5.1.2(a)–(d)</li><li data-key="C"><span class="k">C</span>Submitted electronically only</li><li data-key="D"><span class="k">D</span>In alphabetical order by node tag</li></ul>
+        <div class="explain"><b>B.</b> Reordering is not permitted. Standardized order helps reviewers find data quickly.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q4</div><div class="qt">Item 47 of the working plan checklist requires what?</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>The owner's signature in three places</li><li data-key="B"><span class="k">B</span>A spare-sprinkler inventory</li><li data-key="C"><span class="k">C</span>Edition year of NFPA 13 to which the system is designed</li><li data-key="D"><span class="k">D</span>NICET cert number of the designer</li></ul>
+        <div class="explain"><b>C — §27.1.3 item 47.</b> The NFPA 13 edition the design follows. Critical because code differs between editions and AHJ adoption varies.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 8 · Documentation</span><span>Quiz 5 — Supply &amp; Documentation</span></div>
+</section>
+
+<!-- SLIDE 50 — APPLY PT.1 -->
+<section class="slide" data-n="50">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 9 · APPLY 1/5</span><span class="snum">SLIDE 50 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">End-to-End Pt. 1 — <em>Project Setup</em></h1>
+    <div class="sub">Strip Mall — 14,000 ft² mercantile + 2,000 ft² restaurant wing</div>
+    <div class="grid-2">
+      <div class="card"><h3>The Brief</h3>
+        <ul class="clean">
+          <li><b>Building:</b> Single-story strip mall, 16,000 ft² total</li>
+          <li><b>Construction:</b> Steel frame, noncombustible flat metal deck, ceiling 12 ft</li>
+          <li><b>Spaces:</b> 14,000 ft² mercantile (clothing, gift shops) + 2,000 ft² restaurant kitchen/dining</li>
+          <li><b>Water:</b> City flow test — static 65 psi, residual 50 psi @ 1,100 gpm</li>
+          <li><b>System:</b> Wet pipe, single riser feeding the whole shell</li>
+          <li><b>Owner cert:</b> Provided, signed, dated 2026-05-01</li>
+        </ul>
+      </div>
+      <div class="card accent"><h3>The First Decisions</h3>
+        <ol class="num">
+          <li><b class="hi">Occupancy hazard:</b> Mercantile = OH1; Restaurant service area = OH1 too (per §4.3.3 list)</li>
+          <li><b class="hi">Design approach:</b> 16,000 ft² is well over the 5,000 ft² pipe-schedule limit → must be hydraulic</li>
+          <li><b class="hi">System protection area:</b> 16,000 ft² &lt; 52,000 ft² OH limit → one system OK</li>
+          <li><b class="hi">QR sprinklers?</b> Ceiling 12 ft, wet pipe, OH → yes, eligible for design-area reduction</li>
+        </ol>
+      </div>
+    </div>
+    <div class="mnem"><b>Mental check:</b> Before any math, walk the building. Are there areas that look hotter than OH1? (Storage room with cardboard piles → check Ch. 20 misc rules. Restaurant kitchen → cooking equipment per §9.4 hood protection separately.) Catch hidden hazards now, not at the AHJ review.</div>
+  </div>
+  <div class="ftr"><span>Module 9 · Apply</span><span>Pt. 1 — Project setup</span></div>
+</section>
+
+<!-- SLIDE 51 — APPLY PT.2 HAZARD+DENSITY -->
+<section class="slide" data-n="51">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 9 · APPLY 2/5</span><span class="snum">SLIDE 51 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Pt. 2 — <em>Hazard + Density</em></h1>
+    <div class="sub">Picking a point on the OH1 curve</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>The Choices</h3>
+        <table class="data">
+          <thead><tr><th>Density</th><th>Area (base)</th><th>w/ QR red.</th><th># Sprinklers @130 ft²</th></tr></thead>
+          <tbody>
+            <tr><td>0.15 gpm/ft²</td><td>1,500 ft²</td><td>1,257 ft² (-16%)</td><td>10</td></tr>
+            <tr><td>0.13 gpm/ft²</td><td>~2,000 ft²</td><td>1,676 ft²</td><td>13</td></tr>
+            <tr><td>0.10 gpm/ft²</td><td>~3,900 ft²</td><td>3,267 ft²</td><td>26</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:14px;color:var(--blue-3)">All valid points on the OH1 curve. Which to pick?</p>
+      </div>
+      <div class="card good"><h3>Selection Rationale</h3>
+        <p>Choose <b class="hi">0.15 gpm/ft² @ 1,257 ft²</b>:</p>
+        <ul class="clean" style="margin-top:8px">
+          <li>Fewest sprinklers in design area (lowest flow)</li>
+          <li>Smallest pipes upstream (cheaper construction)</li>
+          <li>QR reduction: 12 ft ceiling → y = -3(12)+55 = <b>19% reduction</b></li>
+          <li>Adjusted area: 1,500 × (1 - 0.19) = <b>1,215 ft²</b></li>
+          <li># sprinklers = 1,215 / 130 = 9.35 → <b>10</b> (round up §27.2.4.2.2)</li>
+        </ul>
+        <p style="margin-top:14px"><b>1.2√A check:</b> 1.2 × √1,215 = 41.8 ft → branch line must span ≥ 42 ft. With 10 ft spacing → 5 sprinklers × 10 = 50 ft ✓</p>
+      </div>
+    </div>
+    <div class="ex"><h4>Per-sprinkler design flow</h4><p>Q = density × coverage = 0.15 × 130 = <b style="color:#fff">19.5 gpm</b> per sprinkler. Required pressure (K-5.6): P = (19.5/5.6)² = <b style="color:#fff">12.13 psi</b>. Total sprinkler flow (without upstream pressure buildup) = 10 × 19.5 = ~195 gpm baseline.</p></div>
+  </div>
+  <div class="ftr"><span>Module 9 · Apply</span><span>Pt. 2 — Hazard + density</span></div>
+</section>
+
+<!-- SLIDE 52 — APPLY PT.3 HYDRAULIC WALKTHROUGH -->
+<section class="slide" data-n="52">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 9 · APPLY 3/5</span><span class="snum">SLIDE 52 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Pt. 3 — <em>Hydraulic Calc</em></h1>
+    <div class="sub">Building the demand point</div>
+    <div class="grid-2">
+      <div class="card"><h3>Branch Line Walk (similar to slide 38)</h3>
+        <p>10 sprinklers across 2 branch lines × 5 sprinklers each, 10 ft spacing:</p>
+        <pre style="font-family:'JetBrains Mono',monospace;font-size:14px;line-height:1.5;color:var(--txt);background:rgba(0,0,0,0.30);padding:10px 14px;border-radius:6px;margin:0">Most remote spk: 19.5 gpm @ 12.13 psi (start)
+After 5 spk + 1¼"/1½"/2" upsize chain:
+  Branch arrives at CM:  <b style="color:#fff">~112 gpm @ ~21 psi</b>
+
+Both branches symmetric, combined at CM:
+  Total CM flow:         <b style="color:#fff">~224 gpm @ ~21 psi</b>
+
+Cross main run + 4" riser, 12 ft up:
+  + Friction:    ~1.5 psi
+  + Elevation:   12 × 0.433 = 5.2 psi
+  + ALL fittings (3 ells, 1 tee): ~0.8 psi
+
+Base of riser: <b style="color:#FFCDB6">224 gpm @ ~28.5 psi (sprinkler only)</b></pre>
+      </div>
+      <div class="card accent"><h3>Adding Hose</h3>
+        <p>Add hose stream allowance (Table 19.3.3.1.2):</p>
+        <pre style="font-family:'JetBrains Mono',monospace;font-size:16px;color:var(--txt);background:rgba(0,0,0,0.30);padding:10px 14px;border-radius:6px;margin:0">Sprinkler:    224 gpm @ 28.5 psi
++ Hose (OH):  + 250 gpm
+─────────────────────────────────
+SYSTEM DEMAND: <b style="color:#FFCDB6">474 gpm @ 28.5 psi</b>
+Duration:     60–90 min (OH)</pre>
+        <p style="margin-top:14px;color:var(--blue-3)">Hose adds to the flow at the same pressure point.</p>
+      </div>
+    </div>
+    <div class="card warn" style="margin-top:14px"><h3>1.2√A &amp; Junction Balance — Sanity</h3>
+      <p>1.2√A check: branch spans 50 ft ≥ 1.2×√1,215 = 41.8 ft ✓<br>
+      Junction balance: both branches symmetric → balance within 0.5 psi ✓<br>
+      Velocity at 4-in. riser: 474 gpm in 4" pipe ≈ 12 fps — well under 32 fps ✓</p>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 9 · Apply</span><span>Pt. 3 — Hydraulic calc</span></div>
+</section>
+
+<!-- SLIDE 53 — APPLY PT.4 VERIFY SUPPLY -->
+<section class="slide" data-n="53">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 9 · APPLY 4/5</span><span class="snum">SLIDE 53 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Pt. 4 — <em>Verify the Supply</em></h1>
+    <div class="sub">Demand vs available water — does this design ship?</div>
+    <div class="grid-2">
+      <div class="card good"><h3>Supply Projection</h3>
+        <p>From flow test (65 psi static, 50 psi @ 1,100 gpm), project the supply line to the design flow:</p>
+        <ul class="clean" style="margin-top:8px">
+          <li>Static (Q=0): <b>65 psi</b></li>
+          <li>Residual (Q=1,100): <b>50 psi</b></li>
+          <li>Loss per Q¹·⁸⁵ unit: linear interpolation</li>
+          <li>Supply at 474 gpm: <b style="color:#7AE9C0">~58 psi</b></li>
+        </ul>
+        <p style="margin-top:14px"><b>System demand: 474 gpm @ 28.5 psi</b><br>
+        <b>Available supply: 474 gpm @ 58 psi</b></p>
+        <p style="margin-top:8px;color:#7AE9C0;font-weight:700;font-size:24px">Margin: 29.5 psi — PASS</p>
+      </div>
+      <div class="card accent"><h3>The Final Decisions</h3>
+        <ul class="clean">
+          <li><b>No fire pump needed</b> — city supply alone passes with healthy margin</li>
+          <li><b>Underground lead-in size:</b> 6-in. typical for this scale</li>
+          <li><b>System layout:</b> Single 4-in. riser, 4-in. cross main, 2/1½/1¼/1-in. branch lines</li>
+          <li><b>Owner saving:</b> No pump room, no NFPA 20 design, no electrical/fuel for pump</li>
+          <li><b>AHJ submittal:</b> 4 form sheets + working plans (47 items) + signed owner cert</li>
+        </ul>
+      </div>
+    </div>
+    <div class="ex"><h4>What if supply had failed?</h4><p>If demand had been 474 gpm @ 60 psi (higher elevation building, say a 3-story), the supply would only give 58 psi at that flow. <b class="hi">Short by 2 psi</b>. Options: (a) fire pump sized at ~20 psi boost (modest), or (b) upsize pipe to reduce friction loss by 2+ psi (often cheaper than a pump). The Q¹·⁸⁵ graph makes this trade-off visible.</p></div>
+  </div>
+  <div class="ftr"><span>Module 9 · Apply</span><span>Pt. 4 — Verify supply</span></div>
+</section>
+
+<!-- SLIDE 54 — APPLY PT.5 COMMON MISTAKES -->
+<section class="slide" data-n="54">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 9 · APPLY 5/5</span><span class="snum">SLIDE 54 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Pt. 5 — <em>Common Field Mistakes</em></h1>
+    <div class="sub">Real failures designers make on Ch. 19 / Ch. 27 work</div>
+    <div class="grid-2">
+      <div class="stack">
+        <div class="card warn"><h3>① Forgetting fitting equivalent lengths</h3>
+          <p>10 ft of pipe + a 90° ell at 1-in. = 12 ft equivalent. Skip the ell and your friction loss is 20% low. Calculation passes; reality fails.</p>
+        </div>
+        <div class="card warn"><h3>② Picking the WRONG density/area point</h3>
+          <p>Choosing 0.10 gpm/ft² over 3,900 ft² when you could've chosen 0.15 over 1,500 ft² makes pipes BIGGER, not smaller. Try both — the math doesn't intuit.</p>
+        </div>
+        <div class="card warn"><h3>③ Using a wet C-value on a dry system</h3>
+          <p>C=120 vs C=100 — a 20-point error. Friction loss off by ~30%. Software defaults catch this; hand calcs often don't.</p>
+        </div>
+        <div class="card warn"><h3>④ Skipping the elevation term</h3>
+          <p>0.433 psi/ft adds up fast. 30 ft to a roof = 13 psi. Missing this passes the wrong design.</p>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="card warn"><h3>⑤ QR reduction without all 4 conditions</h3>
+          <p>Used QR sprinklers on a dry system, or on EH, or with ceiling 22 ft. None qualify — reduction is invalid.</p>
+        </div>
+        <div class="card warn"><h3>⑥ Flow test &gt;12 months without AHJ approval</h3>
+          <p>§4.6.1.1 cap is hard. Don't assume the AHJ will look the other way. Get a new test or get a written waiver.</p>
+        </div>
+        <div class="card warn"><h3>⑦ Forgetting the dry pipe area increase</h3>
+          <p>§19.3.3.2.5 mandates +30% area for dry systems. Forgetting it means under-designing the most fire-prone systems (the dry ones).</p>
+        </div>
+        <div class="card good"><h3>Prevention Discipline</h3>
+          <p>Build a <b>review checklist</b> for every calc submittal that explicitly hits each of the above. Trust software, but verify the inputs — software only computes what you feed it.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 9 · Apply</span><span>Pt. 5 — Common field mistakes</span></div>
+</section>
+
+<!-- SLIDE 55 — FINAL EXAM PT.1 RECALL -->
+<section class="slide" data-n="55">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 10 · FINAL — RECALL</span><span class="snum">SLIDE 55 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Final Exam Pt. 1 — <em>Recall</em></h1>
+    <div class="sub">Numbers and section refs you should know cold</div>
+    <div class="quiz-grid">
+      <div class="qbox"><div class="qn">Q1</div><div class="qt">Hazen-Williams formula:</div>
+        <ul class="choices" data-correct="A"><li data-key="A"><span class="k">A</span>p = 4.52 × Q¹·⁸⁵ / (C¹·⁸⁵ × d⁴·⁸⁷)</li><li data-key="B"><span class="k">B</span>p = Q² / (K × d)</li><li data-key="C"><span class="k">C</span>Q = K√P</li><li data-key="D"><span class="k">D</span>p = ρ × g × h</li></ul>
+        <div class="explain"><b>A — §27.2.2.1.1.</b> Q=K√P is sprinkler discharge (different formula). Hazen-Williams is friction loss per foot of pipe.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q2</div><div class="qt">Minimum design area for an Extra Hazard system:</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>1,000 ft²</li><li data-key="B"><span class="k">B</span>1,500 ft²</li><li data-key="C"><span class="k">C</span>2,500 ft²</li><li data-key="D"><span class="k">D</span>5,000 ft²</li></ul>
+        <div class="explain"><b>C — §19.3.3.1.4.</b> LH/OH bottom out at 1,500 ft². EH at 2,500 ft².</div>
+      </div>
+      <div class="qbox"><div class="qn">Q3</div><div class="qt">Total hose stream for an Extra Hazard system:</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>100 gpm</li><li data-key="B"><span class="k">B</span>250 gpm</li><li data-key="C"><span class="k">C</span>500 gpm</li><li data-key="D"><span class="k">D</span>1,000 gpm</li></ul>
+        <div class="explain"><b>C — Table 19.3.3.1.2.</b> EH = 500. OH = 250. LH = 100.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q4</div><div class="qt">Junction-balance pressure tolerance:</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>0.1 psi</li><li data-key="B"><span class="k">B</span>0.5 psi</li><li data-key="C"><span class="k">C</span>1.0 psi</li><li data-key="D"><span class="k">D</span>2.0 psi</li></ul>
+        <div class="explain"><b>B — §27.2.2.4.1.</b> 0.5 psi (0.03 bar). Highest pressure carries forward.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 10 · Mastery</span><span>Final Pt. 1 — Recall</span></div>
+</section>
+
+<!-- SLIDE 56 — FINAL EXAM PT.2 APPLICATION -->
+<section class="slide" data-n="56">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 10 · FINAL — APPLICATION</span><span class="snum">SLIDE 56 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Final Exam Pt. 2 — <em>Application</em></h1>
+    <div class="sub">Calculations and code interpretations</div>
+    <div class="quiz-grid">
+      <div class="qbox"><div class="qn">Q1</div><div class="qt">An OH2 dry pipe system designs to 0.20 gpm/ft² over 1,500 ft² base. Adjusted area?</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>1,500 ft² (no change)</li><li data-key="B"><span class="k">B</span>1,950 ft² (+30%)</li><li data-key="C"><span class="k">C</span>1,125 ft² (-25%)</li><li data-key="D"><span class="k">D</span>2,000 ft² (EH floor)</li></ul>
+        <div class="explain"><b>B — §19.3.3.2.5.</b> Dry pipe gets +30% area. Density unchanged.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q2</div><div class="qt">K-5.6 at 25 psi — discharge?</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>14.0 gpm</li><li data-key="B"><span class="k">B</span>22.4 gpm</li><li data-key="C"><span class="k">C</span>28.0 gpm</li><li data-key="D"><span class="k">D</span>35.0 gpm</li></ul>
+        <div class="explain"><b>C — Q=K√P.</b> 5.6 × √25 = 5.6 × 5 = 28.0 gpm.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q3</div><div class="qt">QR reduction at 12 ft ceiling, wet pipe, OH1, QR throughout:</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>40% flat</li><li data-key="B"><span class="k">B</span>19% (y = -3×12+55)</li><li data-key="C"><span class="k">C</span>25%</li><li data-key="D"><span class="k">D</span>0% (above 10 ft)</li></ul>
+        <div class="explain"><b>B.</b> Above 10 ft: y = -3x+55. At x=12: y = -36+55 = 19%.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q4</div><div class="qt">Hazen-Williams C value for dry steel pipe:</div>
+        <ul class="choices" data-correct="A"><li data-key="A"><span class="k">A</span>100</li><li data-key="B"><span class="k">B</span>120</li><li data-key="C"><span class="k">C</span>140</li><li data-key="D"><span class="k">D</span>150</li></ul>
+        <div class="explain"><b>A — Table 27.2.4.8.1.</b> Dry steel drops to 100. Wet = 120. Copper/plastic = 150.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 10 · Mastery</span><span>Final Pt. 2 — Application</span></div>
+</section>
+
+<!-- SLIDE 57 — FINAL EXAM PT.3 SCENARIO -->
+<section class="slide" data-n="57">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 10 · FINAL — SCENARIO</span><span class="snum">SLIDE 57 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Final Exam Pt. 3 — <em>Scenarios</em></h1>
+    <div class="sub">Real-world judgment</div>
+    <div class="quiz-grid">
+      <div class="qbox"><div class="qn">Q1 — Scenario</div><div class="qt">An existing pipe-schedule EH system has a 2,000 ft² tenant addition. Path?</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>Pipe schedule only (existing matches)</li><li data-key="B"><span class="k">B</span>Pipe schedule per §19.3.2.3(2) for existing-EH addition</li><li data-key="C"><span class="k">C</span>Must redesign the whole building hydraulically</li><li data-key="D"><span class="k">D</span>Refer to NFPA 25 only</li></ul>
+        <div class="explain"><b>B.</b> §19.3.2.3(2) allows pipe schedule for additions/modifications to <em>existing</em> EH pipe-schedule systems. Document the existing design basis on the addition's drawings.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q2 — Scenario</div><div class="qt">Demand 800 gpm @ 60 psi. Supply gives 800 gpm @ 45 psi. Best fix?</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>Reduce density</li><li data-key="B"><span class="k">B</span>Add fire pump providing ~15+ psi boost</li><li data-key="C"><span class="k">C</span>Install a storage tank</li><li data-key="D"><span class="k">D</span>Use copper pipe everywhere</li></ul>
+        <div class="explain"><b>B.</b> Supply has the FLOW (800 gpm) but lacks PRESSURE (45 vs 60 psi). A fire pump per NFPA 20 fills the pressure gap. Tank needed only when flow is short. Copper pipe wouldn't gain enough.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q3 — Scenario</div><div class="qt">A reviewer asks: "Your calc only proves 0.15 over 1,500 ft²; why didn't you also prove 0.10 over 3,900?"</div>
+        <ul class="choices" data-correct="C"><li data-key="A"><span class="k">A</span>Redo the calc to prove both</li><li data-key="B"><span class="k">B</span>Apologize and add the second point</li><li data-key="C"><span class="k">C</span>Cite §19.3.3.2.1.2 — any single point on the curve satisfies</li><li data-key="D"><span class="k">D</span>Escalate to AHJ supervisor</li></ul>
+        <div class="explain"><b>C.</b> §19.3.3.2.1.2 explicitly: any single point on the curve satisfies. Politely cite it. Don't redo work the code doesn't require.</div>
+      </div>
+      <div class="qbox"><div class="qn">Q4 — Scenario</div><div class="qt">A 4,800 ft² Light Hazard tenant fit-out, ceiling 9 ft, wet pipe, QR sprinklers. Best design approach?</div>
+        <ul class="choices" data-correct="B"><li data-key="A"><span class="k">A</span>Hydraulic required — under 5,000 ft²</li><li data-key="B"><span class="k">B</span>Pipe schedule permitted; QR reduction may also apply per §19.3.3.2.3</li><li data-key="C"><span class="k">C</span>Pipe schedule only — no QR reduction</li><li data-key="D"><span class="k">D</span>Hydraulic only — QR forces hydraulic</li></ul>
+        <div class="explain"><b>B.</b> &lt;5,000 ft² LH qualifies for pipe schedule (§19.3.2.3(3)). QR reduction applies to either method when its 4 conditions are met. Ceiling 9 ft → flat 40% area reduction.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 10 · Mastery</span><span>Final Pt. 3 — Scenarios</span></div>
+</section>
+
+<!-- SLIDE 58 — CHEAT SHEET -->
+<section class="slide" data-n="58">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 10 · CHEAT SHEET</span><span class="snum">SLIDE 58 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Mastery <em>Cheat Sheet</em></h1>
+    <div class="sub">24 rules that cover 90% of Ch. 19 + Ch. 27 design decisions</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>Chapter 19 — Design Approaches</h3>
+        <ol class="num" style="font-size:17px">
+          <li><b>Hydraulic supersedes pipe schedule</b> (§19.3.1.1)</li>
+          <li><b>Pipe schedule</b>: LH/OH, additions to existing EH, or new ≤ 5,000 ft² (§19.3.2.3)</li>
+          <li><b>EH new systems = hydraulic</b> (§19.3.2)</li>
+          <li><b>Density / area starting points:</b> LH 0.10/1,500 · OH1 0.15/1,500 · OH2 0.20/1,500 · EH1 0.30/2,500 · EH2 0.40/2,500</li>
+          <li><b>Minimum areas:</b> 1,500 ft² LH/OH · 2,500 ft² EH (§19.3.3.1.4)</li>
+          <li><b>Single-point rule:</b> any valid point on the curve satisfies (§19.3.3.2.1.2)</li>
+          <li><b>QR reduction:</b> wet, LH/OH, ≤20 ft, QR throughout; y = -3x+55, capped 40% &lt;10 ft (§19.3.3.2.3)</li>
+          <li><b>Dry pipe:</b> +30% design area (§19.3.3.2.5)</li>
+          <li><b>High-temp in EH:</b> -25% area, ≥2,000 ft² (§19.3.3.2.4)</li>
+          <li><b>Hose:</b> 100 / 250 / 500 gpm (LH/OH/EH) (Table 19.3.3.1.2)</li>
+          <li><b>Duration:</b> 30 / 60-90 / 90-120 min</li>
+          <li><b>Flow test &lt; 12 months</b> at submittal (§4.6.1.1)</li>
+        </ol>
+      </div>
+      <div class="card"><h3>Chapter 27 — Plans &amp; Calcs</h3>
+        <ol class="num" start="13" style="font-size:17px">
+          <li><b>Calc starts at remote sprinkler</b>, works back (§27.2.1.1)</li>
+          <li><b>Min pipe size</b> 1-in. steel / ¾-in. copper (§27.2.1.2)</li>
+          <li><b>1.2 √A rule</b>: branch-parallel dimension ≥ 1.2√A (§27.2.4.2.1)</li>
+          <li><b>Round fractional sprinklers UP</b> (§27.2.4.2.2)</li>
+          <li><b>Hazen-Williams:</b> p = 4.52 Q¹·⁸⁵ / (C¹·⁸⁵ d⁴·⁸⁷) (§27.2.2.1.1)</li>
+          <li><b>C values:</b> 120 wet steel · 100 dry steel · 150 copper/plastic (Table 27.2.4.8.1)</li>
+          <li><b>Fittings = equivalent length</b> per Table 27.2.3.1.1</li>
+          <li><b>Elevation:</b> 0.433 psi/ft (§27.2.4.8.1)</li>
+          <li><b>Junction balance:</b> ≤ 0.5 psi tolerance (§27.2.2.4.1)</li>
+          <li><b>Q = K √P</b> — discharge formula (§27.2.2.5)</li>
+          <li><b>4 form sheets in order</b> (§27.4.5.1.2)</li>
+          <li><b>NFPA 13 edition stated</b> on plans (§27.1.3 item 47)</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 10 · Mastery</span><span>Cheat sheet — 24 rules</span></div>
+</section>
+
+<!-- SLIDE 59 — REFERENCE LIBRARY -->
+<section class="slide" data-n="59">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 10 · REFERENCE</span><span class="snum">SLIDE 59 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <h1 class="t">Reference <em>Library</em></h1>
+    <div class="sub">Where masters go for deeper info</div>
+    <div class="grid-2">
+      <div class="card accent"><h3>Primary Sources</h3>
+        <ul class="clean">
+          <li><b>NFPA 13 (2019)</b> — Chapters 19, 27, and Annex A commentary</li>
+          <li><b>NFPA 13 Handbook (2019)</b> — annotated examples + commentary</li>
+          <li><b>NFPA 20</b> — Stationary Fire Pumps (sizing, room, controllers)</li>
+          <li><b>NFPA 22</b> — Water Tanks for Private Fire Protection</li>
+          <li><b>NFPA 24</b> — Underground Mains &amp; Appurtenances</li>
+          <li><b>NFPA 25</b> — ITM (post-install)</li>
+        </ul>
+      </div>
+      <div class="card"><h3>Software &amp; Tools</h3>
+        <ul class="clean">
+          <li><b>HydraCAD / HydraTec</b> — industry-standard hydraulic calc engines</li>
+          <li><b>SprinkCAD / SprinkFDT</b> — alternative calc software</li>
+          <li><b>AutoCAD MEP</b> — sprinkler layout drafting</li>
+          <li><b>Hand calc spreadsheets</b> — for verification + simple jobs</li>
+        </ul>
+        <p style="margin-top:14px;color:var(--blue-3)">Knowing the math by hand makes you better at catching software errors.</p>
+      </div>
+      <div class="card good"><h3>Training &amp; Continuing Ed</h3>
+        <ul class="clean">
+          <li><b>NICET</b> Fire Protection Engineering Technology — Levels I–IV</li>
+          <li><b>AFSA</b> seminars, design correspondence courses</li>
+          <li><b>NFSA</b> training, technical advisory service (TAS)</li>
+          <li><b>SFPE</b> chapters &amp; technical conferences</li>
+          <li><b>Fire System Mastery</b> — CE for IL OSFM renewal</li>
+        </ul>
+      </div>
+      <div class="card warn"><h3>What's Next in FSM</h3>
+        <ul class="clean">
+          <li><b>Ch. 4 + Ch. 20</b> — General Requirements + Storage Foundations</li>
+          <li><b>Ch. 21–23</b> — Storage protection (CMDA, CMSA, ESFR)</li>
+          <li><b>Ch. 24</b> — Special storage configurations</li>
+          <li><b>Ch. 25</b> — In-rack sprinklers</li>
+          <li><b>Ch. 10 + Ch. 11</b> — Sprinkler types &amp; spacing rules</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="ftr"><span>Module 10 · Mastery</span><span>Reference library</span></div>
+</section>
+
+<!-- SLIDE 60 — COURSE COMPLETE -->
+<section class="slide divider-slide" data-n="60">
+  <div class="b tl"></div><div class="b tr"></div><div class="b bl"></div><div class="b br"></div>
+  <div class="hdr"><span class="pill">MODULE 10 · COMPLETE</span><span class="snum">SLIDE 60 / 60</span><span class="fsm">FSM</span></div>
+  <div class="body">
+    <div class="modnum">COURSE COMPLETE</div>
+    <h1 class="t"><em>You Now Understand</em></h1>
+    <div class="lede" style="margin-top:36px;font-size:30px">
+      The full design workflow from <b style="color:#fff">hazard classification</b> →<br>
+      <b style="color:#fff">density / area selection</b> → <b style="color:#fff">pipe sizing</b> →<br>
+      <b style="color:#fff">hydraulic calculation</b> → <b style="color:#fff">documentation</b>.
+    </div>
+    <div style="display:flex;gap:18px;justify-content:center;margin-top:48px;flex-wrap:wrap">
+      <span class="pill" style="font-size:18px;padding:14px 24px">60 Slides · 10 Modules</span>
+      <span class="pill" style="font-size:18px;padding:14px 24px;background:linear-gradient(180deg,rgba(29,158,117,0.18),rgba(29,158,117,0.10));border-color:rgba(29,158,117,0.55);color:#7AE9C0">6 Quizzes Complete</span>
+      <span class="pill" style="font-size:18px;padding:14px 24px">4 Worked Examples</span>
+      <span class="pill" style="font-size:18px;padding:14px 24px;background:linear-gradient(180deg,rgba(255,122,69,0.18),rgba(216,90,48,0.14));border-color:rgba(255,122,69,0.55);color:#FFCDB6">24-Rule Cheat Sheet</span>
+    </div>
+    <div class="mnem" style="margin-top:36px;max-width:900px;text-align:left"><b>Next step:</b> Take the cheat sheet (Slide 58) and pin it next to your desk. Then move on to Ch. 4 + Ch. 20 (the universal rules + storage foundation) if you haven't already.</div>
+  </div>
+  <div class="ftr"><span>Course Complete</span><span>NFPA 13 2019 Ed. | Chapters 19 &amp; 27</span></div>
+</section>
+
+</div>
+<script>
+const slides=document.querySelectorAll('.slide');
+const fill=document.getElementById('pfill');
+const curN=document.getElementById('curN');
+let idx=0;const TOTAL=60;
+function show(n){
+  n=Math.max(0,Math.min(slides.length-1,n));
+  slides[idx].classList.remove('active');slides[n].classList.add('active');idx=n;
+  const num=parseInt(slides[n].dataset.n,10)||(n+1);
+  curN.textContent=num;fill.style.width=(num/TOTAL*100)+'%';
+  history.replaceState(null,'','#'+num);
+}
+function next(){show(idx+1)}function prev(){show(idx-1)}
+let jumpBuf='';
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '||e.key==='j'){e.preventDefault();next()}
+  else if(e.key==='ArrowLeft'||e.key==='PageUp'||e.key==='k'){e.preventDefault();prev()}
+  else if(e.key==='Home'){e.preventDefault();show(0)}
+  else if(e.key==='End'){e.preventDefault();show(slides.length-1)}
+  else if(/^[0-9]$/.test(e.key)){jumpBuf+=e.key}
+  else if(e.key==='Enter'&&jumpBuf){
+    const n=parseInt(jumpBuf,10);jumpBuf='';
+    for(let i=0;i<slides.length;i++)if(parseInt(slides[i].dataset.n,10)===n){show(i);break}
+  }else{jumpBuf=''}
+});
+document.addEventListener('click',e=>{
+  const li=e.target.closest('.qbox .choices li');
+  if(li){
+    const ul=li.parentElement;const qbox=li.closest('.qbox');
+    const correct=ul.dataset.correct;
+    [...ul.children].forEach(c=>{
+      if(c.dataset.key===correct)c.dataset.correct='1';else c.dataset.wrong='1';
+    });
+    qbox.classList.add('revealed');return;
+  }
+});
+const h=parseInt(location.hash.replace('#',''),10);
+if(h&&h>=1&&h<=TOTAL){for(let i=0;i<slides.length;i++)if(parseInt(slides[i].dataset.n,10)===h){idx=i;break}slides[0].classList.remove('active');slides[idx].classList.add('active');curN.textContent=h;fill.style.width=(h/TOTAL*100)+'%';}
+else{curN.textContent=1;fill.style.width=(1/TOTAL*100)+'%';}
+</script>
+</body>
+</html>
