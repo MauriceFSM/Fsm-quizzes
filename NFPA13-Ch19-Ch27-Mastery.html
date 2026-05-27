@@ -168,6 +168,12 @@ table.data tr:last-child td{border-bottom:none}
 .bignum .x{font-size:17px;color:var(--txt);line-height:1.3}
 .eqn{font-family:'JetBrains Mono','SF Mono',monospace;font-size:42px;color:#fff;text-align:center;
   margin:14px 0;padding:16px;background:rgba(0,0,0,0.25);border-radius:10px;border:1px solid var(--line-soft)}
+/* Per-slide compaction for dense layouts */
+.slide[data-n="54"] .grid-2{gap:14px}
+.slide[data-n="54"] .stack{gap:12px}
+.slide[data-n="54"] .card{padding:14px 20px}
+.slide[data-n="54"] .card h3{font-size:15px;margin-bottom:6px}
+.slide[data-n="54"] .card p{font-size:17px;line-height:1.35;margin-bottom:4px}
 </style>
 </head>
 <body>
@@ -1071,9 +1077,8 @@ table.data tr:last-child td{border-bottom:none}
   <div class="body">
     <h1 class="t">Bridge — <em>From Demand to Documentation</em></h1>
     <div class="sub">Where Chapter 19 hands off to Chapter 27</div>
-    <div class="card" style="font-family:'JetBrains Mono',monospace;font-size:16px;background:rgba(0,0,0,0.30);flex:1">
-<pre style="margin:0;color:var(--txt);line-height:1.7;white-space:pre-wrap">
-          ┌─────────────────────────────────────────────┐
+    <div class="card" style="font-family:'JetBrains Mono',monospace;font-size:14px;background:rgba(0,0,0,0.30);flex:1;padding:18px 22px">
+<pre style="margin:0;color:var(--txt);line-height:1.4;white-space:pre-wrap">          ┌─────────────────────────────────────────────┐
           │   <b style="color:#5EBBFF">CHAPTER 19 — DESIGN APPROACHES</b>            │
           │                                             │
           │   <b style="color:#FFC25C">OUTPUTS</b>:                                    │
