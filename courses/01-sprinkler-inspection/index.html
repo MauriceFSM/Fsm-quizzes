@@ -290,6 +290,12 @@ const QUESTIONS=[
   opts:["Note it only if the owner asks about it","Document it, notify the owner, assess for impairment, and ensure it is corrected","Immediately shut down the entire building","Wait until the next annual inspection to address it"],a:1}
 ];
 const PASSPCT=70;
+
+/* ===== BACKEND CONFIG ===== */
+const COURSE_NAME='Sprinkler System Inspection Requirements';
+const ENDPOINT='https://script.google.com/macros/s/AKfycbwTzVpUPFpz3I3rWjpyjKMkNlJn9T8grGVGMBWuK11nquv_a7J_6BsHEufQtzmaStejeg/exec';
+let lastScoreStr='';
+
 const qForm=document.getElementById('quiz');
 QUESTIONS.forEach((item,i)=>{
   let h=`<div class="q"><p>${i+1}. ${item.q}</p>`;
@@ -325,6 +331,7 @@ function grade(){
   if(unanswered){alert("Please answer all 10 questions before submitting.");return;}
   const pct=Math.round(score/QUESTIONS.length*100);
   const passed=pct>=PASSPCT;
+  lastScoreStr=score+'/'+QUESTIONS.length+' ('+pct+'%)';
   document.getElementById('resultBlock').innerHTML=`
     <div class="result-big ${passed?'pass':'fail'}">${pct}%</div>
     <h2 class="${passed?'pass':'fail'}">${passed?'✓ You Passed!':'✗ Not quite — 70% needed'}</h2>
@@ -341,12 +348,38 @@ function resetQuiz(){document.getElementById('quiz').reset();go(1);}
 function issue(){
   const name=document.getElementById('fName').value.trim();
   const email=document.getElementById('fEmail').value.trim();
+  const license=document.getElementById('fLic').value.trim();
   if(!name){alert("Please enter your name.");return;}
   if(!email||!email.includes('@')){alert("Please enter a valid email.");return;}
   document.getElementById('certName').textContent=name;
   document.getElementById('certDate').textContent=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-  document.getElementById('emailBanner').innerHTML=`✅ In the live version a PDF copy is now emailed to <b>${email}</b> and your completion is logged. In this demo, download it below 👇`;
   go(3);
+  const banner=document.getElementById('emailBanner');
+  if(ENDPOINT){
+    banner.innerHTML=`⏳ Emailing your certificate to <b>${email}</b> and recording your completion…`;
+    sendCompletion(name,email,license).then(ok=>{
+      banner.innerHTML = ok
+        ? `✅ Your certificate has been emailed to <b>${email}</b> and your completion is recorded for OSFM. You can also download it below 👇`
+        : `⚠️ Your certificate is ready below — please download your copy. (We couldn't confirm the automatic email.)`;
+    });
+  } else {
+    banner.innerHTML=`✅ Certificate ready — <b>download it below 👇</b> (Automatic email + record-keeping activates once the backend is connected.)`;
+  }
+}
+
+async function sendCompletion(name,email,license){
+  try{
+    const canvas=await html2canvas(document.getElementById('certificate'),{scale:2,backgroundColor:'#ffffff',useCORS:true});
+    const {jsPDF}=window.jspdf;
+    const pdf=new jsPDF({orientation:'landscape',unit:'px',format:[canvas.width,canvas.height]});
+    pdf.addImage(canvas.toDataURL('image/jpeg',0.95),'JPEG',0,0,canvas.width,canvas.height);
+    const base64=pdf.output('datauristring').split(',')[1];
+    const payload={name,email,license,course:COURSE_NAME,score:lastScoreStr,result:'PASS',
+      date:document.getElementById('certDate').textContent,pdfBase64:base64};
+    await fetch(ENDPOINT,{method:'POST',mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+    return true;
+  }catch(err){ console.error('sendCompletion failed',err); return false; }
 }
 
 /* ================= DOWNLOAD PDF ================= */
@@ -354,10 +387,10 @@ function downloadCert(){
   const btn=document.getElementById('dlBtn');
   const name=document.getElementById('certName').textContent;
   btn.textContent='Generating…';btn.disabled=true;
-  html2canvas(document.getElementById('certificate'),{scale:2,backgroundColor:null,useCORS:true}).then(canvas=>{
+  html2canvas(document.getElementById('certificate'),{scale:2,backgroundColor:'#ffffff',useCORS:true}).then(canvas=>{
     const {jsPDF}=window.jspdf;
     const pdf=new jsPDF({orientation:'landscape',unit:'px',format:[canvas.width,canvas.height]});
-    pdf.addImage(canvas.toDataURL('image/png'),'PNG',0,0,canvas.width,canvas.height);
+    pdf.addImage(canvas.toDataURL('image/jpeg',0.95),'JPEG',0,0,canvas.width,canvas.height);
     pdf.save(`FSM Sprinkler Inspection CE Cert - ${name}.pdf`);
     btn.textContent='⬇ Download Certificate (PDF)';btn.disabled=false;
   }).catch(()=>{
