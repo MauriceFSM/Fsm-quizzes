@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NFPA 25 (2020) ITM — 8-Hour Comprehensive CE · Fire System Mastery</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A1524; --panel:#122032; --panel2:#16283E;
+    --orange:#F5821F; --red:#E23A1E; --gold:#F5B301; --teal:#17C3B2;
+    --ink:#FFFFFF; --muted:#93A4BC; --line:rgba(255,255,255,.10);
+    --bp:rgba(120,180,255,.16); --bpMajor:rgba(120,180,255,.30);
+    --green:#1D9E75; --red-dark:#b01031;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;color:var(--ink);font-family:'Montserrat',system-ui,sans-serif;line-height:1.5;
+    background:
+      radial-gradient(120% 60% at 88% -5%, rgba(245,130,31,.10), transparent 55%),
+      radial-gradient(90% 50% at -5% 105%, rgba(23,195,178,.08), transparent 55%),
+      #070E18;}
+  header{background:#000;border-bottom:1px solid var(--line);padding:12px 22px;display:flex;align-items:center;gap:14px}
+  header .hflame{height:32px;width:auto}
+  .brand{font-weight:900;letter-spacing:1px;font-size:17px}
+  .brand small{display:block;font-size:9px;letter-spacing:4px;color:var(--muted);font-weight:700}
+  .osfm{margin-left:auto;font-size:11px;color:var(--muted);text-align:right;line-height:1.3}
+  .osfm b{color:var(--teal)}
+  .wrap{max-width:1040px;margin:0 auto;padding:30px 20px 90px}
+
+  /* hero */
+  .hero{text-align:center;padding:20px 10px 26px}
+  .hero .eyebrow{font-family:'Barlow Condensed',sans-serif;letter-spacing:.26em;font-size:15px;color:var(--teal);text-transform:uppercase;margin-bottom:10px}
+  .hero h1{font-weight:900;font-size:42px;line-height:1.05;margin:0 0 10px;letter-spacing:-.5px}
+  .hero h1 .accent{color:var(--orange)}
+  .hero p{color:var(--muted);font-size:17px;max-width:680px;margin:0 auto}
+  .hero .badge{display:inline-block;margin-top:16px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.14em;font-size:15px;color:#0D0D0F;background:linear-gradient(90deg,var(--gold),var(--orange));padding:9px 20px;border-radius:30px;text-transform:uppercase}
+
+  /* progress */
+  .progwrap{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin:22px 0 26px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  .progwrap .lbl{font-weight:800;font-size:15px;white-space:nowrap}
+  .progwrap .lbl b{color:var(--gold)}
+  .ptrack{flex:1;min-width:200px;height:12px;background:var(--panel2);border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+  .ptrack i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--green));transition:width .5s}
+  .phours{font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.06em;font-size:15px;color:var(--muted);white-space:nowrap}
+
+  /* section cards */
+  .sections{display:grid;gap:12px}
+  .scard{display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:18px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 20px;transition:.15s;position:relative;overflow:hidden}
+  .scard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--line)}
+  .scard.avail{cursor:pointer}
+  .scard.avail:hover{border-color:var(--orange);transform:translateY(-1px)}
+  .scard.avail::before{background:linear-gradient(180deg,var(--orange),var(--red))}
+  .scard.passed::before{background:var(--green)}
+  .scard.locked{opacity:.5}
+  .snum{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:24px;background:var(--panel2);border:1px solid var(--line)}
+  .scard.avail .snum{background:linear-gradient(135deg,var(--orange),var(--red));color:#fff;border-color:transparent}
+  .scard.passed .snum{background:rgba(29,158,117,.18);color:var(--green);border-color:var(--green)}
+  .sbody .st{font-weight:800;font-size:18px;line-height:1.2}
+  .sbody .sc{color:var(--muted);font-size:13px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;margin-top:3px}
+  .sstat{font-weight:800;font-size:13px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase;padding:7px 14px;border-radius:20px;white-space:nowrap}
+  .sstat.go{background:linear-gradient(135deg,var(--orange),var(--red));color:#fff}
+  .sstat.done{background:rgba(29,158,117,.15);color:#8ff0cf;border:1px solid var(--green)}
+  .sstat.lock{background:var(--panel2);color:var(--muted);border:1px solid var(--line)}
+
+  /* certificate gate card */
+  .certgate{margin-top:22px;border-radius:16px;padding:24px;border:1px solid var(--line);
+    background:linear-gradient(135deg,rgba(245,179,1,.10),rgba(245,130,31,.05));text-align:center}
+  .certgate.locked{opacity:.7}
+  .certgate h2{font-size:24px;margin:0 0 6px}.certgate h2 .accent{color:var(--gold)}
+  .certgate p{color:var(--muted);font-size:15px;margin:0 auto 14px;max-width:560px}
+  button{font-family:inherit;font-size:15px;font-weight:700;border:none;border-radius:10px;padding:13px 26px;cursor:pointer;transition:.15s}
+  .btn{background:linear-gradient(135deg,var(--gold),var(--orange));color:#0D0D0F}
+  .btn:hover{filter:brightness(1.06)}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn-ghost{background:var(--panel2);color:var(--ink);border:1px solid var(--line)}
+  .foot{text-align:center;color:var(--muted);font-size:12px;margin-top:34px}
+  .foot a{color:var(--muted);text-decoration:underline;cursor:pointer}
+
+  /* ===== CERT MODAL ===== */
+  .modal{position:fixed;inset:0;background:rgba(3,6,12,.86);display:none;align-items:flex-start;justify-content:center;z-index:100;overflow:auto;padding:26px 14px}
+  .modal.on{display:flex}
+  .msheet{background:var(--panel);border:1px solid var(--line);border-radius:16px;max-width:960px;width:100%;padding:22px}
+  .msheet h2{margin:0 0 4px;font-size:20px}
+  .msheet .sub{color:var(--muted);font-size:14px;margin:0 0 16px}
+  .field{margin-bottom:14px}
+  .field label{font-size:13px;color:var(--muted);font-weight:600;display:block;margin-bottom:4px}
+  .field input{width:100%;padding:12px 14px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);font-size:15px;font-family:inherit}
+  .banner{background:rgba(29,158,117,.14);border:1px solid var(--green);color:#8ff0cf;border-radius:10px;padding:13px 16px;font-size:14px;font-weight:600;margin-bottom:16px}
+
+  .cert-stage{background:#333;padding:16px;border-radius:12px;overflow:auto;margin-top:8px}
+  #certificate{width:900px;height:636px;margin:0 auto;position:relative;font-family:Georgia,'Times New Roman',serif;
+    background:radial-gradient(circle at 50% 42%,#ffffff 0%,#fbe4e4 46%,#f3b9b9 100%);
+    border-radius:18px;box-shadow:0 10px 40px rgba(0,0,0,.5);padding:44px 52px;color:#111}
+  #certificate::after{content:"";position:absolute;inset:14px;border:2px solid rgba(176,16,49,.25);border-radius:12px;pointer-events:none}
+  .cert-top{display:flex;justify-content:space-between;align-items:flex-start}
+  .cert-left-logo{display:flex;flex-direction:column;align-items:center;width:120px}
+  .cert-left-logo .fsm-tag{font-weight:800;color:#c9a227;font-size:12px;margin-top:-2px;letter-spacing:1px}
+  .cert-osfm{font-size:11px;color:#7a1020;margin-top:6px;text-align:center;font-family:'Segoe UI',sans-serif;font-weight:700}
+  .cert-word{font-family:'Georgia',serif;font-weight:800;text-align:right;line-height:.92;color:#b0122e;font-size:48px;letter-spacing:2px}
+  .cert-title-block{margin-top:20px}
+  .cert-coc{font-size:23px;letter-spacing:2px;color:#111;font-weight:600}
+  .cert-course{font-size:30px;color:#d21f3c;margin:2px 0;font-weight:700;line-height:1.05}
+  .cert-nfpa{font-size:13px;color:#c0392b;margin:1px 0}
+  .cert-issued{margin-top:18px;font-size:18px;letter-spacing:1px;color:#111}
+  .cert-name{font-size:31px;color:#111;font-weight:700;border-bottom:2px solid #b0122e;display:inline-block;padding:0 30px 2px;margin-top:4px;min-width:340px;text-align:center}
+  .cert-body{font-size:18px;color:#b0122e;text-align:center;margin:20px 10px 6px;font-weight:600}
+  .cert-body small{display:block;font-size:12px;color:#c0392b;font-weight:400;margin-top:4px}
+  .cert-foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:26px}
+  .cert-foot .fld{text-align:center}
+  .cert-foot .val{font-size:18px;border-bottom:1.5px solid #333;padding:0 20px 3px;min-width:150px;display:inline-block}
+  .cert-foot .lbl{font-size:13px;color:#222;margin-top:5px}
+  .cert-sig-img{height:58px;width:auto;max-width:240px;object-fit:contain;display:block;margin:0 auto;border-bottom:1.5px solid #333;padding:0 14px 4px}
+  .flame-red{width:auto;height:58px;object-fit:contain}
+  .muted-note{color:var(--muted);font-size:12px;margin-top:12px}
+  @media(max-width:600px){
+    .hero h1{font-size:30px}.scard{grid-template-columns:48px 1fr;gap:12px}.sstat{grid-column:1/-1;justify-self:start;margin-top:4px}
+    #certificate{transform:scale(.62);transform-origin:top center;margin-bottom:-230px}
+  }
+</style>
+</head>
+<body>
+<header>
+  <img class="hflame" src="assets/flame.png" alt="FSM">
+  <div class="brand">FIRE SYSTEM<small>MASTERY</small></div>
+  <div class="osfm"><b>Illinois OSFM Approved</b><br>Continuing Education · 8.0 Hour CE Credit</div>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="eyebrow">Illinois OSFM Approved Continuing Education</div>
+    <h1>NFPA 25 (2020) ITM<br><span class="accent">8-Hour Comprehensive Course</span></h1>
+    <p>Eight sections covering the full inspection, testing, and maintenance of water-based fire protection systems. Complete each section and pass its quiz to unlock the next — earn your 8.0-hour certificate at the end.</p>
+    <span class="badge">8 Sections · 8.0 CE Hours · 70% to Pass Each Quiz</span>
+  </div>
+
+  <div class="progwrap">
+    <span class="lbl"><b id="pcount">0</b> of 8 sections complete</span>
+    <div class="ptrack"><i id="pbar"></i></div>
+    <span class="phours" id="phours">0.0 / 8.0 CE hours</span>
+  </div>
+
+  <div class="sections" id="sections"></div>
+
+  <div class="certgate locked" id="certgate">
+    <h2>🎓 Your <span class="accent">8.0-Hour Certificate</span></h2>
+    <p id="certmsg">Complete all 8 sections to unlock your certificate.</p>
+    <button class="btn" id="certbtn" disabled onclick="openCert()">Claim Certificate</button>
+  </div>
+
+  <div class="foot">
+    <span class="flame" style="color:var(--orange)">▲</span> FIRE SYSTEM MASTERY · firesystemmastery.com · NFPA 25 (2020)<br>
+    <a onclick="resetProgress()">Reset course progress</a>
+  </div>
+</div>
+
+<!-- CERT MODAL -->
+<div class="modal" id="modal">
+  <div class="msheet">
+    <div id="certForm">
+      <h2>Claim Your 8.0-Hour Certificate</h2>
+      <p class="sub">Enter your name exactly as it should appear on your certificate.</p>
+      <div class="field"><label>Full Name</label><input type="text" id="fName" placeholder="e.g. Maurice Sonnemaker"></div>
+      <div class="field"><label>Email (where your certificate is sent)</label><input type="email" id="fEmail" placeholder="you@email.com"></div>
+      <div class="field"><label>License # (optional — for your records)</label><input type="text" id="fLic" placeholder="OSFM / sprinklerfitter license #"></div>
+      <div class="row" style="display:flex;justify-content:space-between;gap:12px">
+        <button class="btn-ghost" onclick="closeCert()">Cancel</button>
+        <button class="btn" onclick="issue()">Generate My Certificate ▶</button>
+      </div>
+    </div>
+
+    <div id="certView" style="display:none">
+      <div id="emailBanner" class="banner"></div>
+      <div class="cert-stage">
+        <div id="certificate">
+          <div class="cert-top">
+            <div class="cert-left-logo">
+              <img class="flame-red" src="assets/flame.png" alt="FSM">
+              <div class="fsm-tag">FSM</div>
+              <div class="cert-osfm">ILLINOIS OSFM<br>APPROVED CE</div>
+            </div>
+            <div class="cert-word">FIRE SYSTEM<br>MASTERY</div>
+          </div>
+          <div class="cert-title-block">
+            <div class="cert-coc">CERTIFICATE OF COMPLETION</div>
+            <div class="cert-course">NFPA 25 ITM — 8-Hour Comprehensive Course</div>
+            <div class="cert-nfpa">NFPA 25 (2020 Edition) — Inspection, Testing &amp; Maintenance of Water-Based Systems</div>
+            <div class="cert-nfpa">Illinois OSFM Approved Continuing Education</div>
+          </div>
+          <div class="cert-issued">ISSUED TO:</div>
+          <div style="text-align:center"><div class="cert-name" id="certName">—</div></div>
+          <div class="cert-body">This certificate is presented to recognize successful completion of all eight sections of this course.
+            <small>This training aligns with NFPA-based continuing education requirements and may be accepted by local AHJs for recertification.</small>
+          </div>
+          <div class="cert-foot">
+            <div class="fld"><div class="val" id="certDate">—</div><div class="lbl">Date of Issue</div></div>
+            <div class="fld"><div class="val">8.0-hr</div><div class="lbl">Credit Hours</div></div>
+            <div class="fld"><img class="cert-sig-img" src="assets/signature.png?v=2" alt="Maurice Sonnemaker signature"><div class="lbl">Founder, FSM</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="row" style="display:flex;justify-content:space-between;gap:12px;margin-top:16px">
+        <button class="btn-ghost" onclick="closeCert()">Close</button>
+        <button class="btn" id="dlBtn" onclick="downloadCert()">⬇ Download Certificate (PDF)</button>
+      </div>
+      <p class="muted-note">Your completion (name, email, license, date) is logged for OSFM records and a copy of this PDF is emailed to you automatically.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== course config ===== */
+const SECTIONS=[
+ {t:"NFPA 25 Foundations & the ITM Cycle", c:"Chapters 1–4"},
+ {t:"Sprinkler System Inspection", c:"Chapter 5 · §5.2"},
+ {t:"Water-Based System Testing", c:"Chapter 5 · §5.3"},
+ {t:"Valves, Alarm Devices & Common Components", c:"Chapter 13 + §5.4–5.5"},
+ {t:"Standpipes, Hose Systems & Private Fire Mains", c:"Chapters 6 & 7"},
+ {t:"Fire Pumps & Water Storage Tanks", c:"Chapters 8 & 9"},
+ {t:"Internal Pipe Condition, Obstruction & MIC", c:"Chapter 14"},
+ {t:"Records & Impairment Management", c:"Chapters 4 & 15"}
+];
+const COURSE_NAME='NFPA 25 (2020) ITM — 8-Hour Comprehensive CE';
+const ENDPOINT='https://script.google.com/macros/s/AKfycbwTzVpUPFpz3I3rWjpyjKMkNlJn9T8grGVGMBWuK11nquv_a7J_6BsHEufQtzmaStejeg/exec';
+
+function passed(n){try{return localStorage.getItem('fsm8_sec'+n)==='1';}catch(e){return false;}}
+function countPassed(){let c=0;for(let n=1;n<=8;n++)if(passed(n))c++;return c;}
+
+function render(){
+  const host=document.getElementById('sections');host.innerHTML='';
+  for(let n=1;n<=8;n++){
+    const isPassed=passed(n);
+    const isAvail=!isPassed && (n===1 || passed(n-1));
+    const cls=isPassed?'passed':(isAvail?'avail':'locked');
+    const stat=isPassed?'<span class="sstat done">✓ Completed</span>'
+      :(isAvail?'<span class="sstat go">Start ▶</span>':'<span class="sstat lock">🔒 Locked</span>');
+    const card=document.createElement('div');
+    card.className='scard '+cls;
+    card.innerHTML=`<div class="snum">${n}</div>
+      <div class="sbody"><div class="st">${SECTIONS[n-1].t}</div><div class="sc">${SECTIONS[n-1].c}</div></div>
+      ${stat}`;
+    if(isPassed||isAvail){card.onclick=()=>{location.href='sec'+n+'/index.html';};}
+    host.appendChild(card);
+  }
+  const done=countPassed();
+  document.getElementById('pcount').textContent=done;
+  document.getElementById('pbar').style.width=(done/8*100)+'%';
+  document.getElementById('phours').textContent=(done*1.0).toFixed(1)+' / 8.0 CE hours';
+  const gate=document.getElementById('certgate'),btn=document.getElementById('certbtn'),msg=document.getElementById('certmsg');
+  if(done>=8){gate.classList.remove('locked');btn.disabled=false;msg.textContent='All 8 sections complete — claim your 8.0-hour OSFM CE certificate below.';}
+  else{gate.classList.add('locked');btn.disabled=true;msg.textContent=`Complete all 8 sections to unlock your certificate. (${done}/8 done — ${8-done} to go.)`;}
+}
+function resetProgress(){if(confirm('Reset all course progress? This clears which sections you have completed.')){for(let n=1;n<=8;n++)localStorage.removeItem('fsm8_sec'+n);render();}}
+
+/* ===== certificate ===== */
+function openCert(){if(countPassed()<8)return;document.getElementById('modal').classList.add('on');document.getElementById('certForm').style.display='block';document.getElementById('certView').style.display='none';}
+function closeCert(){document.getElementById('modal').classList.remove('on');}
+function issue(){
+  const name=document.getElementById('fName').value.trim();
+  const email=document.getElementById('fEmail').value.trim();
+  const license=document.getElementById('fLic').value.trim();
+  if(!name){alert('Please enter your name.');return;}
+  if(!email||!email.includes('@')){alert('Please enter a valid email.');return;}
+  document.getElementById('certName').textContent=name;
+  document.getElementById('certDate').textContent=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('certForm').style.display='none';
+  document.getElementById('certView').style.display='block';
+  const banner=document.getElementById('emailBanner');
+  banner.innerHTML=`⏳ Emailing your certificate to <b>${email}</b> and recording your completion…`;
+  sendCompletion(name,email,license).then(ok=>{
+    banner.innerHTML= ok
+      ? `✅ Your 8.0-hour certificate has been emailed to <b>${email}</b> and your completion is recorded for OSFM. Download a copy below 👇`
+      : `⚠️ Your certificate is ready below — please download your copy. (We couldn't confirm the automatic email.)`;
+  });
+}
+async function sendCompletion(name,email,license){
+  try{
+    const canvas=await html2canvas(document.getElementById('certificate'),{scale:2,backgroundColor:'#ffffff',useCORS:true});
+    const {jsPDF}=window.jspdf;
+    const pdf=new jsPDF({orientation:'landscape',unit:'px',format:[canvas.width,canvas.height]});
+    pdf.addImage(canvas.toDataURL('image/jpeg',0.95),'JPEG',0,0,canvas.width,canvas.height);
+    const base64=pdf.output('datauristring').split(',')[1];
+    const payload={name,email,license,course:COURSE_NAME,score:'8 of 8 sections',result:'PASS',
+      date:document.getElementById('certDate').textContent,pdfBase64:base64};
+    await fetch(ENDPOINT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+    return true;
+  }catch(err){console.error('sendCompletion failed',err);return false;}
+}
+function downloadCert(){
+  const btn=document.getElementById('dlBtn');const name=document.getElementById('certName').textContent;
+  btn.textContent='Generating…';btn.disabled=true;
+  html2canvas(document.getElementById('certificate'),{scale:2,backgroundColor:'#ffffff',useCORS:true}).then(canvas=>{
+    const {jsPDF}=window.jspdf;
+    const pdf=new jsPDF({orientation:'landscape',unit:'px',format:[canvas.width,canvas.height]});
+    pdf.addImage(canvas.toDataURL('image/jpeg',0.95),'JPEG',0,0,canvas.width,canvas.height);
+    pdf.save(`FSM NFPA 25 8-Hour CE Certificate - ${name}.pdf`);
+    btn.textContent='⬇ Download Certificate (PDF)';btn.disabled=false;
+  }).catch(()=>{alert("PDF library needs internet to load. You can also use your browser's Print → Save as PDF.");btn.textContent='⬇ Download Certificate (PDF)';btn.disabled=false;});
+}
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NFPA 25 8-Hour CE — Section 6: Fire Pumps & Water Storage Tanks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A1524; --panel:#122032; --panel2:#16283E;
+    --orange:#F5821F; --red:#E23A1E; --gold:#F5B301; --teal:#17C3B2;
+    --ink:#FFFFFF; --muted:#93A4BC; --line:rgba(255,255,255,.10);
+    --bp:rgba(120,180,255,.16); --bpMajor:rgba(120,180,255,.30);
+    --green:#1D9E75;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#05080D;color:var(--ink);font-family:'Montserrat',system-ui,sans-serif;line-height:1.5}
+  header{background:#000;border-bottom:1px solid var(--line);padding:12px 22px;display:flex;align-items:center;gap:14px}
+  header .hflame{height:30px;width:auto}
+  .brand{font-weight:900;letter-spacing:1px;font-size:16px}
+  .brand small{display:block;font-size:9px;letter-spacing:4px;color:var(--muted);font-weight:700}
+  .osfm{margin-left:auto;font-size:11px;color:var(--muted);text-align:right;line-height:1.3}
+  .osfm b{color:var(--teal)}
+  .wrap{max-width:1120px;margin:0 auto;padding:22px 18px 90px}
+  .stepbar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .stepbar div{flex:1;min-width:120px;text-align:center;font-size:12.5px;font-weight:700;color:var(--muted);padding:9px 4px;border-radius:9px;background:var(--panel);border:1px solid var(--line);text-transform:uppercase;letter-spacing:.04em}
+  .stepbar div.active{color:#fff;background:linear-gradient(135deg,var(--orange),var(--red));border-color:transparent}
+  .stepbar div.done{color:var(--teal);border-color:var(--teal)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:16px}
+  .pane{display:none}.pane.on{display:block}
+  .pill{display:inline-block;background:var(--panel2);border:1px solid var(--line);color:var(--muted);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;letter-spacing:.04em}
+  h1.title{font-size:22px;margin:0 0 4px}
+  .sub{color:var(--muted);margin:0 0 6px;font-size:14px}
+  button{font-family:inherit;font-size:15px;font-weight:700;border:none;border-radius:10px;padding:12px 22px;cursor:pointer;transition:.15s}
+  .btn{background:linear-gradient(135deg,var(--orange),var(--red));color:#fff}
+  .btn:hover{filter:brightness(1.08)}
+  .btn:disabled{opacity:.4;cursor:not-allowed;filter:none}
+  .btn-ghost{background:var(--panel2);color:var(--ink);border:1px solid var(--line)}
+  .row{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:10px;flex-wrap:wrap}
+  .center{text-align:center}
+  .stage{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:12px;background:#05080D;border:1px solid var(--line)}
+  .deck{position:absolute;top:0;left:0;width:1280px;height:720px;transform-origin:top left}
+  .pbar{height:6px;background:var(--panel2);border-radius:4px;overflow:hidden;margin:14px 0 6px}
+  .pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--gold));width:0;transition:width .3s}
+  .pmeta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:10px}
+  .audio-wrap{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-top:10px}
+  .audio-wrap audio{height:34px;flex:1;min-width:0}
+  .auto{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);white-space:nowrap}
+  .ctrls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+  .ctrls .mid{flex:1;text-align:center;font-weight:700;font-size:14px;color:#DDE5F0}
+  .lockmsg{font-size:13px;color:var(--muted);margin-top:12px;text-align:center}
+  .startov{position:absolute;inset:0;background:rgba(5,8,13,.55);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:5}
+  .startov button{font-size:17px;padding:16px 30px;border-radius:40px}
+  .q{margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+  .q:last-child{border-bottom:none}
+  .q p{font-weight:700;margin:0 0 10px}
+  .opt{display:block;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:11px 14px;margin-bottom:8px;cursor:pointer;transition:.12s}
+  .opt:hover{border-color:var(--orange)}
+  .opt input{margin-right:10px}
+  label.opt:has(input:checked){border-color:var(--orange);background:rgba(245,130,31,.12)}
+  .result-big{font-size:40px;font-weight:900;text-align:center;margin:6px 0}
+  .pass{color:var(--green)}.fail{color:var(--red)}
+  .rev{margin-top:14px;text-align:left;font-size:13.5px}
+  .rev .ri{padding:9px 12px;border-radius:8px;margin-bottom:7px;border:1px solid var(--line)}
+  .rev .ri.ok{background:rgba(29,158,117,.12);border-color:var(--green)}
+  .rev .ri.no{background:rgba(226,58,30,.12);border-color:var(--red)}
+  .rev .ri b{color:#fff}
+  .done-hero{text-align:center;padding:26px 10px}
+  .done-hero .logo{height:70px;margin-bottom:14px}
+  .done-hero h1{font-size:30px;margin:6px 0}
+  .done-hero .accent{color:var(--orange)}
+  .unlockcard{background:linear-gradient(90deg,rgba(23,195,178,.14),transparent);border:1px solid rgba(23,195,178,.4);border-left:5px solid var(--teal);border-radius:10px;padding:16px 20px;margin-top:16px;text-align:left;font-size:15px}
+  .muted-note{color:var(--muted);font-size:13px;margin-top:16px}
+  .slide{position:absolute;inset:0;color:var(--ink);display:none;
+    background:
+      radial-gradient(120% 90% at 88% -10%, rgba(245,130,31,.13), transparent 55%),
+      radial-gradient(90% 80% at -5% 110%, rgba(23,195,178,.10), transparent 55%),
+      linear-gradient(160deg,#0B182A,#0A1420 60%,#08111C);}
+  .slide.active{display:block}
+  .slide::before{content:"";position:absolute;inset:0;z-index:0;
+    background-image:
+      linear-gradient(var(--bpMajor) 1.4px,transparent 1.4px),
+      linear-gradient(90deg,var(--bpMajor) 1.4px,transparent 1.4px),
+      linear-gradient(var(--bp) 1px,transparent 1px),
+      linear-gradient(90deg,var(--bp) 1px,transparent 1px);
+    background-size:150px 150px,150px 150px,30px 30px,30px 30px;
+    mask-image:radial-gradient(135% 100% at 50% 0%,#000 55%,transparent 92%);opacity:.9}
+  .spine{position:absolute;left:0;top:0;bottom:0;width:8px;z-index:2;background:linear-gradient(180deg,var(--orange),var(--red) 55%,var(--gold))}
+  .bpmark{position:absolute;width:26px;height:26px;z-index:2;pointer-events:none;border-color:var(--bpMajor);border-style:solid;border-width:0}
+  .bpmark.tr{top:18px;right:18px;border-right-width:2px;border-top-width:2px}
+  .bpmark.bl{bottom:52px;left:18px;border-left-width:2px;border-bottom-width:2px}
+  .pad{position:absolute;inset:0;z-index:3;padding:40px 56px 54px 72px;display:flex;flex-direction:column}
+  .top{display:flex;align-items:center;gap:16px;margin-bottom:4px}
+  .chip{font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.12em;font-size:19px;color:#0D0D0F;background:var(--gold);padding:6px 15px 4px;border-radius:6px;text-transform:uppercase;white-space:nowrap}
+  .kicker{font-family:'Barlow Condensed',sans-serif;letter-spacing:.22em;font-size:14px;color:var(--muted);text-transform:uppercase}
+  .slide h1{font-weight:900;font-size:36px;line-height:1.04;margin:6px 0 4px;letter-spacing:-.5px}
+  .slide h1 .accent{color:var(--orange)}
+  .slide .subline{color:var(--muted);font-size:16px;font-weight:500;margin-bottom:12px}
+  .foot{position:absolute;left:0;right:0;bottom:0;z-index:3;height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 26px 0 72px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.14em;font-size:13px;color:var(--muted);background:rgba(0,0,0,.35);border-top:1px solid var(--line);text-transform:uppercase}
+  .foot .fbrand{color:#fff;font-weight:700}
+  .flame{color:var(--orange)}
+  .bullets{display:flex;flex-direction:column;gap:12px;flex:1;justify-content:center}
+  .bul{display:grid;grid-template-columns:30px 1fr;gap:6px;align-items:start;font-size:18px;line-height:1.38}
+  .bul .mk{color:var(--orange);font-weight:900;font-size:19px}
+  .bul .sec{color:var(--teal);font-weight:800}
+  .bul b{color:#fff;font-weight:800}
+  .bul .txt{color:#D7DEE9;font-weight:500}
+  .takeaway{margin-top:12px;display:flex;align-items:center;gap:14px;background:linear-gradient(90deg,rgba(245,130,31,.16),rgba(226,58,30,.05));border:1px solid rgba(245,130,31,.35);border-left:5px solid var(--orange);border-radius:10px;padding:12px 18px;font-size:17px;font-weight:600}
+  .takeaway .ico{font-size:21px}
+  .takeaway b{color:var(--gold)}
+  .newbox{background:linear-gradient(90deg,rgba(23,195,178,.14),transparent);border:1px solid rgba(23,195,178,.4);border-left:5px solid var(--teal);border-radius:10px;padding:12px 18px;margin-top:6px}
+  .newbox .lbl{font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;font-size:14px;color:var(--teal);text-transform:uppercase;margin-bottom:4px}
+  .newbox .body{font-size:16.5px;color:#D7DEE9;font-weight:500}
+  .cards{display:grid;gap:18px;flex:1;align-content:center}
+  .card2{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden}
+  .card2::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c,var(--orange))}
+  .card2 .ct{font-weight:900;font-size:22px;margin-bottom:2px}
+  .card2 .cs{color:var(--teal);font-weight:800;font-size:14px;margin-bottom:8px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.06em}
+  .card2 .cb{color:#CBD5E3;font-size:15.5px;line-height:1.38;font-weight:500}
+  .card2 .tag{position:absolute;right:14px;bottom:12px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.12em;font-size:14px;color:#0D0D0F;background:var(--c,var(--orange));padding:3px 11px 2px;border-radius:20px;text-transform:uppercase}
+  .nums{display:grid;gap:11px;flex:1;align-content:center}
+  .num{display:grid;grid-template-columns:48px 1fr;align-items:center;gap:14px;background:linear-gradient(90deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:11px;padding:11px 16px}
+  .num .n{font-weight:900;font-size:24px;color:#0D0D0F;background:var(--orange);width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+  .num .t{font-size:18px;font-weight:600;color:#E4EAF2}
+  .num .t .sec{color:var(--teal);font-weight:800}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:18px;flex:1;align-content:center}
+  .halfbox{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden}
+  .halfbox::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c,var(--orange))}
+  .halfbox .ht{font-weight:900;font-size:21px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+  .halfbox .hs{color:var(--teal);font-weight:800;font-size:14px}
+  .halfbox .hb{color:#CBD5E3;font-size:15.5px;line-height:1.4;margin-top:6px;font-weight:500}
+  .halfbox .sub2{margin-top:8px;font-size:14.5px;color:#AEBBCC}
+  .halfbox .sub2 b{color:#fff}
+  .ftable{width:100%;border-collapse:collapse;font-size:16px;flex:1}
+  .ftable th{text-align:left;font-family:'Barlow Condensed',sans-serif;letter-spacing:.06em;color:var(--gold);font-size:15px;text-transform:uppercase;padding:9px 14px;border-bottom:1px solid var(--line)}
+  .ftable td{padding:11px 14px;border-bottom:1px solid var(--line);color:#DCE3EC;font-weight:500}
+  .ftable tr:last-child td{border-bottom:none}
+  .ftable .dev{font-weight:800;color:#fff}
+  .ftable .hi td{background:rgba(245,130,31,.13)}
+  .ftable .hi .dev{color:var(--gold)}
+  .cover{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 80px}
+  .cover .logo{width:96px;height:96px;object-fit:contain;margin-bottom:22px;filter:drop-shadow(0 6px 20px rgba(245,130,31,.4))}
+  .cover .eyebrow{font-family:'Barlow Condensed',sans-serif;letter-spacing:.28em;font-size:17px;color:var(--teal);text-transform:uppercase;margin-bottom:14px}
+  .cover h1{font-size:52px;line-height:1.02;max-width:1000px;margin:0 0 16px}
+  .cover .csub{color:var(--muted);font-size:21px;font-weight:500;margin-bottom:26px}
+  .cover .badge{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.14em;font-size:16px;color:#0D0D0F;background:linear-gradient(90deg,var(--gold),var(--orange));padding:10px 22px;border-radius:30px;text-transform:uppercase}
+  .cover .cta{font-size:20px;color:#D7DEE9;font-weight:600;max-width:800px;margin-top:6px}
+  .cover .cta b{color:var(--gold)}
+</style>
+</head>
+<body>
+<header>
+  <img class="hflame" src="assets/flame.png" alt="FSM">
+  <div class="brand">FIRE SYSTEM<small>MASTERY</small></div>
+  <div class="osfm"><b>Illinois OSFM Approved</b><br>NFPA 25 · 8-Hour CE · Section 6 of 8</div>
+</header>
+
+<div class="wrap">
+  <div class="stepbar">
+    <div id="tab0" class="active">1. Course</div>
+    <div id="tab1">2. Section Quiz</div>
+    <div id="tab2">3. Section Complete</div>
+  </div>
+
+  <section id="step0" class="pane on">
+    <div class="card">
+      <span class="pill">SECTION 6 · NFPA 25 (2020) CHAPTERS 8 & 9</span>
+      <h1 class="title">Fire Pumps & Water Storage Tanks</h1>
+      <p class="sub">Watch all 18 slides with narration, then take the 10-question section quiz to unlock Section 7.</p>
+
+      <div class="stage">
+        <div class="deck" id="deck">
+          <!-- 1 TITLE -->
+          <section class="slide active">
+            <div class="spine"></div><span class="bpmark tr"></span><span class="bpmark bl"></span>
+            <div class="cover">
+              <img class="logo" src="assets/flame.png" alt="FSM">
+              <div class="eyebrow">Fire System Mastery · Section 6 of 8</div>
+              <h1>Fire Pumps &<br><span class="accent">Water Storage Tanks</span></h1>
+              <div class="csub">NFPA 25 (2020) · Chapters 8 & 9</div>
+              <span class="badge">Illinois OSFM Approved · 8-Hour Comprehensive Course</span>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapters 8 & 9</span></div>
+          </section>
+          <!-- 2 OVERVIEW -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Course Overview</span><span class="kicker">What this hour covers</span></div>
+              <h1>Making a Weak Supply <span class="accent">Strong</span></h1>
+              <div class="nums" style="grid-template-columns:1fr 1fr;gap:10px 22px">
+                <div class="num"><div class="n">1</div><div class="t">Why fire pumps matter</div></div>
+                <div class="num"><div class="n">2</div><div class="t">No-flow (churn) test frequencies</div></div>
+                <div class="num"><div class="n">3</div><div class="t">Running & checking the churn test</div></div>
+                <div class="num"><div class="n">4</div><div class="t">Weekly pump room & diesel checks</div></div>
+                <div class="num"><div class="n">5</div><div class="t">The annual flow test</div></div>
+                <div class="num"><div class="n">6</div><div class="t">The 95% acceptance rule</div></div>
+                <div class="num"><div class="n">7</div><div class="t">Controllers & transfer switches</div></div>
+                <div class="num"><div class="n">8</div><div class="t">Water storage tank ITM</div></div>
+              </div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapters 8 & 9 · Section 6 of 8</span></div>
+          </section>
+          <!-- 3 WHY PUMPS -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Chapter 8</span><span class="kicker">Flow & Pressure When the Supply Can't Deliver</span></div>
+              <h1>Why Fire Pumps <span class="accent">Matter</span></h1>
+              <div class="bullets" style="flex:none;margin-top:4px">
+                <div class="bul"><span class="mk">▸</span><span class="txt">A fire pump <b>boosts pressure and flow</b> when the supply can't meet system demand on its own.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Rated in <b>GPM</b> (flow) and <b>PSI</b> (pressure) — the net pressure it adds.</span></div>
+              </div>
+              <div class="cards" style="grid-template-columns:1fr 1fr 1fr;flex:none;margin-top:8px">
+                <div class="card2" style="--c:var(--teal)"><div class="ct">Churn</div><div class="cs">NO FLOW</div><div class="cb">Pump running against a closed system.</div></div>
+                <div class="card2" style="--c:var(--gold)"><div class="ct">100%</div><div class="cs">RATED CAPACITY</div><div class="cb">The pump's rated design point.</div></div>
+                <div class="card2" style="--c:var(--red)"><div class="ct">150%</div><div class="cs">OVERLOAD</div><div class="cb">Peak demand — proves reserve.</div></div>
+              </div>
+              <div class="takeaway"><span class="ico">📈</span><span>Those <b>three points</b> draw the pump curve — remember them for the annual flow test.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 8 · Section 6 of 8</span></div>
+          </section>
+          <!-- 4 CHURN FREQUENCY -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 8.3.1</span><span class="kicker">The Exam Favorite</span></div>
+              <h1>No-Flow (Churn) Test — <span class="accent">How Often?</span></h1>
+              <div class="split" style="flex:none;margin:2px 0">
+                <div class="halfbox" style="--c:var(--red)"><div class="ht">Diesel <span class="hs">§8.3.1.1.1</span></div><div class="hb"><b style="color:#fff">WEEKLY</b> — period.</div></div>
+                <div class="halfbox" style="--c:var(--teal)"><div class="ht">Electric <span class="hs">§8.3.1.2.2</span></div><div class="hb"><b style="color:#fff">MONTHLY</b> — the default baseline.</div></div>
+              </div>
+              <div class="newbox" style="border-color:rgba(245,130,31,.4);border-left-color:var(--orange)"><div class="lbl" style="color:var(--orange)">BUT Electric = WEEKLY for these 4 (§8.3.1.2.1)</div><div class="body">① Beyond the fire department's pumping capacity · ② limited-service controllers · ③ <b style="color:#fff">vertical turbine pumps</b> · ④ suction from a ground-level tank or a source without useful pressure. <span style="color:#AEBBCC">A redundant fire pump allows monthly even for these (§8.3.1.2.3).</span></div></div>
+              <div class="takeaway"><span class="ico">⚙️</span><span>Diesel weekly · electric monthly — <b>except the 4 categories</b>, which go weekly.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 8 · Section 6 of 8</span></div>
+          </section>
+          <!-- 5 RUNNING CHURN -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 8.3.2</span><span class="kicker">Prove It Starts and Holds Pressure</span></div>
+              <h1>Running the <span class="accent">Churn Test</span></h1>
+              <div class="bullets">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§8.3.2.2</span> — start the pump <b>automatically</b> (drop pressure on the sensing line — auto-start is what you're proving).</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§8.3.2.3</span> — electric pump runs a minimum of <b>10 minutes</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§8.3.2.4</span> — diesel pump runs a minimum of <b>30 minutes</b> (needs the run to reach operating temp).</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§8.3.2.7</span> — <b>qualified personnel in attendance</b> (unless approved remote automated testing, 5-min response).</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">⏱️</span><span>Run times: <b>electric 10 min · diesel 30 min</b>.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 8 · Section 6 of 8</span></div>
+          </section>
+          <!-- 6 WHAT YOU CHECK -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Sections 8.3.2.8–9</span><span class="kicker">Gathering the Data</span></div>
+              <h1>What You <span class="accent">Record & Check</span></h1>
+              <div class="bullets">
+                <div class="bul"><span class="mk">▸</span><span class="txt">Record <b>suction & discharge gauge readings</b> — idle and running.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Pump packing glands: a <b>slight discharge is correct</b> — adjust gland nuts if needed.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Check for <b>unusual noise or vibration</b>; packing boxes, bearings, casing for overheating.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><b>Circulation relief valve</b> discharging a small flow at churn (§8.3.2.1.1.1).</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">New 2020</span> — record controller event-log high/low pressures on electronic-sensor pumps.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🔧</span><span>Packing that <b>weeps a little is healthy</b> — bone dry means it's too tight.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 8 · Section 6 of 8</span></div>
+          </section>
+          <!-- 7 WEEKLY PUMP ROOM -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 8.2.2</span><span class="kicker">Before You Even Run the Pump</span></div>
+              <h1>The Weekly <span class="accent">Pump Room Inspection</span></h1>
+              <div class="split" style="flex:none;margin:2px 0">
+                <div class="halfbox" style="--c:var(--teal)"><div class="ht">Heat: ≥ 40°F (4°C)</div><div class="hb">Pump room with an <b style="color:#fff">electric pump</b>, or a <b style="color:#fff">diesel with an engine heater</b>.</div></div>
+                <div class="halfbox" style="--c:var(--orange)"><div class="ht">Heat: ≥ 70°F (21°C)</div><div class="hb">Pump room with a <b style="color:#fff">diesel WITHOUT an engine heater</b>. Don't default to 40 for everything.</div></div>
+              </div>
+              <div class="bullets" style="flex:none;gap:9px;margin-top:4px">
+                <div class="bul"><span class="mk">▸</span><span class="txt">Ventilation louvers free · suction/discharge/bypass valves open · no leaks · pressures normal.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Electric: controller pilot light on, transfer-switch normal light on, <b>reverse-phase alarm off</b>.</span></div>
+              </div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 8 · Section 6 of 8</span></div>
+          </section>
+          <!-- 8 DIESEL WEEKLY -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 8.2.2(4)</span><span class="kicker">Diesels Have Extra Weekly Items</span></div>
+              <h1>Diesel Weekly Checks & <span class="accent">Fuel Care</span></h1>
+              <div class="bullets">
+                <div class="bul"><span class="mk">▸</span><span class="txt">Fuel tank <b>at least two-thirds full</b> · battery voltage & charging current in range.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Crankcase oil level · cooling water level · <b>water-jacket heater</b> (block heater) operating.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§8.3.4.1</span> — diesel fuel <b>tested annually for degradation</b>; if it fails, recondition/replace, clean tank, change filters, retest every 6 months.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§8.1.1.2</span> — engine oil, oil filter, fuel filter changed every <b>50 hours or annually</b>.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">⛽</span><span>Keep that fuel tank <b>≥ two-thirds full</b> — the number the quiz asks for.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 8 · Section 6 of 8</span></div>
+          </section>
+          <!-- 9 ANNUAL FLOW TEST -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 8.3.3</span><span class="kicker">Once a Year, You Load the Pump</span></div>
+              <h1>The Annual <span class="accent">Flow Test</span></h1>
+              <div class="cards" style="grid-template-columns:1fr 1fr 1fr;flex:none;margin:4px 0">
+                <div class="card2" style="--c:var(--teal)"><div class="ct">Churn</div><div class="cs">NO FLOW</div></div>
+                <div class="card2" style="--c:var(--gold)"><div class="ct">100%</div><div class="cs">RATED CAPACITY</div></div>
+                <div class="card2" style="--c:var(--red)"><div class="ct">150%</div><div class="cs">OF RATED CAPACITY</div></div>
+              </div>
+              <div class="bullets" style="flex:none;gap:9px">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§8.3.3.1</span> — annual test at all three points, by qualified personnel.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§8.3.3.9</span> — actually discharge water (hose streams or meter-to-drain) <b>at least every 3rd year</b>; closed-loop flowmeter the other 2. The test itself is <b>always annual</b>.</span></div>
+              </div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 8 · Section 6 of 8</span></div>
+          </section>
+          <!-- 10 95% RULE -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 8.3.7.2</span><span class="kicker">A Common Misconception — Listen Closely</span></div>
+              <h1>Pass or Fail? <span class="accent">The 95% Rule</span></h1>
+              <div class="bullets" style="flex:none;margin-top:2px">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§8.3.7.2.3</span> — acceptable when net pressure at each flow point is <b>≥ 95%</b> of one of: the original manufacturer's curve, the original unadjusted field acceptance curve, or a nameplate-generated curve.</span></div>
+              </div>
+              <div class="newbox" style="border-color:rgba(245,179,1,.4);border-left-color:var(--gold)"><div class="lbl" style="color:var(--gold)">The Key Word Is ORIGINAL</div><div class="body">You are <b style="color:#fff">not</b> comparing to last year's test — you compare to the pump's original performance.</div></div>
+              <div class="takeaway"><span class="ico">📉</span><span><span class="sec" style="color:var(--teal);font-weight:800">§8.3.7.2.4</span> — below 95%? Notify the owner in writing & investigate. Can't meet demand = <b>impairment</b>.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 8 · Section 6 of 8</span></div>
+          </section>
+          <!-- 11 CONTROLLERS -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Sections 8.3.3.12–13</span><span class="kicker">Only As Good As Its Controls</span></div>
+              <h1>Controllers, Alarms & <span class="accent">Transfer Switches</span></h1>
+              <div class="bullets">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§8.3.3.13</span> — alarm conditions <b>simulated annually</b> at the sensors: pump running, loss of power, phase reversal.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§8.3.3.12</span> — transfer switch tested annually: simulate power failure at <b>peak load</b>, verify transfer, run <b>≥ 2 minutes</b> on alternate power, verify transfer back.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§8.3.6.2</span> — automatic transfer switches also exercised routinely per NFPA 110.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">2020 safety: arrange tasks so you're <b>not opening an energized controller</b> — NFPA 70E applies.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🔌</span><span>Transfer switch: run <b>at least 2 minutes</b> on the alternate power source.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 8 · Section 6 of 8</span></div>
+          </section>
+          <!-- 12 ELECTRIC VS DIESEL -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Chapter 8</span><span class="kicker">Side by Side</span></div>
+              <h1>Electric vs. <span class="accent">Diesel</span></h1>
+              <table class="ftable">
+                <tr><th>&nbsp;</th><th>Electric</th><th>Diesel</th></tr>
+                <tr><td class="dev">Churn frequency</td><td>Monthly*</td><td>Weekly</td></tr>
+                <tr><td class="dev">Churn run time</td><td>10 minutes</td><td>30 minutes</td></tr>
+                <tr><td class="dev">Weekly extras</td><td>Phase & power lights</td><td>Fuel, batteries, oil, coolant, heater</td></tr>
+                <tr><td class="dev">Common failures</td><td>Power loss, phase reversal</td><td>Dead batteries, bad fuel, cold room</td></tr>
+                <tr><td class="dev">Both share</td><td colspan="2">Annual 3-point flow test · 95%-of-original-curve rule</td></tr>
+              </table>
+              <div class="takeaway"><span class="ico">⚖️</span><span>*Electric is weekly for the four §8.3.1.2.1 categories.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 8 · Section 6 of 8</span></div>
+          </section>
+          <!-- 13 TANKS OVERVIEW -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Chapter 9</span><span class="kicker">A Guaranteed On-Site Supply</span></div>
+              <h1>Water Storage Tanks — <span class="accent">Overview</span></h1>
+              <div class="cards" style="grid-template-columns:1fr 1fr;flex:none;margin:4px 0">
+                <div class="card2" style="--c:var(--orange)"><div class="ct" style="font-size:20px">Tank Types</div><div class="cb" style="margin-top:6px">Gravity · suction · pressure · embankment-supported coated-fabric (ESCF).</div></div>
+                <div class="card2" style="--c:var(--teal)"><div class="ct" style="font-size:20px">ITM Logic</div><div class="cb" style="margin-top:6px">Prove the water is <b style="color:#fff">there</b>, <b style="color:#fff">warm enough</b>, and the <b style="color:#fff">shell & coating are sound</b>.</div></div>
+              </div>
+              <div class="takeaway"><span class="ico">🛢️</span><span>Tanks guarantee an on-site supply — often the dedicated source for a fire pump.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 9 · Section 6 of 8</span></div>
+          </section>
+          <!-- 14 TANK ROUTINE -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 9.2</span><span class="kicker">Supervised Alarms Buy You Time</span></div>
+              <h1>Tank <span class="accent">Routine Inspections</span></h1>
+              <table class="ftable">
+                <tr><th>Item</th><th>With supervised alarms</th><th>Without</th></tr>
+                <tr><td class="dev">Water level <span style="color:var(--teal);font-weight:700">§9.2.1</span></td><td>Quarterly</td><td><b style="color:#fff">Monthly</b></td></tr>
+                <tr><td class="dev">Water temperature <span style="color:var(--teal);font-weight:700">§9.2.3</span></td><td>Quarterly</td><td><b style="color:#fff">Weekly</b></td></tr>
+                <tr><td class="dev">Heating system <span style="color:var(--teal);font-weight:700">§9.2.2</span></td><td>Quarterly</td><td><b style="color:#fff">Daily</b></td></tr>
+                <tr><td class="dev">Exterior / structure <span style="color:var(--teal);font-weight:700">§9.2.4.1</span></td><td colspan="2">Quarterly — damage or weakening</td></tr>
+              </table>
+              <div class="takeaway"><span class="ico">🌡️</span><span>Tank water never below <b>40°F (4°C)</b> (§9.2.3.1). No alarm = you're out there far more often.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 9 · Section 6 of 8</span></div>
+          </section>
+          <!-- 15 TANK INTERIOR -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 9.2.5</span><span class="kicker">The Interval Depends on the Tank</span></div>
+              <h1>Tank <span class="accent">Interior Inspections</span></h1>
+              <div class="split" style="flex:none;margin:4px 0">
+                <div class="halfbox" style="--c:var(--red)"><div class="ht">Every 3 Years <span class="hs">§9.2.5.1.1</span></div><div class="hb">Steel tanks <b style="color:#fff">WITHOUT corrosion protection</b>.</div></div>
+                <div class="halfbox" style="--c:var(--teal)"><div class="ht">Every 5 Years <span class="hs">§9.2.5.1.2</span></div><div class="hb"><b style="color:#fff">All other tanks</b> — steel with corrosion protection, concrete, wood, fiberglass.</div></div>
+              </div>
+              <div class="bullets" style="flex:none;gap:9px">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§9.2.5.3</span> — looking for pitting, corrosion, spalling, rot, debris, aquatic growth, coating failure; anti-vortex plate.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§9.2.6</span> — steel pitting/coating failure triggers dry-film-thickness, ultrasonic, and vacuum-box tests.</span></div>
+              </div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 9 · Section 6 of 8</span></div>
+          </section>
+          <!-- 16 TANK TESTS -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Sections 9.3 / 9.5</span><span class="kicker">Tests & Automatic Fill Valves</span></div>
+              <h1>Tank Tests & <span class="accent">Fill Valves</span></h1>
+              <div class="bullets">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§9.3.1</span> — level indicators tested <b>every 5 years</b> for accuracy & free movement.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§9.3.5</span> — high and low water level signals tested <b>annually</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§9.3.2–9.3.4</span> — heating system, low-water-temp signals, and high-temp limit switches tested <b>before each heating season</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§9.5</span> — automatic tank fill valves tested <b>annually</b> (lower level, record refill); strainers cleaned quarterly.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">❄️</span><span>Freeze-protection tests happen <b>before winter</b> — so you know they work when it counts.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 9 · Section 6 of 8</span></div>
+          </section>
+          <!-- 17 TAKEAWAYS -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Review</span><span class="kicker">Before Your Quiz</span></div>
+              <h1>The Numbers That <span class="accent">Matter Most</span></h1>
+              <div class="nums" style="grid-template-columns:1fr 1fr;gap:9px 22px">
+                <div class="num"><div class="n">1</div><div class="t">Churn: diesel weekly / electric monthly (4 categories weekly) <span class="sec">§8.3.1</span></div></div>
+                <div class="num"><div class="n">2</div><div class="t">Run time: electric 10 min · diesel 30 min <span class="sec">§8.3.2</span></div></div>
+                <div class="num"><div class="n">3</div><div class="t">Annual flow test: churn / 100% / 150% <span class="sec">§8.3.3</span></div></div>
+                <div class="num"><div class="n">4</div><div class="t">Pass = ≥95% of the ORIGINAL curve <span class="sec">§8.3.7.2.3</span></div></div>
+                <div class="num"><div class="n">5</div><div class="t">Diesel fuel tank ≥ two-thirds full <span class="sec">§8.2.2</span></div></div>
+                <div class="num"><div class="n">6</div><div class="t">Transfer switch: 2 min on alt power <span class="sec">§8.3.3.12</span></div></div>
+                <div class="num"><div class="n">7</div><div class="t">Tank water ≥ 40°F <span class="sec">§9.2.3.1</span></div></div>
+                <div class="num"><div class="n">8</div><div class="t">Tank interior: 3 yr bare steel / 5 yr others <span class="sec">§9.2.5.1</span></div></div>
+              </div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapters 8 & 9 · Section 6 of 8</span></div>
+          </section>
+          <!-- 18 COMPLETE -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span><span class="bpmark bl"></span>
+            <div class="cover">
+              <img class="logo" src="assets/flame.png" alt="FSM">
+              <div class="eyebrow">Section 6 Complete</div>
+              <h1>Time to Take <span class="accent">Your Quiz</span></h1>
+              <div class="cta">Pass the 10-question section quiz with <b>70% or better</b> to unlock <b>Section 7 — Internal Pipe Condition, Obstruction & MIC</b>.</div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapters 8 & 9 · Section 6 of 8</span></div>
+          </section>
+        </div>
+        <div class="startov" id="startov"><button class="btn" onclick="startCourse()">▶ Start Section 6</button></div>
+      </div>
+
+      <div class="pbar"><i id="prog"></i></div>
+      <div class="pmeta"><span id="counter">Slide 1 of 18</span><span id="seen">Viewed: 1 / 18</span></div>
+      <div class="audio-wrap">
+        <audio id="narration" controls src="audio/slide-01.mp3"></audio>
+        <label class="auto"><input type="checkbox" id="autoplay" checked> Auto-advance</label>
+      </div>
+      <div class="ctrls">
+        <button class="btn-ghost" id="prevBtn" onclick="nav(-1)" disabled>◀ Previous</button>
+        <span class="mid" id="slideTitle"></span>
+        <button class="btn" id="nextBtn" onclick="nav(1)">Next ▶</button>
+      </div>
+      <div id="unlock" class="lockmsg">🔒 View all 18 slides to unlock the section quiz.</div>
+      <div class="center" style="margin-top:12px">
+        <button class="btn" id="toTest" onclick="go(1)" style="display:none">Start the Section Quiz ▶</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="step1" class="pane">
+    <div class="card">
+      <span class="pill">SECTION 6 QUIZ · 10 QUESTIONS · PASS = 70% (7 of 10)</span>
+      <h1 class="title">Fire Pumps & Water Storage Tanks — Quiz</h1>
+      <p class="sub">Answer all 10 questions, then submit.</p>
+      <form id="quiz"></form>
+      <div class="row">
+        <button class="btn-ghost" onclick="go(0)">◀ Back to course</button>
+        <button class="btn" onclick="grade()">Submit Quiz</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="stepR" class="pane"><div class="card center"><div id="resultBlock"></div></div></section>
+
+  <section id="step2" class="pane">
+    <div class="card">
+      <div class="done-hero">
+        <img class="logo" src="assets/flame.png" alt="FSM">
+        <div class="pill" style="background:rgba(29,158,117,.15);border-color:var(--green);color:#8ff0cf">✓ Section 6 Passed</div>
+        <h1>Section 6 <span class="accent">Complete</span></h1>
+        <p class="sub" id="doneScore"></p>
+      </div>
+      <div class="unlockcard">
+        <b style="color:var(--teal)">🔓 Section 7 — Internal Pipe Condition, Obstruction & MIC is now unlocked.</b><br>
+        Your progress through this section is recorded. Complete all 8 sections to earn your <b>8.0-hour NFPA 25 CE certificate</b>.
+      </div>
+      <div class="row" style="margin-top:18px">
+        <button class="btn-ghost" onclick="location.reload()">↺ Replay Section 6</button>
+        <button class="btn" id="nextSecBtn">Return to Course Home ▶</button>
+      </div>
+      <p class="muted-note">This is the Section 6 module of the 8-hour course. In the assembled course, "Continue to Section 7" advances to the next section; the certificate is issued after Section 8 with all 8.0 credit hours logged for OSFM.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+const NSLIDES=18;
+const TITLES=["Welcome","Course Overview","Why Fire Pumps Matter","No-Flow (Churn) Test — How Often","Running the Churn Test","What You Record & Check","The Weekly Pump Room Inspection","Diesel Weekly Checks & Fuel Care","The Annual Flow Test","Pass or Fail? The 95% Rule","Controllers, Alarms & Transfer Switches","Electric vs. Diesel","Water Storage Tanks — Overview","Tank Routine Inspections","Tank Interior Inspections","Tank Tests & Fill Valves","Key Takeaways","Section Complete"];
+let cur=1, maxSeen=1, started=false;
+const deck=document.getElementById('deck');
+const slides=[...deck.querySelectorAll('.slide')];
+const audio=document.getElementById('narration');
+function pad(n){return String(n).padStart(2,'0');}
+function fitDeck(){const stage=deck.parentElement;deck.style.transform='scale('+(stage.clientWidth/1280)+')';}
+window.addEventListener('resize',fitDeck);
+function render(){
+  slides.forEach((s,i)=>s.classList.toggle('active',i===cur-1));
+  audio.src=`audio/slide-${pad(cur)}.mp3`;
+  document.getElementById('counter').textContent=`Slide ${cur} of ${NSLIDES}`;
+  document.getElementById('seen').textContent=`Viewed: ${maxSeen} / ${NSLIDES}`;
+  document.getElementById('prog').style.width=(maxSeen/NSLIDES*100)+'%';
+  document.getElementById('slideTitle').textContent=TITLES[cur-1]||'';
+  document.getElementById('prevBtn').disabled = cur===1;
+  document.getElementById('nextBtn').style.display = cur===NSLIDES ? 'none':'inline-block';
+  if(started) audio.play().catch(()=>{});
+  checkUnlock();
+}
+function startCourse(){started=true;document.getElementById('startov').style.display='none';audio.play().catch(()=>{});}
+function nav(d){const nx=cur+d;if(nx<1||nx>NSLIDES)return;cur=nx;if(cur>maxSeen)maxSeen=cur;render();}
+function checkUnlock(){if(maxSeen>=NSLIDES){document.getElementById('unlock').innerHTML='✅ All slides viewed — the section quiz is unlocked.';document.getElementById('toTest').style.display='inline-block';}}
+audio.addEventListener('ended',()=>{if(document.getElementById('autoplay').checked && cur<NSLIDES) nav(1);});
+document.addEventListener('keydown',e=>{if(!document.getElementById('step0').classList.contains('on'))return;if(e.key==='ArrowRight')nav(1);if(e.key==='ArrowLeft')nav(-1);});
+
+const QUESTIONS=[
+ {q:"A diesel engine–driven fire pump requires a no-flow (churn) test:",
+  opts:["Weekly","Monthly","Quarterly"],a:0,
+  ex:"§8.3.1.1.1 — diesel is weekly, period (unless an approved risk analysis says otherwise)."},
+ {q:"Which electric fire pump must be churn tested WEEKLY instead of monthly?",
+  opts:["Any pump installed before 2011","A vertical turbine fire pump","Any pump serving a building over 4 stories"],a:1,
+  ex:"§8.3.1.2.1 — the four weekly categories: beyond FD pumping capacity, limited-service controllers, vertical turbine pumps, and ground-tank/low-pressure suction."},
+ {q:"Minimum run times during the no-flow test are:",
+  opts:["10 minutes electric / 30 minutes diesel","30 minutes electric / 10 minutes diesel","15 minutes for both"],a:0,
+  ex:"§8.3.2.3 (electric 10 min) and §8.3.2.4 (diesel 30 min). The diesel needs the longer run to reach operating temperature."},
+ {q:"During the weekly inspection, the diesel fuel tank must be at least:",
+  opts:["One-half full","Completely full","Two-thirds full"],a:2,
+  ex:"§8.2.2 — the fuel tank is kept at least two-thirds full. Diesel fuel is also tested annually for degradation (§8.3.4.1)."},
+ {q:"The annual fire pump flow test evaluates the pump at which points?",
+  opts:["Churn and 100% of rated capacity only","No-flow (churn), 100% of rated capacity, and 150% of rated capacity","50%, 100%, and 200% of rated capacity"],a:1,
+  ex:"§8.3.3.1 — churn, 100%, and 150% of rated capacity. If suction can't support 150%, test at rated and max available (§8.3.3.4)."},
+ {q:"Annual flow test results are acceptable when the net pressure at each flow point is at least:",
+  opts:["95% of the original manufacturer's curve, original field test curve, or nameplate-generated curve","95% of last year's test results","90% of the fire department's required demand"],a:0,
+  ex:"§8.3.7.2.3 — ≥95% of the ORIGINAL curve, not the prior year. A pump that can't meet max system demand is an impairment (§8.3.7.2.4)."},
+ {q:"The annual transfer switch test requires the pump to run on the alternate power source for at least:",
+  opts:["30 seconds","2 minutes","30 minutes"],a:1,
+  ex:"§8.3.3.12 — simulate a power failure at peak load, verify transfer, run ≥2 minutes on alternate power, then verify reconnection."},
+ {q:"Water in fire protection storage tanks must be maintained at or above:",
+  opts:["40°F (4°C)","32°F (0°C)","45°F (7°C)"],a:0,
+  ex:"§9.2.3.1 — 40°F (4°C). Without supervised low-temp alarms, water temperature is checked weekly during cold weather (§9.2.3.3)."},
+ {q:"The interior of a steel tank WITHOUT corrosion protection must be inspected every:",
+  opts:["5 years","3 years","10 years"],a:1,
+  ex:"§9.2.5.1.1 — 3 years for bare steel. All other tanks go every 5 years (§9.2.5.1.2)."},
+ {q:"A tank NOT equipped with supervised water level alarms must have its water level inspected:",
+  opts:["Weekly","Quarterly","Monthly"],a:2,
+  ex:"§9.2.1.2 — monthly without supervised level alarms; quarterly with them (§9.2.1.1). Level signals themselves are tested annually (§9.3.5)."}
+];
+const PASSPCT=70;
+const qForm=document.getElementById('quiz');
+QUESTIONS.forEach((item,i)=>{
+  let h=`<div class="q"><p>${i+1}. ${item.q}</p>`;
+  item.opts.forEach((o,j)=>{h+=`<label class="opt"><input type="radio" name="q${i}" value="${j}">${o}</label>`;});
+  h+=`</div>`;qForm.insertAdjacentHTML('beforeend',h);
+});
+function go(step){
+  audio.pause();
+  document.querySelectorAll('.pane').forEach(s=>s.classList.remove('on'));
+  const map={0:'step0',1:'step1',R:'stepR',2:'step2'};
+  document.getElementById(map[step]).classList.add('on');
+  const tabIndex={0:0,1:1,R:1,2:2}[step];
+  for(let t=0;t<3;t++){const el=document.getElementById('tab'+t);el.classList.remove('active','done');if(t<tabIndex)el.classList.add('done');if(t===tabIndex)el.classList.add('active');}
+  if(step===0){setTimeout(fitDeck,30);if(started)audio.play().catch(()=>{});}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function grade(){
+  let score=0,unanswered=false;
+  QUESTIONS.forEach((item,i)=>{const sel=document.querySelector(`input[name="q${i}"]:checked`);if(!sel){unanswered=true;return;}if(parseInt(sel.value)===item.a)score++;});
+  if(unanswered){alert("Please answer all 10 questions before submitting.");return;}
+  const pct=Math.round(score/QUESTIONS.length*100);
+  const passed=pct>=PASSPCT;
+  window.__lastScore=score+'/'+QUESTIONS.length+' ('+pct+'%)';
+  let review='<div class="rev">';
+  QUESTIONS.forEach((item,i)=>{const sel=document.querySelector(`input[name="q${i}"]:checked`);const ok=sel && parseInt(sel.value)===item.a;review+=`<div class="ri ${ok?'ok':'no'}"><b>${i+1}. ${ok?'✓ Correct':'✗ Review'}</b> — ${item.ex}</div>`;});
+  review+='</div>';
+  document.getElementById('resultBlock').innerHTML=`
+    <div class="result-big ${passed?'pass':'fail'}">${pct}%</div>
+    <h2 class="${passed?'pass':'fail'}">${passed?'✓ You Passed!':'✗ Not quite — 70% needed'}</h2>
+    <p class="sub">You scored ${score} of ${QUESTIONS.length}.</p>
+    <div class="row center" style="justify-content:center;gap:12px">
+      ${passed?`<button class="btn" onclick="finishSection()">Complete Section 6 ▶</button>`
+        :`<button class="btn-ghost" onclick="go(0)">Review course</button><button class="btn" onclick="resetQuiz()">Retake quiz</button>`}
+    </div>${review}`;
+  go('R');
+}
+function resetQuiz(){document.getElementById('quiz').reset();go(1);}
+function finishSection(){try{localStorage.setItem('fsm8_sec6','1');}catch(e){}document.getElementById('doneScore').textContent='You scored '+(window.__lastScore||'')+' on the Section 6 quiz.';go(2);}
+document.getElementById('nextSecBtn').addEventListener('click',()=>{location.href='../index.html';});
+render();fitDeck();
+</script>
+</body>
+</html>

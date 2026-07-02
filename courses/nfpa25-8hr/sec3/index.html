@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NFPA 25 8-Hour CE — Section 3: Water-Based System Testing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A1524; --panel:#122032; --panel2:#16283E;
+    --orange:#F5821F; --red:#E23A1E; --gold:#F5B301; --teal:#17C3B2;
+    --ink:#FFFFFF; --muted:#93A4BC; --line:rgba(255,255,255,.10);
+    --bp:rgba(120,180,255,.16); --bpMajor:rgba(120,180,255,.30);
+    --green:#1D9E75;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#05080D;color:var(--ink);font-family:'Montserrat',system-ui,sans-serif;line-height:1.5}
+  header{background:#000;border-bottom:1px solid var(--line);padding:12px 22px;display:flex;align-items:center;gap:14px}
+  header .hflame{height:30px;width:auto}
+  .brand{font-weight:900;letter-spacing:1px;font-size:16px}
+  .brand small{display:block;font-size:9px;letter-spacing:4px;color:var(--muted);font-weight:700}
+  .osfm{margin-left:auto;font-size:11px;color:var(--muted);text-align:right;line-height:1.3}
+  .osfm b{color:var(--teal)}
+  .wrap{max-width:1120px;margin:0 auto;padding:22px 18px 90px}
+  .stepbar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .stepbar div{flex:1;min-width:120px;text-align:center;font-size:12.5px;font-weight:700;color:var(--muted);padding:9px 4px;border-radius:9px;background:var(--panel);border:1px solid var(--line);text-transform:uppercase;letter-spacing:.04em}
+  .stepbar div.active{color:#fff;background:linear-gradient(135deg,var(--orange),var(--red));border-color:transparent}
+  .stepbar div.done{color:var(--teal);border-color:var(--teal)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:16px}
+  .pane{display:none}.pane.on{display:block}
+  .pill{display:inline-block;background:var(--panel2);border:1px solid var(--line);color:var(--muted);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;letter-spacing:.04em}
+  h1.title{font-size:22px;margin:0 0 4px}
+  .sub{color:var(--muted);margin:0 0 6px;font-size:14px}
+  button{font-family:inherit;font-size:15px;font-weight:700;border:none;border-radius:10px;padding:12px 22px;cursor:pointer;transition:.15s}
+  .btn{background:linear-gradient(135deg,var(--orange),var(--red));color:#fff}
+  .btn:hover{filter:brightness(1.08)}
+  .btn:disabled{opacity:.4;cursor:not-allowed;filter:none}
+  .btn-ghost{background:var(--panel2);color:var(--ink);border:1px solid var(--line)}
+  .row{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:10px;flex-wrap:wrap}
+  .center{text-align:center}
+  .stage{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:12px;background:#05080D;border:1px solid var(--line)}
+  .deck{position:absolute;top:0;left:0;width:1280px;height:720px;transform-origin:top left}
+  .pbar{height:6px;background:var(--panel2);border-radius:4px;overflow:hidden;margin:14px 0 6px}
+  .pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--gold));width:0;transition:width .3s}
+  .pmeta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:10px}
+  .audio-wrap{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-top:10px}
+  .audio-wrap audio{height:34px;flex:1;min-width:0}
+  .auto{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);white-space:nowrap}
+  .ctrls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+  .ctrls .mid{flex:1;text-align:center;font-weight:700;font-size:14px;color:#DDE5F0}
+  .lockmsg{font-size:13px;color:var(--muted);margin-top:12px;text-align:center}
+  .startov{position:absolute;inset:0;background:rgba(5,8,13,.55);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:5}
+  .startov button{font-size:17px;padding:16px 30px;border-radius:40px}
+  .q{margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+  .q:last-child{border-bottom:none}
+  .q p{font-weight:700;margin:0 0 10px}
+  .opt{display:block;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:11px 14px;margin-bottom:8px;cursor:pointer;transition:.12s}
+  .opt:hover{border-color:var(--orange)}
+  .opt input{margin-right:10px}
+  label.opt:has(input:checked){border-color:var(--orange);background:rgba(245,130,31,.12)}
+  .result-big{font-size:40px;font-weight:900;text-align:center;margin:6px 0}
+  .pass{color:var(--green)}.fail{color:var(--red)}
+  .rev{margin-top:14px;text-align:left;font-size:13.5px}
+  .rev .ri{padding:9px 12px;border-radius:8px;margin-bottom:7px;border:1px solid var(--line)}
+  .rev .ri.ok{background:rgba(29,158,117,.12);border-color:var(--green)}
+  .rev .ri.no{background:rgba(226,58,30,.12);border-color:var(--red)}
+  .rev .ri b{color:#fff}
+  .done-hero{text-align:center;padding:26px 10px}
+  .done-hero .logo{height:70px;margin-bottom:14px}
+  .done-hero h1{font-size:30px;margin:6px 0}
+  .done-hero .accent{color:var(--orange)}
+  .unlockcard{background:linear-gradient(90deg,rgba(23,195,178,.14),transparent);border:1px solid rgba(23,195,178,.4);border-left:5px solid var(--teal);border-radius:10px;padding:16px 20px;margin-top:16px;text-align:left;font-size:15px}
+  .muted-note{color:var(--muted);font-size:13px;margin-top:16px}
+  .slide{position:absolute;inset:0;color:var(--ink);display:none;
+    background:
+      radial-gradient(120% 90% at 88% -10%, rgba(245,130,31,.13), transparent 55%),
+      radial-gradient(90% 80% at -5% 110%, rgba(23,195,178,.10), transparent 55%),
+      linear-gradient(160deg,#0B182A,#0A1420 60%,#08111C);}
+  .slide.active{display:block}
+  .slide::before{content:"";position:absolute;inset:0;z-index:0;
+    background-image:
+      linear-gradient(var(--bpMajor) 1.4px,transparent 1.4px),
+      linear-gradient(90deg,var(--bpMajor) 1.4px,transparent 1.4px),
+      linear-gradient(var(--bp) 1px,transparent 1px),
+      linear-gradient(90deg,var(--bp) 1px,transparent 1px);
+    background-size:150px 150px,150px 150px,30px 30px,30px 30px;
+    mask-image:radial-gradient(135% 100% at 50% 0%,#000 55%,transparent 92%);opacity:.9}
+  .spine{position:absolute;left:0;top:0;bottom:0;width:8px;z-index:2;background:linear-gradient(180deg,var(--orange),var(--red) 55%,var(--gold))}
+  .bpmark{position:absolute;width:26px;height:26px;z-index:2;pointer-events:none;border-color:var(--bpMajor);border-style:solid;border-width:0}
+  .bpmark.tr{top:18px;right:18px;border-right-width:2px;border-top-width:2px}
+  .bpmark.bl{bottom:52px;left:18px;border-left-width:2px;border-bottom-width:2px}
+  .pad{position:absolute;inset:0;z-index:3;padding:40px 56px 54px 72px;display:flex;flex-direction:column}
+  .top{display:flex;align-items:center;gap:16px;margin-bottom:4px}
+  .chip{font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.12em;font-size:19px;color:#0D0D0F;background:var(--gold);padding:6px 15px 4px;border-radius:6px;text-transform:uppercase;white-space:nowrap}
+  .kicker{font-family:'Barlow Condensed',sans-serif;letter-spacing:.22em;font-size:14px;color:var(--muted);text-transform:uppercase}
+  .slide h1{font-weight:900;font-size:36px;line-height:1.04;margin:6px 0 4px;letter-spacing:-.5px}
+  .slide h1 .accent{color:var(--orange)}
+  .slide .subline{color:var(--muted);font-size:16px;font-weight:500;margin-bottom:12px}
+  .foot{position:absolute;left:0;right:0;bottom:0;z-index:3;height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 26px 0 72px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.14em;font-size:13px;color:var(--muted);background:rgba(0,0,0,.35);border-top:1px solid var(--line);text-transform:uppercase}
+  .foot .fbrand{color:#fff;font-weight:700}
+  .flame{color:var(--orange)}
+  .bullets{display:flex;flex-direction:column;gap:12px;flex:1;justify-content:center}
+  .bul{display:grid;grid-template-columns:30px 1fr;gap:6px;align-items:start;font-size:18px;line-height:1.38}
+  .bul .mk{color:var(--orange);font-weight:900;font-size:19px}
+  .bul .sec{color:var(--teal);font-weight:800}
+  .bul b{color:#fff;font-weight:800}
+  .bul .txt{color:#D7DEE9;font-weight:500}
+  .takeaway{margin-top:12px;display:flex;align-items:center;gap:14px;background:linear-gradient(90deg,rgba(245,130,31,.16),rgba(226,58,30,.05));border:1px solid rgba(245,130,31,.35);border-left:5px solid var(--orange);border-radius:10px;padding:12px 18px;font-size:17px;font-weight:600}
+  .takeaway .ico{font-size:21px}
+  .takeaway b{color:var(--gold)}
+  .newbox{background:linear-gradient(90deg,rgba(23,195,178,.14),transparent);border:1px solid rgba(23,195,178,.4);border-left:5px solid var(--teal);border-radius:10px;padding:12px 18px;margin-top:6px}
+  .newbox .lbl{font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;font-size:14px;color:var(--teal);text-transform:uppercase;margin-bottom:4px}
+  .newbox .body{font-size:16.5px;color:#D7DEE9;font-weight:500}
+  .cards{display:grid;gap:18px;flex:1;align-content:center}
+  .card2{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden}
+  .card2::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c,var(--orange))}
+  .card2 .ct{font-weight:900;font-size:22px;margin-bottom:2px}
+  .card2 .cs{color:var(--teal);font-weight:800;font-size:14px;margin-bottom:8px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.06em}
+  .card2 .cb{color:#CBD5E3;font-size:15.5px;line-height:1.38;font-weight:500}
+  .nums{display:grid;gap:11px;flex:1;align-content:center}
+  .num{display:grid;grid-template-columns:48px 1fr;align-items:center;gap:14px;background:linear-gradient(90deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:11px;padding:11px 16px}
+  .num .n{font-weight:900;font-size:24px;color:#0D0D0F;background:var(--orange);width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+  .num .t{font-size:18px;font-weight:600;color:#E4EAF2}
+  .num .t .sec{color:var(--teal);font-weight:800}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:18px;flex:1;align-content:center}
+  .halfbox{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden}
+  .halfbox::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c,var(--orange))}
+  .halfbox .ht{font-weight:900;font-size:21px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+  .halfbox .hs{color:var(--teal);font-weight:800;font-size:14px}
+  .halfbox .hb{color:#CBD5E3;font-size:15.5px;line-height:1.4;margin-top:6px;font-weight:500}
+  .halfbox .sub2{margin-top:8px;font-size:14.5px;color:#AEBBCC}
+  .halfbox .sub2 b{color:#fff}
+  .ftable{width:100%;border-collapse:collapse;font-size:16px;flex:1}
+  .ftable th{text-align:left;font-family:'Barlow Condensed',sans-serif;letter-spacing:.06em;color:var(--gold);font-size:15px;text-transform:uppercase;padding:9px 14px;border-bottom:1px solid var(--line)}
+  .ftable td{padding:11px 14px;border-bottom:1px solid var(--line);color:#DCE3EC;font-weight:500}
+  .ftable tr:last-child td{border-bottom:none}
+  .ftable .dev{font-weight:800;color:#fff}
+  .ftable .hi td{background:rgba(245,130,31,.13)}
+  .ftable .hi .dev{color:var(--gold)}
+  .cover{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 80px}
+  .cover .logo{width:96px;height:96px;object-fit:contain;margin-bottom:22px;filter:drop-shadow(0 6px 20px rgba(245,130,31,.4))}
+  .cover .eyebrow{font-family:'Barlow Condensed',sans-serif;letter-spacing:.28em;font-size:17px;color:var(--teal);text-transform:uppercase;margin-bottom:14px}
+  .cover h1{font-size:54px;line-height:1.02;max-width:1000px;margin:0 0 16px}
+  .cover .csub{color:var(--muted);font-size:21px;font-weight:500;margin-bottom:26px}
+  .cover .badge{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.14em;font-size:16px;color:#0D0D0F;background:linear-gradient(90deg,var(--gold),var(--orange));padding:10px 22px;border-radius:30px;text-transform:uppercase}
+  .cover .cta{font-size:20px;color:#D7DEE9;font-weight:600;max-width:800px;margin-top:6px}
+  .cover .cta b{color:var(--gold)}
+</style>
+</head>
+<body>
+<header>
+  <img class="hflame" src="assets/flame.png" alt="FSM">
+  <div class="brand">FIRE SYSTEM<small>MASTERY</small></div>
+  <div class="osfm"><b>Illinois OSFM Approved</b><br>NFPA 25 · 8-Hour CE · Section 3 of 8</div>
+</header>
+
+<div class="wrap">
+  <div class="stepbar">
+    <div id="tab0" class="active">1. Course</div>
+    <div id="tab1">2. Section Quiz</div>
+    <div id="tab2">3. Section Complete</div>
+  </div>
+
+  <section id="step0" class="pane on">
+    <div class="card">
+      <span class="pill">SECTION 3 · NFPA 25 (2020) CHAPTER 5 · §5.3</span>
+      <h1 class="title">Water-Based System Testing</h1>
+      <p class="sub">Watch all 15 slides with narration, then take the 10-question section quiz to unlock Section 4.</p>
+
+      <div class="stage">
+        <div class="deck" id="deck">
+          <!-- 1 TITLE -->
+          <section class="slide active">
+            <div class="spine"></div><span class="bpmark tr"></span><span class="bpmark bl"></span>
+            <div class="cover">
+              <img class="logo" src="assets/flame.png" alt="FSM">
+              <div class="eyebrow">Fire System Mastery · Section 3 of 8</div>
+              <h1>Water-Based<br>System <span class="accent">Testing</span></h1>
+              <div class="csub">NFPA 25 (2020) · Chapter 5, §5.3</div>
+              <span class="badge">Illinois OSFM Approved · 8-Hour Comprehensive Course</span>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5</span></div>
+          </section>
+          <!-- 2 OVERVIEW -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Course Overview</span><span class="kicker">Stop Looking · Start Operating</span></div>
+              <h1>Proving the System <span class="accent">Functions</span></h1>
+              <div class="nums" style="grid-template-columns:1fr 1fr;gap:10px 22px">
+                <div class="num"><div class="n">1</div><div class="t">What §5.3 testing covers</div></div>
+                <div class="num"><div class="n">2</div><div class="t">Sprinkler age testing</div></div>
+                <div class="num"><div class="n">3</div><div class="t">Representative sampling</div></div>
+                <div class="num"><div class="n">4</div><div class="t">When a sample fails</div></div>
+                <div class="num"><div class="n">5</div><div class="t">Waterflow alarm testing</div></div>
+                <div class="num"><div class="n">6</div><div class="t">Fire pump during testing</div></div>
+                <div class="num"><div class="n">7</div><div class="t">Antifreeze systems & testing</div></div>
+                <div class="num"><div class="n">8</div><div class="t">After you find a problem</div></div>
+              </div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 3 of 8</span></div>
+          </section>
+          <!-- 3 WHAT COVERS -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 5.3</span><span class="kicker">Inspection Looks · Testing Operates</span></div>
+              <h1>What §5.3 Testing <span class="accent">Covers</span></h1>
+              <div class="cards" style="grid-template-columns:1fr 1fr 1fr">
+                <div class="card2" style="--c:var(--orange)"><div class="ct">Sprinklers</div><div class="cb" style="margin-top:6px">Age-tested in a lab — proves the heat element still operates.</div></div>
+                <div class="card2" style="--c:var(--gold)"><div class="ct">Waterflow Alarms</div><div class="cb" style="margin-top:6px">Tripped and confirmed to sound — mechanical and electric.</div></div>
+                <div class="card2" style="--c:var(--teal)"><div class="ct">Antifreeze</div><div class="cb" style="margin-top:6px">Sampled and measured — proves freeze protection holds.</div></div>
+              </div>
+              <div class="takeaway"><span class="ico">🔬</span><span>Each test has a defined <b>frequency or trigger age</b> — and a defined <b>action when it fails</b>.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 3 of 8</span></div>
+          </section>
+          <!-- 4 AGE TESTING -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 5.3.1.1.1</span><span class="kicker">Sprinklers Don't Last Forever</span></div>
+              <h1>Sprinkler <span class="accent">Age Testing</span></h1>
+              <table class="ftable">
+                <tr><th>Sprinkler Type</th><th>Test or Replace At</th><th>Reference</th></tr>
+                <tr><td class="dev">Standard-response</td><td><b style="color:#fff">50 years</b></td><td>§5.3.1.1.1</td></tr>
+                <tr class="hi"><td class="dev">Fast-response</td><td><b style="color:#fff">20 years</b></td><td>§5.3.1.1.1.3</td></tr>
+                <tr><td class="dev">Dry sprinklers</td><td><b style="color:#fff">10 years</b></td><td>§5.3.1.1.1.2</td></tr>
+                <tr><td class="dev">Then retested</td><td>Every 10 years</td><td>§5.3.1.1.1.1</td></tr>
+              </table>
+              <div class="takeaway"><span class="ico">⏳</span><span>Fast-response elements age quicker — <b>20 years</b>, not 50. Then every 10 years after.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 3 of 8</span></div>
+          </section>
+          <!-- 5 SAMPLING -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 5.3.1.2</span><span class="kicker">You Don't Pull Every Head</span></div>
+              <h1>Representative <span class="accent">Sample Testing</span></h1>
+              <div class="bullets" style="flex:none;margin-top:2px">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§5.3.1.2</span> — minimum sample = <b>not less than 4 sprinklers, or 1% of the sprinklers per sample area, whichever is greater</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Small area → 4 sprinklers. Large area → 1% (more than 4).</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">The sample goes to a <b>recognized testing laboratory</b> for operation & response.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🧪</span><span>The sample <b>represents the whole area</b> it was drawn from — which matters on the next slide.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 3 of 8</span></div>
+          </section>
+          <!-- 6 SAMPLE FAILS -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 5.3.1.3</span><span class="kicker">One Failure Condemns the Batch</span></div>
+              <h1>When a Sample <span class="accent">Fails</span></h1>
+              <div class="bullets" style="flex:none;margin-top:2px">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§5.3.1.3</span> — if <b>even one sprinkler</b> in a representative sample fails, <b style="color:#fff">all sprinklers within the area represented by that sample must be replaced</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Not just the one that failed — the <b>entire represented area</b>.</span></div>
+              </div>
+              <div class="newbox"><div class="lbl">Why</div><div class="body">If one sprinkler of that age and environment has degraded, the others probably have too. One fails → they all get replaced.</div></div>
+              <div class="takeaway"><span class="ico">⚠️</span><span>This is why sampling is taken seriously — one failure = replace the whole area.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 3 of 8</span></div>
+          </section>
+          <!-- 7 WATERFLOW FREQ -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Sections 5.3.3.1–2</span><span class="kicker">Two Types · Two Frequencies</span></div>
+              <h1>Waterflow Alarm <span class="accent">Testing Frequencies</span></h1>
+              <div class="split" style="flex:none;margin:6px 0">
+                <div class="halfbox" style="--c:var(--orange)"><div class="ht">Quarterly</div><div class="hb"><b style="color:#fff">Mechanical</b> waterflow alarm devices — including water motor gongs (§5.3.3.1).</div></div>
+                <div class="halfbox" style="--c:var(--teal)"><div class="ht">Semiannually</div><div class="hb"><b style="color:#fff">Vane-type</b> and <b style="color:#fff">pressure switch-type</b> waterflow alarm devices (§5.3.3.2).</div></div>
+              </div>
+              <div class="takeaway"><span class="ico">🔔</span><span>Don't flip them: the <b>mechanical water motor gong is quarterly</b> — the more frequent one.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 3 of 8</span></div>
+          </section>
+          <!-- 8 HOW TEST -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 5.3.3.3</span><span class="kicker">Frequency Is One Thing · Method Is Another</span></div>
+              <h1>How You <span class="accent">Test Waterflow Devices</span></h1>
+              <div class="bullets" style="flex:none;margin-top:2px">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§5.3.3.3</span> — on a wet pipe system, test a pressure switch-type device by <b>opening the inspector's test connection</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">The ITC simulates the flow of a single sprinkler at the most remote point — the true functional test.</span></div>
+              </div>
+              <div class="newbox"><div class="lbl">Cold-Weather Allowance — §5.3.3.3.1</div><div class="body">The <b style="color:#fff">bypass connection</b> is permitted where freezing weather prohibits using the inspector's test connection. But the default answer is: <b style="color:#fff">open the ITC</b>.</div></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 3 of 8</span></div>
+          </section>
+          <!-- 9 FIRE PUMP -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 5.3.3.5</span><span class="kicker">Never Quietly Leave Protection Off</span></div>
+              <h1>Fire Pump <span class="accent">During Testing</span></h1>
+              <div class="bullets" style="flex:none;margin-top:2px">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§5.3.3.5</span> — a fire pump shall <b>not</b> be taken out of service during testing <b>unless</b>:</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">① it is <b>constantly attended by qualified personnel</b>, OR</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">② <b>all Chapter 15 impairment procedures</b> are followed (tag + notifications).</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🛡️</span><span>Mirrors the water-supply rule from Section 1 — protection stays on, attended or formally impaired.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 3 of 8</span></div>
+          </section>
+          <!-- 10 ANTIFREEZE ALLOWED -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 5.3.4.3.1</span><span class="kicker">The Rules Tightened</span></div>
+              <h1>Antifreeze Systems — <span class="accent">What's Allowed</span></h1>
+              <div class="split" style="flex:none;margin:6px 0">
+                <div class="halfbox" style="--c:var(--teal)"><div class="ht">CPVC → Glycerine ONLY</div><div class="hb"><b style="color:#fff">§5.3.4.3.1</b> — listed CPVC sprinkler pipe & fittings shall be protected from freezing with <b style="color:#fff">glycerine only</b>.</div></div>
+                <div class="halfbox" style="--c:var(--red)"><div class="ht">Prohibited in CPVC</div><div class="hb"><b>§5.3.4.3.1.1</b> — diethylene, ethylene, and propylene <b style="color:#fff">glycols are prohibited</b> — they can attack the plastic.</div></div>
+              </div>
+              <div class="takeaway"><span class="ico">🧴</span><span>"Only antifreeze permitted in CPVC?" → <b>glycerine</b>.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 3 of 8</span></div>
+          </section>
+          <!-- 11 ANTIFREEZE TEST -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 5.3.4</span><span class="kicker">Verify Before Winter Arrives</span></div>
+              <h1>Antifreeze <span class="accent">Testing</span></h1>
+              <div class="bullets" style="flex:none;margin-top:2px">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§5.3.4</span> — antifreeze solutions tested <b>annually, before the onset of freezing weather</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Determine the <b>type</b> of antifreeze.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Sample <b>top and bottom</b> of the system — concentration can stratify.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Measure <b>specific gravity</b> to confirm freeze protection is adequate.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">❄️</span><span>Annually, <b>before freezing weather</b> — verify protection <b>before</b> the pipe can freeze.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 3 of 8</span></div>
+          </section>
+          <!-- 12 CROSS REF -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">§5.3 · Cross-References</span><span class="kicker">Where the Rest Lives</span></div>
+              <h1>Other Tests & <span class="accent">Cross-References</span></h1>
+              <div class="bullets">
+                <div class="bul"><span class="mk">▸</span><span class="txt">The <b>main drain test</b> and <b>control-valve tests</b> are handled under <b>Chapter 13</b> — covered in Section 4. No double-up here.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><b>Gauges</b> test on the Chapter 13 <b>5-year</b> cycle.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">§5.3 keeps its focus on <b>sprinklers, waterflow alarms, and antifreeze</b>.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🔗</span><span>A 5.3 quiz question is one of three families: <b>sprinklers, alarms, or antifreeze</b>.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 3 of 8</span></div>
+          </section>
+          <!-- 13 AFTER PROBLEM -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Field</span><span class="kicker">Testing Without Follow-Through Is Just Paperwork</span></div>
+              <h1>After You Find a <span class="accent">Problem</span></h1>
+              <div class="bullets">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><b>Sample failure</b> → replace the whole represented area (§5.3.1.3).</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">An <b>alarm that won't operate</b> is a deficiency — possibly critical, possibly an impairment.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><b>Document</b> the result, date & code section (§4.3), and <b>notify the owner in writing</b>.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">📝</span><span>Test, record, act — that's the full cycle.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 3 of 8</span></div>
+          </section>
+          <!-- 14 TAKEAWAYS -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Review</span><span class="kicker">Before Your Quiz</span></div>
+              <h1>The Numbers That <span class="accent">Matter Most</span></h1>
+              <div class="nums" style="grid-template-columns:1fr 1fr;gap:9px 22px">
+                <div class="num"><div class="n">1</div><div class="t">Standard 50 yr · fast-response 20 yr · dry 10 yr <span class="sec">§5.3.1.1.1</span></div></div>
+                <div class="num"><div class="n">2</div><div class="t">Sample ≥ 4 or 1%, whichever is greater <span class="sec">§5.3.1.2</span></div></div>
+                <div class="num"><div class="n">3</div><div class="t">One fails → replace the whole area <span class="sec">§5.3.1.3</span></div></div>
+                <div class="num"><div class="n">4</div><div class="t">Mechanical alarms quarterly <span class="sec">§5.3.3.1</span></div></div>
+                <div class="num"><div class="n">5</div><div class="t">Vane/pressure-switch semiannually <span class="sec">§5.3.3.2</span></div></div>
+                <div class="num"><div class="n">6</div><div class="t">Test via inspector's test connection <span class="sec">§5.3.3.3</span></div></div>
+                <div class="num"><div class="n">7</div><div class="t">Fire pump: attended or Chapter 15 <span class="sec">§5.3.3.5</span></div></div>
+                <div class="num"><div class="n">8</div><div class="t">CPVC glycerine only · antifreeze annual <span class="sec">§5.3.4</span></div></div>
+              </div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 3 of 8</span></div>
+          </section>
+          <!-- 15 COMPLETE -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span><span class="bpmark bl"></span>
+            <div class="cover">
+              <img class="logo" src="assets/flame.png" alt="FSM">
+              <div class="eyebrow">Section 3 Complete</div>
+              <h1>Time to Take <span class="accent">Your Quiz</span></h1>
+              <div class="cta">Pass the 10-question section quiz with <b>70% or better</b> to unlock <b>Section 4 — Valves, Alarm Devices & Common Components</b>.</div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 3 of 8</span></div>
+          </section>
+        </div>
+        <div class="startov" id="startov"><button class="btn" onclick="startCourse()">▶ Start Section 3</button></div>
+      </div>
+
+      <div class="pbar"><i id="prog"></i></div>
+      <div class="pmeta"><span id="counter">Slide 1 of 15</span><span id="seen">Viewed: 1 / 15</span></div>
+      <div class="audio-wrap">
+        <audio id="narration" controls src="audio/slide-01.mp3"></audio>
+        <label class="auto"><input type="checkbox" id="autoplay" checked> Auto-advance</label>
+      </div>
+      <div class="ctrls">
+        <button class="btn-ghost" id="prevBtn" onclick="nav(-1)" disabled>◀ Previous</button>
+        <span class="mid" id="slideTitle"></span>
+        <button class="btn" id="nextBtn" onclick="nav(1)">Next ▶</button>
+      </div>
+      <div id="unlock" class="lockmsg">🔒 View all 15 slides to unlock the section quiz.</div>
+      <div class="center" style="margin-top:12px">
+        <button class="btn" id="toTest" onclick="go(1)" style="display:none">Start the Section Quiz ▶</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="step1" class="pane">
+    <div class="card">
+      <span class="pill">SECTION 3 QUIZ · 10 QUESTIONS · PASS = 70% (7 of 10)</span>
+      <h1 class="title">Water-Based System Testing — Quiz</h1>
+      <p class="sub">Answer all 10 questions, then submit.</p>
+      <form id="quiz"></form>
+      <div class="row">
+        <button class="btn-ghost" onclick="go(0)">◀ Back to course</button>
+        <button class="btn" onclick="grade()">Submit Quiz</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="stepR" class="pane"><div class="card center"><div id="resultBlock"></div></div></section>
+
+  <section id="step2" class="pane">
+    <div class="card">
+      <div class="done-hero">
+        <img class="logo" src="assets/flame.png" alt="FSM">
+        <div class="pill" style="background:rgba(29,158,117,.15);border-color:var(--green);color:#8ff0cf">✓ Section 3 Passed</div>
+        <h1>Section 3 <span class="accent">Complete</span></h1>
+        <p class="sub" id="doneScore"></p>
+      </div>
+      <div class="unlockcard">
+        <b style="color:var(--teal)">🔓 Section 4 — Valves, Alarm Devices & Common Components is now unlocked.</b><br>
+        Your progress through this section is recorded. Complete all 8 sections to earn your <b>8.0-hour NFPA 25 CE certificate</b>.
+      </div>
+      <div class="row" style="margin-top:18px">
+        <button class="btn-ghost" onclick="location.reload()">↺ Replay Section 3</button>
+        <button class="btn" id="nextSecBtn">Return to Course Home ▶</button>
+      </div>
+      <p class="muted-note">This is the Section 3 module of the 8-hour course. In the assembled course, "Continue to Section 4" advances to the next section; the certificate is issued after Section 8 with all 8.0 credit hours logged for OSFM.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+const NSLIDES=15;
+const TITLES=["Welcome","Course Overview","What §5.3 Testing Covers","Sprinkler Age Testing","Representative Sample Testing","When a Sample Fails","Waterflow Alarm Testing Frequencies","How You Test Waterflow Devices","Fire Pump During Testing","Antifreeze Systems — What's Allowed","Antifreeze Testing","Other Tests & Cross-References","After You Find a Problem","Key Takeaways","Section Complete"];
+let cur=1, maxSeen=1, started=false;
+const deck=document.getElementById('deck');
+const slides=[...deck.querySelectorAll('.slide')];
+const audio=document.getElementById('narration');
+function pad(n){return String(n).padStart(2,'0');}
+function fitDeck(){const stage=deck.parentElement;deck.style.transform='scale('+(stage.clientWidth/1280)+')';}
+window.addEventListener('resize',fitDeck);
+function render(){
+  slides.forEach((s,i)=>s.classList.toggle('active',i===cur-1));
+  audio.src=`audio/slide-${pad(cur)}.mp3`;
+  document.getElementById('counter').textContent=`Slide ${cur} of ${NSLIDES}`;
+  document.getElementById('seen').textContent=`Viewed: ${maxSeen} / ${NSLIDES}`;
+  document.getElementById('prog').style.width=(maxSeen/NSLIDES*100)+'%';
+  document.getElementById('slideTitle').textContent=TITLES[cur-1]||'';
+  document.getElementById('prevBtn').disabled = cur===1;
+  document.getElementById('nextBtn').style.display = cur===NSLIDES ? 'none':'inline-block';
+  if(started) audio.play().catch(()=>{});
+  checkUnlock();
+}
+function startCourse(){started=true;document.getElementById('startov').style.display='none';audio.play().catch(()=>{});}
+function nav(d){const nx=cur+d;if(nx<1||nx>NSLIDES)return;cur=nx;if(cur>maxSeen)maxSeen=cur;render();}
+function checkUnlock(){if(maxSeen>=NSLIDES){document.getElementById('unlock').innerHTML='✅ All slides viewed — the section quiz is unlocked.';document.getElementById('toTest').style.display='inline-block';}}
+audio.addEventListener('ended',()=>{if(document.getElementById('autoplay').checked && cur<NSLIDES) nav(1);});
+document.addEventListener('keydown',e=>{if(!document.getElementById('step0').classList.contains('on'))return;if(e.key==='ArrowRight')nav(1);if(e.key==='ArrowLeft')nav(-1);});
+
+/* OFFICIAL Course 3 questions (verbatim) */
+const QUESTIONS=[
+ {q:"Per NFPA 25 Section 5.3.3.1, how often shall mechanical waterflow alarm devices be tested?",
+  opts:["Annually","Semiannually","Quarterly"],a:2,
+  ex:"NFPA 25 (2020) 5.3.3.1: \"Mechanical waterflow alarm devices including, but not limited to, water motor gongs, shall be tested quarterly.\""},
+ {q:"Per NFPA 25 Section 5.3.3.2, how often are vane-type and pressure switch-type waterflow alarm devices required to be tested?",
+  opts:["Quarterly","Semiannually","Annually"],a:1,
+  ex:"NFPA 25 (2020) 5.3.3.2: \"Vane-type and pressure switch-type waterflow alarm devices shall be tested semiannually.\""},
+ {q:"At what age must standard sprinklers be tested or replaced per NFPA 25 Section 5.3.1.1.1?",
+  opts:["25 years","50 years","75 years"],a:1,
+  ex:"NFPA 25 (2020) 5.3.1.1.1: where sprinklers have been installed for 50 years, they shall be replaced or representative samples tested. Testing then repeats every 10 years per 5.3.1.1.1.1."},
+ {q:"Per NFPA 25 Section 5.3.1.1.1.3, fast-response sprinklers that have been installed for how many years shall be replaced or have representative samples tested?",
+  opts:["15 years","25 years","20 years"],a:2,
+  ex:"NFPA 25 (2020) 5.3.1.1.1.3: fast-response sprinklers installed for 20 years shall be replaced or representative samples tested, then retested at 10-year intervals."},
+ {q:"Per NFPA 25 Section 5.3.1.2, what is the minimum representative sample size required for sprinkler field service testing?",
+  opts:["2 sprinklers or 1% per sample area, whichever is greater","4 sprinklers or 1% per sample area, whichever is greater","6 sprinklers or 2% per sample area, whichever is greater"],a:1,
+  ex:"NFPA 25 (2020) 5.3.1.2: a representative sample shall be a minimum of not less than four sprinklers or 1 percent of the sprinklers per sample, whichever is greater."},
+ {q:"Per NFPA 25 Section 5.3.1.3, if one sprinkler within a representative sample fails the field service test, what is required?",
+  opts:["Only the sprinklers that failed must be replaced","A second sample must be tested before any action is taken","All sprinklers within the area represented by that sample must be replaced"],a:2,
+  ex:"NFPA 25 (2020) 5.3.1.3: where one sprinkler within a representative sample fails, all sprinklers within the area represented by that sample shall be replaced."},
+ {q:"Per NFPA 25 Section 5.3.3.3, how is a pressure switch-type waterflow alarm device tested on a wet pipe system?",
+  opts:["By closing the main control valve and verifying alarm activation","By opening the inspector's test connection","By flowing water through the main drain valve"],a:1,
+  ex:"NFPA 25 (2020) 5.3.3.3: testing of pressure switch-type waterflow alarm devices on wet pipe systems shall be accomplished by opening the inspector's test connection. 5.3.3.3.1 permits the bypass connection where freezing weather prohibits use of the ITC."},
+ {q:"Per NFPA 25 Section 5.3.4.3.1, what is the only antifreeze solution permitted for use in CPVC sprinkler pipe systems?",
+  opts:["Propylene glycol","Ethylene glycol","Glycerine"],a:2,
+  ex:"NFPA 25 (2020) 5.3.4.3.1: \"Listed CPVC sprinkler pipe and fittings shall be protected from freezing with glycerine only.\" 5.3.4.3.1.1 prohibits diethylene, ethylene, or propylene glycols."},
+ {q:"Per NFPA 25 Section 5.3.4, how often must antifreeze solutions be tested?",
+  opts:["Semiannually","Annually, before the onset of freezing weather","Every two years"],a:1,
+  ex:"NFPA 25 (2020) 5.3.4: annually, before the onset of freezing weather, the antifreeze solution shall be tested — determining type, sampling top and bottom of the system, and measuring specific gravity."},
+ {q:"Per NFPA 25 Section 5.3.3.5, what condition must be met if a fire pump must be taken out of service during testing?",
+  opts:["The fire pump may be taken out of service at any time as long as testing is documented","The fire pump must be constantly attended by qualified personnel, or all Chapter 15 impairment procedures must be followed","The property owner must provide written authorization before the fire pump is shut down"],a:1,
+  ex:"NFPA 25 (2020) 5.3.3.5: fire pumps shall not be taken out of service during testing unless constantly attended by qualified personnel or all impairment procedures in Chapter 15 are followed."}
+];
+const PASSPCT=70;
+const qForm=document.getElementById('quiz');
+QUESTIONS.forEach((item,i)=>{
+  let h=`<div class="q"><p>${i+1}. ${item.q}</p>`;
+  item.opts.forEach((o,j)=>{h+=`<label class="opt"><input type="radio" name="q${i}" value="${j}">${o}</label>`;});
+  h+=`</div>`;qForm.insertAdjacentHTML('beforeend',h);
+});
+function go(step){
+  audio.pause();
+  document.querySelectorAll('.pane').forEach(s=>s.classList.remove('on'));
+  const map={0:'step0',1:'step1',R:'stepR',2:'step2'};
+  document.getElementById(map[step]).classList.add('on');
+  const tabIndex={0:0,1:1,R:1,2:2}[step];
+  for(let t=0;t<3;t++){const el=document.getElementById('tab'+t);el.classList.remove('active','done');if(t<tabIndex)el.classList.add('done');if(t===tabIndex)el.classList.add('active');}
+  if(step===0){setTimeout(fitDeck,30);if(started)audio.play().catch(()=>{});}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function grade(){
+  let score=0,unanswered=false;
+  QUESTIONS.forEach((item,i)=>{const sel=document.querySelector(`input[name="q${i}"]:checked`);if(!sel){unanswered=true;return;}if(parseInt(sel.value)===item.a)score++;});
+  if(unanswered){alert("Please answer all 10 questions before submitting.");return;}
+  const pct=Math.round(score/QUESTIONS.length*100);
+  const passed=pct>=PASSPCT;
+  window.__lastScore=score+'/'+QUESTIONS.length+' ('+pct+'%)';
+  let review='<div class="rev">';
+  QUESTIONS.forEach((item,i)=>{const sel=document.querySelector(`input[name="q${i}"]:checked`);const ok=sel && parseInt(sel.value)===item.a;review+=`<div class="ri ${ok?'ok':'no'}"><b>${i+1}. ${ok?'✓ Correct':'✗ Review'}</b> — ${item.ex}</div>`;});
+  review+='</div>';
+  document.getElementById('resultBlock').innerHTML=`
+    <div class="result-big ${passed?'pass':'fail'}">${pct}%</div>
+    <h2 class="${passed?'pass':'fail'}">${passed?'✓ You Passed!':'✗ Not quite — 70% needed'}</h2>
+    <p class="sub">You scored ${score} of ${QUESTIONS.length}.</p>
+    <div class="row center" style="justify-content:center;gap:12px">
+      ${passed?`<button class="btn" onclick="finishSection()">Complete Section 3 ▶</button>`
+        :`<button class="btn-ghost" onclick="go(0)">Review course</button><button class="btn" onclick="resetQuiz()">Retake quiz</button>`}
+    </div>${review}`;
+  go('R');
+}
+function resetQuiz(){document.getElementById('quiz').reset();go(1);}
+function finishSection(){try{localStorage.setItem('fsm8_sec3','1');}catch(e){}document.getElementById('doneScore').textContent='You scored '+(window.__lastScore||'')+' on the Section 3 quiz.';go(2);}
+document.getElementById('nextSecBtn').addEventListener('click',()=>{location.href='../index.html';});
+render();fitDeck();
+</script>
+</body>
+</html>

@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NFPA 25 8-Hour CE — Section 7: Internal Pipe Condition, Obstruction & MIC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A1524; --panel:#122032; --panel2:#16283E;
+    --orange:#F5821F; --red:#E23A1E; --gold:#F5B301; --teal:#17C3B2;
+    --ink:#FFFFFF; --muted:#93A4BC; --line:rgba(255,255,255,.10);
+    --bp:rgba(120,180,255,.16); --bpMajor:rgba(120,180,255,.30);
+    --green:#1D9E75;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#05080D;color:var(--ink);font-family:'Montserrat',system-ui,sans-serif;line-height:1.5}
+  header{background:#000;border-bottom:1px solid var(--line);padding:12px 22px;display:flex;align-items:center;gap:14px}
+  header .hflame{height:30px;width:auto}
+  .brand{font-weight:900;letter-spacing:1px;font-size:16px}
+  .brand small{display:block;font-size:9px;letter-spacing:4px;color:var(--muted);font-weight:700}
+  .osfm{margin-left:auto;font-size:11px;color:var(--muted);text-align:right;line-height:1.3}
+  .osfm b{color:var(--teal)}
+  .wrap{max-width:1120px;margin:0 auto;padding:22px 18px 90px}
+  .stepbar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .stepbar div{flex:1;min-width:120px;text-align:center;font-size:12.5px;font-weight:700;color:var(--muted);padding:9px 4px;border-radius:9px;background:var(--panel);border:1px solid var(--line);text-transform:uppercase;letter-spacing:.04em}
+  .stepbar div.active{color:#fff;background:linear-gradient(135deg,var(--orange),var(--red));border-color:transparent}
+  .stepbar div.done{color:var(--teal);border-color:var(--teal)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:16px}
+  .pane{display:none}.pane.on{display:block}
+  .pill{display:inline-block;background:var(--panel2);border:1px solid var(--line);color:var(--muted);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;letter-spacing:.04em}
+  h1.title{font-size:22px;margin:0 0 4px}
+  .sub{color:var(--muted);margin:0 0 6px;font-size:14px}
+  button{font-family:inherit;font-size:15px;font-weight:700;border:none;border-radius:10px;padding:12px 22px;cursor:pointer;transition:.15s}
+  .btn{background:linear-gradient(135deg,var(--orange),var(--red));color:#fff}
+  .btn:hover{filter:brightness(1.08)}
+  .btn:disabled{opacity:.4;cursor:not-allowed;filter:none}
+  .btn-ghost{background:var(--panel2);color:var(--ink);border:1px solid var(--line)}
+  .row{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:10px;flex-wrap:wrap}
+  .center{text-align:center}
+  .stage{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:12px;background:#05080D;border:1px solid var(--line)}
+  .deck{position:absolute;top:0;left:0;width:1280px;height:720px;transform-origin:top left}
+  .pbar{height:6px;background:var(--panel2);border-radius:4px;overflow:hidden;margin:14px 0 6px}
+  .pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--gold));width:0;transition:width .3s}
+  .pmeta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:10px}
+  .audio-wrap{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-top:10px}
+  .audio-wrap audio{height:34px;flex:1;min-width:0}
+  .auto{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);white-space:nowrap}
+  .ctrls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+  .ctrls .mid{flex:1;text-align:center;font-weight:700;font-size:14px;color:#DDE5F0}
+  .lockmsg{font-size:13px;color:var(--muted);margin-top:12px;text-align:center}
+  .startov{position:absolute;inset:0;background:rgba(5,8,13,.55);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:5}
+  .startov button{font-size:17px;padding:16px 30px;border-radius:40px}
+  .q{margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+  .q:last-child{border-bottom:none}
+  .q p{font-weight:700;margin:0 0 10px}
+  .opt{display:block;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:11px 14px;margin-bottom:8px;cursor:pointer;transition:.12s}
+  .opt:hover{border-color:var(--orange)}
+  .opt input{margin-right:10px}
+  label.opt:has(input:checked){border-color:var(--orange);background:rgba(245,130,31,.12)}
+  .result-big{font-size:40px;font-weight:900;text-align:center;margin:6px 0}
+  .pass{color:var(--green)}.fail{color:var(--red)}
+  .rev{margin-top:14px;text-align:left;font-size:13.5px}
+  .rev .ri{padding:9px 12px;border-radius:8px;margin-bottom:7px;border:1px solid var(--line)}
+  .rev .ri.ok{background:rgba(29,158,117,.12);border-color:var(--green)}
+  .rev .ri.no{background:rgba(226,58,30,.12);border-color:var(--red)}
+  .rev .ri b{color:#fff}
+  .done-hero{text-align:center;padding:26px 10px}
+  .done-hero .logo{height:70px;margin-bottom:14px}
+  .done-hero h1{font-size:30px;margin:6px 0}
+  .done-hero .accent{color:var(--orange)}
+  .unlockcard{background:linear-gradient(90deg,rgba(23,195,178,.14),transparent);border:1px solid rgba(23,195,178,.4);border-left:5px solid var(--teal);border-radius:10px;padding:16px 20px;margin-top:16px;text-align:left;font-size:15px}
+  .muted-note{color:var(--muted);font-size:13px;margin-top:16px}
+  .slide{position:absolute;inset:0;color:var(--ink);display:none;
+    background:
+      radial-gradient(120% 90% at 88% -10%, rgba(245,130,31,.13), transparent 55%),
+      radial-gradient(90% 80% at -5% 110%, rgba(23,195,178,.10), transparent 55%),
+      linear-gradient(160deg,#0B182A,#0A1420 60%,#08111C);}
+  .slide.active{display:block}
+  .slide::before{content:"";position:absolute;inset:0;z-index:0;
+    background-image:
+      linear-gradient(var(--bpMajor) 1.4px,transparent 1.4px),
+      linear-gradient(90deg,var(--bpMajor) 1.4px,transparent 1.4px),
+      linear-gradient(var(--bp) 1px,transparent 1px),
+      linear-gradient(90deg,var(--bp) 1px,transparent 1px);
+    background-size:150px 150px,150px 150px,30px 30px,30px 30px;
+    mask-image:radial-gradient(135% 100% at 50% 0%,#000 55%,transparent 92%);opacity:.9}
+  .spine{position:absolute;left:0;top:0;bottom:0;width:8px;z-index:2;background:linear-gradient(180deg,var(--orange),var(--red) 55%,var(--gold))}
+  .bpmark{position:absolute;width:26px;height:26px;z-index:2;pointer-events:none;border-color:var(--bpMajor);border-style:solid;border-width:0}
+  .bpmark.tr{top:18px;right:18px;border-right-width:2px;border-top-width:2px}
+  .bpmark.bl{bottom:52px;left:18px;border-left-width:2px;border-bottom-width:2px}
+  .pad{position:absolute;inset:0;z-index:3;padding:40px 56px 54px 72px;display:flex;flex-direction:column}
+  .top{display:flex;align-items:center;gap:16px;margin-bottom:4px}
+  .chip{font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.12em;font-size:19px;color:#0D0D0F;background:var(--gold);padding:6px 15px 4px;border-radius:6px;text-transform:uppercase;white-space:nowrap}
+  .kicker{font-family:'Barlow Condensed',sans-serif;letter-spacing:.22em;font-size:14px;color:var(--muted);text-transform:uppercase}
+  .slide h1{font-weight:900;font-size:36px;line-height:1.04;margin:6px 0 4px;letter-spacing:-.5px}
+  .slide h1 .accent{color:var(--orange)}
+  .slide .subline{color:var(--muted);font-size:16px;font-weight:500;margin-bottom:12px}
+  .foot{position:absolute;left:0;right:0;bottom:0;z-index:3;height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 26px 0 72px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.14em;font-size:13px;color:var(--muted);background:rgba(0,0,0,.35);border-top:1px solid var(--line);text-transform:uppercase}
+  .foot .fbrand{color:#fff;font-weight:700}
+  .flame{color:var(--orange)}
+  .bullets{display:flex;flex-direction:column;gap:12px;flex:1;justify-content:center}
+  .bul{display:grid;grid-template-columns:30px 1fr;gap:6px;align-items:start;font-size:18px;line-height:1.38}
+  .bul .mk{color:var(--orange);font-weight:900;font-size:19px}
+  .bul .sec{color:var(--teal);font-weight:800}
+  .bul b{color:#fff;font-weight:800}
+  .bul .txt{color:#D7DEE9;font-weight:500}
+  .takeaway{margin-top:12px;display:flex;align-items:center;gap:14px;background:linear-gradient(90deg,rgba(245,130,31,.16),rgba(226,58,30,.05));border:1px solid rgba(245,130,31,.35);border-left:5px solid var(--orange);border-radius:10px;padding:12px 18px;font-size:17px;font-weight:600}
+  .takeaway .ico{font-size:21px}
+  .takeaway b{color:var(--gold)}
+  .newbox{background:linear-gradient(90deg,rgba(23,195,178,.14),transparent);border:1px solid rgba(23,195,178,.4);border-left:5px solid var(--teal);border-radius:10px;padding:12px 18px;margin-top:6px}
+  .newbox .lbl{font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;font-size:14px;color:var(--teal);text-transform:uppercase;margin-bottom:4px}
+  .newbox .body{font-size:16.5px;color:#D7DEE9;font-weight:500}
+  .cards{display:grid;gap:18px;flex:1;align-content:center}
+  .card2{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden}
+  .card2::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c,var(--orange))}
+  .card2 .ct{font-weight:900;font-size:22px;margin-bottom:2px}
+  .card2 .cs{color:var(--teal);font-weight:800;font-size:14px;margin-bottom:8px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.06em}
+  .card2 .cb{color:#CBD5E3;font-size:15.5px;line-height:1.38;font-weight:500}
+  .nums{display:grid;gap:11px;flex:1;align-content:center}
+  .num{display:grid;grid-template-columns:48px 1fr;align-items:center;gap:14px;background:linear-gradient(90deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:11px;padding:11px 16px}
+  .num .n{font-weight:900;font-size:24px;color:#0D0D0F;background:var(--orange);width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+  .num .t{font-size:18px;font-weight:600;color:#E4EAF2}
+  .num .t .sec{color:var(--teal);font-weight:800}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:18px;flex:1;align-content:center}
+  .halfbox{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden}
+  .halfbox::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c,var(--orange))}
+  .halfbox .ht{font-weight:900;font-size:21px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+  .halfbox .hs{color:var(--teal);font-weight:800;font-size:14px}
+  .halfbox .hb{color:#CBD5E3;font-size:15.5px;line-height:1.4;margin-top:6px;font-weight:500}
+  .halfbox .sub2{margin-top:8px;font-size:14.5px;color:#AEBBCC}
+  .halfbox .sub2 b{color:#fff}
+  .trigs{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;flex:1;align-content:center}
+  .trig{display:grid;grid-template-columns:34px 1fr;gap:8px;align-items:start;font-size:15.5px;color:#DCE3EC;font-weight:500;line-height:1.32}
+  .trig .tn{font-weight:900;color:#0D0D0F;background:var(--red);width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px}
+  .fourpt{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;flex:none;margin:6px 0}
+  .fourpt .pt{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:12px;padding:16px 12px;text-align:center;position:relative;overflow:hidden}
+  .fourpt .pt::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:var(--c)}
+  .fourpt .pt .pn{font-weight:900;font-size:26px;color:var(--c)}
+  .fourpt .pt .pl{font-weight:800;font-size:16px;margin-top:4px}
+  .checkbox{display:grid;grid-template-columns:1fr 1fr;gap:8px 26px;flex:1;align-content:center}
+  .cki{display:grid;grid-template-columns:26px 1fr;gap:8px;align-items:start;font-size:16.5px;color:#DCE3EC;font-weight:500}
+  .cki .ck{color:var(--red);font-weight:900;font-size:17px}
+  .cover{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 80px}
+  .cover .logo{width:96px;height:96px;object-fit:contain;margin-bottom:22px;filter:drop-shadow(0 6px 20px rgba(245,130,31,.4))}
+  .cover .eyebrow{font-family:'Barlow Condensed',sans-serif;letter-spacing:.28em;font-size:17px;color:var(--teal);text-transform:uppercase;margin-bottom:14px}
+  .cover h1{font-size:50px;line-height:1.02;max-width:1000px;margin:0 0 16px}
+  .cover .csub{color:var(--muted);font-size:21px;font-weight:500;margin-bottom:26px}
+  .cover .badge{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.14em;font-size:16px;color:#0D0D0F;background:linear-gradient(90deg,var(--gold),var(--orange));padding:10px 22px;border-radius:30px;text-transform:uppercase}
+  .cover .cta{font-size:20px;color:#D7DEE9;font-weight:600;max-width:800px;margin-top:6px}
+  .cover .cta b{color:var(--gold)}
+</style>
+</head>
+<body>
+<header>
+  <img class="hflame" src="assets/flame.png" alt="FSM">
+  <div class="brand">FIRE SYSTEM<small>MASTERY</small></div>
+  <div class="osfm"><b>Illinois OSFM Approved</b><br>NFPA 25 · 8-Hour CE · Section 7 of 8</div>
+</header>
+
+<div class="wrap">
+  <div class="stepbar">
+    <div id="tab0" class="active">1. Course</div>
+    <div id="tab1">2. Section Quiz</div>
+    <div id="tab2">3. Section Complete</div>
+  </div>
+
+  <section id="step0" class="pane on">
+    <div class="card">
+      <span class="pill">SECTION 7 · NFPA 25 (2020) CHAPTER 14</span>
+      <h1 class="title">Internal Pipe Condition, Obstruction & MIC</h1>
+      <p class="sub">Watch all 16 slides with narration, then take the 10-question section quiz to unlock Section 8.</p>
+
+      <div class="stage">
+        <div class="deck" id="deck">
+          <!-- 1 TITLE -->
+          <section class="slide active">
+            <div class="spine"></div><span class="bpmark tr"></span><span class="bpmark bl"></span>
+            <div class="cover">
+              <img class="logo" src="assets/flame.png" alt="FSM">
+              <div class="eyebrow">Fire System Mastery · Section 7 of 8</div>
+              <h1>Internal Pipe Condition,<br><span class="accent">Obstruction & MIC</span></h1>
+              <div class="csub">NFPA 25 (2020) · Chapter 14</div>
+              <span class="badge">Illinois OSFM Approved · 8-Hour Comprehensive Course</span>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 14</span></div>
+          </section>
+          <!-- 2 OVERVIEW -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Course Overview</span><span class="kicker">What this hour covers</span></div>
+              <h1>What's Happening <span class="accent">Inside the Pipe</span></h1>
+              <div class="nums" style="grid-template-columns:1fr 1fr;gap:10px 22px">
+                <div class="num"><div class="n">1</div><div class="t">Why internal condition matters</div></div>
+                <div class="num"><div class="n">2</div><div class="t">The 5-year internal assessment</div></div>
+                <div class="num"><div class="n">3</div><div class="t">Multiple-system rule</div></div>
+                <div class="num"><div class="n">4</div><div class="t">Obstruction investigation triggers</div></div>
+                <div class="num"><div class="n">5</div><div class="t">Conducting the investigation</div></div>
+                <div class="num"><div class="n">6</div><div class="t">Flushing programs</div></div>
+                <div class="num"><div class="n">7</div><div class="t">MIC recognition</div></div>
+                <div class="num"><div class="n">8</div><div class="t">Ice obstruction & documentation</div></div>
+              </div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 14 · Section 7 of 8</span></div>
+          </section>
+          <!-- 3 WHY -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Chapter 14</span><span class="kicker">The Invisible Threat</span></div>
+              <h1>Why Internal Condition <span class="accent">Matters</span></h1>
+              <div class="bullets">
+                <div class="bul"><span class="mk">▸</span><span class="txt">A system can be fully charged, every head in place, gauges normal — and still be <b>starving for water</b> inside.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Scale, tubercules, and debris build up where <b>you can't see them</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">The outside of the pipe tells you <b>nothing</b> about the inside.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🔬</span><span>A system can <b>pass every visual inspection</b> and still be badly obstructed. Chapter 14 makes you look inside.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 14 · Section 7 of 8</span></div>
+          </section>
+          <!-- 4 ASSESSMENT -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 14.2</span><span class="kicker">Precise 2020 Language</span></div>
+              <h1>The <span class="accent">5-Year Internal Assessment</span></h1>
+              <div class="bullets" style="flex:none;margin-top:2px">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§14.2.1</span> — conduct an <b>assessment of the internal condition of piping</b>, inspecting for foreign organic and inorganic material.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§14.2.1.1</span> — at a minimum, <b>every 5 years</b>. OR —</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§14.2.1.2</span> — at a frequency determined by an <b>approved risk analysis</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§14.2.1.5</span> — <b>nonmetallic piping is exempt</b>.</span></div>
+              </div>
+              <div class="newbox"><div class="lbl">Note — 2020 Wording Changed</div><div class="body">The old "open a flushing connection + remove a sprinkler" method moved to the <b style="color:#fff">annex as guidance</b>. Mandatory text just requires the <b style="color:#fff">assessment</b>.</div></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 14 · Section 7 of 8</span></div>
+          </section>
+          <!-- 5 MULTIPLE SYSTEMS -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 14.2.2</span><span class="kicker">Saves Labor — Until It Doesn't</span></div>
+              <h1>Multiple Wet Systems? <span class="accent">Alternate Them</span></h1>
+              <div class="bullets" style="flex:none;margin-top:2px">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§14.2.2</span> — in a building with multiple wet pipe systems, <b>every other system</b> gets the assessment each cycle.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§14.2.2.1</span> — the skipped systems are assessed at the <b>next frequency</b>.</span></div>
+              </div>
+              <div class="newbox" style="border-color:rgba(226,58,30,.4);border-left-color:var(--red)"><div class="lbl" style="color:var(--red)">The Catch — §14.2.2.2</div><div class="body">If foreign material is found in <b style="color:#fff">any one system</b>, then <b style="color:#fff">ALL systems</b> in the building must be assessed.</div></div>
+              <div class="takeaway"><span class="ico">⚠️</span><span>One dirty riser <b>condemns the whole building</b> to a full look.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 14 · Section 7 of 8</span></div>
+          </section>
+          <!-- 6 FIND & TRIGGER -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Sections 14.2.1.3–4</span><span class="kicker">The Assessment Is the Trigger</span></div>
+              <h1>What You Find — <span class="accent">& What It Triggers</span></h1>
+              <div class="split">
+                <div class="halfbox" style="--c:var(--gold)"><div class="ht">You Find</div><div class="hb">Pipe scale · rust · sludge · foreign objects · zebra mussels · and the two red flags: <b style="color:#fff">tubercules & slime</b>.</div></div>
+                <div class="halfbox" style="--c:var(--red)"><div class="ht">It Triggers</div><div class="hb">Tubercules or slime → <b style="color:#fff">test for MIC</b> (§14.2.1.3).<br>Enough material to obstruct → <b style="color:#fff">full obstruction investigation</b> per §14.3 (§14.2.1.4).</div></div>
+              </div>
+              <div class="takeaway"><span class="ico">🔀</span><span>The assessment is the trigger — the <b>investigation</b> is the deep dive.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 14 · Section 7 of 8</span></div>
+          </section>
+          <!-- 7 TRIGGERS 1 -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 14.3.1</span><span class="kicker">15 Triggers · Part 1 of 2</span></div>
+              <h1>Obstruction Investigation <span class="accent">Triggers (1–8)</span></h1>
+              <div class="trigs">
+                <div class="trig"><span class="tn">1</span><span>Defective intake for a pump taking suction from open water</span></div>
+                <div class="trig"><span class="tn">2</span><span>Obstructive material discharged during routine water tests</span></div>
+                <div class="trig"><span class="tn">3</span><span>Foreign material in pumps, dry pipe valves, or check valves</span></div>
+                <div class="trig"><span class="tn">4</span><span>Foreign material during drain tests / plugged inspector's test</span></div>
+                <div class="trig"><span class="tn">5</span><span>Unknown materials heard in piping while flowing water</span></div>
+                <div class="trig"><span class="tn">6</span><span>Plugged sprinklers</span></div>
+                <div class="trig"><span class="tn">7</span><span>Enough foreign material found in the pipe</span></div>
+                <div class="trig"><span class="tn">8</span><span>Failure to flush yard piping / public mains after new work</span></div>
+              </div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 14 · Section 7 of 8</span></div>
+          </section>
+          <!-- 8 TRIGGERS 2 -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 14.3.1</span><span class="kicker">15 Triggers · Part 2 of 2</span></div>
+              <h1>Obstruction Investigation <span class="accent">Triggers (9–15)</span></h1>
+              <div class="trigs">
+                <div class="trig"><span class="tn">9</span><span>Record of broken public mains in the vicinity</span></div>
+                <div class="trig"><span class="tn">10</span><span>Abnormally frequent false tripping of a dry pipe valve</span></div>
+                <div class="trig"><span class="tn">11</span><span>System returned to service after shutdown <b style="color:#fff">&gt; 1 year</b></span></div>
+                <div class="trig"><span class="tn">12</span><span>Suspected sodium silicate / corrosive flux (copper systems)</span></div>
+                <div class="trig"><span class="tn">13</span><span>System supplied with raw water via the FDC</span></div>
+                <div class="trig"><span class="tn">14</span><span><b style="color:#fff">Pinhole leaks</b></span></div>
+                <div class="trig"><span class="tn">15</span><span><b style="color:#fff">50% increase</b> in water delivery time (dry full-flow trip vs. acceptance)</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🎯</span><span>Quiz favorites: the <b>&gt;1-year shutdown</b>, <b>pinhole leaks</b>, and the <b>50% delivery-time increase</b>.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 14 · Section 7 of 8</span></div>
+          </section>
+          <!-- 9 4 POINTS -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 14.3.2.2</span><span class="kicker">How the Investigation Is Conducted</span></div>
+              <h1>Examine <span class="accent">Four Points</span></h1>
+              <div class="fourpt">
+                <div class="pt" style="--c:var(--orange)"><div class="pn">1</div><div class="pl">System Valve</div></div>
+                <div class="pt" style="--c:var(--gold)"><div class="pn">2</div><div class="pl">Riser</div></div>
+                <div class="pt" style="--c:var(--teal)"><div class="pn">3</div><div class="pl">Cross Main</div></div>
+                <div class="pt" style="--c:var(--red)"><div class="pn">4</div><div class="pl">Branch Line</div></div>
+              </div>
+              <div class="bullets" style="flex:none;gap:9px">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§14.3.2.1</span> — if the causing condition isn't corrected (or could re-obstruct), re-examine <b>every 5 years</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§14.3.2.3</span> — <b>alternative nondestructive methods</b> permitted (borescope, ultrasonic).</span></div>
+              </div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 14 · Section 7 of 8</span></div>
+          </section>
+          <!-- 10 FLUSHING -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 14.3.3</span><span class="kicker">When the Investigation Confirms It</span></div>
+              <h1>The <span class="accent">Flushing Program</span></h1>
+              <div class="bullets" style="flex:none;margin-top:2px">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§14.3.3</span> — if the investigation indicates <b>sufficient material to obstruct</b> pipe or sprinklers, a <b>complete flushing program</b> is conducted by qualified personnel.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Not a quick rinse — a complete, engineered program.</span></div>
+              </div>
+              <div class="newbox"><div class="lbl">Where the Procedures Live</div><div class="body">The detailed flushing procedures — flow rates, hydraulic vs. hydropneumatic methods — are in <b style="color:#fff">Annex D</b> of NFPA 25.</div></div>
+              <div class="takeaway"><span class="ico">💧</span><span>After flushing: verify flow is restored, document, and set the re-inspection schedule.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 14 · Section 7 of 8</span></div>
+          </section>
+          <!-- 11 MIC -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">MIC</span><span class="kicker">The Villain Behind Internal Corrosion</span></div>
+              <h1>Microbiologically Influenced <span class="accent">Corrosion</span></h1>
+              <div class="bullets" style="flex:none;margin-top:2px">
+                <div class="bul"><span class="mk">▸</span><span class="txt">Corrosion driven by <b>colonies of bacteria</b> living in the system water.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Produces <b>tubercules</b>, slime, pinhole leaks, and blockages — attacks from the inside out.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Thrives in <b>stagnant, untreated water</b> — exactly what sits in a lot of sprinkler piping.</span></div>
+              </div>
+              <div class="newbox" style="border-color:rgba(245,130,31,.4);border-left-color:var(--orange)"><div class="lbl" style="color:var(--orange)">The Code Hook — MANDATORY</div><div class="body">Find tubercules or slime — during the assessment (§14.2.1.3) or an obstruction investigation (§14.3.4) — and you <b style="color:#fff">test for MIC</b>. Not optional.</div></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 14 · Section 7 of 8</span></div>
+          </section>
+          <!-- 12 SPOT MIC -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">MIC</span><span class="kicker">Recognize It on the Job</span></div>
+              <h1>Spotting MIC <span class="accent">in the Field</span></h1>
+              <div class="checkbox">
+                <div class="cki"><span class="ck">▸</span><span>Black or slimy deposits inside the pipe</span></div>
+                <div class="cki"><span class="ck">▸</span><span>Rotten-egg (sulfide) smell when draining</span></div>
+                <div class="cki"><span class="ck">▸</span><span>Pinhole leaks in otherwise sound pipe</span></div>
+                <div class="cki"><span class="ck">▸</span><span>Crusty tubercule mounds over pits</span></div>
+                <div class="cki"><span class="ck">▸</span><span>Accelerated, localized corrosion at joints/welds</span></div>
+                <div class="cki"><span class="ck">▸</span><span>Discolored water at drain tests</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🧫</span><span>Confirm by <b>lab sampling</b> — then treatment, and often pipe replacement.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 14 · Section 7 of 8</span></div>
+          </section>
+          <!-- 13 ICE -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 14.4</span><span class="kicker">A Cold-Storage Hazard</span></div>
+              <h1>Ice Obstruction — <span class="accent">Refrigerated Spaces</span></h1>
+              <div class="bullets" style="flex:none;margin-top:2px">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§14.4</span> — dry or preaction piping through a refrigerated space <b>below 32°F (0°C)</b>: internally inspected for ice <b>annually</b>, at the <b>point of entry</b> to the refrigerated area.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§14.4.2</span> — ice found → examine additional piping to find how far it extends.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Alternative nondestructive methods permitted (§14.4.1).</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🧊</span><span>Ice plugs form where <b>moist system air meets cold pipe</b> — that's why air dryness matters in freezers.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 14 · Section 7 of 8</span></div>
+          </section>
+          <!-- 14 DOCUMENT -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Field</span><span class="kicker">The Paperwork That Closes It Out</span></div>
+              <h1>Document It — & Know When It's an <span class="accent">Impairment</span></h1>
+              <div class="bullets">
+                <div class="bul"><span class="mk">▸</span><span class="txt">Record assessment findings, investigation results, and flushing per <span class="sec">§4.3</span> — the <b>5 required record elements</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Material found in one system → <b>all systems assessed</b> (§14.2.2.2).</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Obstructed enough that the system can't perform = <b>impairment</b> → Chapter 15 + tag.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Set the re-inspection clock: <b>5 years</b>, or per approved risk analysis.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">📋</span><span>Chapter 15 impairment management is exactly where <b>Section 8</b> picks up next.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 14 · Section 7 of 8</span></div>
+          </section>
+          <!-- 15 TAKEAWAYS -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Review</span><span class="kicker">Before Your Quiz</span></div>
+              <h1>The Points That <span class="accent">Matter Most</span></h1>
+              <div class="nums" style="grid-template-columns:1fr;gap:10px">
+                <div class="num"><div class="n">1</div><div class="t">Internal <b>assessment every 5 years</b> (or per risk analysis) for foreign material <span class="sec">§14.2.1</span></div></div>
+                <div class="num"><div class="n">2</div><div class="t">Multiple wet systems alternate — <b>one dirty = assess all</b> <span class="sec">§14.2.2</span></div></div>
+                <div class="num"><div class="n">3</div><div class="t">Know the <b>15 triggers</b> — pinhole leaks, &gt;1-yr shutdown, 50% delivery time <span class="sec">§14.3.1</span></div></div>
+                <div class="num"><div class="n">4</div><div class="t">Investigation = <b>system valve, riser, cross main, branch line</b> <span class="sec">§14.3.2.2</span></div></div>
+                <div class="num"><div class="n">5</div><div class="t">Tubercules or slime = <b>mandatory MIC testing</b> <span class="sec">§14.2.1.3 / §14.3.4</span></div></div>
+              </div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 14 · Section 7 of 8</span></div>
+          </section>
+          <!-- 16 COMPLETE -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span><span class="bpmark bl"></span>
+            <div class="cover">
+              <img class="logo" src="assets/flame.png" alt="FSM">
+              <div class="eyebrow">Section 7 Complete</div>
+              <h1>Time to Take <span class="accent">Your Quiz</span></h1>
+              <div class="cta">Pass the 10-question section quiz with <b>70% or better</b> to unlock <b>Section 8 — Records & Impairment Management</b>, the final section.</div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 14 · Section 7 of 8</span></div>
+          </section>
+        </div>
+        <div class="startov" id="startov"><button class="btn" onclick="startCourse()">▶ Start Section 7</button></div>
+      </div>
+
+      <div class="pbar"><i id="prog"></i></div>
+      <div class="pmeta"><span id="counter">Slide 1 of 16</span><span id="seen">Viewed: 1 / 16</span></div>
+      <div class="audio-wrap">
+        <audio id="narration" controls src="audio/slide-01.mp3"></audio>
+        <label class="auto"><input type="checkbox" id="autoplay" checked> Auto-advance</label>
+      </div>
+      <div class="ctrls">
+        <button class="btn-ghost" id="prevBtn" onclick="nav(-1)" disabled>◀ Previous</button>
+        <span class="mid" id="slideTitle"></span>
+        <button class="btn" id="nextBtn" onclick="nav(1)">Next ▶</button>
+      </div>
+      <div id="unlock" class="lockmsg">🔒 View all 16 slides to unlock the section quiz.</div>
+      <div class="center" style="margin-top:12px">
+        <button class="btn" id="toTest" onclick="go(1)" style="display:none">Start the Section Quiz ▶</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="step1" class="pane">
+    <div class="card">
+      <span class="pill">SECTION 7 QUIZ · 10 QUESTIONS · PASS = 70% (7 of 10)</span>
+      <h1 class="title">Internal Pipe Condition, Obstruction & MIC — Quiz</h1>
+      <p class="sub">Answer all 10 questions, then submit.</p>
+      <form id="quiz"></form>
+      <div class="row">
+        <button class="btn-ghost" onclick="go(0)">◀ Back to course</button>
+        <button class="btn" onclick="grade()">Submit Quiz</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="stepR" class="pane"><div class="card center"><div id="resultBlock"></div></div></section>
+
+  <section id="step2" class="pane">
+    <div class="card">
+      <div class="done-hero">
+        <img class="logo" src="assets/flame.png" alt="FSM">
+        <div class="pill" style="background:rgba(29,158,117,.15);border-color:var(--green);color:#8ff0cf">✓ Section 7 Passed</div>
+        <h1>Section 7 <span class="accent">Complete</span></h1>
+        <p class="sub" id="doneScore"></p>
+      </div>
+      <div class="unlockcard">
+        <b style="color:var(--teal)">🔓 Section 8 — Records & Impairment Management (the final section) is now unlocked.</b><br>
+        Your progress through this section is recorded. Complete all 8 sections to earn your <b>8.0-hour NFPA 25 CE certificate</b>.
+      </div>
+      <div class="row" style="margin-top:18px">
+        <button class="btn-ghost" onclick="location.reload()">↺ Replay Section 7</button>
+        <button class="btn" id="nextSecBtn">Return to Course Home ▶</button>
+      </div>
+      <p class="muted-note">This is the Section 7 module of the 8-hour course. In the assembled course, "Continue to Section 8" advances to the final section; the certificate is issued after Section 8 with all 8.0 credit hours logged for OSFM.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+const NSLIDES=16;
+const TITLES=["Welcome","Course Overview","Why Internal Condition Matters","The 5-Year Internal Assessment","Multiple Wet Systems? Alternate Them","What You Find & What It Triggers","Obstruction Triggers (1–8)","Obstruction Triggers (9–15)","Examine Four Points","The Flushing Program","Microbiologically Influenced Corrosion","Spotting MIC in the Field","Ice Obstruction — Refrigerated Spaces","Document It & Impairment","Key Takeaways","Section Complete"];
+let cur=1, maxSeen=1, started=false;
+const deck=document.getElementById('deck');
+const slides=[...deck.querySelectorAll('.slide')];
+const audio=document.getElementById('narration');
+function pad(n){return String(n).padStart(2,'0');}
+function fitDeck(){const stage=deck.parentElement;deck.style.transform='scale('+(stage.clientWidth/1280)+')';}
+window.addEventListener('resize',fitDeck);
+function render(){
+  slides.forEach((s,i)=>s.classList.toggle('active',i===cur-1));
+  audio.src=`audio/slide-${pad(cur)}.mp3`;
+  document.getElementById('counter').textContent=`Slide ${cur} of ${NSLIDES}`;
+  document.getElementById('seen').textContent=`Viewed: ${maxSeen} / ${NSLIDES}`;
+  document.getElementById('prog').style.width=(maxSeen/NSLIDES*100)+'%';
+  document.getElementById('slideTitle').textContent=TITLES[cur-1]||'';
+  document.getElementById('prevBtn').disabled = cur===1;
+  document.getElementById('nextBtn').style.display = cur===NSLIDES ? 'none':'inline-block';
+  if(started) audio.play().catch(()=>{});
+  checkUnlock();
+}
+function startCourse(){started=true;document.getElementById('startov').style.display='none';audio.play().catch(()=>{});}
+function nav(d){const nx=cur+d;if(nx<1||nx>NSLIDES)return;cur=nx;if(cur>maxSeen)maxSeen=cur;render();}
+function checkUnlock(){if(maxSeen>=NSLIDES){document.getElementById('unlock').innerHTML='✅ All slides viewed — the section quiz is unlocked.';document.getElementById('toTest').style.display='inline-block';}}
+audio.addEventListener('ended',()=>{if(document.getElementById('autoplay').checked && cur<NSLIDES) nav(1);});
+document.addEventListener('keydown',e=>{if(!document.getElementById('step0').classList.contains('on'))return;if(e.key==='ArrowRight')nav(1);if(e.key==='ArrowLeft')nav(-1);});
+
+const QUESTIONS=[
+ {q:"Under the 2020 edition, the assessment of the internal condition of piping is conducted at a minimum of every:",
+  opts:["5 years, or at a frequency determined by an approved risk analysis","3 years, with no alternatives permitted","10 years, wet systems only"],a:0,
+  ex:"§14.2.1.1 / §14.2.1.2 — minimum every 5 years, or a risk-analysis-based frequency."},
+ {q:"The purpose of the internal piping assessment is to inspect for:",
+  opts:["Proper pipe schedule and hanger spacing","The presence of foreign organic and inorganic material","Minimum wall thickness per ASTM standards"],a:1,
+  ex:"§14.2.1 — scale, sludge, rust, foreign objects, biological growth: anything that could obstruct water delivery."},
+ {q:"Which piping is EXEMPT from the internal condition assessment?",
+  opts:["Copper piping","Galvanized steel piping","Nonmetallic piping"],a:2,
+  ex:"§14.2.1.5 — nonmetallic pipe (e.g. CPVC) doesn't corrode or form tubercules."},
+ {q:"In a building with multiple wet pipe systems, foreign material is found in one system. What is required?",
+  opts:["Only that system is flushed","All systems in the building must be assessed","The finding is recorded and rechecked at the next 5-year cycle"],a:1,
+  ex:"§14.2.2.2 — one dirty system triggers an assessment of them all. Normally you alternate every other system (§14.2.2)."},
+ {q:"Tubercules or slime found during an assessment or obstruction investigation must be:",
+  opts:["Flushed out and noted in the report","Removed with approved solvent","Tested for indications of microbiologically influenced corrosion (MIC)"],a:2,
+  ex:"§14.2.1.3 and §14.3.4 — tubercules and slime are the visible signature of MIC; the lab test is mandatory."},
+ {q:"A system returned to service after an extended shutdown requires an obstruction investigation when the shutdown exceeded:",
+  opts:["1 year","30 days","90 days"],a:0,
+  ex:"§14.3.1(11) — greater than 1 year. Stagnant, idle systems are prime real estate for corrosion and debris."},
+ {q:"During a dry system full-flow trip test, an obstruction investigation is triggered when water delivery time to the inspector's test connection increases by what amount over the original acceptance test?",
+  opts:["25 percent","50 percent","Any measurable increase"],a:1,
+  ex:"§14.3.1(15) — a 50% increase in water travel time signals something in the way."},
+ {q:"An obstruction investigation requires internal examination at a minimum of which four points?",
+  opts:["System valve, riser, cross main, branch line","FDC, main drain, inspector's test, gauge port","Flushing connection, feed main, armover, sprig"],a:0,
+  ex:"§14.3.2.2 — system valve, riser, cross main, branch line. Alternative nondestructive methods are permitted (§14.3.2.3)."},
+ {q:"If the obstruction investigation finds sufficient material to obstruct pipe or sprinklers, NFPA 25 requires:",
+  opts:["Replacement of all affected branch lines","A 30-day re-inspection","A complete flushing program conducted by qualified personnel"],a:2,
+  ex:"§14.3.3 — a complete flushing program. The detailed procedures are in Annex D."},
+ {q:"Dry or preaction piping passing through a refrigerated space below 32°F (0°C) must be internally inspected for ice obstruction:",
+  opts:["Every 5 years, at the cross main","Annually, at the point where the piping enters the refrigerated area","Only after a trip test"],a:1,
+  ex:"§14.4 — annually at the point of entry. If ice is found, examine additional piping (§14.4.2)."}
+];
+const PASSPCT=70;
+const qForm=document.getElementById('quiz');
+QUESTIONS.forEach((item,i)=>{
+  let h=`<div class="q"><p>${i+1}. ${item.q}</p>`;
+  item.opts.forEach((o,j)=>{h+=`<label class="opt"><input type="radio" name="q${i}" value="${j}">${o}</label>`;});
+  h+=`</div>`;qForm.insertAdjacentHTML('beforeend',h);
+});
+function go(step){
+  audio.pause();
+  document.querySelectorAll('.pane').forEach(s=>s.classList.remove('on'));
+  const map={0:'step0',1:'step1',R:'stepR',2:'step2'};
+  document.getElementById(map[step]).classList.add('on');
+  const tabIndex={0:0,1:1,R:1,2:2}[step];
+  for(let t=0;t<3;t++){const el=document.getElementById('tab'+t);el.classList.remove('active','done');if(t<tabIndex)el.classList.add('done');if(t===tabIndex)el.classList.add('active');}
+  if(step===0){setTimeout(fitDeck,30);if(started)audio.play().catch(()=>{});}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function grade(){
+  let score=0,unanswered=false;
+  QUESTIONS.forEach((item,i)=>{const sel=document.querySelector(`input[name="q${i}"]:checked`);if(!sel){unanswered=true;return;}if(parseInt(sel.value)===item.a)score++;});
+  if(unanswered){alert("Please answer all 10 questions before submitting.");return;}
+  const pct=Math.round(score/QUESTIONS.length*100);
+  const passed=pct>=PASSPCT;
+  window.__lastScore=score+'/'+QUESTIONS.length+' ('+pct+'%)';
+  let review='<div class="rev">';
+  QUESTIONS.forEach((item,i)=>{const sel=document.querySelector(`input[name="q${i}"]:checked`);const ok=sel && parseInt(sel.value)===item.a;review+=`<div class="ri ${ok?'ok':'no'}"><b>${i+1}. ${ok?'✓ Correct':'✗ Review'}</b> — ${item.ex}</div>`;});
+  review+='</div>';
+  document.getElementById('resultBlock').innerHTML=`
+    <div class="result-big ${passed?'pass':'fail'}">${pct}%</div>
+    <h2 class="${passed?'pass':'fail'}">${passed?'✓ You Passed!':'✗ Not quite — 70% needed'}</h2>
+    <p class="sub">You scored ${score} of ${QUESTIONS.length}.</p>
+    <div class="row center" style="justify-content:center;gap:12px">
+      ${passed?`<button class="btn" onclick="finishSection()">Complete Section 7 ▶</button>`
+        :`<button class="btn-ghost" onclick="go(0)">Review course</button><button class="btn" onclick="resetQuiz()">Retake quiz</button>`}
+    </div>${review}`;
+  go('R');
+}
+function resetQuiz(){document.getElementById('quiz').reset();go(1);}
+function finishSection(){try{localStorage.setItem('fsm8_sec7','1');}catch(e){}document.getElementById('doneScore').textContent='You scored '+(window.__lastScore||'')+' on the Section 7 quiz.';go(2);}
+document.getElementById('nextSecBtn').addEventListener('click',()=>{location.href='../index.html';});
+render();fitDeck();
+</script>
+</body>
+</html>

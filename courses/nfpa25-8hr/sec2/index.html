@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NFPA 25 8-Hour CE — Section 2: Sprinkler System Inspection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A1524; --panel:#122032; --panel2:#16283E;
+    --orange:#F5821F; --red:#E23A1E; --gold:#F5B301; --teal:#17C3B2;
+    --ink:#FFFFFF; --muted:#93A4BC; --line:rgba(255,255,255,.10);
+    --bp:rgba(120,180,255,.16); --bpMajor:rgba(120,180,255,.30);
+    --green:#1D9E75;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#05080D;color:var(--ink);font-family:'Montserrat',system-ui,sans-serif;line-height:1.5}
+  header{background:#000;border-bottom:1px solid var(--line);padding:12px 22px;display:flex;align-items:center;gap:14px}
+  header .hflame{height:30px;width:auto}
+  .brand{font-weight:900;letter-spacing:1px;font-size:16px}
+  .brand small{display:block;font-size:9px;letter-spacing:4px;color:var(--muted);font-weight:700}
+  .osfm{margin-left:auto;font-size:11px;color:var(--muted);text-align:right;line-height:1.3}
+  .osfm b{color:var(--teal)}
+  .wrap{max-width:1120px;margin:0 auto;padding:22px 18px 90px}
+  .stepbar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .stepbar div{flex:1;min-width:120px;text-align:center;font-size:12.5px;font-weight:700;color:var(--muted);padding:9px 4px;border-radius:9px;background:var(--panel);border:1px solid var(--line);text-transform:uppercase;letter-spacing:.04em}
+  .stepbar div.active{color:#fff;background:linear-gradient(135deg,var(--orange),var(--red));border-color:transparent}
+  .stepbar div.done{color:var(--teal);border-color:var(--teal)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:16px}
+  .pane{display:none}.pane.on{display:block}
+  .pill{display:inline-block;background:var(--panel2);border:1px solid var(--line);color:var(--muted);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;letter-spacing:.04em}
+  h1.title{font-size:22px;margin:0 0 4px}
+  .sub{color:var(--muted);margin:0 0 6px;font-size:14px}
+  button{font-family:inherit;font-size:15px;font-weight:700;border:none;border-radius:10px;padding:12px 22px;cursor:pointer;transition:.15s}
+  .btn{background:linear-gradient(135deg,var(--orange),var(--red));color:#fff}
+  .btn:hover{filter:brightness(1.08)}
+  .btn:disabled{opacity:.4;cursor:not-allowed;filter:none}
+  .btn-ghost{background:var(--panel2);color:var(--ink);border:1px solid var(--line)}
+  .row{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:10px;flex-wrap:wrap}
+  .center{text-align:center}
+  .stage{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:12px;background:#05080D;border:1px solid var(--line)}
+  .deck{position:absolute;top:0;left:0;width:1280px;height:720px;transform-origin:top left}
+  .pbar{height:6px;background:var(--panel2);border-radius:4px;overflow:hidden;margin:14px 0 6px}
+  .pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--gold));width:0;transition:width .3s}
+  .pmeta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:10px}
+  .audio-wrap{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-top:10px}
+  .audio-wrap audio{height:34px;flex:1;min-width:0}
+  .auto{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);white-space:nowrap}
+  .ctrls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+  .ctrls .mid{flex:1;text-align:center;font-weight:700;font-size:14px;color:#DDE5F0}
+  .lockmsg{font-size:13px;color:var(--muted);margin-top:12px;text-align:center}
+  .startov{position:absolute;inset:0;background:rgba(5,8,13,.55);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:5}
+  .startov button{font-size:17px;padding:16px 30px;border-radius:40px}
+  .q{margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+  .q:last-child{border-bottom:none}
+  .q p{font-weight:700;margin:0 0 10px}
+  .opt{display:block;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:11px 14px;margin-bottom:8px;cursor:pointer;transition:.12s}
+  .opt:hover{border-color:var(--orange)}
+  .opt input{margin-right:10px}
+  label.opt:has(input:checked){border-color:var(--orange);background:rgba(245,130,31,.12)}
+  .result-big{font-size:40px;font-weight:900;text-align:center;margin:6px 0}
+  .pass{color:var(--green)}.fail{color:var(--red)}
+  .rev{margin-top:14px;text-align:left;font-size:13.5px}
+  .rev .ri{padding:9px 12px;border-radius:8px;margin-bottom:7px;border:1px solid var(--line)}
+  .rev .ri.ok{background:rgba(29,158,117,.12);border-color:var(--green)}
+  .rev .ri.no{background:rgba(226,58,30,.12);border-color:var(--red)}
+  .rev .ri b{color:#fff}
+  .done-hero{text-align:center;padding:26px 10px}
+  .done-hero .logo{height:70px;margin-bottom:14px}
+  .done-hero h1{font-size:30px;margin:6px 0}
+  .done-hero .accent{color:var(--orange)}
+  .unlockcard{background:linear-gradient(90deg,rgba(23,195,178,.14),transparent);border:1px solid rgba(23,195,178,.4);border-left:5px solid var(--teal);border-radius:10px;padding:16px 20px;margin-top:16px;text-align:left;font-size:15px}
+  .muted-note{color:var(--muted);font-size:13px;margin-top:16px}
+  .slide{position:absolute;inset:0;color:var(--ink);display:none;
+    background:
+      radial-gradient(120% 90% at 88% -10%, rgba(245,130,31,.13), transparent 55%),
+      radial-gradient(90% 80% at -5% 110%, rgba(23,195,178,.10), transparent 55%),
+      linear-gradient(160deg,#0B182A,#0A1420 60%,#08111C);}
+  .slide.active{display:block}
+  .slide::before{content:"";position:absolute;inset:0;z-index:0;
+    background-image:
+      linear-gradient(var(--bpMajor) 1.4px,transparent 1.4px),
+      linear-gradient(90deg,var(--bpMajor) 1.4px,transparent 1.4px),
+      linear-gradient(var(--bp) 1px,transparent 1px),
+      linear-gradient(90deg,var(--bp) 1px,transparent 1px);
+    background-size:150px 150px,150px 150px,30px 30px,30px 30px;
+    mask-image:radial-gradient(135% 100% at 50% 0%,#000 55%,transparent 92%);opacity:.9}
+  .spine{position:absolute;left:0;top:0;bottom:0;width:8px;z-index:2;background:linear-gradient(180deg,var(--orange),var(--red) 55%,var(--gold))}
+  .bpmark{position:absolute;width:26px;height:26px;z-index:2;pointer-events:none;border-color:var(--bpMajor);border-style:solid;border-width:0}
+  .bpmark.tr{top:18px;right:18px;border-right-width:2px;border-top-width:2px}
+  .bpmark.bl{bottom:52px;left:18px;border-left-width:2px;border-bottom-width:2px}
+  .pad{position:absolute;inset:0;z-index:3;padding:40px 56px 54px 72px;display:flex;flex-direction:column}
+  .top{display:flex;align-items:center;gap:16px;margin-bottom:4px}
+  .chip{font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.12em;font-size:19px;color:#0D0D0F;background:var(--gold);padding:6px 15px 4px;border-radius:6px;text-transform:uppercase;white-space:nowrap}
+  .kicker{font-family:'Barlow Condensed',sans-serif;letter-spacing:.22em;font-size:14px;color:var(--muted);text-transform:uppercase}
+  .slide h1{font-weight:900;font-size:36px;line-height:1.04;margin:6px 0 4px;letter-spacing:-.5px}
+  .slide h1 .accent{color:var(--orange)}
+  .slide .subline{color:var(--muted);font-size:16px;font-weight:500;margin-bottom:12px}
+  .foot{position:absolute;left:0;right:0;bottom:0;z-index:3;height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 26px 0 72px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.14em;font-size:13px;color:var(--muted);background:rgba(0,0,0,.35);border-top:1px solid var(--line);text-transform:uppercase}
+  .foot .fbrand{color:#fff;font-weight:700}
+  .flame{color:var(--orange)}
+  .bullets{display:flex;flex-direction:column;gap:12px;flex:1;justify-content:center}
+  .bul{display:grid;grid-template-columns:30px 1fr;gap:6px;align-items:start;font-size:18px;line-height:1.38}
+  .bul .mk{color:var(--orange);font-weight:900;font-size:19px}
+  .bul .sec{color:var(--teal);font-weight:800}
+  .bul b{color:#fff;font-weight:800}
+  .bul .txt{color:#D7DEE9;font-weight:500}
+  .takeaway{margin-top:12px;display:flex;align-items:center;gap:14px;background:linear-gradient(90deg,rgba(245,130,31,.16),rgba(226,58,30,.05));border:1px solid rgba(245,130,31,.35);border-left:5px solid var(--orange);border-radius:10px;padding:12px 18px;font-size:17px;font-weight:600}
+  .takeaway .ico{font-size:21px}
+  .takeaway b{color:var(--gold)}
+  .newbox{background:linear-gradient(90deg,rgba(23,195,178,.14),transparent);border:1px solid rgba(23,195,178,.4);border-left:5px solid var(--teal);border-radius:10px;padding:12px 18px;margin-top:6px}
+  .newbox .lbl{font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;font-size:14px;color:var(--teal);text-transform:uppercase;margin-bottom:4px}
+  .newbox .body{font-size:16.5px;color:#D7DEE9;font-weight:500}
+  .cards{display:grid;gap:18px;flex:1;align-content:center}
+  .card2{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden}
+  .card2::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c,var(--orange))}
+  .card2 .ct{font-weight:900;font-size:21px;margin-bottom:2px}
+  .card2 .cs{color:var(--teal);font-weight:800;font-size:14px;margin-bottom:8px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.06em}
+  .card2 .cb{color:#CBD5E3;font-size:15.5px;line-height:1.38;font-weight:500}
+  .nums{display:grid;gap:11px;flex:1;align-content:center}
+  .num{display:grid;grid-template-columns:48px 1fr;align-items:center;gap:14px;background:linear-gradient(90deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:11px;padding:11px 16px}
+  .num .n{font-weight:900;font-size:24px;color:#0D0D0F;background:var(--orange);width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+  .num .t{font-size:18px;font-weight:600;color:#E4EAF2}
+  .num .t .sec{color:var(--teal);font-weight:800}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:18px;flex:1;align-content:center}
+  .halfbox{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden}
+  .halfbox::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c,var(--orange))}
+  .halfbox .ht{font-weight:900;font-size:21px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+  .halfbox .hs{color:var(--teal);font-weight:800;font-size:14px}
+  .halfbox .hb{color:#CBD5E3;font-size:15.5px;line-height:1.4;margin-top:6px;font-weight:500}
+  .halfbox .sub2{margin-top:8px;font-size:14.5px;color:#AEBBCC}
+  .halfbox .sub2 b{color:#fff}
+  .checkbox{display:grid;grid-template-columns:1fr 1fr;gap:8px 26px;flex:1;align-content:center}
+  .cki{display:grid;grid-template-columns:26px 1fr;gap:8px;align-items:start;font-size:16.5px;color:#DCE3EC;font-weight:500}
+  .cki .ck{color:var(--red);font-weight:900;font-size:17px}
+  .cover{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 80px}
+  .cover .logo{width:96px;height:96px;object-fit:contain;margin-bottom:22px;filter:drop-shadow(0 6px 20px rgba(245,130,31,.4))}
+  .cover .eyebrow{font-family:'Barlow Condensed',sans-serif;letter-spacing:.28em;font-size:17px;color:var(--teal);text-transform:uppercase;margin-bottom:14px}
+  .cover h1{font-size:54px;line-height:1.02;max-width:1000px;margin:0 0 16px}
+  .cover .csub{color:var(--muted);font-size:21px;font-weight:500;margin-bottom:26px}
+  .cover .badge{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.14em;font-size:16px;color:#0D0D0F;background:linear-gradient(90deg,var(--gold),var(--orange));padding:10px 22px;border-radius:30px;text-transform:uppercase}
+  .cover .cta{font-size:20px;color:#D7DEE9;font-weight:600;max-width:800px;margin-top:6px}
+  .cover .cta b{color:var(--gold)}
+</style>
+</head>
+<body>
+<header>
+  <img class="hflame" src="assets/flame.png" alt="FSM">
+  <div class="brand">FIRE SYSTEM<small>MASTERY</small></div>
+  <div class="osfm"><b>Illinois OSFM Approved</b><br>NFPA 25 · 8-Hour CE · Section 2 of 8</div>
+</header>
+
+<div class="wrap">
+  <div class="stepbar">
+    <div id="tab0" class="active">1. Course</div>
+    <div id="tab1">2. Section Quiz</div>
+    <div id="tab2">3. Section Complete</div>
+  </div>
+
+  <section id="step0" class="pane on">
+    <div class="card">
+      <span class="pill">SECTION 2 · NFPA 25 (2020) CHAPTER 5 · §5.2</span>
+      <h1 class="title">Sprinkler System Inspection</h1>
+      <p class="sub">Watch all 15 slides with narration, then take the 10-question section quiz to unlock Section 3.</p>
+
+      <div class="stage">
+        <div class="deck" id="deck">
+          <!-- 1 TITLE -->
+          <section class="slide active">
+            <div class="spine"></div><span class="bpmark tr"></span><span class="bpmark bl"></span>
+            <div class="cover">
+              <img class="logo" src="assets/flame.png" alt="FSM">
+              <div class="eyebrow">Fire System Mastery · Section 2 of 8</div>
+              <h1>Sprinkler System<br><span class="accent">Inspection</span></h1>
+              <div class="csub">NFPA 25 (2020) · Chapter 5, §5.2</div>
+              <span class="badge">Illinois OSFM Approved · 8-Hour Comprehensive Course</span>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5</span></div>
+          </section>
+          <!-- 2 OVERVIEW -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Course Overview</span><span class="kicker">What this hour covers</span></div>
+              <h1>What You Look At — <span class="accent">and How Often</span></h1>
+              <div class="nums" style="grid-template-columns:1fr 1fr;gap:10px 22px">
+                <div class="num"><div class="n">1</div><div class="t">Chapter 5 inspection frequencies</div></div>
+                <div class="num"><div class="n">2</div><div class="t">Inspecting sprinklers — the basics</div></div>
+                <div class="num"><div class="n">3</div><div class="t">Six conditions requiring replacement</div></div>
+                <div class="num"><div class="n">4</div><div class="t">Orientation, escutcheons & loading</div></div>
+                <div class="num"><div class="n">5</div><div class="t">Deflector clearance to storage</div></div>
+                <div class="num"><div class="n">6</div><div class="t">Spare sprinkler cabinet</div></div>
+                <div class="num"><div class="n">7</div><div class="t">Pipe, hangers, waterflow & signs</div></div>
+                <div class="num"><div class="n">8</div><div class="t">After you find a problem</div></div>
+              </div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 2 of 8</span></div>
+          </section>
+          <!-- 3 FREQUENCIES -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Chapter 5</span><span class="kicker">Mostly Annual · One Exception</span></div>
+              <h1>Inspection <span class="accent">Frequencies</span></h1>
+              <div class="split">
+                <div class="halfbox" style="--c:var(--orange)"><div class="ht">Annual</div><div class="hb"><b style="color:#fff">Sprinklers</b> (from floor level, §5.2.1.1), <b style="color:#fff">pipe & fittings</b>, <b style="color:#fff">hangers & braces</b>, and <b style="color:#fff">signs</b>.</div></div>
+                <div class="halfbox" style="--c:var(--teal)"><div class="ht">Quarterly</div><div class="hb"><b style="color:#fff">Waterflow alarm devices</b> and <b style="color:#fff">supervisory signal initiating devices</b> (§5.2.4) — the item people miss.</div></div>
+              </div>
+              <div class="takeaway"><span class="ico">📅</span><span>Rule of thumb: Chapter 5 is <b>annual</b> — except <b>waterflow & supervisory devices are quarterly</b>.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 2 of 8</span></div>
+          </section>
+          <!-- 4 BASICS -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 5.2.1.1</span><span class="kicker">The Floor-Level Look</span></div>
+              <h1>Inspecting Sprinklers — <span class="accent">The Basics</span></h1>
+              <div class="bullets" style="flex:none;margin-top:2px">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§5.2.1.1</span> — sprinklers inspected <b>annually, from the floor level</b>. No ladder required — a visual check from the ground, looking up.</span></div>
+              </div>
+              <div class="newbox"><div class="lbl">Exception — §5.2.1.1.3</div><div class="body">Sprinklers in <b style="color:#fff">concealed spaces</b> (e.g. above a suspended ceiling) are <b style="color:#fff">NOT required to be inspected</b>. You don't lift ceiling tiles. Accessible-space sprinklers still get the floor-level look.</div></div>
+              <div class="takeaway"><span class="ico">👀</span><span>Annual, from the floor — and concealed heads are exempt.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 2 of 8</span></div>
+          </section>
+          <!-- 5 SIX CONDITIONS -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 5.2.1.1.1</span><span class="kicker">Replace — Not Clean, Not Note</span></div>
+              <h1>Six Conditions That Require <span class="accent">Replacement</span></h1>
+              <div class="checkbox">
+                <div class="cki"><span class="ck">1</span><span>Leakage</span></div>
+                <div class="cki"><span class="ck">2</span><span>Corrosion affecting performance</span></div>
+                <div class="cki"><span class="ck">3</span><span>Physical damage</span></div>
+                <div class="cki"><span class="ck">4</span><span>Loss of fluid in the glass bulb</span></div>
+                <div class="cki"><span class="ck">5</span><span>Loading — dust, grease, or debris buildup</span></div>
+                <div class="cki"><span class="ck">6</span><span><b style="color:#fff">Paint not applied by the manufacturer</b></span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🎨</span><span>Any <b>field-applied paint</b> — even light overspray — requires replacement. It insulates the heat element.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 2 of 8</span></div>
+          </section>
+          <!-- 6 ORIENTATION -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 5.2.1</span><span class="kicker">Three Details That Trip People Up</span></div>
+              <h1>Orientation, Escutcheons & <span class="accent">Loading</span></h1>
+              <div class="cards" style="grid-template-columns:1fr 1fr 1fr">
+                <div class="card2" style="--c:var(--orange)"><div class="ct">Orientation</div><div class="cb" style="margin-top:6px">Wrong position for its type (pendent installed upright) won't develop the designed pattern — a finding.</div></div>
+                <div class="card2" style="--c:var(--gold)"><div class="ct">Escutcheons</div><div class="cb" style="margin-top:6px">Matter most on <b style="color:#fff">concealed/recessed</b> heads. Missing on a standard pendent = not a replacement condition.</div></div>
+                <div class="card2" style="--c:var(--teal)"><div class="ct">Loading</div><div class="cb" style="margin-top:6px">Judged by whether buildup affects sensitivity/pattern. <b style="color:#fff">Light dust ≠ loading.</b></div></div>
+              </div>
+              <div class="takeaway"><span class="ico">🔎</span><span>Distinguish <b>true loading</b> from light surface dust — only real buildup requires action.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 2 of 8</span></div>
+          </section>
+          <!-- 7 CLEARANCE -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 5.2.1.2</span><span class="kicker">Numbers That Show Up on the Quiz</span></div>
+              <h1>Deflector Clearance <span class="accent">to Storage</span></h1>
+              <div class="split" style="flex:none;margin:6px 0">
+                <div class="halfbox" style="--c:var(--teal)"><div class="ht">18 in. (457 mm)</div><div class="hb"><b style="color:#fff">Standard sprinklers</b> (§5.2.1.2.1) — minimum clearance from deflector to top of storage. Gives the spray room to develop.</div></div>
+                <div class="halfbox" style="--c:var(--red)"><div class="ht">36 in. (914 mm)</div><div class="hb"><b style="color:#fff">Rubber tire storage</b> (§5.2.1.2.4) and special sprinklers — tires burn hot and fast.</div></div>
+              </div>
+              <div class="takeaway"><span class="ico">📏</span><span><b>18 inches</b> standard · <b>36 inches</b> for rubber tires and special sprinklers.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 2 of 8</span></div>
+          </section>
+          <!-- 8 SPARE CABINET -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 5.2.1.4</span><span class="kicker">Three Checks During the Annual Inspection</span></div>
+              <h1>The Spare Sprinkler <span class="accent">Cabinet</span></h1>
+              <div class="nums">
+                <div class="num"><div class="n">1</div><div class="t">Correct <b>number and type</b> of spare sprinklers present</div></div>
+                <div class="num"><div class="n">2</div><div class="t">A <b>sprinkler wrench for each type</b> installed</div></div>
+                <div class="num"><div class="n">3</div><div class="t">A <b>posted list</b> of the spare sprinklers</div></div>
+              </div>
+              <div class="takeaway"><span class="ico">🗄️</span><span>Stock tiers: under 300 → 6 · 300–1,000 → 12 · over 1,000 → 24 (revisited in Section 4).</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 2 of 8</span></div>
+          </section>
+          <!-- 9 PIPE -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 5.2.2</span><span class="kicker">The Pipe Carries Water — Not the Trades</span></div>
+              <h1>Inspecting Pipe & <span class="accent">Fittings</span></h1>
+              <div class="bullets" style="flex:none;margin-top:2px">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§5.2.2</span> — inspect for leaks, corrosion, mechanical damage, and proper alignment.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§5.2.2.2</span> — <b>PROHIBITED:</b> materials resting on the pipe, or items hung from the pipe.</span></div>
+              </div>
+              <div class="newbox" style="border-color:rgba(226,58,30,.4);border-left-color:var(--red)"><div class="lbl" style="color:var(--red)">No External Loads</div><div class="body">No conduit, cables, ductwork, or anyone else's equipment strapped to your sprinkler pipe. It's engineered for water and its own weight — not to be a support.</div></div>
+              <div class="takeaway"><span class="ico">🚫</span><span>Loaded pipe = a code violation you correct and document.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 2 of 8</span></div>
+          </section>
+          <!-- 10 HANGERS -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 5.2.3</span><span class="kicker">What Holds the System Up</span></div>
+              <h1>Hangers, Braces & <span class="accent">Supports</span></h1>
+              <div class="bullets">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§5.2.3</span> — verify hangers, braces, and supports are in place, secure, and free of corrosion or damage.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§5.2.3.2</span> — a hanger found <b>damaged, loose, or unattached</b> shall be <b>replaced or refastened</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">There's <b>no "monitor it"</b> option — the required action is immediate correction.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🔩</span><span>A system on failed supports is a static <b>and</b> a seismic failure waiting to happen.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 2 of 8</span></div>
+          </section>
+          <!-- 11 WATERFLOW -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 5.2.4</span><span class="kicker">The Quarterly Exception</span></div>
+              <h1>Waterflow & <span class="accent">Supervisory Devices</span></h1>
+              <div class="bullets" style="flex:none;margin-top:2px">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§5.2.4</span> — waterflow alarm devices and supervisory signal initiating devices are inspected <b>QUARTERLY</b> — four times a year.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">These tell someone the system activated, or that a valve was tampered with — so the code watches them closely.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🔔</span><span>If you remember one non-annual frequency from Chapter 5: <b>waterflow & supervisory = quarterly</b>.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 2 of 8</span></div>
+          </section>
+          <!-- 12 SIGNS -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 5.2.5</span><span class="kicker">Small Placards, Big Information</span></div>
+              <h1>Required <span class="accent">Signs</span></h1>
+              <div class="bullets">
+                <div class="bul"><span class="mk">▸</span><span class="txt">The <b>hydraulic design information sign</b> at the riser gives the design basis: density, design area, flow & pressure.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§5.2.5.1</span> — if it's <b>missing or illegible</b>, it <b>shall be replaced</b>. Mandatory — no grace period.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§5.2.5.2</span> — a pipe-schedule system gets a sign reading <b>"Pipe Schedule System."</b></span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🪧</span><span>These placards carry the information the whole ITM history depends on.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 2 of 8</span></div>
+          </section>
+          <!-- 13 AFTER PROBLEM -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Field</span><span class="kicker">Inspection Is What You Do With What You Find</span></div>
+              <h1>After You Find a <span class="accent">Problem</span></h1>
+              <div class="bullets">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><b>Document</b> the deficiency: what it is, where it is, and the code section.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><b>Notify the owner</b> — the record proves the condition was found and communicated.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Escalate <b>critical deficiencies and impairments</b> per the rules from Section 1 (Chapter 15).</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">📝</span><span>The inspection report is the <b>legal record</b> — write it like it matters, because it does.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 2 of 8</span></div>
+          </section>
+          <!-- 14 TAKEAWAYS -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Review</span><span class="kicker">Before Your Quiz</span></div>
+              <h1>The Points That <span class="accent">Matter Most</span></h1>
+              <div class="nums" style="grid-template-columns:1fr 1fr;gap:9px 22px">
+                <div class="num"><div class="n">1</div><div class="t">Sprinklers annual from floor level; concealed exempt <span class="sec">§5.2.1.1</span></div></div>
+                <div class="num"><div class="n">2</div><div class="t">Waterflow/supervisory = quarterly <span class="sec">§5.2.4</span></div></div>
+                <div class="num"><div class="n">3</div><div class="t">Field-applied paint → replace <span class="sec">§5.2.1.1.1</span></div></div>
+                <div class="num"><div class="n">4</div><div class="t">Clearance: 18 in. standard / 36 in. tires <span class="sec">§5.2.1.2</span></div></div>
+                <div class="num"><div class="n">5</div><div class="t">Spare cabinet: spares + wrench per type + list <span class="sec">§5.2.1.4</span></div></div>
+                <div class="num"><div class="n">6</div><div class="t">Nothing rests on / hangs from pipe <span class="sec">§5.2.2.2</span></div></div>
+                <div class="num"><div class="n">7</div><div class="t">Damaged hanger → replace or refasten <span class="sec">§5.2.3.2</span></div></div>
+                <div class="num"><div class="n">8</div><div class="t">Missing design sign → replace <span class="sec">§5.2.5.1</span></div></div>
+              </div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 2 of 8</span></div>
+          </section>
+          <!-- 15 COMPLETE -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span><span class="bpmark bl"></span>
+            <div class="cover">
+              <img class="logo" src="assets/flame.png" alt="FSM">
+              <div class="eyebrow">Section 2 Complete</div>
+              <h1>Time to Take <span class="accent">Your Quiz</span></h1>
+              <div class="cta">Pass the 10-question section quiz with <b>70% or better</b> to unlock <b>Section 3 — Water-Based System Testing</b>.</div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 2 of 8</span></div>
+          </section>
+        </div>
+        <div class="startov" id="startov"><button class="btn" onclick="startCourse()">▶ Start Section 2</button></div>
+      </div>
+
+      <div class="pbar"><i id="prog"></i></div>
+      <div class="pmeta"><span id="counter">Slide 1 of 15</span><span id="seen">Viewed: 1 / 15</span></div>
+      <div class="audio-wrap">
+        <audio id="narration" controls src="audio/slide-01.mp3"></audio>
+        <label class="auto"><input type="checkbox" id="autoplay" checked> Auto-advance</label>
+      </div>
+      <div class="ctrls">
+        <button class="btn-ghost" id="prevBtn" onclick="nav(-1)" disabled>◀ Previous</button>
+        <span class="mid" id="slideTitle"></span>
+        <button class="btn" id="nextBtn" onclick="nav(1)">Next ▶</button>
+      </div>
+      <div id="unlock" class="lockmsg">🔒 View all 15 slides to unlock the section quiz.</div>
+      <div class="center" style="margin-top:12px">
+        <button class="btn" id="toTest" onclick="go(1)" style="display:none">Start the Section Quiz ▶</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="step1" class="pane">
+    <div class="card">
+      <span class="pill">SECTION 2 QUIZ · 10 QUESTIONS · PASS = 70% (7 of 10)</span>
+      <h1 class="title">Sprinkler System Inspection — Quiz</h1>
+      <p class="sub">Answer all 10 questions, then submit.</p>
+      <form id="quiz"></form>
+      <div class="row">
+        <button class="btn-ghost" onclick="go(0)">◀ Back to course</button>
+        <button class="btn" onclick="grade()">Submit Quiz</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="stepR" class="pane"><div class="card center"><div id="resultBlock"></div></div></section>
+
+  <section id="step2" class="pane">
+    <div class="card">
+      <div class="done-hero">
+        <img class="logo" src="assets/flame.png" alt="FSM">
+        <div class="pill" style="background:rgba(29,158,117,.15);border-color:var(--green);color:#8ff0cf">✓ Section 2 Passed</div>
+        <h1>Section 2 <span class="accent">Complete</span></h1>
+        <p class="sub" id="doneScore"></p>
+      </div>
+      <div class="unlockcard">
+        <b style="color:var(--teal)">🔓 Section 3 — Water-Based System Testing is now unlocked.</b><br>
+        Your progress through this section is recorded. Complete all 8 sections to earn your <b>8.0-hour NFPA 25 CE certificate</b>.
+      </div>
+      <div class="row" style="margin-top:18px">
+        <button class="btn-ghost" onclick="location.reload()">↺ Replay Section 2</button>
+        <button class="btn" id="nextSecBtn">Return to Course Home ▶</button>
+      </div>
+      <p class="muted-note">This is the Section 2 module of the 8-hour course. In the assembled course, "Continue to Section 3" advances to the next section; the certificate is issued after Section 8 with all 8.0 credit hours logged for OSFM.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+const NSLIDES=15;
+const TITLES=["Welcome","Course Overview","Inspection Frequencies","Inspecting Sprinklers — The Basics","Six Conditions That Require Replacement","Orientation, Escutcheons & Loading","Deflector Clearance to Storage","The Spare Sprinkler Cabinet","Inspecting Pipe & Fittings","Hangers, Braces & Supports","Waterflow & Supervisory Devices","Required Signs","After You Find a Problem","Key Takeaways","Section Complete"];
+let cur=1, maxSeen=1, started=false;
+const deck=document.getElementById('deck');
+const slides=[...deck.querySelectorAll('.slide')];
+const audio=document.getElementById('narration');
+function pad(n){return String(n).padStart(2,'0');}
+function fitDeck(){const stage=deck.parentElement;deck.style.transform='scale('+(stage.clientWidth/1280)+')';}
+window.addEventListener('resize',fitDeck);
+function render(){
+  slides.forEach((s,i)=>s.classList.toggle('active',i===cur-1));
+  audio.src=`audio/slide-${pad(cur)}.mp3`;
+  document.getElementById('counter').textContent=`Slide ${cur} of ${NSLIDES}`;
+  document.getElementById('seen').textContent=`Viewed: ${maxSeen} / ${NSLIDES}`;
+  document.getElementById('prog').style.width=(maxSeen/NSLIDES*100)+'%';
+  document.getElementById('slideTitle').textContent=TITLES[cur-1]||'';
+  document.getElementById('prevBtn').disabled = cur===1;
+  document.getElementById('nextBtn').style.display = cur===NSLIDES ? 'none':'inline-block';
+  if(started) audio.play().catch(()=>{});
+  checkUnlock();
+}
+function startCourse(){started=true;document.getElementById('startov').style.display='none';audio.play().catch(()=>{});}
+function nav(d){const nx=cur+d;if(nx<1||nx>NSLIDES)return;cur=nx;if(cur>maxSeen)maxSeen=cur;render();}
+function checkUnlock(){if(maxSeen>=NSLIDES){document.getElementById('unlock').innerHTML='✅ All slides viewed — the section quiz is unlocked.';document.getElementById('toTest').style.display='inline-block';}}
+audio.addEventListener('ended',()=>{if(document.getElementById('autoplay').checked && cur<NSLIDES) nav(1);});
+document.addEventListener('keydown',e=>{if(!document.getElementById('step0').classList.contains('on'))return;if(e.key==='ArrowRight')nav(1);if(e.key==='ArrowLeft')nav(-1);});
+
+/* OFFICIAL Course 1 questions (verbatim) */
+const QUESTIONS=[
+ {q:"Per NFPA 25 Section 5.2.1.1, how often shall sprinklers be inspected, and from where?",
+  opts:["Semiannually, from a ladder","Annually, from the floor level","Quarterly, from the floor level"],a:1,
+  ex:"Section 5.2.1.1 states sprinklers shall be inspected from the floor level annually. A ladder is not required — it is a visual check from ground level looking up at the heads."},
+ {q:"Per NFPA 25 Section 5.2.4, which items must be inspected quarterly?",
+  opts:["Sprinklers and pipe fittings","Hangers, braces, and supports","Waterflow alarm devices and supervisory signal initiating devices"],a:2,
+  ex:"Section 5.2.4 requires waterflow alarm and supervisory signal initiating devices to be inspected quarterly (four times/year). These are the only items in Chapter 5 with a quarterly requirement — everything else is annual."},
+ {q:"Per NFPA 25 Section 5.2.1.1.1, which of the following conditions requires a sprinkler to be replaced?",
+  opts:["Light surface dust on the deflector","A missing escutcheon on a standard pendent sprinkler","Paint applied to the sprinkler after it left the factory"],a:2,
+  ex:"Section 5.2.1.1.1 lists six conditions requiring immediate replacement, one being paint not applied by the manufacturer. Any field-applied paint requires replacement. Light dust does not meet the loading threshold, and a missing escutcheon on a standard pendent sprinkler is not required to be replaced per 5.2.1.1.6."},
+ {q:"Per NFPA 25 Section 5.2.1.2.1, what is the minimum required clearance between a sprinkler deflector and the top of storage for standard sprinklers?",
+  opts:["12 inches (305 mm)","18 inches (457 mm)","36 inches (914 mm)"],a:1,
+  ex:"Section 5.2.1.2.1 sets 18 inches (457 mm) as the minimum clearance for standard sprinklers. The 36-inch requirement applies to special sprinklers and rubber tire storage per 5.2.1.2.3 and 5.2.1.2.4."},
+ {q:"Per NFPA 25 Section 5.2.1.2.4, what minimum clearance is required between sprinkler deflectors and the top of rubber tire storage?",
+  opts:["18 inches (457 mm)","24 inches (610 mm)","36 inches (914 mm)"],a:2,
+  ex:"Section 5.2.1.2.4 requires a minimum of 36 inches (914 mm) from the top of rubber tire storage to sprinkler deflectors. Rubber tires present an elevated fire hazard, hence the greater clearance."},
+ {q:"Per NFPA 25 Section 5.2.1.4, what three items must be verified during the annual spare sprinkler cabinet inspection?",
+  opts:["Cabinet location, temperature rating of the cabinet, and number of spare heads","Correct number and type of sprinklers, a sprinkler wrench for each type installed, and a posted spare sprinkler list","Correct number of sprinklers, a copy of the hydraulic calculations, and the ITM contractor's contact information"],a:1,
+  ex:"Section 5.2.1.4 requires annual verification of: the correct number and type of sprinklers (5.4.1.5), a sprinkler wrench for each type installed (5.4.1.5.5), and a posted list of the spare sprinklers (5.4.1.5.6)."},
+ {q:"Per NFPA 25 Section 5.2.2.2, which of the following is prohibited regarding sprinkler piping?",
+  opts:["Painting exposed black steel pipe with rust-inhibiting paint","Materials resting on the pipe or items hung from the pipe","Installing grooved couplings on schedule 10 pipe"],a:1,
+  ex:"Section 5.2.2.2 prohibits external loads from materials resting on the pipe or hung from it (conduit, cables, ductwork, etc.). This is a code violation that must be corrected and documented."},
+ {q:"Per NFPA 25 Section 5.2.3.2, what is required when a hanger is found to be damaged, loose, or unattached during inspection?",
+  opts:["It shall be monitored at the next scheduled inspection","The owner shall be notified and a repair timeline established","It shall be replaced or refastened"],a:2,
+  ex:"Section 5.2.3.2 states hangers, braces, and supports that are damaged, loose, or unattached shall be replaced or refastened. There is no provision for monitoring — the required action is immediate correction."},
+ {q:"Per NFPA 25 Section 5.2.5.1, what must happen if the hydraulic design information sign is found to be missing or illegible during the annual inspection?",
+  opts:["The deficiency shall be noted in the ITM report and corrected at the next visit","It shall be replaced","The owner has 30 days to replace it before it becomes a violation"],a:1,
+  ex:"Section 5.2.5.1 states a missing or illegible hydraulic design information sign shall be replaced — mandatory language, no grace period. Section 5.2.5.2 also requires pipe schedule systems to have a sign reading \"Pipe Schedule System.\""},
+ {q:"Per NFPA 25 Section 5.2.1.1.3, are sprinklers installed in concealed spaces above suspended ceilings required to be inspected?",
+  opts:["Yes, they must be inspected annually by lifting ceiling tiles","Yes, but only during the first inspection after installation","No, sprinklers in concealed spaces do not require inspection"],a:2,
+  ex:"Section 5.2.1.1.3 states sprinklers in concealed spaces such as above suspended ceilings shall not require inspection — a code exception. Sprinklers in accessible ceiling spaces do still require floor-level inspection."}
+];
+const PASSPCT=70;
+const qForm=document.getElementById('quiz');
+QUESTIONS.forEach((item,i)=>{
+  let h=`<div class="q"><p>${i+1}. ${item.q}</p>`;
+  item.opts.forEach((o,j)=>{h+=`<label class="opt"><input type="radio" name="q${i}" value="${j}">${o}</label>`;});
+  h+=`</div>`;qForm.insertAdjacentHTML('beforeend',h);
+});
+function go(step){
+  audio.pause();
+  document.querySelectorAll('.pane').forEach(s=>s.classList.remove('on'));
+  const map={0:'step0',1:'step1',R:'stepR',2:'step2'};
+  document.getElementById(map[step]).classList.add('on');
+  const tabIndex={0:0,1:1,R:1,2:2}[step];
+  for(let t=0;t<3;t++){const el=document.getElementById('tab'+t);el.classList.remove('active','done');if(t<tabIndex)el.classList.add('done');if(t===tabIndex)el.classList.add('active');}
+  if(step===0){setTimeout(fitDeck,30);if(started)audio.play().catch(()=>{});}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function grade(){
+  let score=0,unanswered=false;
+  QUESTIONS.forEach((item,i)=>{const sel=document.querySelector(`input[name="q${i}"]:checked`);if(!sel){unanswered=true;return;}if(parseInt(sel.value)===item.a)score++;});
+  if(unanswered){alert("Please answer all 10 questions before submitting.");return;}
+  const pct=Math.round(score/QUESTIONS.length*100);
+  const passed=pct>=PASSPCT;
+  window.__lastScore=score+'/'+QUESTIONS.length+' ('+pct+'%)';
+  let review='<div class="rev">';
+  QUESTIONS.forEach((item,i)=>{const sel=document.querySelector(`input[name="q${i}"]:checked`);const ok=sel && parseInt(sel.value)===item.a;review+=`<div class="ri ${ok?'ok':'no'}"><b>${i+1}. ${ok?'✓ Correct':'✗ Review'}</b> — ${item.ex}</div>`;});
+  review+='</div>';
+  document.getElementById('resultBlock').innerHTML=`
+    <div class="result-big ${passed?'pass':'fail'}">${pct}%</div>
+    <h2 class="${passed?'pass':'fail'}">${passed?'✓ You Passed!':'✗ Not quite — 70% needed'}</h2>
+    <p class="sub">You scored ${score} of ${QUESTIONS.length}.</p>
+    <div class="row center" style="justify-content:center;gap:12px">
+      ${passed?`<button class="btn" onclick="finishSection()">Complete Section 2 ▶</button>`
+        :`<button class="btn-ghost" onclick="go(0)">Review course</button><button class="btn" onclick="resetQuiz()">Retake quiz</button>`}
+    </div>${review}`;
+  go('R');
+}
+function resetQuiz(){document.getElementById('quiz').reset();go(1);}
+function finishSection(){try{localStorage.setItem('fsm8_sec2','1');}catch(e){}document.getElementById('doneScore').textContent='You scored '+(window.__lastScore||'')+' on the Section 2 quiz.';go(2);}
+document.getElementById('nextSecBtn').addEventListener('click',()=>{location.href='../index.html';});
+render();fitDeck();
+</script>
+</body>
+</html>

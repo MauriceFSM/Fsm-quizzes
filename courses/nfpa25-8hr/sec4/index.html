@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NFPA 25 8-Hour CE — Section 4: Valves, Alarm Devices & Common Components</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A1524; --panel:#122032; --panel2:#16283E;
+    --orange:#F5821F; --red:#E23A1E; --gold:#F5B301; --teal:#17C3B2;
+    --ink:#FFFFFF; --muted:#93A4BC; --line:rgba(255,255,255,.10);
+    --bp:rgba(120,180,255,.16); --bpMajor:rgba(120,180,255,.30);
+    --green:#1D9E75;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#05080D;color:var(--ink);font-family:'Montserrat',system-ui,sans-serif;line-height:1.5}
+  header{background:#000;border-bottom:1px solid var(--line);padding:12px 22px;display:flex;align-items:center;gap:14px}
+  header .hflame{height:30px;width:auto}
+  .brand{font-weight:900;letter-spacing:1px;font-size:16px}
+  .brand small{display:block;font-size:9px;letter-spacing:4px;color:var(--muted);font-weight:700}
+  .osfm{margin-left:auto;font-size:11px;color:var(--muted);text-align:right;line-height:1.3}
+  .osfm b{color:var(--teal)}
+  .wrap{max-width:1120px;margin:0 auto;padding:22px 18px 90px}
+  .stepbar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .stepbar div{flex:1;min-width:120px;text-align:center;font-size:12.5px;font-weight:700;color:var(--muted);padding:9px 4px;border-radius:9px;background:var(--panel);border:1px solid var(--line);text-transform:uppercase;letter-spacing:.04em}
+  .stepbar div.active{color:#fff;background:linear-gradient(135deg,var(--orange),var(--red));border-color:transparent}
+  .stepbar div.done{color:var(--teal);border-color:var(--teal)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:16px}
+  .pane{display:none}.pane.on{display:block}
+  .pill{display:inline-block;background:var(--panel2);border:1px solid var(--line);color:var(--muted);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;letter-spacing:.04em}
+  h1.title{font-size:22px;margin:0 0 4px}
+  .sub{color:var(--muted);margin:0 0 6px;font-size:14px}
+  button{font-family:inherit;font-size:15px;font-weight:700;border:none;border-radius:10px;padding:12px 22px;cursor:pointer;transition:.15s}
+  .btn{background:linear-gradient(135deg,var(--orange),var(--red));color:#fff}
+  .btn:hover{filter:brightness(1.08)}
+  .btn:disabled{opacity:.4;cursor:not-allowed;filter:none}
+  .btn-ghost{background:var(--panel2);color:var(--ink);border:1px solid var(--line)}
+  .row{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:10px;flex-wrap:wrap}
+  .center{text-align:center}
+  .stage{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:12px;background:#05080D;border:1px solid var(--line)}
+  .deck{position:absolute;top:0;left:0;width:1280px;height:720px;transform-origin:top left}
+  .pbar{height:6px;background:var(--panel2);border-radius:4px;overflow:hidden;margin:14px 0 6px}
+  .pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--gold));width:0;transition:width .3s}
+  .pmeta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:10px}
+  .audio-wrap{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-top:10px}
+  .audio-wrap audio{height:34px;flex:1;min-width:0}
+  .auto{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);white-space:nowrap}
+  .ctrls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+  .ctrls .mid{flex:1;text-align:center;font-weight:700;font-size:14px;color:#DDE5F0}
+  .lockmsg{font-size:13px;color:var(--muted);margin-top:12px;text-align:center}
+  .startov{position:absolute;inset:0;background:rgba(5,8,13,.55);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:5}
+  .startov button{font-size:17px;padding:16px 30px;border-radius:40px}
+  .q{margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+  .q:last-child{border-bottom:none}
+  .q p{font-weight:700;margin:0 0 10px}
+  .opt{display:block;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:11px 14px;margin-bottom:8px;cursor:pointer;transition:.12s}
+  .opt:hover{border-color:var(--orange)}
+  .opt input{margin-right:10px}
+  label.opt:has(input:checked){border-color:var(--orange);background:rgba(245,130,31,.12)}
+  .result-big{font-size:40px;font-weight:900;text-align:center;margin:6px 0}
+  .pass{color:var(--green)}.fail{color:var(--red)}
+  .rev{margin-top:14px;text-align:left;font-size:13.5px}
+  .rev .ri{padding:9px 12px;border-radius:8px;margin-bottom:7px;border:1px solid var(--line)}
+  .rev .ri.ok{background:rgba(29,158,117,.12);border-color:var(--green)}
+  .rev .ri.no{background:rgba(226,58,30,.12);border-color:var(--red)}
+  .rev .ri b{color:#fff}
+  .done-hero{text-align:center;padding:26px 10px}
+  .done-hero .logo{height:70px;margin-bottom:14px}
+  .done-hero h1{font-size:30px;margin:6px 0}
+  .done-hero .accent{color:var(--orange)}
+  .unlockcard{background:linear-gradient(90deg,rgba(23,195,178,.14),transparent);border:1px solid rgba(23,195,178,.4);border-left:5px solid var(--teal);border-radius:10px;padding:16px 20px;margin-top:16px;text-align:left;font-size:15px}
+  .muted-note{color:var(--muted);font-size:13px;margin-top:16px}
+
+  /* ===== SLIDE DECK (blueprint) ===== */
+  .slide{position:absolute;inset:0;color:var(--ink);display:none;
+    background:
+      radial-gradient(120% 90% at 88% -10%, rgba(245,130,31,.13), transparent 55%),
+      radial-gradient(90% 80% at -5% 110%, rgba(23,195,178,.10), transparent 55%),
+      linear-gradient(160deg,#0B182A,#0A1420 60%,#08111C);}
+  .slide.active{display:block}
+  .slide::before{content:"";position:absolute;inset:0;z-index:0;
+    background-image:
+      linear-gradient(var(--bpMajor) 1.4px,transparent 1.4px),
+      linear-gradient(90deg,var(--bpMajor) 1.4px,transparent 1.4px),
+      linear-gradient(var(--bp) 1px,transparent 1px),
+      linear-gradient(90deg,var(--bp) 1px,transparent 1px);
+    background-size:150px 150px,150px 150px,30px 30px,30px 30px;
+    mask-image:radial-gradient(135% 100% at 50% 0%,#000 55%,transparent 92%);opacity:.9}
+  .spine{position:absolute;left:0;top:0;bottom:0;width:8px;z-index:2;background:linear-gradient(180deg,var(--orange),var(--red) 55%,var(--gold))}
+  .bpmark{position:absolute;width:26px;height:26px;z-index:2;pointer-events:none;border-color:var(--bpMajor);border-style:solid;border-width:0}
+  .bpmark.tr{top:18px;right:18px;border-right-width:2px;border-top-width:2px}
+  .bpmark.bl{bottom:52px;left:18px;border-left-width:2px;border-bottom-width:2px}
+  .pad{position:absolute;inset:0;z-index:3;padding:40px 56px 54px 72px;display:flex;flex-direction:column}
+  .top{display:flex;align-items:center;gap:16px;margin-bottom:4px}
+  .chip{font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.12em;font-size:19px;color:#0D0D0F;background:var(--gold);padding:6px 15px 4px;border-radius:6px;text-transform:uppercase;white-space:nowrap}
+  .kicker{font-family:'Barlow Condensed',sans-serif;letter-spacing:.22em;font-size:14px;color:var(--muted);text-transform:uppercase}
+  .slide h1{font-weight:900;font-size:36px;line-height:1.04;margin:6px 0 4px;letter-spacing:-.5px}
+  .slide h1 .accent{color:var(--orange)}
+  .slide .subline{color:var(--muted);font-size:16px;font-weight:500;margin-bottom:12px}
+  .foot{position:absolute;left:0;right:0;bottom:0;z-index:3;height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 26px 0 72px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.14em;font-size:13px;color:var(--muted);background:rgba(0,0,0,.35);border-top:1px solid var(--line);text-transform:uppercase}
+  .foot .fbrand{color:#fff;font-weight:700}
+  .flame{color:var(--orange)}
+  .bullets{display:flex;flex-direction:column;gap:12px;flex:1;justify-content:center}
+  .bul{display:grid;grid-template-columns:30px 1fr;gap:6px;align-items:start;font-size:18px;line-height:1.38}
+  .bul .mk{color:var(--orange);font-weight:900;font-size:19px}
+  .bul .sec{color:var(--teal);font-weight:800}
+  .bul b{color:#fff;font-weight:800}
+  .bul .txt{color:#D7DEE9;font-weight:500}
+  .takeaway{margin-top:12px;display:flex;align-items:center;gap:14px;background:linear-gradient(90deg,rgba(245,130,31,.16),rgba(226,58,30,.05));border:1px solid rgba(245,130,31,.35);border-left:5px solid var(--orange);border-radius:10px;padding:12px 18px;font-size:17px;font-weight:600}
+  .takeaway .ico{font-size:21px}
+  .takeaway b{color:var(--gold)}
+  .newbox{background:linear-gradient(90deg,rgba(23,195,178,.14),transparent);border:1px solid rgba(23,195,178,.4);border-left:5px solid var(--teal);border-radius:10px;padding:12px 18px;margin-top:6px}
+  .newbox .lbl{font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;font-size:14px;color:var(--teal);text-transform:uppercase;margin-bottom:4px}
+  .newbox .body{font-size:16.5px;color:#D7DEE9;font-weight:500}
+  .cards{display:grid;gap:18px;flex:1;align-content:center}
+  .card2{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden}
+  .card2::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c,var(--orange))}
+  .card2 .ct{font-weight:900;font-size:22px;margin-bottom:2px}
+  .card2 .cs{color:var(--teal);font-weight:800;font-size:14px;margin-bottom:8px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.06em}
+  .card2 .cb{color:#CBD5E3;font-size:15.5px;line-height:1.38;font-weight:500}
+  .card2 .tag{position:absolute;right:14px;bottom:12px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.12em;font-size:14px;color:#0D0D0F;background:var(--c,var(--orange));padding:3px 11px 2px;border-radius:20px;text-transform:uppercase}
+  .nums{display:grid;gap:11px;flex:1;align-content:center}
+  .num{display:grid;grid-template-columns:48px 1fr;align-items:center;gap:14px;background:linear-gradient(90deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:11px;padding:11px 16px}
+  .num .n{font-weight:900;font-size:24px;color:#0D0D0F;background:var(--orange);width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+  .num .t{font-size:18px;font-weight:600;color:#E4EAF2}
+  .num .t .sec{color:var(--teal);font-weight:800}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:18px;flex:1;align-content:center}
+  .halfbox{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden}
+  .halfbox::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c,var(--orange))}
+  .halfbox .ht{font-weight:900;font-size:21px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+  .halfbox .hs{color:var(--teal);font-weight:800;font-size:14px}
+  .halfbox .hb{color:#CBD5E3;font-size:15.5px;line-height:1.4;margin-top:6px;font-weight:500}
+  .halfbox .sub2{margin-top:8px;font-size:14.5px;color:#AEBBCC}
+  .halfbox .sub2 b{color:#fff}
+  .ladder{display:flex;flex-direction:column;gap:9px;flex:1;justify-content:center}
+  .rung{display:grid;grid-template-columns:200px 1fr 118px;align-items:center;gap:18px;background:linear-gradient(90deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:12px;padding:9px 18px;position:relative}
+  .rung::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:5px;border-radius:5px;background:var(--c)}
+  .rung .name{font-weight:800;font-size:19px;display:flex;align-items:center;gap:12px}
+  .dot{width:12px;height:12px;border-radius:50%;flex:none;box-shadow:0 0 0 4px rgba(255,255,255,.05)}
+  .rung .win{color:#D7DEE9;font-size:15.5px;font-weight:500}.rung .win b{color:#fff;font-weight:800}
+  .rung .sec{justify-self:end;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;color:var(--muted);background:rgba(255,255,255,.05);padding:4px 12px;border-radius:20px}
+  .ftable{width:100%;border-collapse:collapse;font-size:16px;flex:1}
+  .ftable th{text-align:left;font-family:'Barlow Condensed',sans-serif;letter-spacing:.06em;color:var(--gold);font-size:15px;text-transform:uppercase;padding:9px 14px;border-bottom:1px solid var(--line)}
+  .ftable td{padding:11px 14px;border-bottom:1px solid var(--line);color:#DCE3EC;font-weight:500}
+  .ftable tr:last-child td{border-bottom:none}
+  .ftable .dev{font-weight:800;color:#fff}
+  .ftable .hi td{background:rgba(245,130,31,.13)}
+  .ftable .hi .dev{color:var(--gold)}
+  .checkbox{display:grid;grid-template-columns:1fr 1fr;gap:8px 26px;flex:1;align-content:center}
+  .cki{display:grid;grid-template-columns:26px 1fr;gap:8px;align-items:start;font-size:16.5px;color:#DCE3EC;font-weight:500}
+  .cki .ck{color:var(--teal);font-weight:900;font-size:17px}
+  .cover{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 80px}
+  .cover .logo{width:96px;height:96px;object-fit:contain;margin-bottom:22px;filter:drop-shadow(0 6px 20px rgba(245,130,31,.4))}
+  .cover .eyebrow{font-family:'Barlow Condensed',sans-serif;letter-spacing:.28em;font-size:17px;color:var(--teal);text-transform:uppercase;margin-bottom:14px}
+  .cover h1{font-size:54px;line-height:1.02;max-width:1000px;margin:0 0 16px}
+  .cover .csub{color:var(--muted);font-size:21px;font-weight:500;margin-bottom:26px}
+  .cover .badge{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.14em;font-size:16px;color:#0D0D0F;background:linear-gradient(90deg,var(--gold),var(--orange));padding:10px 22px;border-radius:30px;text-transform:uppercase}
+  .cover .cta{font-size:20px;color:#D7DEE9;font-weight:600;max-width:800px;margin-top:6px}
+  .cover .cta b{color:var(--gold)}
+</style>
+</head>
+<body>
+<header>
+  <img class="hflame" src="assets/flame.png" alt="FSM">
+  <div class="brand">FIRE SYSTEM<small>MASTERY</small></div>
+  <div class="osfm"><b>Illinois OSFM Approved</b><br>NFPA 25 · 8-Hour CE · Section 4 of 8</div>
+</header>
+
+<div class="wrap">
+  <div class="stepbar">
+    <div id="tab0" class="active">1. Course</div>
+    <div id="tab1">2. Section Quiz</div>
+    <div id="tab2">3. Section Complete</div>
+  </div>
+
+  <!-- ===== STEP 0: PLAYER ===== -->
+  <section id="step0" class="pane on">
+    <div class="card">
+      <span class="pill">SECTION 4 · NFPA 25 (2020) CHAPTER 13 + §5.4–5.5</span>
+      <h1 class="title">Valves, Alarm Devices & Common Components</h1>
+      <p class="sub">Watch all 18 slides with narration, then take the 10-question section quiz to unlock Section 5.</p>
+
+      <div class="stage">
+        <div class="deck" id="deck">
+          <!-- SLIDE 1 — TITLE -->
+          <section class="slide active">
+            <div class="spine"></div><span class="bpmark tr"></span><span class="bpmark bl"></span>
+            <div class="cover">
+              <img class="logo" src="assets/flame.png" alt="FSM">
+              <div class="eyebrow">Fire System Mastery · Section 4 of 8</div>
+              <h1>Valves, Alarm Devices<br>& <span class="accent">Common Components</span></h1>
+              <div class="csub">NFPA 25 (2020) · Chapter 13 + §5.4–5.5</div>
+              <span class="badge">Illinois OSFM Approved · 8-Hour Comprehensive Course</span>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 13</span></div>
+          </section>
+          <!-- SLIDE 2 — OVERVIEW -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Course Overview</span><span class="kicker">What this hour covers</span></div>
+              <h1>The Busiest Chapter — <span class="accent">Valves & Components</span></h1>
+              <div class="nums" style="grid-template-columns:1fr 1fr;gap:10px 22px">
+                <div class="num"><div class="n">1</div><div class="t">Control valve inspection & operation</div></div>
+                <div class="num"><div class="n">2</div><div class="t">Main drain test</div></div>
+                <div class="num"><div class="n">3</div><div class="t">Gauges & waterflow alarms</div></div>
+                <div class="num"><div class="n">4</div><div class="t">Alarm, check & dry pipe valves</div></div>
+                <div class="num"><div class="n">5</div><div class="t">Preaction & deluge</div></div>
+                <div class="num"><div class="n">6</div><div class="t">Pressure-reducing valves</div></div>
+                <div class="num"><div class="n">7</div><div class="t">Backflow preventers & FDCs</div></div>
+                <div class="num"><div class="n">8</div><div class="t">Sprinkler maintenance & spares</div></div>
+              </div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 13 · Section 4 of 8</span></div>
+          </section>
+          <!-- SLIDE 3 — CONTROL VALVE INSPECTION -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 13.3.2</span><span class="kicker">Control Valves · A Closed Valve = No Water</span></div>
+              <h1>Control Valves — <span class="accent">Inspection Frequencies</span></h1>
+              <div class="cards" style="grid-template-columns:1fr 1fr 1fr;flex:none;margin:4px 0">
+                <div class="card2" style="--c:var(--teal)"><div class="ct">Weekly</div><div class="cs">§13.3.2.1 · DEFAULT</div><div class="cb">All control valves — the baseline. Sealed valves live here.</div></div>
+                <div class="card2" style="--c:var(--gold)"><div class="ct">Monthly</div><div class="cs">§13.3.2.1.1</div><div class="cb">Valves secured with <b style="color:#fff">locks</b> or supervised per an applicable NFPA standard.</div></div>
+                <div class="card2" style="--c:var(--orange)"><div class="ct">Quarterly</div><div class="cs">§13.3.2.1.2</div><div class="cb">Valves that are <b style="color:#fff">electrically supervised</b>.</div></div>
+              </div>
+              <div class="newbox"><div class="lbl">Inspection Checklist — §13.3.2.2</div><div class="body">① Normal open/closed position · ② sealed, locked, or supervised · ③ accessible · ④ PIVs have correct wrenches · ⑤ free from external leaks · ⑥ proper identification signage.</div></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 13 · Section 4 of 8</span></div>
+          </section>
+          <!-- SLIDE 4 — CONTROL VALVE OPERATION -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 13.3.3</span><span class="kicker">Inspecting Says It Looks Right · Operating Says It Works</span></div>
+              <h1>Control Valves — <span class="accent">Annual Operation</span></h1>
+              <div class="bullets">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§13.3.3.1</span> — each control valve operated <b>annually through its full range</b> and returned to normal.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§13.3.3.2</span> — PIVs: open until <b>spring or torsion is felt in the rod</b> — proves it's fully open.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§13.3.3.3</span> — PIVs and OS&Y valves: back off <b>one-quarter turn</b> from fully open to prevent jamming.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§13.3.3.5.1</span> — valve supervisory switches tested <b>semiannually</b>; signal trips within two handwheel turns or one-fifth of stem travel.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🔄</span><span>Full range means <b>fully closed and back fully open</b> — then verify the indicator.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 13 · Section 4 of 8</span></div>
+          </section>
+          <!-- SLIDE 5 — MAIN DRAIN -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 13.2.3</span><span class="kicker">Checking the Water Supply Itself</span></div>
+              <h1>The <span class="accent">Main Drain Test</span></h1>
+              <div class="bullets" style="flex:none;margin-top:2px">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§13.2.3</span> — conducted <b>annually</b> at each <b>water-supply lead-in</b> to detect a change in the water supply condition.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§13.2.3.2</span> — <b>QUARTERLY</b> on at least one system where the <b>sole supply is through a backflow preventer and/or PRV</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§13.2.3.3</span> — a <b>10% reduction in full-flow pressure</b> vs. the original acceptance test must be investigated and corrected.</span></div>
+              </div>
+              <div class="newbox"><div class="lbl">New in 2020 — §13.3.3.4</div><div class="body">Any time a control valve is closed and reopened, run a <b style="color:#fff">valve status test</b> at the riser — proves the supply is fully restored.</div></div>
+              <div class="takeaway"><span class="ico">📉</span><span><b>10%</b> is the trigger — those devices can fail partially closed, and the main drain is how you catch it.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 13 · Section 4 of 8</span></div>
+          </section>
+          <!-- SLIDE 6 — GAUGES & WATERFLOW -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 13.2</span><span class="kicker">Two Quick Components</span></div>
+              <h1>Gauges & <span class="accent">Waterflow Alarm Devices</span></h1>
+              <div class="split">
+                <div class="halfbox" style="--c:var(--orange)"><div class="ht">Gauges <span class="hs">§13.2.5</span></div><div class="hb">Replaced <b style="color:#fff">every 5 years</b>, OR tested every 5 years against a calibrated gauge (§13.2.5.2).</div><div class="sub2">▸ Not accurate within <b>3% of full scale</b> → recalibrate or replace (§13.2.5.3)<br>▸ Inspected monthly for operability (§13.2.5.1.1)</div></div>
+                <div class="halfbox" style="--c:var(--teal)"><div class="ht">Waterflow Alarms <span class="hs">§13.2.4</span></div><div class="hb">Mechanical (water motor gong) tested <b style="color:#fff">quarterly</b>; vane-type & pressure-switch tested <b style="color:#fff">semiannually</b>.</div><div class="sub2">▸ On dry / preaction / deluge, test the alarm via the <b>bypass connection</b> — no trip needed</div></div>
+              </div>
+              <div class="takeaway"><span class="ico">⏱️</span><span>Gauges = <b>5 years / 3% of full scale</b>. Waterflow: mechanical quarterly, electric semiannual.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 13 · Section 4 of 8</span></div>
+          </section>
+          <!-- SLIDE 7 — ALARM & CHECK VALVES -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Sections 13.4.1–13.4.2</span><span class="kicker">The Valve Family Begins</span></div>
+              <h1>Alarm Valves & <span class="accent">Check Valves</span></h1>
+              <div class="split">
+                <div class="halfbox" style="--c:var(--gold)"><div class="ht">Alarm Valves <span class="hs">§13.4.1</span></div><div class="hb"><b style="color:#fff">Externally inspected quarterly</b> (§13.4.1.1): gauges normal, no damage, valves in position, retard chamber / alarm drains not leaking.</div><div class="sub2">▸ <b>Interior every 5 years</b> — strainers, filters, restriction orifices (§13.4.1.2)</div></div>
+                <div class="halfbox" style="--c:var(--teal)"><div class="ht">Check Valves <span class="hs">§13.4.2</span></div><div class="hb"><b style="color:#fff">Internally inspected every 5 years</b> (§13.4.2.1) — verify they move freely and seat correctly.</div><div class="sub2">▸ Five years is the recurring interval for the internals of most of these devices</div></div>
+              </div>
+              <div class="takeaway"><span class="ico">🔎</span><span>Alarm valve exterior = <b>quarterly</b>; interiors of alarm & check valves = <b>every 5 years</b>.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 13 · Section 4 of 8</span></div>
+          </section>
+          <!-- SLIDE 8 — DRY PIPE VALVE ROUTINE -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 13.4.5</span><span class="kicker">Air Over Water · Watch the Numbers</span></div>
+              <h1>Dry Pipe Valves — <span class="accent">Inspection & Routine Checks</span></h1>
+              <div class="bullets">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§13.4.5.1.2</span> — exterior inspected <b>monthly</b> (no damage, trim valves in position, intermediate chamber not leaking).</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§13.4.5.1.3</span> — interior inspected <b>annually</b>, when the trip test is performed.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§13.4.5.2.1</span> — priming water level tested <b>quarterly</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§13.4.5.2.4</span> — quick-opening devices tested <b>quarterly</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§13.4.5.2.6</span> — low air pressure alarm tested <b>annually</b>.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">⚠️</span><span>2020 numbering: <b>13.4.5 = dry</b>, 13.4.3 = preaction, 13.4.4 = deluge. Don't mix them up.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 13 · Section 4 of 8</span></div>
+          </section>
+          <!-- SLIDE 9 — DRY PIPE TRIP TESTS -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 13.4.5.2.2</span><span class="kicker">Proving the Valve Actually Trips</span></div>
+              <h1>Dry Pipe Valves — <span class="accent">Trip Tests</span></h1>
+              <div class="split" style="flex:none;margin:4px 0">
+                <div class="halfbox" style="--c:var(--gold)"><div class="ht">Annual Trip <span class="hs">§13.4.5.2.2</span></div><div class="hb">Every year, in warm weather, with the control valve <b style="color:#fff">partially open</b> (§13.4.5.2.2.3).</div></div>
+                <div class="halfbox" style="--c:var(--red)"><div class="ht">Full-Flow Trip <span class="hs">§13.4.5.2.2.2</span></div><div class="hb"><b style="color:#fff">Every 3 years</b> — and whenever the system is altered — control valve fully open, QOD in service.</div></div>
+              </div>
+              <div class="bullets" style="flex:none;gap:9px">
+                <div class="bul"><span class="mk">▸</span><span class="txt">Air / nitrogen restored within <b>30 minutes</b> after refill (§13.4.5.2.2.4).</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Gas leakage test <b>every 3 years</b> — 40 psi for 2 hours, ≤3 psi loss (§13.4.5.2.9).</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Record trip pressure & <b>water delivery time</b>; tag results on the valve (§13.4.5.2.5).</span></div>
+              </div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 13 · Section 4 of 8</span></div>
+          </section>
+          <!-- SLIDE 10 — PREACTION & DELUGE -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Sections 13.4.3 / 13.4.4</span><span class="kicker">Two Sections · Two Different Rules</span></div>
+              <h1>Preaction & <span class="accent">Deluge Valves</span></h1>
+              <div class="split">
+                <div class="halfbox" style="--c:var(--teal)"><div class="ht">Preaction <span class="hs">§13.4.3</span></div><div class="hb">Trip tested <b style="color:#fff">annually</b> with the control valve partially open (§13.4.3.2.3).</div><div class="sub2">▸ <b>Full-flow trip every 3 years</b>, control valve fully open (§13.4.3.2.2)<br>▸ Low air alarm quarterly</div></div>
+                <div class="halfbox" style="--c:var(--orange)"><div class="ht">Deluge <span class="hs">§13.4.4</span></div><div class="hb">Trip tested <b style="color:#fff">annually at FULL FLOW</b> in warm weather (§13.4.4.2.3).</div><div class="sub2">▸ Open-headed by design — full flow every year<br>▸ No-discharge trip allowed where water would damage equipment</div></div>
+              </div>
+              <div class="takeaway"><span class="ico">📌</span><span>Preaction full-flow = <b>every 3 years</b>. Deluge full-flow = <b>every year</b>. Different animals.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 13 · Section 4 of 8</span></div>
+          </section>
+          <!-- SLIDE 11 — PRV -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 13.5</span><span class="kicker">Frequencies Differ by Type — Memorize This</span></div>
+              <h1>Pressure-Reducing & <span class="accent">Relief Valves</span></h1>
+              <table class="ftable">
+                <tr><th>Device</th><th>Inspect</th><th>Partial Flow</th><th>Full Flow</th></tr>
+                <tr><td class="dev">Sprinkler PRV <span style="color:var(--teal);font-weight:700">§13.5.1</span></td><td>Quarterly</td><td>Annually</td><td>5 years</td></tr>
+                <tr><td class="dev">Hose Connection PRV <span style="color:var(--teal);font-weight:700">§13.5.2</span></td><td>Annually</td><td>Annually</td><td>5 years</td></tr>
+                <tr><td class="dev">Hose Rack PRV <span style="color:var(--teal);font-weight:700">§13.5.3</span></td><td>Annually</td><td>Annually</td><td>5 years</td></tr>
+                <tr class="hi"><td class="dev">Master PRD <span style="color:var(--gold);font-weight:700">§13.5.4</span></td><td>Weekly</td><td>Quarterly</td><td>Annually</td></tr>
+              </table>
+              <div class="takeaway"><span class="ico">🎯</span><span>The <b>master PRD</b> protects the whole building — tightest schedule, inspected <b>weekly</b>.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 13 · Section 4 of 8</span></div>
+          </section>
+          <!-- SLIDE 12 — BACKFLOW -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 13.7</span><span class="kicker">Keep Fire Water Out of the Potable Supply</span></div>
+              <h1>Backflow Prevention <span class="accent">Assemblies</span></h1>
+              <div class="bullets">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§13.7.1.1</span> — RPZ assemblies inspected <b>weekly</b> to verify the differential-sensing relief port is not continuously discharging.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§13.7.1.3</span> — internal inspection <b>every 5 years</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§13.7.2.1</span> — <b>annual forward-flow test at system demand</b> (exercise the assembly).</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§13.7.2.2</span> — where hydrants or inside hose stations are downstream, <b>include hose stream demand</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§13.7.2.1.2</span> — not required where the <b>annual fire pump test</b> already flows through the device.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">↔️</span><span>Backflow = <b>§13.7</b> (13.6 is hose valves). Forward-flow test <b>annually at system demand</b>.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 13 · Section 4 of 8</span></div>
+          </section>
+          <!-- SLIDE 13 — FDC -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 13.8</span><span class="kicker">How the Fire Department Pumps In</span></div>
+              <h1>Fire Department Connections — <span class="accent">Quarterly</span></h1>
+              <div class="checkbox">
+                <div class="cki"><span class="ck">✓</span><span>Visible and accessible</span></div>
+                <div class="cki"><span class="ck">✓</span><span>Couplings/swivels undamaged, rotate smoothly</span></div>
+                <div class="cki"><span class="ck">✓</span><span>Plugs/caps in place and undamaged</span></div>
+                <div class="cki"><span class="ck">✓</span><span>Gaskets in place</span></div>
+                <div class="cki"><span class="ck">✓</span><span>Identification signs in place</span></div>
+                <div class="cki"><span class="ck">✓</span><span>Check valve not leaking</span></div>
+                <div class="cki"><span class="ck">✓</span><span>Automatic drain valve in place & working</span></div>
+                <div class="cki"><span class="ck">✓</span><span>Clapper(s) in place & operating</span></div>
+                <div class="cki"><span class="ck">✓</span><span>Interior checked for obstructions</span></div>
+                <div class="cki"><span class="ck">✓</span><span>Visible FDC supply piping undamaged</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🚒</span><span>FDC = <b>quarterly, 10-item check</b> (§13.8.1). Piping to check valve: hydro 150 psi / 2 hr every 5 yr (§13.8.5).</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 13 · Section 4 of 8</span></div>
+          </section>
+          <!-- SLIDE 14 — SIGNAGE -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 13.3.1</span><span class="kicker">A Closed Valve Nobody Can Identify Is a Hazard</span></div>
+              <h1>Valve Signage & <span class="accent">Securing</span></h1>
+              <div class="bullets">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§13.3.1</span> — every control valve identified with a <b>sign stating what it controls</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§13.3.1.1</span> — multi-valve systems: each valve's sign references the <b>existence and location of the others</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§13.3.1.3</span> — normally <b>open</b> valves secured with a seal or lock, or electrically supervised.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§13.3.1.4</span> — normally <b>closed</b> valves secured by seal or electrically supervised.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Dry/preaction risers: sign stating the <b>number and location of auxiliary drains</b>.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🏷️</span><span>Signs and seals are cheap — a mystery valve found closed after a fire is not.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 13 · Section 4 of 8</span></div>
+          </section>
+          <!-- SLIDE 15 — SPRINKLER MAINTENANCE -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 5.4</span><span class="kicker">Sprinkler Maintenance & the Spare Cabinet</span></div>
+              <h1>Replace Right — <span class="accent">Stock the Cabinet</span></h1>
+              <div class="bullets" style="flex:none;margin-top:2px;gap:9px">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§5.4.1.1</span> — a sprinkler removed for <b>any reason shall not be reinstalled</b>. Out means done.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§5.4.1.2</span> — replacements match: style, orifice/K-factor, temperature rating, coating, deflector type.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§5.4.1.7</span> — sprinklers over <b>commercial cooking equipment</b> replaced <b>annually</b> (grease loading).</span></div>
+              </div>
+              <div class="newbox"><div class="lbl">Spare Sprinkler Cabinet — §5.4.1.5</div><div class="body">Minimum <b style="color:#fff">6</b> spares. Tiers (§5.4.1.5.4): under 300 heads → <b style="color:#fff">≥6</b> · 300–1,000 → <b style="color:#fff">≥12</b> · over 1,000 → <b style="color:#fff">≥24</b>. Plus one wrench per sprinkler type + a posted spare list.</div></div>
+              <div class="takeaway"><span class="ico">🗄️</span><span>Spare stock: <b>6 · 12 · 24</b> — memorize the tiers.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 4 of 8</span></div>
+          </section>
+          <!-- SLIDE 16 — COMPONENT ACTION -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 5.5</span><span class="kicker">"I Fixed This — Now What Do I Test?"</span></div>
+              <h1>Component Action <span class="accent">Requirements</span></h1>
+              <div class="subline">§5.5.1 — when a component is adjusted, repaired, reconditioned, or replaced, perform the action in Table 5.5.1.</div>
+              <table class="ftable">
+                <tr><th>Component replaced</th><th>Required action</th></tr>
+                <tr><td class="dev">Pipe/fittings — ≤ 20 sprinklers</td><td>Inspect for leaks at <b style="color:#fff">system working pressure</b></td></tr>
+                <tr><td class="dev">Pipe/fittings — &gt; 20 sprinklers</td><td><b style="color:#fff">Hydrostatic test</b> per NFPA 13</td></tr>
+                <tr><td class="dev">Main drain valve</td><td>Perform a <b style="color:#fff">main drain test</b></td></tr>
+              </table>
+              <div class="takeaway"><span class="ico">🔧</span><span>§5.5.3 — these actions do <b>not</b> require a full design review. The table is your cheat sheet.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 5 · Section 4 of 8</span></div>
+          </section>
+          <!-- SLIDE 17 — TAKEAWAYS -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Review</span><span class="kicker">Frequency Quick Reference</span></div>
+              <h1>The Numbers That <span class="accent">Matter Most</span></h1>
+              <div class="nums" style="grid-template-columns:1fr 1fr;gap:9px 22px">
+                <div class="num"><div class="n">1</div><div class="t">Control valves: weekly / locked monthly / supervised quarterly <span class="sec">§13.3.2</span></div></div>
+                <div class="num"><div class="n">2</div><div class="t">Operate valves annually <span class="sec">§13.3.3.1</span></div></div>
+                <div class="num"><div class="n">3</div><div class="t">Main drain: annual per lead-in; 10% = investigate <span class="sec">§13.2.3</span></div></div>
+                <div class="num"><div class="n">4</div><div class="t">Gauges 5 yr · alarm valve interior 5 yr <span class="sec">§13.2 / .4</span></div></div>
+                <div class="num"><div class="n">5</div><div class="t">Dry valve: trip annual, full-flow 3 yr <span class="sec">§13.4.5</span></div></div>
+                <div class="num"><div class="n">6</div><div class="t">Deluge full-flow annual · Master PRD weekly <span class="sec">§13.4.4 / .5.4</span></div></div>
+                <div class="num"><div class="n">7</div><div class="t">Backflow forward-flow annual · FDC quarterly <span class="sec">§13.7 / .8</span></div></div>
+                <div class="num"><div class="n">8</div><div class="t">Spare sprinklers: 6 / 12 / 24 <span class="sec">§5.4.1.5</span></div></div>
+              </div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 13 · Section 4 of 8</span></div>
+          </section>
+          <!-- SLIDE 18 — COMPLETE -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span><span class="bpmark bl"></span>
+            <div class="cover">
+              <img class="logo" src="assets/flame.png" alt="FSM">
+              <div class="eyebrow">Section 4 Complete</div>
+              <h1>Time to Take <span class="accent">Your Quiz</span></h1>
+              <div class="cta">Pass the 10-question section quiz with <b>70% or better</b> to unlock <b>Section 5 — Standpipes, Hose Systems & Private Fire Mains</b>.</div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 13 · Section 4 of 8</span></div>
+          </section>
+        </div>
+        <div class="startov" id="startov"><button class="btn" onclick="startCourse()">▶ Start Section 4</button></div>
+      </div>
+
+      <div class="pbar"><i id="prog"></i></div>
+      <div class="pmeta"><span id="counter">Slide 1 of 18</span><span id="seen">Viewed: 1 / 18</span></div>
+      <div class="audio-wrap">
+        <audio id="narration" controls src="audio/slide-01.mp3"></audio>
+        <label class="auto"><input type="checkbox" id="autoplay" checked> Auto-advance</label>
+      </div>
+      <div class="ctrls">
+        <button class="btn-ghost" id="prevBtn" onclick="nav(-1)" disabled>◀ Previous</button>
+        <span class="mid" id="slideTitle"></span>
+        <button class="btn" id="nextBtn" onclick="nav(1)">Next ▶</button>
+      </div>
+      <div id="unlock" class="lockmsg">🔒 View all 18 slides to unlock the section quiz.</div>
+      <div class="center" style="margin-top:12px">
+        <button class="btn" id="toTest" onclick="go(1)" style="display:none">Start the Section Quiz ▶</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STEP 1: QUIZ ===== -->
+  <section id="step1" class="pane">
+    <div class="card">
+      <span class="pill">SECTION 4 QUIZ · 10 QUESTIONS · PASS = 70% (7 of 10)</span>
+      <h1 class="title">Valves, Alarm Devices & Components — Quiz</h1>
+      <p class="sub">Answer all 10 questions, then submit.</p>
+      <form id="quiz"></form>
+      <div class="row">
+        <button class="btn-ghost" onclick="go(0)">◀ Back to course</button>
+        <button class="btn" onclick="grade()">Submit Quiz</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="stepR" class="pane"><div class="card center"><div id="resultBlock"></div></div></section>
+
+  <!-- ===== STEP 2: COMPLETE ===== -->
+  <section id="step2" class="pane">
+    <div class="card">
+      <div class="done-hero">
+        <img class="logo" src="assets/flame.png" alt="FSM">
+        <div class="pill" style="background:rgba(29,158,117,.15);border-color:var(--green);color:#8ff0cf">✓ Section 4 Passed</div>
+        <h1>Section 4 <span class="accent">Complete</span></h1>
+        <p class="sub" id="doneScore"></p>
+      </div>
+      <div class="unlockcard">
+        <b style="color:var(--teal)">🔓 Section 5 — Standpipes, Hose Systems & Private Fire Mains is now unlocked.</b><br>
+        Your progress through this section is recorded. Complete all 8 sections to earn your <b>8.0-hour NFPA 25 CE certificate</b>.
+      </div>
+      <div class="row" style="margin-top:18px">
+        <button class="btn-ghost" onclick="location.reload()">↺ Replay Section 4</button>
+        <button class="btn" id="nextSecBtn">Return to Course Home ▶</button>
+      </div>
+      <p class="muted-note">This is the Section 4 module of the 8-hour course. In the assembled course, "Continue to Section 5" advances to the next section; the certificate is issued after Section 8 with all 8.0 credit hours logged for OSFM.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+const NSLIDES=18;
+const TITLES=["Welcome","Course Overview","Control Valves — Inspection Frequencies","Control Valves — Annual Operation","The Main Drain Test","Gauges & Waterflow Alarm Devices","Alarm Valves & Check Valves","Dry Pipe Valves — Routine Checks","Dry Pipe Valves — Trip Tests","Preaction & Deluge Valves","Pressure-Reducing & Relief Valves","Backflow Prevention Assemblies","Fire Department Connections","Valve Signage & Securing","Sprinkler Maintenance & Spares","Component Action Requirements","Key Takeaways","Section Complete"];
+let cur=1, maxSeen=1, started=false;
+const deck=document.getElementById('deck');
+const slides=[...deck.querySelectorAll('.slide')];
+const audio=document.getElementById('narration');
+function pad(n){return String(n).padStart(2,'0');}
+function fitDeck(){const stage=deck.parentElement;deck.style.transform='scale('+(stage.clientWidth/1280)+')';}
+window.addEventListener('resize',fitDeck);
+function render(){
+  slides.forEach((s,i)=>s.classList.toggle('active',i===cur-1));
+  audio.src=`audio/slide-${pad(cur)}.mp3`;
+  document.getElementById('counter').textContent=`Slide ${cur} of ${NSLIDES}`;
+  document.getElementById('seen').textContent=`Viewed: ${maxSeen} / ${NSLIDES}`;
+  document.getElementById('prog').style.width=(maxSeen/NSLIDES*100)+'%';
+  document.getElementById('slideTitle').textContent=TITLES[cur-1]||'';
+  document.getElementById('prevBtn').disabled = cur===1;
+  document.getElementById('nextBtn').style.display = cur===NSLIDES ? 'none':'inline-block';
+  if(started) audio.play().catch(()=>{});
+  checkUnlock();
+}
+function startCourse(){started=true;document.getElementById('startov').style.display='none';audio.play().catch(()=>{});}
+function nav(d){const nx=cur+d;if(nx<1||nx>NSLIDES)return;cur=nx;if(cur>maxSeen)maxSeen=cur;render();}
+function checkUnlock(){if(maxSeen>=NSLIDES){document.getElementById('unlock').innerHTML='✅ All slides viewed — the section quiz is unlocked.';document.getElementById('toTest').style.display='inline-block';}}
+audio.addEventListener('ended',()=>{if(document.getElementById('autoplay').checked && cur<NSLIDES) nav(1);});
+document.addEventListener('keydown',e=>{if(!document.getElementById('step0').classList.contains('on'))return;if(e.key==='ArrowRight')nav(1);if(e.key==='ArrowLeft')nav(-1);});
+
+const QUESTIONS=[
+ {q:"What is the DEFAULT inspection frequency for control valves under §13.3.2.1?",
+  opts:["Monthly","Quarterly","Weekly"],a:2,
+  ex:"§13.3.2.1 — all valves weekly by default. Locked or supervised-per-NFPA-standards valves may go monthly (§13.3.2.1.1)."},
+ {q:"A control valve that is ELECTRICALLY SUPERVISED may be inspected:",
+  opts:["Quarterly","Semiannually","Annually"],a:0,
+  ex:"§13.3.2.1.2. The three tiers: weekly (default) → monthly (locked/supervised) → quarterly (electrically supervised)."},
+ {q:"How often must each control valve be operated through its full range and returned to normal?",
+  opts:["Quarterly","Annually","Every 5 years"],a:1,
+  ex:"§13.3.3.1 — annually through full range. PIVs are opened until spring/torsion is felt, then backed off a quarter turn (§13.3.3.2/.3)."},
+ {q:"During a main drain test, what full-flow pressure reduction from previous tests requires investigation?",
+  opts:["5 percent","10 percent","25 percent"],a:1,
+  ex:"§13.2.3.3 — a 10% reduction in full-flow pressure vs. the original acceptance test must be investigated and corrected."},
+ {q:"The main drain test frequency increases to QUARTERLY when:",
+  opts:["The system is more than 20 years old","The sole water supply is through a backflow preventer and/or PRV","The building is a high-rise"],a:1,
+  ex:"§13.2.3.2 — a backflow preventer or PRV can fail partially closed; the quarterly main drain is how you catch it."},
+ {q:"Pressure gauges must be replaced or tested against a calibrated gauge every:",
+  opts:["Year","3 years","5 years"],a:2,
+  ex:"§13.2.5.2 — every 5 years. Gauges not accurate within 3% of full scale are recalibrated or replaced (§13.2.5.3)."},
+ {q:"A dry pipe valve must be trip tested with the control valve FULLY OPEN (full-flow trip test) every:",
+  opts:["3 years, and whenever the system is altered","Year","5 years"],a:0,
+  ex:"§13.4.5.2.2.2 — full-flow trip every 3 years and whenever altered. The in-between annual trips use the control valve partially open."},
+ {q:"Fire department connections (FDCs) must be inspected:",
+  opts:["Monthly","Quarterly","Annually"],a:1,
+  ex:"§13.8.1 — quarterly, a 10-item checklist including interior obstructions and the visible FDC supply piping."},
+ {q:"Backflow prevention assemblies must be exercised by a forward flow test:",
+  opts:["Annually, at a minimum flow rate of the system demand","Every 5 years, at maximum available flow","Quarterly, at 150% of system demand"],a:0,
+  ex:"§13.7.2.1 — annual forward flow at system demand. Not required if the annual fire pump test already flows through the device (§13.7.2.1.2)."},
+ {q:"A building has 1,200 installed sprinklers. The spare sprinkler cabinet must contain at least:",
+  opts:["6 sprinklers","12 sprinklers","24 sprinklers"],a:2,
+  ex:"§5.4.1.5.4 — under 300 → ≥6; 300–1,000 → ≥12; over 1,000 → ≥24. A sprinkler removed for any reason is never reinstalled (§5.4.1.1)."}
+];
+const PASSPCT=70;
+const qForm=document.getElementById('quiz');
+QUESTIONS.forEach((item,i)=>{
+  let h=`<div class="q"><p>${i+1}. ${item.q}</p>`;
+  item.opts.forEach((o,j)=>{h+=`<label class="opt"><input type="radio" name="q${i}" value="${j}">${o}</label>`;});
+  h+=`</div>`;qForm.insertAdjacentHTML('beforeend',h);
+});
+function go(step){
+  audio.pause();
+  document.querySelectorAll('.pane').forEach(s=>s.classList.remove('on'));
+  const map={0:'step0',1:'step1',R:'stepR',2:'step2'};
+  document.getElementById(map[step]).classList.add('on');
+  const tabIndex={0:0,1:1,R:1,2:2}[step];
+  for(let t=0;t<3;t++){const el=document.getElementById('tab'+t);el.classList.remove('active','done');if(t<tabIndex)el.classList.add('done');if(t===tabIndex)el.classList.add('active');}
+  if(step===0){setTimeout(fitDeck,30);if(started)audio.play().catch(()=>{});}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function grade(){
+  let score=0,unanswered=false;
+  QUESTIONS.forEach((item,i)=>{const sel=document.querySelector(`input[name="q${i}"]:checked`);if(!sel){unanswered=true;return;}if(parseInt(sel.value)===item.a)score++;});
+  if(unanswered){alert("Please answer all 10 questions before submitting.");return;}
+  const pct=Math.round(score/QUESTIONS.length*100);
+  const passed=pct>=PASSPCT;
+  window.__lastScore=score+'/'+QUESTIONS.length+' ('+pct+'%)';
+  let review='<div class="rev">';
+  QUESTIONS.forEach((item,i)=>{const sel=document.querySelector(`input[name="q${i}"]:checked`);const ok=sel && parseInt(sel.value)===item.a;review+=`<div class="ri ${ok?'ok':'no'}"><b>${i+1}. ${ok?'✓ Correct':'✗ Review'}</b> — ${item.ex}</div>`;});
+  review+='</div>';
+  document.getElementById('resultBlock').innerHTML=`
+    <div class="result-big ${passed?'pass':'fail'}">${pct}%</div>
+    <h2 class="${passed?'pass':'fail'}">${passed?'✓ You Passed!':'✗ Not quite — 70% needed'}</h2>
+    <p class="sub">You scored ${score} of ${QUESTIONS.length}.</p>
+    <div class="row center" style="justify-content:center;gap:12px">
+      ${passed?`<button class="btn" onclick="finishSection()">Complete Section 4 ▶</button>`
+        :`<button class="btn-ghost" onclick="go(0)">Review course</button><button class="btn" onclick="resetQuiz()">Retake quiz</button>`}
+    </div>${review}`;
+  go('R');
+}
+function resetQuiz(){document.getElementById('quiz').reset();go(1);}
+function finishSection(){try{localStorage.setItem('fsm8_sec4','1');}catch(e){}document.getElementById('doneScore').textContent='You scored '+(window.__lastScore||'')+' on the Section 4 quiz.';go(2);}
+document.getElementById('nextSecBtn').addEventListener('click',()=>{location.href='../index.html';});
+render();fitDeck();
+</script>
+</body>
+</html>

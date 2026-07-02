@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NFPA 25 8-Hour CE — Section 8: Records & Impairment Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A1524; --panel:#122032; --panel2:#16283E;
+    --orange:#F5821F; --red:#E23A1E; --gold:#F5B301; --teal:#17C3B2;
+    --ink:#FFFFFF; --muted:#93A4BC; --line:rgba(255,255,255,.10);
+    --bp:rgba(120,180,255,.16); --bpMajor:rgba(120,180,255,.30);
+    --green:#1D9E75;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#05080D;color:var(--ink);font-family:'Montserrat',system-ui,sans-serif;line-height:1.5}
+  header{background:#000;border-bottom:1px solid var(--line);padding:12px 22px;display:flex;align-items:center;gap:14px}
+  header .hflame{height:30px;width:auto}
+  .brand{font-weight:900;letter-spacing:1px;font-size:16px}
+  .brand small{display:block;font-size:9px;letter-spacing:4px;color:var(--muted);font-weight:700}
+  .osfm{margin-left:auto;font-size:11px;color:var(--muted);text-align:right;line-height:1.3}
+  .osfm b{color:var(--teal)}
+  .wrap{max-width:1120px;margin:0 auto;padding:22px 18px 90px}
+  .stepbar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .stepbar div{flex:1;min-width:120px;text-align:center;font-size:12.5px;font-weight:700;color:var(--muted);padding:9px 4px;border-radius:9px;background:var(--panel);border:1px solid var(--line);text-transform:uppercase;letter-spacing:.04em}
+  .stepbar div.active{color:#fff;background:linear-gradient(135deg,var(--orange),var(--red));border-color:transparent}
+  .stepbar div.done{color:var(--teal);border-color:var(--teal)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:16px}
+  .pane{display:none}.pane.on{display:block}
+  .pill{display:inline-block;background:var(--panel2);border:1px solid var(--line);color:var(--muted);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;letter-spacing:.04em}
+  h1.title{font-size:22px;margin:0 0 4px}
+  .sub{color:var(--muted);margin:0 0 6px;font-size:14px}
+  button{font-family:inherit;font-size:15px;font-weight:700;border:none;border-radius:10px;padding:12px 22px;cursor:pointer;transition:.15s}
+  .btn{background:linear-gradient(135deg,var(--orange),var(--red));color:#fff}
+  .btn:hover{filter:brightness(1.08)}
+  .btn:disabled{opacity:.4;cursor:not-allowed;filter:none}
+  .btn-ghost{background:var(--panel2);color:var(--ink);border:1px solid var(--line)}
+  .row{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:10px;flex-wrap:wrap}
+  .center{text-align:center}
+  .stage{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:12px;background:#05080D;border:1px solid var(--line)}
+  .deck{position:absolute;top:0;left:0;width:1280px;height:720px;transform-origin:top left}
+  .pbar{height:6px;background:var(--panel2);border-radius:4px;overflow:hidden;margin:14px 0 6px}
+  .pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--gold));width:0;transition:width .3s}
+  .pmeta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:10px}
+  .audio-wrap{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-top:10px}
+  .audio-wrap audio{height:34px;flex:1;min-width:0}
+  .auto{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);white-space:nowrap}
+  .ctrls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+  .ctrls .mid{flex:1;text-align:center;font-weight:700;font-size:14px;color:#DDE5F0}
+  .lockmsg{font-size:13px;color:var(--muted);margin-top:12px;text-align:center}
+  .startov{position:absolute;inset:0;background:rgba(5,8,13,.55);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:5}
+  .startov button{font-size:17px;padding:16px 30px;border-radius:40px}
+  .q{margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+  .q:last-child{border-bottom:none}
+  .q p{font-weight:700;margin:0 0 10px}
+  .opt{display:block;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:11px 14px;margin-bottom:8px;cursor:pointer;transition:.12s}
+  .opt:hover{border-color:var(--orange)}
+  .opt input{margin-right:10px}
+  label.opt:has(input:checked){border-color:var(--orange);background:rgba(245,130,31,.12)}
+  .result-big{font-size:40px;font-weight:900;text-align:center;margin:6px 0}
+  .pass{color:var(--green)}.fail{color:var(--red)}
+  .rev{margin-top:14px;text-align:left;font-size:13.5px}
+  .rev .ri{padding:9px 12px;border-radius:8px;margin-bottom:7px;border:1px solid var(--line)}
+  .rev .ri.ok{background:rgba(29,158,117,.12);border-color:var(--green)}
+  .rev .ri.no{background:rgba(226,58,30,.12);border-color:var(--red)}
+  .rev .ri b{color:#fff}
+  .done-hero{text-align:center;padding:22px 10px}
+  .done-hero .logo{height:70px;margin-bottom:14px}
+  .done-hero h1{font-size:30px;margin:6px 0}
+  .done-hero .accent{color:var(--orange)}
+  .unlockcard{background:linear-gradient(90deg,rgba(245,179,1,.14),transparent);border:1px solid rgba(245,179,1,.4);border-left:5px solid var(--gold);border-radius:10px;padding:16px 20px;margin-top:16px;text-align:left;font-size:15px}
+  .muted-note{color:var(--muted);font-size:13px;margin-top:16px}
+  .slide{position:absolute;inset:0;color:var(--ink);display:none;
+    background:
+      radial-gradient(120% 90% at 88% -10%, rgba(245,130,31,.13), transparent 55%),
+      radial-gradient(90% 80% at -5% 110%, rgba(23,195,178,.10), transparent 55%),
+      linear-gradient(160deg,#0B182A,#0A1420 60%,#08111C);}
+  .slide.active{display:block}
+  .slide::before{content:"";position:absolute;inset:0;z-index:0;
+    background-image:
+      linear-gradient(var(--bpMajor) 1.4px,transparent 1.4px),
+      linear-gradient(90deg,var(--bpMajor) 1.4px,transparent 1.4px),
+      linear-gradient(var(--bp) 1px,transparent 1px),
+      linear-gradient(90deg,var(--bp) 1px,transparent 1px);
+    background-size:150px 150px,150px 150px,30px 30px,30px 30px;
+    mask-image:radial-gradient(135% 100% at 50% 0%,#000 55%,transparent 92%);opacity:.9}
+  .spine{position:absolute;left:0;top:0;bottom:0;width:8px;z-index:2;background:linear-gradient(180deg,var(--orange),var(--red) 55%,var(--gold))}
+  .bpmark{position:absolute;width:26px;height:26px;z-index:2;pointer-events:none;border-color:var(--bpMajor);border-style:solid;border-width:0}
+  .bpmark.tr{top:18px;right:18px;border-right-width:2px;border-top-width:2px}
+  .bpmark.bl{bottom:52px;left:18px;border-left-width:2px;border-bottom-width:2px}
+  .pad{position:absolute;inset:0;z-index:3;padding:40px 56px 54px 72px;display:flex;flex-direction:column}
+  .top{display:flex;align-items:center;gap:16px;margin-bottom:4px}
+  .chip{font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.12em;font-size:19px;color:#0D0D0F;background:var(--gold);padding:6px 15px 4px;border-radius:6px;text-transform:uppercase;white-space:nowrap}
+  .kicker{font-family:'Barlow Condensed',sans-serif;letter-spacing:.22em;font-size:14px;color:var(--muted);text-transform:uppercase}
+  .slide h1{font-weight:900;font-size:36px;line-height:1.04;margin:6px 0 4px;letter-spacing:-.5px}
+  .slide h1 .accent{color:var(--orange)}
+  .slide .subline{color:var(--muted);font-size:16px;font-weight:500;margin-bottom:12px}
+  .foot{position:absolute;left:0;right:0;bottom:0;z-index:3;height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 26px 0 72px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.14em;font-size:13px;color:var(--muted);background:rgba(0,0,0,.35);border-top:1px solid var(--line);text-transform:uppercase}
+  .foot .fbrand{color:#fff;font-weight:700}
+  .flame{color:var(--orange)}
+  .bullets{display:flex;flex-direction:column;gap:12px;flex:1;justify-content:center}
+  .bul{display:grid;grid-template-columns:30px 1fr;gap:6px;align-items:start;font-size:18px;line-height:1.38}
+  .bul .mk{color:var(--orange);font-weight:900;font-size:19px}
+  .bul .sec{color:var(--teal);font-weight:800}
+  .bul b{color:#fff;font-weight:800}
+  .bul .txt{color:#D7DEE9;font-weight:500}
+  .takeaway{margin-top:12px;display:flex;align-items:center;gap:14px;background:linear-gradient(90deg,rgba(245,130,31,.16),rgba(226,58,30,.05));border:1px solid rgba(245,130,31,.35);border-left:5px solid var(--orange);border-radius:10px;padding:12px 18px;font-size:17px;font-weight:600}
+  .takeaway .ico{font-size:21px}
+  .takeaway b{color:var(--gold)}
+  .newbox{background:linear-gradient(90deg,rgba(23,195,178,.14),transparent);border:1px solid rgba(23,195,178,.4);border-left:5px solid var(--teal);border-radius:10px;padding:12px 18px;margin-top:6px}
+  .newbox .lbl{font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;font-size:14px;color:var(--teal);text-transform:uppercase;margin-bottom:4px}
+  .newbox .body{font-size:16.5px;color:#D7DEE9;font-weight:500}
+  .cards{display:grid;gap:18px;flex:1;align-content:center}
+  .card2{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden}
+  .card2::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c,var(--orange))}
+  .card2 .ct{font-weight:900;font-size:21px;margin-bottom:2px}
+  .card2 .cs{color:var(--teal);font-weight:800;font-size:14px;margin-bottom:8px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.06em}
+  .card2 .cb{color:#CBD5E3;font-size:15.5px;line-height:1.38;font-weight:500}
+  .nums{display:grid;gap:11px;flex:1;align-content:center}
+  .num{display:grid;grid-template-columns:48px 1fr;align-items:center;gap:14px;background:linear-gradient(90deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:11px;padding:11px 16px}
+  .num .n{font-weight:900;font-size:24px;color:#0D0D0F;background:var(--orange);width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+  .num .t{font-size:18px;font-weight:600;color:#E4EAF2}
+  .num .t .sec{color:var(--teal);font-weight:800}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:18px;flex:1;align-content:center}
+  .halfbox{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden}
+  .halfbox::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c,var(--orange))}
+  .halfbox .ht{font-weight:900;font-size:21px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+  .halfbox .hs{color:var(--teal);font-weight:800;font-size:14px}
+  .halfbox .hb{color:#CBD5E3;font-size:15.5px;line-height:1.4;margin-top:6px;font-weight:500}
+  .halfbox .sub2{margin-top:8px;font-size:14.5px;color:#AEBBCC}
+  .halfbox .sub2 b{color:#fff}
+  .checkbox{display:grid;grid-template-columns:1fr 1fr;gap:8px 26px;flex:1;align-content:center}
+  .cki{display:grid;grid-template-columns:26px 1fr;gap:8px;align-items:start;font-size:16.5px;color:#DCE3EC;font-weight:500}
+  .cki .ck{color:var(--teal);font-weight:900;font-size:17px}
+  .cover{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 80px}
+  .cover .logo{width:96px;height:96px;object-fit:contain;margin-bottom:22px;filter:drop-shadow(0 6px 20px rgba(245,130,31,.4))}
+  .cover .eyebrow{font-family:'Barlow Condensed',sans-serif;letter-spacing:.28em;font-size:17px;color:var(--teal);text-transform:uppercase;margin-bottom:14px}
+  .cover h1{font-size:52px;line-height:1.02;max-width:1000px;margin:0 0 16px}
+  .cover .csub{color:var(--muted);font-size:21px;font-weight:500;margin-bottom:26px}
+  .cover .badge{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.14em;font-size:16px;color:#0D0D0F;background:linear-gradient(90deg,var(--gold),var(--orange));padding:10px 22px;border-radius:30px;text-transform:uppercase}
+  .cover .cta{font-size:20px;color:#D7DEE9;font-weight:600;max-width:820px;margin-top:6px}
+  .cover .cta b{color:var(--gold)}
+</style>
+</head>
+<body>
+<header>
+  <img class="hflame" src="assets/flame.png" alt="FSM">
+  <div class="brand">FIRE SYSTEM<small>MASTERY</small></div>
+  <div class="osfm"><b>Illinois OSFM Approved</b><br>NFPA 25 · 8-Hour CE · Section 8 of 8</div>
+</header>
+
+<div class="wrap">
+  <div class="stepbar">
+    <div id="tab0" class="active">1. Course</div>
+    <div id="tab1">2. Section Quiz</div>
+    <div id="tab2">3. Course Complete</div>
+  </div>
+
+  <section id="step0" class="pane on">
+    <div class="card">
+      <span class="pill">SECTION 8 · NFPA 25 (2020) CHAPTERS 4 & 15 · FINAL SECTION</span>
+      <h1 class="title">Records & Impairment Management</h1>
+      <p class="sub">Watch all 15 slides with narration, then take the final 10-question quiz to complete the 8-hour course.</p>
+
+      <div class="stage">
+        <div class="deck" id="deck">
+          <!-- 1 TITLE -->
+          <section class="slide active">
+            <div class="spine"></div><span class="bpmark tr"></span><span class="bpmark bl"></span>
+            <div class="cover">
+              <img class="logo" src="assets/flame.png" alt="FSM">
+              <div class="eyebrow">Fire System Mastery · Section 8 of 8 · Final Section</div>
+              <h1>Records & <span class="accent">Impairment Management</span></h1>
+              <div class="csub">NFPA 25 (2020) · Chapters 4 & 15</div>
+              <span class="badge">Illinois OSFM Approved · 8-Hour Comprehensive Course</span>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapters 4 & 15</span></div>
+          </section>
+          <!-- 2 OVERVIEW -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Course Overview</span><span class="kicker">The Final Hour · Two Halves</span></div>
+              <h1>Prove Compliance — <span class="accent">Manage the Downtime</span></h1>
+              <div class="split">
+                <div class="halfbox" style="--c:var(--orange)"><div class="ht">Records — Chapter 4</div><div class="hb">Who's responsible · the 5 required elements · retention · notifications & test-after-repair.</div></div>
+                <div class="halfbox" style="--c:var(--red)"><div class="ht">Impairment — Chapter 15</div><div class="hb">The coordinator · tagging · preplanned & emergency impairments · the 10-hour rule · restoring to service.</div></div>
+              </div>
+              <div class="takeaway"><span class="ico">🏁</span><span>Listen for the <b>impairment steps</b> — that's where most of these questions live.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapters 4 & 15 · Section 8 of 8</span></div>
+          </section>
+          <!-- 3 OWNER RESP -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 4.1.1</span><span class="kicker">The Records Side Begins</span></div>
+              <h1>Who's Responsible <span class="accent">for the Records</span></h1>
+              <div class="bullets" style="flex:none;margin-top:2px">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§4.1.1</span> — the <b>property owner or designated representative</b> is ultimately responsible — including maintaining the records.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Not the fire department, not the contractor. The contractor performs the work and hands over documentation; the <b>owner keeps it</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">New 2020 — §4.3.1.1</span> — makes it explicit: records maintained <b>by the property owner</b>.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🔑</span><span>The buck stops with the <b>owner</b> — same principle you learned in Section 1.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 4 · Section 8 of 8</span></div>
+          </section>
+          <!-- 4 FIVE ELEMENTS -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 4.3.2</span><span class="kicker">Know Them — and Know What Doesn't Belong</span></div>
+              <h1>The Five Required <span class="accent">Record Elements</span></h1>
+              <div class="nums" style="gap:9px">
+                <div class="num"><div class="n">1</div><div class="t">The procedure or activity performed</div></div>
+                <div class="num"><div class="n">2</div><div class="t">The organization that performed it</div></div>
+                <div class="num"><div class="n">3</div><div class="t">The required frequency</div></div>
+                <div class="num"><div class="n">4</div><div class="t">The results and the date</div></div>
+                <div class="num"><div class="n">5</div><div class="t">Name + contact info of the qualified contractor or owner (incl. lead person)</div></div>
+              </div>
+              <div class="takeaway"><span class="ico">🚫</span><span>NOT required: the <b>cost</b> of the inspection, the weather, or the insurance carrier.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 4 · Section 8 of 8</span></div>
+          </section>
+          <!-- 5 RETENTION -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Sections 4.3.4–4.3.5</span><span class="kicker">Two Retention Buckets</span></div>
+              <h1>How Long You <span class="accent">Keep Records</span></h1>
+              <div class="split">
+                <div class="halfbox" style="--c:var(--orange)"><div class="ht">Life of the System</div><div class="hb"><b style="color:#fff">Permanent records</b> (§4.3.4): as-builts, hydraulic calcs, original acceptance test documents, manufacturer data sheets.</div><div class="sub2">As long as the system exists, these documents exist.</div></div>
+                <div class="halfbox" style="--c:var(--teal)"><div class="ht">1 Year After the Next</div><div class="hb"><b style="color:#fff">Routine ITM records</b> (§4.3.5): kept until one year after the next activity of that same type.</div><div class="sub2">A quarterly report lives until 1 year after the next quarterly.</div></div>
+              </div>
+              <div class="takeaway"><span class="ico">🗂️</span><span>Permanent = <b>life of the system</b>. Routine = <b>1 year past the next one</b>.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 4 · Section 8 of 8</span></div>
+          </section>
+          <!-- 6 NOTIFY + TEST -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Sections 4.1.4 / 4.6.5</span><span class="kicker">Two Rules That Tie Into Impairment</span></div>
+              <h1>Notifications & <span class="accent">Test-After-Repair</span></h1>
+              <div class="bullets">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§4.1.4</span> — before shutting down or testing, notify the <b>AHJ</b>, the <b>fire department (if required)</b>, and the <b>alarm-receiving facility</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">A shutdown is often an impairment — so these notifications matter again here.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§4.6.5</span> — whenever a component is adjusted, repaired, reconditioned, or replaced, it <b>must be tested</b>. Don't just document — prove the fix works.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🔧</span><span>Repair, then <b>test</b>. Documentation alone isn't enough.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 4 · Section 8 of 8</span></div>
+          </section>
+          <!-- 7 CH15 BIG PICTURE -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Chapter 15</span><span class="kicker">The Core of This Section</span></div>
+              <h1>Impairments — <span class="accent">The Big Picture</span></h1>
+              <div class="bullets" style="flex:none;margin-top:2px">
+                <div class="bul"><span class="mk">▸</span><span class="txt">An <b>impairment</b> is a condition where the system (or part) is <b>out of service and would not work in a fire</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Chapter 15 is the structured process so a building is <b>never quietly left unprotected</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Applies whether <b>planned</b> (you're doing work) or <b>unplanned</b> (broken pipe, failed component).</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🛡️</span><span>One question drives the whole chapter: <b>how do we keep people safe while the sprinklers are off?</b></span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 15 · Section 8 of 8</span></div>
+          </section>
+          <!-- 8 COORDINATOR -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 15.2</span><span class="kicker">The Single Point of Accountability</span></div>
+              <h1>The Impairment <span class="accent">Coordinator</span></h1>
+              <div class="bullets">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§15.2</span> — the owner assigns an <b>impairment coordinator</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">If none is designated, the <b>owner is the coordinator by default</b> (§15.2.2).</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Where a lease grants ITM authority to a tenant / management firm, <b>they assign one</b> (§15.2.3).</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">The coordinator <b>authorizes the impairment</b>, makes notifications, and ensures protective measures are in place.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">👤</span><span>Every impairment has a <b>coordinator</b> — the person accountable for it.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 15 · Section 8 of 8</span></div>
+          </section>
+          <!-- 9 TAG -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 15.3</span><span class="kicker">Make It Impossible to Miss</span></div>
+              <h1>Tag the <span class="accent">System</span></h1>
+              <div class="bullets" style="flex:none;margin-top:2px">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§15.3</span> — a <b>tag</b> is used to indicate a system, or part of a system, has been <b>removed from service</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Posted at the <b>system control valve</b>, the <b>fire department connection</b>, and any AHJ-required locations.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Its job: make the out-of-service condition impossible to miss — so no one assumes protection is available when it isn't.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🏷️</span><span>Any time a system or part is removed from service → it gets <b>tagged</b>. No exceptions.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 15 · Section 8 of 8</span></div>
+          </section>
+          <!-- 10 PREPLANNED -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 15.5</span><span class="kicker">You Know About It In Advance</span></div>
+              <h1>Preplanned <span class="accent">Impairments</span></h1>
+              <div class="bullets" style="flex:none;margin-top:2px">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§15.5</span> — all preplanned impairments are <b>authorized by the impairment coordinator BEFORE</b> the impairment begins.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">The coordinator then works the checklist: extent & duration · inspect the areas involved · make the notifications.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Notify: the <b>fire department, insurance carrier, alarm company, AHJ,</b> and the building <b>occupants & supervisors</b>.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">📋</span><span>Nothing goes out of service on a planned basis until the <b>coordinator authorizes it</b>.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 15 · Section 8 of 8</span></div>
+          </section>
+          <!-- 11 10-HOUR RULE -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 15.5</span><span class="kicker">A Number Worth Memorizing</span></div>
+              <h1>The <span class="accent">10-Hour Rule</span></h1>
+              <div class="bullets" style="flex:none;margin-top:2px">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§15.5</span> — if a system will be out of service <b>more than 10 hours in a 24-hour period</b>, take an <b>additional protective measure</b>.</span></div>
+              </div>
+              <div class="cards" style="grid-template-columns:1fr 1fr;flex:none;margin:6px 0">
+                <div class="card2" style="--c:var(--red)"><div class="ct" style="font-size:19px">Evacuate</div><div class="cb" style="margin-top:4px">the affected area</div></div>
+                <div class="card2" style="--c:var(--orange)"><div class="ct" style="font-size:19px">Fire Watch</div><div class="cb" style="margin-top:4px">an approved fire watch</div></div>
+                <div class="card2" style="--c:var(--gold)"><div class="ct" style="font-size:19px">Temp Supply</div><div class="cb" style="margin-top:4px">temporary water supply</div></div>
+                <div class="card2" style="--c:var(--teal)"><div class="ct" style="font-size:19px">Control Sources</div><div class="cb" style="margin-top:4px">approved ignition/fuel control</div></div>
+              </div>
+              <div class="takeaway"><span class="ico">⏰</span><span>Under 10 hours → tags & notifications. Over 10 hours → <b>actively protect the space</b>.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 15 · Section 8 of 8</span></div>
+          </section>
+          <!-- 12 EMERGENCY -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 15.6</span><span class="kicker">Unplanned — But No Shortcuts</span></div>
+              <h1>Emergency <span class="accent">Impairments</span></h1>
+              <div class="bullets" style="flex:none;margin-top:2px">
+                <div class="bul"><span class="mk">▸</span><span class="txt">Unplanned: a ruptured or frozen pipe, interrupted water supply, failed component, or an impairment <b>found during your own ITM work</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§15.6</span> — the coordinator implements the <b>same steps as a preplanned impairment</b> (§15.5).</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Same tag, same notifications, same protective measures, same restoration.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🚨</span><span>No shortened checklist — you run the <b>full Chapter 15 process</b>, just starting when you discover it.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 15 · Section 8 of 8</span></div>
+          </section>
+          <!-- 13 RESTORE -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 15.7</span><span class="kicker">Closing Out the Impairment</span></div>
+              <h1>Restoring a System <span class="accent">to Service</span></h1>
+              <div class="nums">
+                <div class="num"><div class="n">1</div><div class="t"><b>Verify</b> the necessary inspections & tests confirm the system works</div></div>
+                <div class="num"><div class="n">2</div><div class="t"><b>Notify</b> FD, insurance carrier, alarm company, AHJ, occupants & supervisors that protection is back</div></div>
+                <div class="num"><div class="n">3</div><div class="t"><b>Remove the impairment tag</b> — the final step</div></div>
+              </div>
+              <div class="takeaway"><span class="ico">✅</span><span>The tag stays on until the system is verified back in service — <b>removing it is the last act</b>.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 15 · Section 8 of 8</span></div>
+          </section>
+          <!-- 14 TAKEAWAYS -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Review</span><span class="kicker">Before the Final Quiz</span></div>
+              <h1>The Points That <span class="accent">Matter Most</span></h1>
+              <div class="nums" style="grid-template-columns:1fr 1fr;gap:9px 22px">
+                <div class="num"><div class="n">1</div><div class="t">Owner responsible for records <span class="sec">§4.1.1</span></div></div>
+                <div class="num"><div class="n">2</div><div class="t">5 record elements — cost is NOT one <span class="sec">§4.3.2</span></div></div>
+                <div class="num"><div class="n">3</div><div class="t">Permanent records = life of system <span class="sec">§4.3.4</span></div></div>
+                <div class="num"><div class="n">4</div><div class="t">Test after any repair/replace <span class="sec">§4.6.5</span></div></div>
+                <div class="num"><div class="n">5</div><div class="t">Removed from service → tag it <span class="sec">§15.3</span></div></div>
+                <div class="num"><div class="n">6</div><div class="t">Coordinator authorizes preplanned <span class="sec">§15.5</span></div></div>
+                <div class="num"><div class="n">7</div><div class="t">&gt;10 hrs → evacuate or fire watch <span class="sec">§15.5</span></div></div>
+                <div class="num"><div class="n">8</div><div class="t">Emergency = same steps · restore ends with tag removal <span class="sec">§15.6/.7</span></div></div>
+              </div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapters 4 & 15 · Section 8 of 8</span></div>
+          </section>
+          <!-- 15 COURSE COMPLETE -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span><span class="bpmark bl"></span>
+            <div class="cover">
+              <img class="logo" src="assets/flame.png" alt="FSM">
+              <div class="eyebrow">You've Reached the End</div>
+              <h1>The Full <span class="accent">8-Hour Course</span></h1>
+              <div class="cta">From foundations through inspection, testing, valves, standpipes, pumps, internal condition, and impairment. Pass this final quiz with <b>70% or better</b> and your <b>8.0-hour OSFM CE certificate</b> is issued.</div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapters 4 & 15 · Section 8 of 8</span></div>
+          </section>
+        </div>
+        <div class="startov" id="startov"><button class="btn" onclick="startCourse()">▶ Start Section 8</button></div>
+      </div>
+
+      <div class="pbar"><i id="prog"></i></div>
+      <div class="pmeta"><span id="counter">Slide 1 of 15</span><span id="seen">Viewed: 1 / 15</span></div>
+      <div class="audio-wrap">
+        <audio id="narration" controls src="audio/slide-01.mp3"></audio>
+        <label class="auto"><input type="checkbox" id="autoplay" checked> Auto-advance</label>
+      </div>
+      <div class="ctrls">
+        <button class="btn-ghost" id="prevBtn" onclick="nav(-1)" disabled>◀ Previous</button>
+        <span class="mid" id="slideTitle"></span>
+        <button class="btn" id="nextBtn" onclick="nav(1)">Next ▶</button>
+      </div>
+      <div id="unlock" class="lockmsg">🔒 View all 15 slides to unlock the final quiz.</div>
+      <div class="center" style="margin-top:12px">
+        <button class="btn" id="toTest" onclick="go(1)" style="display:none">Start the Final Quiz ▶</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="step1" class="pane">
+    <div class="card">
+      <span class="pill">SECTION 8 QUIZ · 10 QUESTIONS · PASS = 70% (7 of 10)</span>
+      <h1 class="title">Records & Impairment Management — Final Quiz</h1>
+      <p class="sub">Answer all 10 questions, then submit.</p>
+      <form id="quiz"></form>
+      <div class="row">
+        <button class="btn-ghost" onclick="go(0)">◀ Back to course</button>
+        <button class="btn" onclick="grade()">Submit Quiz</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="stepR" class="pane"><div class="card center"><div id="resultBlock"></div></div></section>
+
+  <section id="step2" class="pane">
+    <div class="card">
+      <div class="done-hero">
+        <img class="logo" src="assets/flame.png" alt="FSM">
+        <div class="pill" style="background:rgba(29,158,117,.15);border-color:var(--green);color:#8ff0cf">✓ Section 8 Passed · Course Complete</div>
+        <h1>All 8 Sections <span class="accent">Complete</span></h1>
+        <p class="sub" id="doneScore"></p>
+      </div>
+      <div class="unlockcard">
+        <b style="color:var(--gold)">🎓 You've completed the full 8-hour NFPA 25 course.</b><br>
+        In the assembled course, this is where your <b>8.0-hour Illinois OSFM CE certificate</b> is generated, emailed to you, and logged for OSFM records.
+      </div>
+      <div class="row" style="margin-top:18px">
+        <button class="btn-ghost" onclick="location.reload()">↺ Replay Section 8</button>
+        <button class="btn" id="nextSecBtn">Return to Course Home ▶</button>
+      </div>
+      <p class="muted-note">This is the Section 8 module. In the assembled 8-hour course, "Claim Your Certificate" opens the certificate step (name/email/license → PDF cert emailed + completion logged to your Google Sheet with all 8.0 credit hours).</p>
+    </div>
+  </section>
+</div>
+
+<script>
+const NSLIDES=15;
+const TITLES=["Welcome","Course Overview","Who's Responsible for the Records","The Five Required Record Elements","Record Retention","Notifications & Test-After-Repair","Impairments — The Big Picture","The Impairment Coordinator","Tag the System","Preplanned Impairments","The 10-Hour Rule","Emergency Impairments","Restoring a System to Service","Key Takeaways","Course Complete"];
+let cur=1, maxSeen=1, started=false;
+const deck=document.getElementById('deck');
+const slides=[...deck.querySelectorAll('.slide')];
+const audio=document.getElementById('narration');
+function pad(n){return String(n).padStart(2,'0');}
+function fitDeck(){const stage=deck.parentElement;deck.style.transform='scale('+(stage.clientWidth/1280)+')';}
+window.addEventListener('resize',fitDeck);
+function render(){
+  slides.forEach((s,i)=>s.classList.toggle('active',i===cur-1));
+  audio.src=`audio/slide-${pad(cur)}.mp3`;
+  document.getElementById('counter').textContent=`Slide ${cur} of ${NSLIDES}`;
+  document.getElementById('seen').textContent=`Viewed: ${maxSeen} / ${NSLIDES}`;
+  document.getElementById('prog').style.width=(maxSeen/NSLIDES*100)+'%';
+  document.getElementById('slideTitle').textContent=TITLES[cur-1]||'';
+  document.getElementById('prevBtn').disabled = cur===1;
+  document.getElementById('nextBtn').style.display = cur===NSLIDES ? 'none':'inline-block';
+  if(started) audio.play().catch(()=>{});
+  checkUnlock();
+}
+function startCourse(){started=true;document.getElementById('startov').style.display='none';audio.play().catch(()=>{});}
+function nav(d){const nx=cur+d;if(nx<1||nx>NSLIDES)return;cur=nx;if(cur>maxSeen)maxSeen=cur;render();}
+function checkUnlock(){if(maxSeen>=NSLIDES){document.getElementById('unlock').innerHTML='✅ All slides viewed — the final quiz is unlocked.';document.getElementById('toTest').style.display='inline-block';}}
+audio.addEventListener('ended',()=>{if(document.getElementById('autoplay').checked && cur<NSLIDES) nav(1);});
+document.addEventListener('keydown',e=>{if(!document.getElementById('step0').classList.contains('on'))return;if(e.key==='ArrowRight')nav(1);if(e.key==='ArrowLeft')nav(-1);});
+
+/* OFFICIAL Course 4 questions (verbatim) */
+const QUESTIONS=[
+ {q:"According to NFPA 25 Section 4.1.1, who is ultimately responsible for maintaining a water-based fire protection system?",
+  opts:["The fire department","The sprinkler contractor","The property owner or designated representative"],a:2,
+  ex:"NFPA 25 §4.1.1: the property owner or designated representative shall be responsible for properly maintaining a water-based fire protection system."},
+ {q:"Before shutting down a system or performing testing, which three parties must be notified per Section 4.1.4?",
+  opts:["The AHJ, the fire department (if required), and the alarm-receiving facility","The building owner, insurance carrier, and occupants","The sprinkler contractor, building engineer, and alarm company"],a:0,
+  ex:"NFPA 25 §4.1.4: the owner shall notify the authority having jurisdiction, the fire department (if required), and the alarm-receiving facility before shutdown or testing."},
+ {q:"Which of the following is NOT one of the five required elements of an ITM record under Section 4.3.2?",
+  opts:["The required frequency of the activity","The name and contact information of the qualified contractor or owner","The cost of the inspection or test"],a:2,
+  ex:"NFPA 25 §4.3.2 lists five required record elements; the cost of the inspection or test is not one of them."},
+ {q:"How long must permanent records such as as-builts and acceptance test documents be retained?",
+  opts:["Until the next annual inspection","For the life of the system","Five years"],a:1,
+  ex:"Permanent records (as-builts, acceptance test documents) must be kept for the life of the system (§4.3.4)."},
+ {q:"What must be done after any component is repaired, reconditioned, or replaced according to Section 4.6.5?",
+  opts:["Document the repair only","Test the component","Notify the insurance carrier"],a:1,
+  ex:"NFPA 25 §4.6.5: when any component is adjusted, repaired, reconditioned, or replaced, it must be tested."},
+ {q:"What is required every time a system or part of a system is removed from service?",
+  opts:["A fire watch","A tag posted at required locations","A written report within 24 hours"],a:1,
+  ex:"NFPA 25 §15.3: a tag shall be used to indicate that a system, or part of a system, has been removed from service."},
+ {q:"Who authorizes all preplanned impairments under Section 15.5?",
+  opts:["The sprinklerfitter","The fire department","The impairment coordinator"],a:2,
+  ex:"NFPA 25 §15.5: all preplanned impairments shall be authorized by the impairment coordinator before the impairment begins."},
+ {q:"If a system will be out of service for more than 10 hours in a 24-hour period, which of the following is an acceptable protective measure?",
+  opts:["Notify occupants only","Install temporary sprinklers","Evacuate the area or implement an approved fire watch"],a:2,
+  ex:"NFPA 25 §15.5 lists acceptable measures including evacuating the area or implementing an approved fire watch when a system is out of service beyond the allowed window."},
+ {q:"Emergency impairments require which set of actions?",
+  opts:["Only tagging and notifying the alarm company","The same nine steps as preplanned impairments","A shortened checklist"],a:1,
+  ex:"NFPA 25 §15.6: for emergency impairments the coordinator shall implement the same steps outlined for preplanned impairments in §15.5."},
+ {q:"What is the final step in restoring a system to service under Section 15.7?",
+  opts:["Perform a main drain test","Notify the insurance carrier","Remove the impairment tag"],a:2,
+  ex:"NFPA 25 §15.7: removing the impairment tag is the final act of closing out the impairment and restoring the system to service."}
+];
+const PASSPCT=70;
+const qForm=document.getElementById('quiz');
+QUESTIONS.forEach((item,i)=>{
+  let h=`<div class="q"><p>${i+1}. ${item.q}</p>`;
+  item.opts.forEach((o,j)=>{h+=`<label class="opt"><input type="radio" name="q${i}" value="${j}">${o}</label>`;});
+  h+=`</div>`;qForm.insertAdjacentHTML('beforeend',h);
+});
+function go(step){
+  audio.pause();
+  document.querySelectorAll('.pane').forEach(s=>s.classList.remove('on'));
+  const map={0:'step0',1:'step1',R:'stepR',2:'step2'};
+  document.getElementById(map[step]).classList.add('on');
+  const tabIndex={0:0,1:1,R:1,2:2}[step];
+  for(let t=0;t<3;t++){const el=document.getElementById('tab'+t);el.classList.remove('active','done');if(t<tabIndex)el.classList.add('done');if(t===tabIndex)el.classList.add('active');}
+  if(step===0){setTimeout(fitDeck,30);if(started)audio.play().catch(()=>{});}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function grade(){
+  let score=0,unanswered=false;
+  QUESTIONS.forEach((item,i)=>{const sel=document.querySelector(`input[name="q${i}"]:checked`);if(!sel){unanswered=true;return;}if(parseInt(sel.value)===item.a)score++;});
+  if(unanswered){alert("Please answer all 10 questions before submitting.");return;}
+  const pct=Math.round(score/QUESTIONS.length*100);
+  const passed=pct>=PASSPCT;
+  window.__lastScore=score+'/'+QUESTIONS.length+' ('+pct+'%)';
+  let review='<div class="rev">';
+  QUESTIONS.forEach((item,i)=>{const sel=document.querySelector(`input[name="q${i}"]:checked`);const ok=sel && parseInt(sel.value)===item.a;review+=`<div class="ri ${ok?'ok':'no'}"><b>${i+1}. ${ok?'✓ Correct':'✗ Review'}</b> — ${item.ex}</div>`;});
+  review+='</div>';
+  document.getElementById('resultBlock').innerHTML=`
+    <div class="result-big ${passed?'pass':'fail'}">${pct}%</div>
+    <h2 class="${passed?'pass':'fail'}">${passed?'✓ You Passed — Course Complete!':'✗ Not quite — 70% needed'}</h2>
+    <p class="sub">You scored ${score} of ${QUESTIONS.length}.</p>
+    <div class="row center" style="justify-content:center;gap:12px">
+      ${passed?`<button class="btn" onclick="finishSection()">Complete the Course ▶</button>`
+        :`<button class="btn-ghost" onclick="go(0)">Review course</button><button class="btn" onclick="resetQuiz()">Retake quiz</button>`}
+    </div>${review}`;
+  go('R');
+}
+function resetQuiz(){document.getElementById('quiz').reset();go(1);}
+function finishSection(){try{localStorage.setItem('fsm8_sec8','1');}catch(e){}document.getElementById('doneScore').textContent='You scored '+(window.__lastScore||'')+' on the final quiz — all 8 sections complete.';go(2);}
+document.getElementById('nextSecBtn').addEventListener('click',()=>{location.href='../index.html';});
+render();fitDeck();
+</script>
+</body>
+</html>

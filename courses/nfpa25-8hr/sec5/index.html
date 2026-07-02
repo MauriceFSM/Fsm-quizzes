@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NFPA 25 8-Hour CE — Section 5: Standpipes, Hose Systems & Private Fire Mains</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A1524; --panel:#122032; --panel2:#16283E;
+    --orange:#F5821F; --red:#E23A1E; --gold:#F5B301; --teal:#17C3B2;
+    --ink:#FFFFFF; --muted:#93A4BC; --line:rgba(255,255,255,.10);
+    --bp:rgba(120,180,255,.16); --bpMajor:rgba(120,180,255,.30);
+    --green:#1D9E75;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#05080D;color:var(--ink);font-family:'Montserrat',system-ui,sans-serif;line-height:1.5}
+  header{background:#000;border-bottom:1px solid var(--line);padding:12px 22px;display:flex;align-items:center;gap:14px}
+  header .hflame{height:30px;width:auto}
+  .brand{font-weight:900;letter-spacing:1px;font-size:16px}
+  .brand small{display:block;font-size:9px;letter-spacing:4px;color:var(--muted);font-weight:700}
+  .osfm{margin-left:auto;font-size:11px;color:var(--muted);text-align:right;line-height:1.3}
+  .osfm b{color:var(--teal)}
+  .wrap{max-width:1120px;margin:0 auto;padding:22px 18px 90px}
+  .stepbar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .stepbar div{flex:1;min-width:120px;text-align:center;font-size:12.5px;font-weight:700;color:var(--muted);padding:9px 4px;border-radius:9px;background:var(--panel);border:1px solid var(--line);text-transform:uppercase;letter-spacing:.04em}
+  .stepbar div.active{color:#fff;background:linear-gradient(135deg,var(--orange),var(--red));border-color:transparent}
+  .stepbar div.done{color:var(--teal);border-color:var(--teal)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:16px}
+  .pane{display:none}.pane.on{display:block}
+  .pill{display:inline-block;background:var(--panel2);border:1px solid var(--line);color:var(--muted);font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;letter-spacing:.04em}
+  h1.title{font-size:22px;margin:0 0 4px}
+  .sub{color:var(--muted);margin:0 0 6px;font-size:14px}
+  button{font-family:inherit;font-size:15px;font-weight:700;border:none;border-radius:10px;padding:12px 22px;cursor:pointer;transition:.15s}
+  .btn{background:linear-gradient(135deg,var(--orange),var(--red));color:#fff}
+  .btn:hover{filter:brightness(1.08)}
+  .btn:disabled{opacity:.4;cursor:not-allowed;filter:none}
+  .btn-ghost{background:var(--panel2);color:var(--ink);border:1px solid var(--line)}
+  .row{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:10px;flex-wrap:wrap}
+  .center{text-align:center}
+  .stage{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:12px;background:#05080D;border:1px solid var(--line)}
+  .deck{position:absolute;top:0;left:0;width:1280px;height:720px;transform-origin:top left}
+  .pbar{height:6px;background:var(--panel2);border-radius:4px;overflow:hidden;margin:14px 0 6px}
+  .pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--gold));width:0;transition:width .3s}
+  .pmeta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:10px}
+  .audio-wrap{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-top:10px}
+  .audio-wrap audio{height:34px;flex:1;min-width:0}
+  .auto{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);white-space:nowrap}
+  .ctrls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+  .ctrls .mid{flex:1;text-align:center;font-weight:700;font-size:14px;color:#DDE5F0}
+  .lockmsg{font-size:13px;color:var(--muted);margin-top:12px;text-align:center}
+  .startov{position:absolute;inset:0;background:rgba(5,8,13,.55);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:5}
+  .startov button{font-size:17px;padding:16px 30px;border-radius:40px}
+  .q{margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+  .q:last-child{border-bottom:none}
+  .q p{font-weight:700;margin:0 0 10px}
+  .opt{display:block;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:11px 14px;margin-bottom:8px;cursor:pointer;transition:.12s}
+  .opt:hover{border-color:var(--orange)}
+  .opt input{margin-right:10px}
+  label.opt:has(input:checked){border-color:var(--orange);background:rgba(245,130,31,.12)}
+  .result-big{font-size:40px;font-weight:900;text-align:center;margin:6px 0}
+  .pass{color:var(--green)}.fail{color:var(--red)}
+  .rev{margin-top:14px;text-align:left;font-size:13.5px}
+  .rev .ri{padding:9px 12px;border-radius:8px;margin-bottom:7px;border:1px solid var(--line)}
+  .rev .ri.ok{background:rgba(29,158,117,.12);border-color:var(--green)}
+  .rev .ri.no{background:rgba(226,58,30,.12);border-color:var(--red)}
+  .rev .ri b{color:#fff}
+  .done-hero{text-align:center;padding:26px 10px}
+  .done-hero .logo{height:70px;margin-bottom:14px}
+  .done-hero h1{font-size:30px;margin:6px 0}
+  .done-hero .accent{color:var(--orange)}
+  .unlockcard{background:linear-gradient(90deg,rgba(23,195,178,.14),transparent);border:1px solid rgba(23,195,178,.4);border-left:5px solid var(--teal);border-radius:10px;padding:16px 20px;margin-top:16px;text-align:left;font-size:15px}
+  .muted-note{color:var(--muted);font-size:13px;margin-top:16px}
+  .slide{position:absolute;inset:0;color:var(--ink);display:none;
+    background:
+      radial-gradient(120% 90% at 88% -10%, rgba(245,130,31,.13), transparent 55%),
+      radial-gradient(90% 80% at -5% 110%, rgba(23,195,178,.10), transparent 55%),
+      linear-gradient(160deg,#0B182A,#0A1420 60%,#08111C);}
+  .slide.active{display:block}
+  .slide::before{content:"";position:absolute;inset:0;z-index:0;
+    background-image:
+      linear-gradient(var(--bpMajor) 1.4px,transparent 1.4px),
+      linear-gradient(90deg,var(--bpMajor) 1.4px,transparent 1.4px),
+      linear-gradient(var(--bp) 1px,transparent 1px),
+      linear-gradient(90deg,var(--bp) 1px,transparent 1px);
+    background-size:150px 150px,150px 150px,30px 30px,30px 30px;
+    mask-image:radial-gradient(135% 100% at 50% 0%,#000 55%,transparent 92%);opacity:.9}
+  .spine{position:absolute;left:0;top:0;bottom:0;width:8px;z-index:2;background:linear-gradient(180deg,var(--orange),var(--red) 55%,var(--gold))}
+  .bpmark{position:absolute;width:26px;height:26px;z-index:2;pointer-events:none;border-color:var(--bpMajor);border-style:solid;border-width:0}
+  .bpmark.tr{top:18px;right:18px;border-right-width:2px;border-top-width:2px}
+  .bpmark.bl{bottom:52px;left:18px;border-left-width:2px;border-bottom-width:2px}
+  .pad{position:absolute;inset:0;z-index:3;padding:40px 56px 54px 72px;display:flex;flex-direction:column}
+  .top{display:flex;align-items:center;gap:16px;margin-bottom:4px}
+  .chip{font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.12em;font-size:19px;color:#0D0D0F;background:var(--gold);padding:6px 15px 4px;border-radius:6px;text-transform:uppercase;white-space:nowrap}
+  .kicker{font-family:'Barlow Condensed',sans-serif;letter-spacing:.22em;font-size:14px;color:var(--muted);text-transform:uppercase}
+  .slide h1{font-weight:900;font-size:36px;line-height:1.04;margin:6px 0 4px;letter-spacing:-.5px}
+  .slide h1 .accent{color:var(--orange)}
+  .slide .subline{color:var(--muted);font-size:16px;font-weight:500;margin-bottom:12px}
+  .foot{position:absolute;left:0;right:0;bottom:0;z-index:3;height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 26px 0 72px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.14em;font-size:13px;color:var(--muted);background:rgba(0,0,0,.35);border-top:1px solid var(--line);text-transform:uppercase}
+  .foot .fbrand{color:#fff;font-weight:700}
+  .flame{color:var(--orange)}
+  .bullets{display:flex;flex-direction:column;gap:12px;flex:1;justify-content:center}
+  .bul{display:grid;grid-template-columns:30px 1fr;gap:6px;align-items:start;font-size:18px;line-height:1.38}
+  .bul .mk{color:var(--orange);font-weight:900;font-size:19px}
+  .bul .sec{color:var(--teal);font-weight:800}
+  .bul b{color:#fff;font-weight:800}
+  .bul .txt{color:#D7DEE9;font-weight:500}
+  .takeaway{margin-top:12px;display:flex;align-items:center;gap:14px;background:linear-gradient(90deg,rgba(245,130,31,.16),rgba(226,58,30,.05));border:1px solid rgba(245,130,31,.35);border-left:5px solid var(--orange);border-radius:10px;padding:12px 18px;font-size:17px;font-weight:600}
+  .takeaway .ico{font-size:21px}
+  .takeaway b{color:var(--gold)}
+  .newbox{background:linear-gradient(90deg,rgba(23,195,178,.14),transparent);border:1px solid rgba(23,195,178,.4);border-left:5px solid var(--teal);border-radius:10px;padding:12px 18px;margin-top:6px}
+  .newbox .lbl{font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.1em;font-size:14px;color:var(--teal);text-transform:uppercase;margin-bottom:4px}
+  .newbox .body{font-size:16.5px;color:#D7DEE9;font-weight:500}
+  .cards{display:grid;gap:18px;flex:1;align-content:center}
+  .card2{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden}
+  .card2::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c,var(--orange))}
+  .card2 .ct{font-weight:900;font-size:22px;margin-bottom:2px}
+  .card2 .cs{color:var(--teal);font-weight:800;font-size:14px;margin-bottom:8px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.06em}
+  .card2 .cb{color:#CBD5E3;font-size:15.5px;line-height:1.38;font-weight:500}
+  .card2 .tag{position:absolute;right:14px;bottom:12px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.12em;font-size:14px;color:#0D0D0F;background:var(--c,var(--orange));padding:3px 11px 2px;border-radius:20px;text-transform:uppercase}
+  .nums{display:grid;gap:11px;flex:1;align-content:center}
+  .num{display:grid;grid-template-columns:48px 1fr;align-items:center;gap:14px;background:linear-gradient(90deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:11px;padding:11px 16px}
+  .num .n{font-weight:900;font-size:24px;color:#0D0D0F;background:var(--orange);width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+  .num .t{font-size:18px;font-weight:600;color:#E4EAF2}
+  .num .t .sec{color:var(--teal);font-weight:800}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:18px;flex:1;align-content:center}
+  .halfbox{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:14px;padding:18px 20px;position:relative;overflow:hidden}
+  .halfbox::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c,var(--orange))}
+  .halfbox .ht{font-weight:900;font-size:21px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+  .halfbox .hs{color:var(--teal);font-weight:800;font-size:14px}
+  .halfbox .hb{color:#CBD5E3;font-size:15.5px;line-height:1.4;margin-top:6px;font-weight:500}
+  .halfbox .sub2{margin-top:8px;font-size:14.5px;color:#AEBBCC}
+  .halfbox .sub2 b{color:#fff}
+  .ftable{width:100%;border-collapse:collapse;font-size:16px;flex:1}
+  .ftable th{text-align:left;font-family:'Barlow Condensed',sans-serif;letter-spacing:.06em;color:var(--gold);font-size:15px;text-transform:uppercase;padding:9px 14px;border-bottom:1px solid var(--line)}
+  .ftable td{padding:11px 14px;border-bottom:1px solid var(--line);color:#DCE3EC;font-weight:500}
+  .ftable tr:last-child td{border-bottom:none}
+  .ftable .dev{font-weight:800;color:#fff}
+  .ftable .hi td{background:rgba(245,130,31,.13)}
+  .ftable .hi .dev{color:var(--gold)}
+  .checkbox{display:grid;grid-template-columns:1fr 1fr;gap:8px 26px;flex:1;align-content:center}
+  .cki{display:grid;grid-template-columns:26px 1fr;gap:8px;align-items:start;font-size:16.5px;color:#DCE3EC;font-weight:500}
+  .cki .ck{color:var(--teal);font-weight:900;font-size:17px}
+  .cki.warn .ck{color:var(--red)}
+  .cover{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 80px}
+  .cover .logo{width:96px;height:96px;object-fit:contain;margin-bottom:22px;filter:drop-shadow(0 6px 20px rgba(245,130,31,.4))}
+  .cover .eyebrow{font-family:'Barlow Condensed',sans-serif;letter-spacing:.28em;font-size:17px;color:var(--teal);text-transform:uppercase;margin-bottom:14px}
+  .cover h1{font-size:52px;line-height:1.02;max-width:1000px;margin:0 0 16px}
+  .cover .csub{color:var(--muted);font-size:21px;font-weight:500;margin-bottom:26px}
+  .cover .badge{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.14em;font-size:16px;color:#0D0D0F;background:linear-gradient(90deg,var(--gold),var(--orange));padding:10px 22px;border-radius:30px;text-transform:uppercase}
+  .cover .cta{font-size:20px;color:#D7DEE9;font-weight:600;max-width:800px;margin-top:6px}
+  .cover .cta b{color:var(--gold)}
+</style>
+</head>
+<body>
+<header>
+  <img class="hflame" src="assets/flame.png" alt="FSM">
+  <div class="brand">FIRE SYSTEM<small>MASTERY</small></div>
+  <div class="osfm"><b>Illinois OSFM Approved</b><br>NFPA 25 · 8-Hour CE · Section 5 of 8</div>
+</header>
+
+<div class="wrap">
+  <div class="stepbar">
+    <div id="tab0" class="active">1. Course</div>
+    <div id="tab1">2. Section Quiz</div>
+    <div id="tab2">3. Section Complete</div>
+  </div>
+
+  <section id="step0" class="pane on">
+    <div class="card">
+      <span class="pill">SECTION 5 · NFPA 25 (2020) CHAPTERS 6 & 7</span>
+      <h1 class="title">Standpipes, Hose Systems & Private Fire Mains</h1>
+      <p class="sub">Watch all 17 slides with narration, then take the 10-question section quiz to unlock Section 6.</p>
+
+      <div class="stage">
+        <div class="deck" id="deck">
+          <!-- 1 TITLE -->
+          <section class="slide active">
+            <div class="spine"></div><span class="bpmark tr"></span><span class="bpmark bl"></span>
+            <div class="cover">
+              <img class="logo" src="assets/flame.png" alt="FSM">
+              <div class="eyebrow">Fire System Mastery · Section 5 of 8</div>
+              <h1>Standpipes, Hose Systems<br>& <span class="accent">Private Fire Mains</span></h1>
+              <div class="csub">NFPA 25 (2020) · Chapters 6 & 7</div>
+              <span class="badge">Illinois OSFM Approved · 8-Hour Comprehensive Course</span>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapters 6 & 7</span></div>
+          </section>
+          <!-- 2 OVERVIEW -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Course Overview</span><span class="kicker">What this hour covers</span></div>
+              <h1>Getting Water <span class="accent">Up & Across the Site</span></h1>
+              <div class="nums" style="grid-template-columns:1fr 1fr;gap:10px 22px">
+                <div class="num"><div class="n">1</div><div class="t">Standpipe classes & test demands</div></div>
+                <div class="num"><div class="n">2</div><div class="t">Standpipe inspections (all annual)</div></div>
+                <div class="num"><div class="n">3</div><div class="t">The 5-year flow test</div></div>
+                <div class="num"><div class="n">4</div><div class="t">The 5-year hydrostatic test</div></div>
+                <div class="num"><div class="n">5</div><div class="t">Private fire main ITM</div></div>
+                <div class="num"><div class="n">6</div><div class="t">Hydrants — inspect & test</div></div>
+                <div class="num"><div class="n">7</div><div class="t">Monitor nozzles & hose houses</div></div>
+                <div class="num"><div class="n">8</div><div class="t">Deficiencies & corrective action</div></div>
+              </div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapters 6 & 7 · Section 5 of 8</span></div>
+          </section>
+          <!-- 3 CLASSES -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Chapter 6</span><span class="kicker">Classes Defined in NFPA 14 · Demands Set in NFPA 25</span></div>
+              <h1>Standpipe Classes & <span class="accent">Test Demands</span></h1>
+              <div class="cards" style="grid-template-columns:1fr 1fr 1fr">
+                <div class="card2" style="--c:var(--orange)"><div class="ct">Class I</div><div class="cs">2½" · FIRE DEPARTMENT</div><div class="cb">Demand (§6.3.1.2): <b style="color:#fff">500 gpm</b> most remote + <b style="color:#fff">250 gpm</b> each additional standpipe.</div></div>
+                <div class="card2" style="--c:var(--teal)"><div class="ct">Class II</div><div class="cs">1½" · OCCUPANT USE</div><div class="cb">Demand (§6.3.1.3): <b style="color:#fff">100 gpm</b> at the most remote hose connection.</div></div>
+                <div class="card2" style="--c:var(--gold)"><div class="ct">Class III</div><div class="cs">BOTH</div><div class="cb">Serves both fire dept. and occupants — same demand basis as Class I.</div></div>
+              </div>
+              <div class="takeaway"><span class="ico">🎯</span><span>Class I / III = <b>500 + 250 gpm</b>. Class II = <b>100 gpm</b> at the most remote connection.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 6 · Section 5 of 8</span></div>
+          </section>
+          <!-- 4 INSPECTIONS -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 6.2</span><span class="kicker">A 2020 Change — It's All Annual Now</span></div>
+              <h1>Standpipe Inspections — <span class="accent">Everything Is ANNUAL</span></h1>
+              <table class="ftable">
+                <tr><th>Item</th><th>Frequency</th><th>Reference</th></tr>
+                <tr><td class="dev">Hose connections</td><td>Annually</td><td>§6.2.3</td></tr>
+                <tr><td class="dev">Piping</td><td>Annually</td><td>§6.2.4</td></tr>
+                <tr><td class="dev">Hose (per NFPA 1962)</td><td>Annually</td><td>§6.2.5.1</td></tr>
+                <tr><td class="dev">Hose nozzle</td><td>Annually & after each use</td><td>§6.2.6</td></tr>
+                <tr><td class="dev">Cabinets</td><td>Annually</td><td>§6.2.8</td></tr>
+                <tr><td class="dev">Hydraulic design info sign</td><td>Annually</td><td>§6.2.2</td></tr>
+              </table>
+              <div class="takeaway"><span class="ico">📌</span><span>The old <b>quarterly</b> hose-connection rule is gone. Control valves & PRVs on standpipes → <b>Chapter 13</b>.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 6 · Section 5 of 8</span></div>
+          </section>
+          <!-- 5 FLOW TEST -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 6.3.1</span><span class="kicker">Proving the Supply Still Delivers</span></div>
+              <h1>The <span class="accent">5-Year Flow Test</span></h1>
+              <div class="bullets">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§6.3.1.1</span> — every <b>5 years</b>, flow test all <b>automatic</b> standpipe systems: verify required flow & pressure at the <b>hydraulically most remote hose valve outlet</b> while flowing full demand.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§6.3.1.1.1</span> — where the remote outlet isn't practical, the AHJ approves an alternate test location.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§6.3.1.4</span> — demand is based on the <b>design criteria in effect at installation</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§6.3.1.6</span> — a <b>main drain test</b> is also required on each standpipe with an automatic supply.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🌊</span><span>Five-year flow test at the <b>most remote outlet</b>, at full system demand.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 6 · Section 5 of 8</span></div>
+          </section>
+          <!-- 6 HYDRO -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 6.3.2</span><span class="kicker">Only Certain Systems Need It</span></div>
+              <h1>The <span class="accent">5-Year Hydrostatic Test</span></h1>
+              <div class="bullets" style="flex:none;margin-top:2px">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§6.3.2.1</span> — every <b>5 years</b>, hydrostatically test <b>manual standpipes</b> and <b>semiautomatic dry standpipes</b> — including the FDC piping — at <b>200 psi for 2 hours</b> (or 50 psi above max where max exceeds 150 psi).</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§6.3.2.1.1</span> — exemption: <b>manual-wet standpipes</b> in a combined sprinkler/standpipe system don't require the hydro.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§6.3.2.2</span> — pressure measured at the <b>low elevation point</b> of the system.</span></div>
+              </div>
+              <div class="newbox"><div class="lbl">Field Tip — §6.3</div><div class="body">Where water damage is possible, run an <b style="color:#fff">air test at 25 psi first</b> before introducing water.</div></div>
+              <div class="takeaway"><span class="ico">🧪</span><span>An automatic wet standpipe proves itself daily under pressure — that's why only manual & dry get the hydro.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 6 · Section 5 of 8</span></div>
+          </section>
+          <!-- 7 PRV CROSSREF -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 6.3.1.5</span><span class="kicker">Handled by Chapter 13</span></div>
+              <h1>Standpipe PRVs & <span class="accent">Waterflow Alarms</span></h1>
+              <div class="bullets" style="flex:none;margin-top:2px">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§6.3.1.5</span> — standpipe pressure-reducing & regulating valves are inspected, tested, and maintained per <b>Chapter 13</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Hose-connection PRVs (§13.5.2): partial flow <b>annually</b>, full flow <b>every 5 years</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§6.3.3</span> — waterflow & supervisory alarm devices test per Chapter 13.</span></div>
+              </div>
+              <div class="newbox" style="border-color:rgba(226,58,30,.4);border-left-color:var(--red)"><div class="lbl" style="color:var(--red)">Why This Matters — One Meridian Plaza, 1991</div><div class="body">Standpipe PRVs set to the wrong pressure left firefighters with useless hose streams — three died. This is the reason PRV testing exists. Do not skip it.</div></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 6 · Section 5 of 8</span></div>
+          </section>
+          <!-- 8 MAINS OVERVIEW -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Chapter 7</span><span class="kicker">The Yard Piping That Feeds the Whole Site</span></div>
+              <h1>Private Fire Service Mains — <span class="accent">Overview</span></h1>
+              <div class="scopewrap" style="display:flex;flex-direction:column;gap:16px;flex:1;justify-content:center">
+                <div class="halfbox" style="--c:var(--orange)"><div class="ht">What Chapter 7 Covers</div><div class="hb">The private <b style="color:#fff">underground and exposed piping</b> on a property that carries water from the source out to hydrants, monitor nozzles, and the sprinkler & standpipe risers — everything between the public supply and the building.</div></div>
+                <div class="halfbox" style="--c:var(--teal)"><div class="ht">Hose Maintenance</div><div class="hb">Fire hose on these systems is maintained per <b style="color:#fff">NFPA 1962</b> (§7.1.4) — same standard as standpipe hose.</div></div>
+              </div>
+              <div class="takeaway"><span class="ico">🗺️</span><span>Think of the <b>yard loop</b> — source → underground main → hydrants & risers across the site.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 7 · Section 5 of 8</span></div>
+          </section>
+          <!-- 9 PIPING SPLIT -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 7.2.2.1</span><span class="kicker">Inspected Very Differently</span></div>
+              <h1>Piping — <span class="accent">Exposed vs. Underground</span></h1>
+              <div class="split">
+                <div class="halfbox" style="--c:var(--gold)"><div class="ht">Exposed <span class="hs">§7.2.2.1.1</span></div><div class="hb">Inspected <b style="color:#fff">annually</b> for: ① leaks ② physical damage ③ corrosion ④ restraint methods.</div><div class="sub2">▸ Inaccessible piping inspected during each scheduled shutdown</div></div>
+                <div class="halfbox" style="--c:var(--teal)"><div class="ht">Underground <span class="hs">§7.3.1</span></div><div class="hb">Can't be visually inspected — its condition is proven by the <b style="color:#fff">flow test</b>.</div><div class="sub2">▸ Exposed you look at; underground you flow</div></div>
+              </div>
+              <div class="takeaway"><span class="ico">🔍</span><span>Exposed piping = <b>annual visual</b>. Underground = <b>proven by flow test</b>.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 7 · Section 5 of 8</span></div>
+          </section>
+          <!-- 10 MAIN FLOW TEST -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Section 7.3.1</span><span class="kicker">Finding the Buried Problem</span></div>
+              <h1>The <span class="accent">5-Year Main Flow Test</span></h1>
+              <div class="bullets">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§7.3.1</span> — <b>underground AND exposed</b> piping flow tested at <b>minimum 5-year intervals</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§7.3.1.1</span> — deteriorated results are investigated to the AHJ's satisfaction.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§7.3.1.2</span> — where a full flow test isn't possible, test at the <b>maximum flow available</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§7.2.2.3</span> — mainline strainers cleaned after significant flow; removed & inspected <b>annually</b>.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🕳️</span><span>The flow test is how you catch a main that's <b>tuberculated or partially closed</b> underground.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 7 · Section 5 of 8</span></div>
+          </section>
+          <!-- 11 HYDRANT INSPECT -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Sections 7.2.2.4–5</span><span class="kicker">Annually & After Each Operation</span></div>
+              <h1>Hydrants — <span class="accent">Inspection</span></h1>
+              <div class="bullets">
+                <div class="bul"><span class="mk">▸</span><span class="txt">Dry-barrel & wall hydrants (§7.2.2.4) and wet-barrel (§7.2.2.5): inspected <b>annually AND after each operation</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Dry-barrel key check: <b>water or ice in the barrel</b> → faulty drain, leaky valve, or high groundwater.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Also: cracks, outlet & thread condition, operating nut, wrench present.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">❄️</span><span>Water in a dry-barrel hydrant going into winter = a hydrant-shaped block of ice in January. That drain has to work.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 7 · Section 5 of 8</span></div>
+          </section>
+          <!-- 12 HYDRANT TEST -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Sections 7.3.2 / 7.4.2</span><span class="kicker">Test It · Drain It · Grease It</span></div>
+              <h1>Hydrants — <span class="accent">Annual Test & Maintenance</span></h1>
+              <div class="bullets">
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§7.3.2</span> — tested <b>annually</b>: open fully, flow until foreign material clears, flow <b>at least 1 minute</b> (§7.3.2.2).</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§7.3.2.4</span> — dry-barrel & wall hydrants must <b>fully drain within 60 minutes</b>.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§7.3.2.5</span> — won't drain / high groundwater → <b>plug and pump out</b>; mark for pumping in freezing climates.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt"><span class="sec">§7.4.2.1</span> — <b>lubricated annually</b>; kept clear of snow & ice with free access (§7.4.2.2).</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🔧</span><span>Annual test · <b>1-minute flow</b> · <b>60-minute drain</b> · annual lube.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 7 · Section 5 of 8</span></div>
+          </section>
+          <!-- 13 MONITOR & HOSE HOUSE -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Sections 7.2.2.7–8</span><span class="kicker">Two More Chapter 7 Items</span></div>
+              <h1>Monitor Nozzles & <span class="accent">Hose Houses</span></h1>
+              <div class="split">
+                <div class="halfbox" style="--c:var(--orange)"><div class="ht">Monitor Nozzles <span class="hs">§7.2.2.7</span></div><div class="hb">Inspected <b style="color:#fff">semiannually</b> — leakage, damage, corrosion.</div><div class="sub2">▸ <b>Oscillated through full range annually</b> (§7.3.3.2)<br>▸ Lubricated annually</div></div>
+                <div class="halfbox" style="--c:var(--teal)"><div class="ht">Hose Houses <span class="hs">§7.2.2.8</span></div><div class="hb">Inspected <b style="color:#fff">quarterly</b> — accessible, undamaged, all equipment present.</div></div>
+              </div>
+              <div class="takeaway"><span class="ico">💦</span><span>Monitor nozzles = <b>semiannual</b> (full range annual). Hose houses = <b>quarterly</b>.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapter 7 · Section 5 of 8</span></div>
+          </section>
+          <!-- 14 DEFICIENCIES -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Field</span><span class="kicker">What You Actually Find</span></div>
+              <h1>Common Standpipe & <span class="accent">Main Deficiencies</span></h1>
+              <div class="checkbox">
+                <div class="cki warn"><span class="ck">▸</span><span>Missing caps / plugs on hose connections & FDCs</span></div>
+                <div class="cki warn"><span class="ck">▸</span><span>Seized hose valves — not operated in years</span></div>
+                <div class="cki warn"><span class="ck">▸</span><span>Outdated hose service test</span></div>
+                <div class="cki warn"><span class="ck">▸</span><span>Obstructed or damaged FDC</span></div>
+                <div class="cki warn"><span class="ck">▸</span><span>Buried / overgrown / blocked hydrants</span></div>
+                <div class="cki warn"><span class="ck">▸</span><span>Dry-barrel hydrant holding water</span></div>
+                <div class="cki warn"><span class="ck">▸</span><span>Missing or illegible hydraulic design sign</span></div>
+                <div class="cki warn"><span class="ck">▸</span><span>Flow test past due — supply unverified</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">📋</span><span>Every one of these is a <b>documented finding</b>.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapters 6 & 7 · Section 5 of 8</span></div>
+          </section>
+          <!-- 15 CORRECTIVE -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Field</span><span class="kicker">When a Test Comes Back Bad</span></div>
+              <h1>Failed Test? <span class="accent">Corrective Action & Documentation</span></h1>
+              <div class="bullets">
+                <div class="bul"><span class="mk">▸</span><span class="txt">Investigate low flow / low residual against previous test results — find what changed.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">A main or standpipe that can't meet demand = <b>impairment</b> → Chapter 15 procedures + tag.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Document per <span class="sec">§4.3</span> — the <b>five required record elements</b> from Section 1.</span></div>
+                <div class="bul"><span class="mk">▸</span><span class="txt">Notify the owner <b>in writing</b>.</span></div>
+              </div>
+              <div class="takeaway"><span class="ico">🚩</span><span>A failed test isn't the end of the job — it's the start of the <b>corrective-action paperwork</b>.</span></div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapters 6 & 7 · Section 5 of 8</span></div>
+          </section>
+          <!-- 16 TAKEAWAYS -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span>
+            <div class="pad">
+              <div class="top"><span class="chip">Review</span><span class="kicker">Before Your Quiz</span></div>
+              <h1>The Numbers That <span class="accent">Matter Most</span></h1>
+              <div class="nums" style="grid-template-columns:1fr 1fr;gap:9px 22px">
+                <div class="num"><div class="n">1</div><div class="t">Standpipe inspections all annual — incl. hose connections <span class="sec">Table 6.1.1.2</span></div></div>
+                <div class="num"><div class="n">2</div><div class="t">Flow test 5-yr at most remote outlet — 500+250 / 100 gpm <span class="sec">§6.3.1</span></div></div>
+                <div class="num"><div class="n">3</div><div class="t">Hydro 5-yr, 200 psi/2 hr — manual & semiauto-dry + FDC <span class="sec">§6.3.2.1</span></div></div>
+                <div class="num"><div class="n">4</div><div class="t">Mains (underground & exposed) flow tested 5-yr <span class="sec">§7.3.1</span></div></div>
+                <div class="num"><div class="n">5</div><div class="t">Hydrants: inspect annually + after use <span class="sec">§7.2.2.4</span></div></div>
+                <div class="num"><div class="n">6</div><div class="t">Hydrant test annual, 1-min flow, 60-min drain <span class="sec">§7.3.2</span></div></div>
+                <div class="num"><div class="n">7</div><div class="t">Monitor nozzles semiannual · hose houses quarterly <span class="sec">§7.2.2</span></div></div>
+                <div class="num"><div class="n">8</div><div class="t">Standpipe PRVs → Chapter 13 schedules <span class="sec">§6.3.1.5</span></div></div>
+              </div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapters 6 & 7 · Section 5 of 8</span></div>
+          </section>
+          <!-- 17 COMPLETE -->
+          <section class="slide">
+            <div class="spine"></div><span class="bpmark tr"></span><span class="bpmark bl"></span>
+            <div class="cover">
+              <img class="logo" src="assets/flame.png" alt="FSM">
+              <div class="eyebrow">Section 5 Complete</div>
+              <h1>Time to Take <span class="accent">Your Quiz</span></h1>
+              <div class="cta">Pass the 10-question section quiz with <b>70% or better</b> to unlock <b>Section 6 — Fire Pumps & Water Storage Tanks</b>.</div>
+            </div>
+            <div class="foot"><span><span class="flame">▲</span> <span class="fbrand">FIRE SYSTEM MASTERY</span> &nbsp;·&nbsp; firesystemmastery.com</span><span>NFPA 25 (2020) · Chapters 6 & 7 · Section 5 of 8</span></div>
+          </section>
+        </div>
+        <div class="startov" id="startov"><button class="btn" onclick="startCourse()">▶ Start Section 5</button></div>
+      </div>
+
+      <div class="pbar"><i id="prog"></i></div>
+      <div class="pmeta"><span id="counter">Slide 1 of 17</span><span id="seen">Viewed: 1 / 17</span></div>
+      <div class="audio-wrap">
+        <audio id="narration" controls src="audio/slide-01.mp3"></audio>
+        <label class="auto"><input type="checkbox" id="autoplay" checked> Auto-advance</label>
+      </div>
+      <div class="ctrls">
+        <button class="btn-ghost" id="prevBtn" onclick="nav(-1)" disabled>◀ Previous</button>
+        <span class="mid" id="slideTitle"></span>
+        <button class="btn" id="nextBtn" onclick="nav(1)">Next ▶</button>
+      </div>
+      <div id="unlock" class="lockmsg">🔒 View all 17 slides to unlock the section quiz.</div>
+      <div class="center" style="margin-top:12px">
+        <button class="btn" id="toTest" onclick="go(1)" style="display:none">Start the Section Quiz ▶</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="step1" class="pane">
+    <div class="card">
+      <span class="pill">SECTION 5 QUIZ · 10 QUESTIONS · PASS = 70% (7 of 10)</span>
+      <h1 class="title">Standpipes, Hose Systems & Private Fire Mains — Quiz</h1>
+      <p class="sub">Answer all 10 questions, then submit.</p>
+      <form id="quiz"></form>
+      <div class="row">
+        <button class="btn-ghost" onclick="go(0)">◀ Back to course</button>
+        <button class="btn" onclick="grade()">Submit Quiz</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="stepR" class="pane"><div class="card center"><div id="resultBlock"></div></div></section>
+
+  <section id="step2" class="pane">
+    <div class="card">
+      <div class="done-hero">
+        <img class="logo" src="assets/flame.png" alt="FSM">
+        <div class="pill" style="background:rgba(29,158,117,.15);border-color:var(--green);color:#8ff0cf">✓ Section 5 Passed</div>
+        <h1>Section 5 <span class="accent">Complete</span></h1>
+        <p class="sub" id="doneScore"></p>
+      </div>
+      <div class="unlockcard">
+        <b style="color:var(--teal)">🔓 Section 6 — Fire Pumps & Water Storage Tanks is now unlocked.</b><br>
+        Your progress through this section is recorded. Complete all 8 sections to earn your <b>8.0-hour NFPA 25 CE certificate</b>.
+      </div>
+      <div class="row" style="margin-top:18px">
+        <button class="btn-ghost" onclick="location.reload()">↺ Replay Section 5</button>
+        <button class="btn" id="nextSecBtn">Return to Course Home ▶</button>
+      </div>
+      <p class="muted-note">This is the Section 5 module of the 8-hour course. In the assembled course, "Continue to Section 6" advances to the next section; the certificate is issued after Section 8 with all 8.0 credit hours logged for OSFM.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+const NSLIDES=17;
+const TITLES=["Welcome","Course Overview","Standpipe Classes & Test Demands","Standpipe Inspections — All Annual","The 5-Year Flow Test","The 5-Year Hydrostatic Test","Standpipe PRVs & Waterflow Alarms","Private Fire Service Mains — Overview","Piping — Exposed vs. Underground","The 5-Year Main Flow Test","Hydrants — Inspection","Hydrants — Annual Test & Maintenance","Monitor Nozzles & Hose Houses","Common Deficiencies","Failed Test? Corrective Action","Key Takeaways","Section Complete"];
+let cur=1, maxSeen=1, started=false;
+const deck=document.getElementById('deck');
+const slides=[...deck.querySelectorAll('.slide')];
+const audio=document.getElementById('narration');
+function pad(n){return String(n).padStart(2,'0');}
+function fitDeck(){const stage=deck.parentElement;deck.style.transform='scale('+(stage.clientWidth/1280)+')';}
+window.addEventListener('resize',fitDeck);
+function render(){
+  slides.forEach((s,i)=>s.classList.toggle('active',i===cur-1));
+  audio.src=`audio/slide-${pad(cur)}.mp3`;
+  document.getElementById('counter').textContent=`Slide ${cur} of ${NSLIDES}`;
+  document.getElementById('seen').textContent=`Viewed: ${maxSeen} / ${NSLIDES}`;
+  document.getElementById('prog').style.width=(maxSeen/NSLIDES*100)+'%';
+  document.getElementById('slideTitle').textContent=TITLES[cur-1]||'';
+  document.getElementById('prevBtn').disabled = cur===1;
+  document.getElementById('nextBtn').style.display = cur===NSLIDES ? 'none':'inline-block';
+  if(started) audio.play().catch(()=>{});
+  checkUnlock();
+}
+function startCourse(){started=true;document.getElementById('startov').style.display='none';audio.play().catch(()=>{});}
+function nav(d){const nx=cur+d;if(nx<1||nx>NSLIDES)return;cur=nx;if(cur>maxSeen)maxSeen=cur;render();}
+function checkUnlock(){if(maxSeen>=NSLIDES){document.getElementById('unlock').innerHTML='✅ All slides viewed — the section quiz is unlocked.';document.getElementById('toTest').style.display='inline-block';}}
+audio.addEventListener('ended',()=>{if(document.getElementById('autoplay').checked && cur<NSLIDES) nav(1);});
+document.addEventListener('keydown',e=>{if(!document.getElementById('step0').classList.contains('on'))return;if(e.key==='ArrowRight')nav(1);if(e.key==='ArrowLeft')nav(-1);});
+
+const QUESTIONS=[
+ {q:"For a Class I or Class III standpipe flow test, the system demand is:",
+  opts:["250 gpm at each standpipe simultaneously","500 gpm at the most remote standpipe, plus 250 gpm for each additional standpipe","100 gpm at the most remote hose connection"],a:1,
+  ex:"§6.3.1.2 — 500 gpm most remote + 250 gpm each additional (Class I/III). Class II demand is 100 gpm (§6.3.1.3)."},
+ {q:"How often must automatic standpipe systems be flow tested, and where?",
+  opts:["Every 5 years, at the hydraulically most remote hose valve outlet","Annually, at the fire department connection","Every 3 years, at the lowest hose valve"],a:0,
+  ex:"§6.3.1.1 — every 5 years at the most remote hose valve outlet, flowing full demand. AHJ may approve an alternate location (§6.3.1.1.1)."},
+ {q:"Which standpipe systems require the 5-year hydrostatic test?",
+  opts:["All standpipe systems, including automatic wet","Manual standpipe systems and semiautomatic dry standpipe systems, including the FDC piping","Only standpipes taller than 75 feet"],a:1,
+  ex:"§6.3.2.1 — manual and semiautomatic-dry standpipes plus FDC piping. Automatic wet standpipes prove themselves under constant pressure."},
+ {q:"The standpipe hydrostatic test pressure is:",
+  opts:["150 psi for 1 hour","System working pressure for 24 hours","Not less than 200 psi for 2 hours, or 50 psi above maximum pressure where that exceeds 150 psi"],a:2,
+  ex:"§6.3.2.1 — 200 psi for 2 hours (or 50 psi above max where max exceeds 150 psi). Measured at the low elevation point (§6.3.2.2)."},
+ {q:"Under the 2020 edition, standpipe hose connections are inspected:",
+  opts:["Quarterly","Annually","Monthly"],a:1,
+  ex:"Table 6.1.1.2 / §6.2.3.1 — annually. Nearly all Chapter 6 visual inspections are annual in 2020; the quarterly rule is an older-edition holdover."},
+ {q:"Occupant-use hose on Class II/III systems is inspected and service tested per:",
+  opts:["NFPA 1962","NFPA 20","NFPA 72"],a:0,
+  ex:"§6.2.5.1 and Table 6.1.1.2 — NFPA 1962 is the hose care and testing standard."},
+ {q:"Exposed private fire service main piping must be inspected:",
+  opts:["Weekly","Every 5 years","Annually — for leaks, physical damage, corrosion, and restraint methods"],a:2,
+  ex:"§7.2.2.1.1 — exposed piping inspected annually. Underground piping is proven by the flow test instead."},
+ {q:"Underground and exposed private fire service mains must be FLOW TESTED at least every:",
+  opts:["5 years","3 years","Year"],a:0,
+  ex:"§7.3.1 — minimum 5-year intervals. Deteriorated results are investigated to the AHJ's satisfaction (§7.3.1.1)."},
+ {q:"After the annual hydrant test, a dry-barrel hydrant must fully drain within:",
+  opts:["10 minutes","60 minutes","4 hours"],a:1,
+  ex:"§7.3.2.4 — 60 minutes. Flowed at least 1 minute (§7.3.2.2); a barrel that won't drain gets plugged and pumped out (§7.3.2.5)."},
+ {q:"Hose houses must be inspected:",
+  opts:["Annually","Semiannually","Quarterly"],a:2,
+  ex:"§7.2.2.8 — quarterly (accessible, undamaged, equipment present). Monitor nozzles are inspected semiannually (§7.2.2.7)."}
+];
+const PASSPCT=70;
+const qForm=document.getElementById('quiz');
+QUESTIONS.forEach((item,i)=>{
+  let h=`<div class="q"><p>${i+1}. ${item.q}</p>`;
+  item.opts.forEach((o,j)=>{h+=`<label class="opt"><input type="radio" name="q${i}" value="${j}">${o}</label>`;});
+  h+=`</div>`;qForm.insertAdjacentHTML('beforeend',h);
+});
+function go(step){
+  audio.pause();
+  document.querySelectorAll('.pane').forEach(s=>s.classList.remove('on'));
+  const map={0:'step0',1:'step1',R:'stepR',2:'step2'};
+  document.getElementById(map[step]).classList.add('on');
+  const tabIndex={0:0,1:1,R:1,2:2}[step];
+  for(let t=0;t<3;t++){const el=document.getElementById('tab'+t);el.classList.remove('active','done');if(t<tabIndex)el.classList.add('done');if(t===tabIndex)el.classList.add('active');}
+  if(step===0){setTimeout(fitDeck,30);if(started)audio.play().catch(()=>{});}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function grade(){
+  let score=0,unanswered=false;
+  QUESTIONS.forEach((item,i)=>{const sel=document.querySelector(`input[name="q${i}"]:checked`);if(!sel){unanswered=true;return;}if(parseInt(sel.value)===item.a)score++;});
+  if(unanswered){alert("Please answer all 10 questions before submitting.");return;}
+  const pct=Math.round(score/QUESTIONS.length*100);
+  const passed=pct>=PASSPCT;
+  window.__lastScore=score+'/'+QUESTIONS.length+' ('+pct+'%)';
+  let review='<div class="rev">';
+  QUESTIONS.forEach((item,i)=>{const sel=document.querySelector(`input[name="q${i}"]:checked`);const ok=sel && parseInt(sel.value)===item.a;review+=`<div class="ri ${ok?'ok':'no'}"><b>${i+1}. ${ok?'✓ Correct':'✗ Review'}</b> — ${item.ex}</div>`;});
+  review+='</div>';
+  document.getElementById('resultBlock').innerHTML=`
+    <div class="result-big ${passed?'pass':'fail'}">${pct}%</div>
+    <h2 class="${passed?'pass':'fail'}">${passed?'✓ You Passed!':'✗ Not quite — 70% needed'}</h2>
+    <p class="sub">You scored ${score} of ${QUESTIONS.length}.</p>
+    <div class="row center" style="justify-content:center;gap:12px">
+      ${passed?`<button class="btn" onclick="finishSection()">Complete Section 5 ▶</button>`
+        :`<button class="btn-ghost" onclick="go(0)">Review course</button><button class="btn" onclick="resetQuiz()">Retake quiz</button>`}
+    </div>${review}`;
+  go('R');
+}
+function resetQuiz(){document.getElementById('quiz').reset();go(1);}
+function finishSection(){try{localStorage.setItem('fsm8_sec5','1');}catch(e){}document.getElementById('doneScore').textContent='You scored '+(window.__lastScore||'')+' on the Section 5 quiz.';go(2);}
+document.getElementById('nextSecBtn').addEventListener('click',()=>{location.href='../index.html';});
+render();fitDeck();
+</script>
+</body>
+</html>
