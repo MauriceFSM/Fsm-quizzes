@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FSM Professor — NICET Level III Teaching System</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1923;--card:#1a2736;--card2:#1e2f42;--border:#243447;
+  --orange:#D85A30;--blue:#185FA5;--green:#1D9E75;
+  --yellow:#F59E0B;--purple:#a855f7;--red:#ef4444;--cyan:#22d3ee;
+  --text:#e8edf2;--muted:#7a8fa6;--dim:#4a5a6a;
+}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.6;font-size:15px;padding-bottom:80px}
+.wrap{max-width:900px;margin:0 auto;padding:16px}
+
+/* HEADER */
+.hero{background:linear-gradient(135deg,#0d1f35,#1a2736 60%,#102030);border-bottom:3px solid var(--orange);padding:26px 20px 20px;text-align:center}
+.hero-tag{font-size:11px;font-weight:700;letter-spacing:3px;color:var(--orange);text-transform:uppercase}
+.hero h1{font-size:clamp(22px,5vw,32px);font-weight:800;color:#fff;margin:4px 0 2px}
+.hero-sub{font-size:13px;color:var(--muted)}
+
+/* NAV TABS */
+.nav{position:sticky;top:0;z-index:50;background:rgba(15,25,35,0.97);backdrop-filter:blur(6px);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;gap:2px;padding:8px 8px 0;-webkit-overflow-scrolling:touch}
+.nav button{background:none;border:none;color:var(--muted);font-family:inherit;font-size:12px;font-weight:600;padding:10px 14px;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;display:flex;align-items:center;gap:6px}
+.nav button.active{color:#fff;border-bottom-color:var(--orange)}
+.nav .due-pill{background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:0 6px;min-width:18px;text-align:center}
+
+.tab{display:none}
+.tab.active{display:block}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:14px}
+.sec-title{font-size:17px;font-weight:700;color:#fff;margin:20px 0 12px;display:flex;align-items:center;gap:8px}
+.badge{background:var(--orange);color:#fff;font-size:10px;font-weight:700;border-radius:4px;padding:2px 8px;letter-spacing:1px}
+
+/* DASHBOARD */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.stat-num{font-size:26px;font-weight:800;color:#fff}
+.stat-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.mastery-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.mastery-name{font-size:12px;font-weight:600;width:180px;flex-shrink:0;color:var(--text)}
+.mastery-bar{flex:1;height:10px;background:#243447;border-radius:5px;overflow:hidden}
+.mastery-fill{height:100%;border-radius:5px;transition:width 0.4s}
+.mastery-pct{font-size:11px;color:var(--muted);width:38px;text-align:right}
+.action-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.big-btn{background:var(--orange);color:#fff;border:none;border-radius:10px;padding:12px 22px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px}
+.big-btn.blue{background:var(--blue)}
+.big-btn.green{background:var(--green)}
+.big-btn.purple{background:var(--purple)}
+.big-btn:disabled{opacity:0.5;cursor:not-allowed}
+
+/* PATH */
+.phase{border-left:3px solid var(--border);padding-left:18px;margin-bottom:20px;position:relative}
+.phase::before{content:'';position:absolute;left:-9px;top:2px;width:15px;height:15px;border-radius:50%;background:var(--card);border:3px solid var(--dim)}
+.phase.done::before{background:var(--green);border-color:var(--green)}
+.phase.current::before{background:var(--orange);border-color:var(--orange)}
+.phase-title{font-size:15px;font-weight:700;color:#fff}
+.phase-desc{font-size:12px;color:var(--muted);margin:4px 0 8px}
+.phase-links{display:flex;gap:8px;flex-wrap:wrap}
+.phase-link{background:#243447;border:1px solid #2e4060;border-radius:6px;padding:4px 10px;font-size:11px;color:var(--cyan);text-decoration:none;font-weight:600}
+.phase-link:hover{border-color:var(--cyan)}
+.phase-status{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:1px 8px;border-radius:10px;margin-left:8px}
+.st-done{background:#0a2015;color:var(--green)}
+.st-current{background:#2d1a0d;color:var(--orange)}
+.st-locked{background:#1a2030;color:var(--dim)}
+
+/* DRILL */
+.drill-q{font-size:16px;font-weight:600;color:#fff;margin-bottom:14px;line-height:1.5}
+.drill-meta{display:flex;gap:8px;margin-bottom:12px;font-size:11px}
+.drill-meta span{background:#243447;border-radius:10px;padding:2px 10px;color:var(--muted);font-weight:600}
+.opt-btn{display:block;width:100%;text-align:left;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:8px;color:var(--text);font-family:inherit;font-size:14px;cursor:pointer;transition:all 0.15s}
+.opt-btn:hover:not(:disabled){border-color:var(--blue);background:#152232}
+.opt-btn.correct{background:#0a2015;border-color:var(--green);color:var(--green)}
+.opt-btn.wrong{background:#2d100d;border-color:var(--red);color:var(--red)}
+.opt-btn.revealed{opacity:0.5}
+.drill-exp{background:#243447;border-radius:8px;padding:12px 16px;font-size:13px;color:var(--muted);margin-top:10px;line-height:1.6;display:none}
+.drill-exp.show{display:block}
+.drill-next{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:10px 24px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;margin-top:12px;display:none}
+.drill-next.show{display:inline-block}
+.progress-track{height:6px;background:#243447;border-radius:3px;margin-bottom:16px;overflow:hidden}
+.progress-fill{height:100%;background:var(--orange);border-radius:3px;transition:width 0.3s}
+
+/* TEACH-BACK */
+.tb-concept{background:linear-gradient(135deg,#1a2736,#1e2f42);border:2px solid var(--purple);border-radius:12px;padding:18px;margin-bottom:14px}
+.tb-concept-name{font-size:16px;font-weight:700;color:#fff;margin-bottom:6px}
+.tb-prompt{font-size:13px;color:var(--muted)}
+textarea#tb-input{width:100%;min-height:140px;background:#243447;border:1px solid #2e4060;border-radius:10px;padding:12px 14px;color:var(--text);font-family:inherit;font-size:14px;line-height:1.6;resize:vertical;outline:none}
+textarea#tb-input:focus{border-color:var(--purple)}
+.tb-out{background:#1a1a2e;border:1px solid #3a2a5a;border-radius:10px;padding:14px 16px;font-size:13px;line-height:1.7;color:#d0c8f0;white-space:pre-wrap;display:none;margin-top:12px}
+
+/* PALACE */
+.palace-room{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:12px;display:flex;gap:14px;align-items:flex-start}
+.palace-icon{font-size:30px;flex-shrink:0;width:44px;text-align:center}
+.palace-room h4{font-size:14px;font-weight:700;color:#fff;margin-bottom:2px}
+.palace-image{font-size:13px;color:var(--muted);margin-bottom:4px;font-style:italic}
+.palace-num{font-size:15px;font-weight:800;color:var(--orange)}
+.palace-num.hidden-mode{background:#243447;color:transparent;border-radius:4px;cursor:pointer;user-select:none}
+.palace-num.hidden-mode:active,.palace-num.hidden-mode.revealed{color:var(--orange);background:none}
+
+/* SCENARIO */
+.scen-card{background:linear-gradient(135deg,#1a2736,#1e2f42);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:12px;cursor:pointer;transition:border-color 0.15s}
+.scen-card:hover{border-color:var(--orange)}
+.scen-card h4{font-size:15px;font-weight:700;color:#fff}
+.scen-card p{font-size:12px;color:var(--muted);margin-top:4px}
+.scen-diff{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-top:8px;display:inline-block;padding:1px 8px;border-radius:10px}
+.d1{background:#0a2015;color:var(--green)}
+.d2{background:#2d1e0a;color:var(--yellow)}
+.d3{background:#2d100d;color:var(--red)}
+.scen-desc-box{background:#243447;border-left:4px solid var(--orange);border-radius:0 8px 8px 0;padding:12px 16px;font-size:13px;color:var(--text);margin-bottom:16px;line-height:1.6}
+
+/* AI KEY ROW */
+.key-row{display:flex;gap:8px;margin:10px 0 4px;flex-wrap:wrap}
+#ai-key,#tb-key{flex:1;min-width:170px;background:#243447;border:1px solid #2e4060;border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;outline:none;font-family:inherit}
+.key-note{font-size:10px;color:var(--dim);margin-bottom:8px}
+#drill-ai-out{background:#1a1a2e;border:1px solid #3a2a5a;border-radius:10px;padding:14px 16px;font-size:13px;line-height:1.7;color:#d0c8f0;white-space:pre-wrap;display:none;margin-top:10px}
+
+.callout{border-radius:8px;padding:11px 14px;margin:10px 0;font-size:13px;display:flex;gap:10px}
+.callout.info{background:#0a1d2d;border:1px solid var(--blue)}
+.callout.good{background:#0a1e14;border:1px solid var(--green)}
+.callout.warn{background:#2d1e0a;border:1px solid var(--yellow)}
+.hide{display:none!important}
+@media(max-width:600px){.mastery-name{width:120px;font-size:11px}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-tag">Fire System Mastery</div>
+  <h1>🎓 FSM Professor</h1>
+  <p class="hero-sub">NICET Level III · Water-Based Systems Layout · Adaptive Teaching System</p>
+</div>
+
+<div class="nav" id="nav">
+  <button class="active" data-tab="dash">📊 Dashboard</button>
+  <button data-tab="path">🗺️ Path</button>
+  <button data-tab="drill">⚡ Drill <span class="due-pill hide" id="due-pill">0</span></button>
+  <button data-tab="teach">🧠 Teach-Back</button>
+  <button data-tab="palace">🏛️ Palace</button>
+  <button data-tab="scen">🎯 Scenarios</button>
+</div>
+
+<div class="wrap">
+
+<!-- ═══════════ DASHBOARD ═══════════ -->
+<div class="tab active" id="tab-dash">
+  <div class="sec-title"><span class="badge">TODAY</span> Your Status</div>
+  <div class="stat-grid">
+    <div class="stat"><div class="stat-num" id="st-streak">0</div><div class="stat-lbl">Day Streak 🔥</div></div>
+    <div class="stat"><div class="stat-num" id="st-due">0</div><div class="stat-lbl">Cards Due</div></div>
+    <div class="stat"><div class="stat-num" id="st-answered">0</div><div class="stat-lbl">Total Answered</div></div>
+    <div class="stat"><div class="stat-num" id="st-acc">—</div><div class="stat-lbl">Accuracy</div></div>
+  </div>
+
+  <div class="card">
+    <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:12px">Topic Mastery</div>
+    <div id="mastery-list"></div>
+    <div class="callout warn hide" id="weak-callout"><span>🎯</span><div id="weak-text"></div></div>
+    <div class="action-btns">
+      <button class="big-btn" onclick="startDrill('due')">⚡ Start Daily Drill</button>
+      <button class="big-btn purple" onclick="switchTab('teach')">🧠 Teach-Back</button>
+      <button class="big-btn blue" onclick="startDrill('weak')">🎯 Drill Weakest Topic</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:8px">How This System Works</div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.7">
+      <strong style="color:var(--orange)">⚡ Drill</strong> — Spaced repetition. Cards you miss come back sooner; cards you know come back later (1→3→7→14→30 days).<br>
+      <strong style="color:var(--purple)">🧠 Teach-Back</strong> — Feynman technique. Explain a concept in your own words; the AI professor grades your explanation and finds the gaps.<br>
+      <strong style="color:var(--yellow)">🏛️ Palace</strong> — Memory palace for critical numbers. Walk the firehouse; each room holds a number.<br>
+      <strong style="color:var(--red)">🎯 Scenarios</strong> — Job-site simulations. Multi-step design decisions like the real exam (and the real job).
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ LEARNING PATH ═══════════ -->
+<div class="tab" id="tab-path">
+  <div class="sec-title"><span class="badge">ROADMAP</span> NICET Level III — Water-Based Systems Layout</div>
+  <div class="callout info"><span>📋</span><div>Based on the public NICET Level III WBSL exam outline. Work top to bottom — each phase builds on the last. Status updates automatically from your drill accuracy.</div></div>
+  <div id="path-list"></div>
+</div>
+
+<!-- ═══════════ DRILL ═══════════ -->
+<div class="tab" id="tab-drill">
+  <div class="sec-title"><span class="badge">ACTIVE RECALL</span> Daily Drill</div>
+  <div id="drill-home">
+    <div class="card">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Spaced-repetition drill. Due cards first, then new cards. Miss a card → it comes back tomorrow. Nail it → the interval doubles.</p>
+      <div class="action-btns">
+        <button class="big-btn" onclick="startDrill('due')">⚡ Due + New Cards (<span id="drill-count">0</span>)</button>
+        <button class="big-btn blue" onclick="startDrill('all')">🔀 Random 12 — Any Topic</button>
+        <button class="big-btn green" onclick="startDrill('weak')">🎯 Weakest Topic</button>
+      </div>
+    </div>
+  </div>
+  <div id="drill-session" class="hide">
+    <div class="progress-track"><div class="progress-fill" id="drill-prog" style="width:0%"></div></div>
+    <div class="card">
+      <div class="drill-meta"><span id="drill-topic"></span><span id="drill-tier"></span><span id="drill-pos"></span></div>
+      <div class="drill-q" id="drill-q"></div>
+      <div id="drill-opts"></div>
+      <div class="drill-exp" id="drill-exp"></div>
+      <button class="drill-next" id="drill-next" onclick="drillNext()">Next →</button>
+    </div>
+  </div>
+  <div id="drill-done" class="hide">
+    <div class="card" style="text-align:center">
+      <div style="font-size:34px;margin-bottom:6px" id="done-emoji">🎉</div>
+      <div style="font-size:20px;font-weight:800;color:#fff" id="done-score"></div>
+      <div style="font-size:13px;color:var(--muted);margin-top:4px" id="done-msg"></div>
+      <div class="action-btns" style="justify-content:center">
+        <button class="big-btn" onclick="resetDrillUI()">Drill Again</button>
+        <button class="big-btn blue" onclick="switchTab('dash')">Dashboard</button>
+      </div>
+    </div>
+    <div class="card hide" id="drill-ai-wrap">
+      <div style="font-size:12px;font-weight:700;letter-spacing:2px;color:var(--purple);text-transform:uppercase;margin-bottom:8px">⚡ AI Study Session — Missed Questions</div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:8px">Get personalized study notes on everything you missed.</p>
+      <div class="key-row">
+        <input type="password" id="ai-key" placeholder="sk-ant-...  Anthropic API key">
+        <button class="big-btn purple" id="ai-gen-btn" onclick="runAIReview()" style="padding:9px 18px;font-size:13px">Generate →</button>
+      </div>
+      <p class="key-note">Saved locally in your browser only · Never sent anywhere except Anthropic</p>
+      <div id="drill-ai-out"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ TEACH-BACK ═══════════ -->
+<div class="tab" id="tab-teach">
+  <div class="sec-title"><span class="badge">FEYNMAN</span> Teach It Back</div>
+  <div class="callout info"><span>🧠</span><div><strong>The Feynman rule:</strong> if you can't explain it simply, you don't understand it yet. Explain the concept below as if teaching a first-year apprentice. The AI professor will grade you and expose the gaps.</div></div>
+
+  <div class="tb-concept">
+    <div class="tb-concept-name" id="tb-name"></div>
+    <div class="tb-prompt" id="tb-q"></div>
+  </div>
+  <div class="action-btns" style="margin-bottom:12px">
+    <button class="big-btn blue" onclick="tbShuffle()" style="padding:8px 16px;font-size:12px">🔀 Different Concept</button>
+    <button class="big-btn green" onclick="tbReveal()" style="padding:8px 16px;font-size:12px">👁️ Show Key Points (self-check)</button>
+  </div>
+  <div class="callout good hide" id="tb-keypoints"><span>✅</span><div id="tb-kp-text"></div></div>
+  <textarea id="tb-input" placeholder="Type your explanation here — plain language, like you're teaching an apprentice on the job site..."></textarea>
+  <div class="key-row">
+    <input type="password" id="tb-key" placeholder="sk-ant-...  Anthropic API key">
+    <button class="big-btn purple" id="tb-btn" onclick="tbGrade()" style="padding:9px 18px;font-size:13px">Grade My Explanation →</button>
+  </div>
+  <p class="key-note">Saved locally in your browser only · Never sent anywhere except Anthropic</p>
+  <div class="tb-out" id="tb-out"></div>
+</div>
+
+<!-- ═══════════ MEMORY PALACE ═══════════ -->
+<div class="tab" id="tab-palace">
+  <div class="sec-title"><span class="badge">MEMORY PALACE</span> The Firehouse Walk</div>
+  <div class="callout info"><span>🏛️</span><div>Walk through a fire station you know. Each room holds one critical NFPA 13 number, anchored to a vivid image. Read the walk 3 times, then use <strong>Test Mode</strong> to hide the numbers and recall them room by room.</div></div>
+  <div class="action-btns" style="margin-bottom:14px">
+    <button class="big-btn blue" id="palace-mode-btn" onclick="palaceToggle()" style="padding:8px 16px;font-size:12px">🙈 Test Mode — Hide Numbers</button>
+  </div>
+  <div id="palace-list"></div>
+</div>
+
+<!-- ═══════════ SCENARIOS ═══════════ -->
+<div class="tab" id="tab-scen">
+  <div class="sec-title"><span class="badge">SIMULATION</span> Job-Site Scenarios</div>
+  <div id="scen-home"></div>
+  <div id="scen-session" class="hide">
+    <div class="scen-desc-box" id="scen-desc"></div>
+    <div class="progress-track"><div class="progress-fill" id="scen-prog" style="width:0%"></div></div>
+    <div class="card">
+      <div class="drill-meta"><span id="scen-step-lbl"></span></div>
+      <div class="drill-q" id="scen-q"></div>
+      <div id="scen-opts"></div>
+      <div class="drill-exp" id="scen-exp"></div>
+      <button class="drill-next" id="scen-next" onclick="scenNext()">Next Step →</button>
+    </div>
+  </div>
+  <div id="scen-done" class="hide">
+    <div class="card" style="text-align:center">
+      <div style="font-size:34px;margin-bottom:6px">🏁</div>
+      <div style="font-size:20px;font-weight:800;color:#fff" id="scen-score"></div>
+      <div style="font-size:13px;color:var(--muted);margin-top:4px" id="scen-msg"></div>
+      <div class="action-btns" style="justify-content:center">
+        <button class="big-btn" onclick="scenReset()">Back to Scenarios</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- wrap -->
+
+<script>
+/* ═══════════════════════════════════════════
+   DATA — TOPICS
+════════════════════════════════════════════ */
+const TOPICS = {
+  spacing:  {name:'Spacing & Obstructions', icon:'📐'},
+  pockets:  {name:'Ceiling Pockets & Clouds', icon:'🏗️'},
+  storage:  {name:'Storage Overview (Ch.20)', icon:'📦'},
+  cmda:     {name:'CMDA (Ch.21)', icon:'💧'},
+  cmsa:     {name:'CMSA (Ch.22)', icon:'🚿'},
+  esfr:     {name:'ESFR (Ch.23)', icon:'⚡'},
+  rack:     {name:'Rack Storage (Ch.25)', icon:'🏗️'},
+  hydraulics:{name:'Hydraulic Calculations', icon:'🧮'},
+  supply:   {name:'Water Supply · Pumps · Standpipes', icon:'🔧'},
+};
+
+/* ═══════════════════════════════════════════
+   DATA — QUESTION BANK (id, topic, tier 1-3)
+════════════════════════════════════════════ */
+const BANK = [
+// ── CEILING POCKETS & CLOUDS ──
+{id:'pk01',topic:'pockets',tier:1,q:'A ceiling steps up within a sprinkler\'s coverage area. At what vertical change must the step be treated as a WALL for spacing?',opts:['More than 24 in.','More than 36 in.','More than 48 in.','Any vertical change'],a:1,exp:'More than 36 in. (900 mm) — §10.2.6.1.1.3. At 36 in. or less you may space as though the ceiling were flat (obstruction rules still apply).'},
+{id:'pk02',topic:'pockets',tier:1,q:'By default, where are sprinklers required with respect to ceiling pockets?',opts:['Only pockets deeper than 12 in.','Only pockets over 1,000 ft³','In ALL ceiling pockets','Only combustible pockets'],a:2,exp:'§10.2.9.1 — sprinklers are required in ALL ceiling pockets. The 6-condition exception is the only way out.'},
+{id:'pk03',topic:'pockets',tier:2,q:'The standard-sprinkler pocket exception limits the unprotected pocket volume to:',opts:['100 ft³','500 ft³','1,000 ft³','2,000 ft³'],a:2,exp:'1,000 ft³ (28 m³). And all unprotected pockets within 10 ft of each other must TOTAL ≤ 1,000 ft³.'},
+{id:'pk04',topic:'pockets',tier:2,q:'Which condition applies to the STANDARD pocket exception but NOT the residential one?',opts:['Noncombustible finish','Floor protected at lower level','Quick-response sprinklers throughout the compartment','Depth limit'],a:2,exp:'The QR-throughout requirement is §10.2.9.2(6) — standard only. Residential (§12.1.12.2) drops it because residential heads are already fast-response by listing.'},
+{id:'pk05',topic:'pockets',tier:1,q:'A fixed ceiling cloud is 6 ft-2 in. wide. What does NFPA 13 require?',opts:['Nothing extra — use the A/B table','A sprinkler installed under the cloud','The cloud must be perforated 70%','Move the ceiling sprinkler within 1 ft'],a:1,exp:'§10.2.7.3.2 — sprinklers shall be installed under fixed obstructions over 4 ft wide. 6\'-2" > 4 ft → under-cloud head required.'},
+{id:'pk06',topic:'pockets',tier:2,q:'The deflector of a sprinkler installed under a fixed obstruction must be positioned no more than ___ below the bottom of the obstruction.',opts:['6 in.','12 in.','18 in.','22 in.'],a:1,exp:'12 in. (300 mm) — §10.2.7.3.4. Keep the pattern tight under the panel.'},
+{id:'pk07',topic:'pockets',tier:3,q:'Residential pocket exception (§12.1.12.2): max volume and max depth are:',opts:['1,000 ft³ / 36 in.','100 ft³ / 12 in.','500 ft³ / 24 in.','100 ft³ / 36 in.'],a:1,exp:'100 ft³ and 12 in. — 10× smaller volume and 3× shallower than the standard rule. Classic exam contrast question.'},
+{id:'pk08',topic:'pockets',tier:3,q:'Two unprotected pockets, 720 ft³ and 400 ft³, are 8 ft apart. All other exception conditions pass. Result?',opts:['Both may be unprotected','Only the larger needs sprinklers','Pocket sprinklers required — combined volume exceeds 1,000 ft³','Combine rule only applies within 5 ft'],a:2,exp:'720+400 = 1,120 ft³ > 1,000 ft³ combined within 10 ft → the exception fails; sprinklers required. §10.2.9.2(4).'},
+
+// ── SPACING & OBSTRUCTIONS ──
+{id:'sp01',topic:'spacing',tier:1,q:'Standard spray sprinklers: continuous/noncontinuous obstructions within ___ below the deflector that prevent the pattern from developing must comply with the obstruction rules.',opts:['12 in.','18 in.','24 in.','36 in.'],a:1,exp:'18 in. (450 mm) — the classic "18-inch rule" for pattern development obstructions.'},
+{id:'sp02',topic:'spacing',tier:1,q:'The "three times rule" / "four times rule" concept: sprinklers must be positioned away from an obstruction at least ___ the maximum dimension of the obstruction (standard spray).',opts:['2×','3×','4×','5×'],a:2,exp:'Four times the maximum dimension for standard spray (up to a max required clearance of 36 in. horizontal). CMSA uses 3×. Know which applies.'},
+{id:'sp03',topic:'spacing',tier:2,q:'Minimum distance between standard spray sprinklers (unless baffles or listing say otherwise):',opts:['4 ft','6 ft','8 ft','10 ft'],a:1,exp:'6 ft (1.8 m) minimum for standard spray to prevent cold soldering (one head wetting another). Residential minimum is 8 ft.'},
+{id:'sp04',topic:'spacing',tier:2,q:'ESFR clearance from deflector to top of storage must be at least:',opts:['18 in.','24 in.','36 in.','48 in.'],a:2,exp:'36 in. (900 mm) for ESFR — bigger droplets need room to develop momentum. Standard storage clearance is 18 in.; CMSA is 36 in.'},
+{id:'sp05',topic:'spacing',tier:1,q:'Maximum coverage area for a standard spray sprinkler in Light Hazard, unobstructed noncombustible construction (pipe schedule excluded):',opts:['130 ft²','168 ft²','200 ft²','225 ft²'],a:3,exp:'225 ft² for light hazard hydraulically calculated. Ordinary hazard = 130 ft²; Extra hazard = 100 ft² (90 ft² pipe schedule); High-piled = 100 ft².'},
+{id:'sp06',topic:'spacing',tier:3,q:'A sprinkler sits 3 ft-2 in. horizontally from a cloud edge. Per the A/B table, the max the deflector may be ABOVE the cloud bottom is:',opts:['3 in.','4 in.','6 in.','9 in.'],a:2,exp:'3 ft to <3 ft-6 in. → B = 6 in. If the deflector is more than 6 in. above the obstruction bottom, reposition.'},
+
+// ── STORAGE OVERVIEW CH.20 ──
+{id:'st01',topic:'storage',tier:1,q:'A Class III commodity may contain a limited amount of Group A plastics. What is the limit?',opts:['5%','10%','15%','25%'],a:1,exp:'Class III may contain no more than 10% Group A plastics by weight or volume. Over that → treat as higher classification.'},
+{id:'st02',topic:'storage',tier:1,q:'Which commodity class is "noncombustible products on wood pallets"?',opts:['Class I','Class II','Class III','Class IV'],a:0,exp:'Class I = noncombustible on wood pallets, in ordinary corrugated cartons, or shrink-wrapped on pallets. Class II adds wood crates/multi-layer cartons.'},
+{id:'st03',topic:'storage',tier:2,q:'"Miscellaneous storage" is storage that does not exceed ___ in height and meets area/pile limits.',opts:['8 ft','10 ft','12 ft','15 ft'],a:2,exp:'12 ft max height — protected using Chapter 4/Table criteria (density from misc. storage tables) instead of the full storage chapters.'},
+{id:'st04',topic:'storage',tier:2,q:'Encapsulation means:',opts:['Any shrink-wrapped pallet load','Plastic sheet covering the top AND sides of a pallet load containing combustibles','Plastic banding around cartons','Storage in closed metal containers'],a:1,exp:'Plastic sheeting enclosing top and sides traps heat and sheds water — that\'s why encapsulated loads get density penalties. Top covering only = not encapsulated (except where sides also wrapped).'},
+{id:'st05',topic:'storage',tier:2,q:'Cartoned expanded Group A plastic vs. exposed expanded Group A plastic — which is generally the more severe hazard for design?',opts:['Cartoned — cardboard adds fuel','Exposed — faster fire growth, harder to pre-wet','They are identical','Neither; both are Class IV'],a:1,exp:'Exposed expanded plastic burns fastest and is the most demanding storage commodity in the standard.'},
+{id:'st06',topic:'storage',tier:3,q:'Transverse flue spaces in rack storage run:',opts:['Parallel to the aisle, along the rack length','Perpendicular to the loading aisle, between pallet loads','Vertically between tiers','Under the lowest tier only'],a:1,exp:'Transverse flues are perpendicular to the aisle (between loads side-by-side); longitudinal flues run parallel to the aisle down the rack\'s spine.'},
+{id:'st07',topic:'storage',tier:1,q:'Group A plastics include:',opts:['Steel banding','Polyethylene and polystyrene','Glass containers','Paper products'],a:1,exp:'PE, PS, PP, ABS, rubber (non-fire-retardant) are Group A — the high heat-release plastics driving storage design.'},
+
+// ── CMDA CH.21 ──
+{id:'cm01',topic:'cmda',tier:1,q:'CMDA design uses which method to select protection criteria?',opts:['Fixed K-factor tables','Density/area curves based on commodity + storage height','Number of operating sprinklers only','Room design method'],a:1,exp:'CMDA = Control Mode Density/Area — pick density (gpm/ft²) over a design area (ft²) from curves keyed to commodity class and storage height.'},
+{id:'cm02',topic:'cmda',tier:2,q:'For CMDA on a DRY pipe system, the design area must be increased by:',opts:['15%','20%','30%','No increase'],a:2,exp:'30% increase for dry systems (water delay lets the fire open more heads). The same 30% concept appears in non-storage design too.'},
+{id:'cm03',topic:'cmda',tier:2,q:'In storage occupancies protected by CMDA wet systems, sprinkler temperature rating should generally be:',opts:['Ordinary only','Ordinary, intermediate, or high','High temperature only','Extra-high only'],a:1,exp:'Wet pipe storage: ordinary/intermediate/high all permitted. DRY pipe storage requires high-temperature rated heads.'},
+{id:'cm04',topic:'cmda',tier:3,q:'When ceiling height substantially exceeds storage height in CMDA design, the general effect on protection is:',opts:['Nothing changes','More demanding criteria (greater clearance = more fire development before control)','Less demanding criteria','Only K-factor changes'],a:1,exp:'Large clearance-to-storage lets a fire grow before ceiling heads operate — curves and adjustments push criteria up.'},
+{id:'cm05',topic:'cmda',tier:2,q:'CMDA minimum design area for storage applications is generally not less than:',opts:['1,000 ft²','1,500 ft²','2,000 ft²','3,000 ft²'],a:2,exp:'2,000 ft² is the typical CMDA storage floor for design area (with specific exceptions), vs. 1,500 ft² common in non-storage.'},
+{id:'cm06',topic:'cmda',tier:3,q:'An encapsulated Class II commodity stored 18 ft high — the typical CMDA response is:',opts:['No change from non-encapsulated','Increase density (commonly +25–50% per applicable rules)','Reduce design area','Prohibited — must use ESFR'],a:1,exp:'Encapsulation traps heat and sheds water → density penalties apply per the encapsulation provisions.'},
+
+// ── CMSA CH.22 ──
+{id:'cs01',topic:'cmsa',tier:1,q:'CMSA protection criteria are expressed as:',opts:['Density over area','Number of operating sprinklers at a minimum pressure','Flow at the base of the riser only','K-factor × 25'],a:1,exp:'CMSA = number of sprinklers (e.g., 15 heads) at a stated minimum operating pressure — not density/area.'},
+{id:'cs02',topic:'cmsa',tier:1,q:'CMSA clearance from deflector to top of storage must be at least:',opts:['18 in.','24 in.','36 in.','48 in.'],a:2,exp:'36 in. (900 mm) — CMSA\'s big droplets need travel distance, same number as ESFR.'},
+{id:'cs03',topic:'cmsa',tier:2,q:'Under obstructed combustible construction, CMSA maximum sprinkler spacing drops to:',opts:['12 ft','10 ft','8 ft','No change'],a:1,exp:'10 ft under obstructed combustible construction (12 ft otherwise, per Table 13.2.5.2.1 / §13.2.6.1.2 in the 2019 numbering).'},
+{id:'cs04',topic:'cmsa',tier:2,q:'CMSA sprinklers may be used in which system types?',opts:['Wet only','Wet and dry only','Wet, dry, or preaction per listing','Deluge only'],a:2,exp:'CMSA is permitted in wet, dry, or preaction systems installed per listing — unlike ESFR (wet only, with narrow exceptions).'},
+{id:'cs05',topic:'cmsa',tier:3,q:'CMSA under open wood joist construction: minimum operating pressure for a K-11.2 head is:',opts:['15 psi','22 psi','50 psi','75 psi'],a:2,exp:'50 psi for K-11.2 (160) under open wood joists (22 psi for K-16.8) — pressure boost to drive water up into the joist channels.'},
+
+// ── ESFR CH.23 ──
+{id:'es01',topic:'esfr',tier:1,q:'ESFR sprinklers are permitted in which system type?',opts:['Wet pipe only (unless specifically listed otherwise)','Any system type','Dry pipe preferred','Preaction standard'],a:0,exp:'Wet only unless specifically listed for dry/preaction. Delay kills suppression — ESFR must hit the fire early.'},
+{id:'es02',topic:'esfr',tier:1,q:'Maximum roof slope for ESFR installation:',opts:['1 in 12','2 in 12','4 in 12','No limit'],a:1,exp:'2 in 12 (16.7%). Steeper slopes skew the discharge pattern and delay operation.'},
+{id:'es03',topic:'esfr',tier:2,q:'The ESFR design area is based on:',opts:['2,000 ft² minimum','12 sprinklers — 4 branch lines with 3 sprinklers each','6 sprinklers total','Density × area curves'],a:1,exp:'12 heads: 4 lines × 3 heads (the "4×3"). It\'s a suppression design — hit hard, hit early, few heads.'},
+{id:'es04',topic:'esfr',tier:2,q:'ESFR maximum distance between sprinklers with ceiling height over 30 ft:',opts:['8 ft','10 ft','12 ft','14 ft'],a:1,exp:'10 ft max spacing (100 ft² max coverage) when ceiling exceeds 30 ft; 12 ft allowed up to 30 ft ceilings.'},
+{id:'es05',topic:'esfr',tier:2,q:'Where solid structural members deeper than 12 in. exist, ESFR heads must be:',opts:['Moved to 6 ft spacing','Installed in each channel formed by the members','Replaced with CMSA','Installed below the members'],a:1,exp:'§14.2.4.1 — each channel formed by solid members over 12 in. deep gets its own heads; the pattern can\'t jump deep obstructions.'},
+{id:'es06',topic:'esfr',tier:3,q:'ESFR K-22.4 pendent deflector distance below ceiling:',opts:['6–14 in.','6–18 in.','3–12 in.','1–4 in.'],a:1,exp:'K-22.4 and K-25.2 pendents: max 18 in., min 6 in. (K-14 and K-16.8 pendents: max 14 in.).'},
+
+// ── RACK STORAGE CH.25 ──
+{id:'rk01',topic:'rack',tier:1,q:'In-rack sprinkler water demand is:',opts:['Added to the ceiling demand','Calculated separately; the larger governs balance point','Ignored if ceiling density is high','Always 250 gpm flat'],a:0,exp:'In-rack demand is added to ceiling demand (balanced at the point of connection) — a common hydraulic exam trap.'},
+{id:'rk02',topic:'rack',tier:2,q:'The aisle-width breakpoint that splits many rack protection tables is:',opts:['3.5 ft','4 ft','6 ft','8 ft'],a:1,exp:'Aisles ≥ 4 ft vs < 4 ft (and ≥ 8 ft for the most favorable criteria). Narrow aisles = faster rack-to-rack jump = tougher criteria.'},
+{id:'rk03',topic:'rack',tier:2,q:'A longitudinal flue space is generally required in double-row racks when storage height exceeds:',opts:['12 ft','20 ft','25 ft','It is never required'],a:2,exp:'Above 25 ft storage the longitudinal flue requirement kicks in for many arrangements (6 in. flue) — check the specific table.'},
+{id:'rk04',topic:'rack',tier:2,q:'In-rack sprinklers typically must have a water shield or be listed for intermediate level when:',opts:['They are in the top tier','Sprinklers are installed above them (multi-level)','The rack is single-row','K-factor exceeds 11.2'],a:1,exp:'Heads below other heads get wetted and cold-soldered — shields or intermediate-level listing required.'},
+{id:'rk05',topic:'rack',tier:3,q:'Face sprinklers in rack storage are located:',opts:['At the ceiling above the aisle','Within the rack, no more than 18 in. from the aisle face','On the wall opposite the rack','Under the bottom tier only'],a:1,exp:'Face sprinklers sit in the transverse flue near the aisle face (≤18 in. from face) to stop vertical spread up the face.'},
+{id:'rk06',topic:'rack',tier:3,q:'Minimum in-rack sprinkler discharge pressure (typical, ordinary temperature K-5.6/K-8.0):',opts:['7 psi','15 psi','30 psi','50 psi'],a:1,exp:'15 psi is the standard minimum for in-rack heads (higher for some storage of plastics).'},
+
+// ── HYDRAULICS ──
+{id:'hy01',topic:'hydraulics',tier:1,q:'The Hazen-Williams formula calculates:',opts:['Sprinkler K-factor','Friction loss in pipe','Water density','Required density'],a:1,exp:'p = 4.52 Q^1.85 / (C^1.85 d^4.87) — friction loss per foot of pipe. Q in gpm, d in inches.'},
+{id:'hy02',topic:'hydraulics',tier:1,q:'Flow from a sprinkler: Q = ?',opts:['K × P','K × √P','K² × P','P / K'],a:1,exp:'Q = K√P. A K-5.6 head at 25 psi flows 5.6 × 5 = 28 gpm. Memorize the perfect squares.'},
+{id:'hy03',topic:'hydraulics',tier:2,q:'C-factor for new black steel pipe in a WET system:',opts:['100','120','140','150'],a:1,exp:'C=120 wet steel. Dry/preaction steel = 100. Copper/CPVC = 150. Unlined cast iron = 100.'},
+{id:'hy04',topic:'hydraulics',tier:2,q:'Elevation pressure: how many psi per foot of elevation change?',opts:['0.333','0.433','0.5','1.0'],a:1,exp:'0.433 psi/ft (head of water). 20 ft of rise = 8.66 psi. Reverse: 2.31 ft per psi.'},
+{id:'hy05',topic:'hydraulics',tier:2,q:'The most hydraulically remote area is:',opts:['The physically farthest corner, always','The area producing the greatest demand (flow+pressure) at the supply','Always at the highest elevation','Wherever the AHJ picks'],a:1,exp:'"Remote" is hydraulic, not geographic — the design area that produces the worst-case demand. Usually far + high, but must be verified.'},
+{id:'hy06',topic:'hydraulics',tier:3,q:'The design area is 1,500 ft² and sprinklers cover 130 ft² each. Minimum sprinklers in the calc:',opts:['10','11','12','13'],a:2,exp:'1500/130 = 11.54 → round UP → 12 sprinklers. Always round up.'},
+{id:'hy07',topic:'hydraulics',tier:3,q:'Density/area method: each sprinkler in the design area must discharge at least:',opts:['The same gpm as the first head','Density × its actual coverage area','K√7','15 gpm'],a:1,exp:'Minimum flow per head = density × coverage area of that head (e.g., 0.2 gpm/ft² × 130 ft² = 26 gpm minimum).'},
+
+// ── WATER SUPPLY / PUMPS / STANDPIPES ──
+{id:'ws01',topic:'supply',tier:1,q:'A fire pump rated 1,000 gpm must deliver 150% of rated flow at not less than ___ of rated pressure.',opts:['50%','65%','90%','100%'],a:1,exp:'NFPA 20 pump curve: 100% flow @ 100% pressure; 150% flow @ ≥65% pressure; churn ≤140% of rated.'},
+{id:'ws02',topic:'supply',tier:1,q:'Class I standpipe minimum design: first (most remote) standpipe requires:',opts:['250 gpm @ 65 psi','500 gpm @ 100 psi','750 gpm @ 100 psi','1,000 gpm @ 65 psi'],a:1,exp:'500 gpm for the first standpipe @ 100 psi at the topmost 2½ in. outlet; +250 gpm per additional standpipe (max 1,000–1,250 gpm depending on sprinklered status).'},
+{id:'ws03',topic:'supply',tier:2,q:'Maximum pressure at any point in a standpipe system (NFPA 14):',opts:['175 psi','232 psi','350 psi','400 psi'],a:2,exp:'350 psi max system pressure. Where residual at outlets exceeds limits (175 psi for 2½", 100 psi for 1½" hose stations), pressure regulation is required.'},
+{id:'ws04',topic:'supply',tier:2,q:'The jockey pump\'s job is to:',opts:['Supply the sprinkler demand','Maintain system pressure and prevent the main pump from short-cycling','Test the main pump weekly','Fill the storage tank'],a:1,exp:'Jockey handles small leaks/pressure drift so the main fire pump only starts for real demand.'},
+{id:'ws05',topic:'supply',tier:2,q:'A hose allowance for an Ordinary Hazard sprinkler design (inside + outside combined) is typically:',opts:['100 gpm','250 gpm','500 gpm','750 gpm'],a:1,exp:'OH = 250 gpm total hose allowance (100 inside where applicable), added at the connection/point required. Light = 100, Extra/high-piled = 500.'},
+{id:'ws06',topic:'supply',tier:3,q:'Water supply duration for an Extra Hazard density/area design is typically:',opts:['30 min','60–90 min','90–120 min','4 hours'],a:2,exp:'Extra hazard: 90–120 minutes. Light: 30 min. Ordinary: 60–90 min. Storage durations run 90–120+ depending on scheme.'},
+];
+
+/* ═══════════════════════════════════════════
+   DATA — TEACH-BACK CONCEPTS
+════════════════════════════════════════════ */
+const TEACH = [
+{name:'The Ceiling Pocket Exception',q:'Explain when you can skip sprinklers in a ceiling pocket, and why the code allows it.',kp:['Default: all pockets get sprinklers','All 6 conditions: ≤1,000 ft³, ≤36 in. deep, floor protected at lower level, combined pockets within 10 ft ≤1,000 ft³, noncombustible finish, QR throughout','Small shallow pocket + fast heads below = fire controlled before pocket matters']},
+{name:'Why Clouds Get Two Sprinkler Levels',q:'Explain why a wide ceiling cloud needs sprinklers at BOTH the structural ceiling and under the cloud.',kp:['Cloud >4 ft blocks ceiling spray from floor beneath it → under-cloud head (§10.2.7.3.2)','Gaps between clouds let heat/fire reach structural ceiling → ceiling heads still needed there','Under-cloud deflector within 12 in. of cloud bottom']},
+{name:'CMDA vs CMSA vs ESFR',q:'Explain the three storage protection philosophies to an apprentice — how does each one "think"?',kp:['CMDA: control the fire — density (gpm/ft²) over an area, from curves by commodity/height','CMSA: control with big droplets — design = number of heads at a minimum pressure','ESFR: suppress, not control — 12 heads (4×3), wet only, high pressure, early response','ESFR/CMSA need 36 in. clearance; ESFR wet-only because delay kills suppression']},
+{name:'The Remote Area',q:'Explain what the "hydraulically most remote area" is and why it is not always the farthest corner.',kp:['It is the design area creating the worst demand at the supply — hydraulic, not geographic','Elevation + pipe friction + head count determine it','Farthest+highest is the usual suspect but must be verified by calculation']},
+{name:'Q = K√P',q:'Explain what a K-factor is and how flow, pressure, and K relate.',kp:['K describes orifice size — bigger K = more flow at same pressure','Q = K√P; P = (Q/K)²','Example: K-5.6 @ 25 psi = 28 gpm; storage heads (K-16.8, 22.4, 25.2) deliver big flow at low pressure']},
+{name:'Commodity Classification',q:'Explain how you classify a commodity, and why plastics change everything.',kp:['Class I–IV escalate with combustibility of product+packaging+pallet','Group A plastics (PE, PS, rubber) = highest heat release → drive design','Class III allows up to 10% Group A; more → reclassify','Exposed expanded plastic = worst case']},
+{name:'Encapsulation',q:'Explain what encapsulation is and why it makes protection harder.',kp:['Plastic sheet over top AND sides of pallet load with combustibles','Traps heat (delays operation) and sheds water (blocks pre-wetting)','Result: density penalties / tougher criteria']},
+{name:'Dry System Penalties',q:'Explain why dry pipe systems face design-area increases and temperature-rating rules in storage.',kp:['Water delivery delay: air must exhaust before water arrives','Fire grows → more heads open → design area +30% (CMDA)','High-temp heads required on dry storage systems to limit ring of operating heads','ESFR banned on dry (suppression needs immediate water)']},
+{name:'In-Rack Sprinklers',q:'Explain why tall racks need sprinklers inside the rack, and how their demand combines with the ceiling.',kp:['Flues act as chimneys; ceiling water can\'t penetrate deep racks','In-rack heads attack the fire in the rack early','Demand: in-rack ADDED to ceiling demand (balanced at connection point)','Shields where heads sit below other heads']},
+{name:'The Fire Pump Curve',q:'Explain the three points of a fire pump curve (churn, rated, overload).',kp:['Churn (0 flow): ≤140% rated pressure','Rated: 100% flow @ 100% pressure','Overload: 150% flow @ ≥65% rated pressure','System demand must fall under the curve']},
+{name:'Standpipe Demand',q:'Explain how to build the design flow for a Class I standpipe system.',kp:['Most remote standpipe: 500 gpm (250 top outlet + 250 next)','+250 gpm each additional standpipe','Cap 1,000 (sprinklered) / 1,250 gpm (non-sprinklered)','100 psi residual at topmost outlet']},
+{name:'Obstruction Logic',q:'Explain the difference between "pattern development" obstructions and "prevent discharge from reaching hazard" obstructions.',kp:['≤18 in. below deflector = pattern development zone → A/B tables, 3×/4× rules','>18 in. below = shadow-on-floor problem → 4 ft rule, sprinklers under wide obstructions','Different failure mode → different fix']},
+];
+
+/* ═══════════════════════════════════════════
+   DATA — MEMORY PALACE (The Firehouse Walk)
+════════════════════════════════════════════ */
+const PALACE = [
+{icon:'🚪',room:'Front Door',img:'A YARDSTICK (36") is nailed across the door — you must limbo under it to enter.',num:'36 in.',rule:'Ceiling step >36" = wall · pocket max depth · ESFR/CMSA clearance to storage'},
+{icon:'🛋️',room:'Day Room',img:'A giant 4-foot-wide CLOUD-shaped couch blocks the TV — someone taped a sprinkler under it.',num:'4 ft',rule:'Fixed obstructions over 4 ft wide need sprinklers underneath (§10.2.7.3.2)'},
+{icon:'🍳',room:'Kitchen',img:'A FOOT-LONG (12") sub sandwich dangles from the pot rack, one foot below it.',num:'12 in.',rule:'Under-obstruction deflector ≤12" below cloud · residential pocket max depth'},
+{icon:'🚿',room:'Shower Room',img:'1,000 rubber ducks fill the shower stall to the ceiling.',num:'1,000 ft³',rule:'Max unprotected pocket volume (standard) — and combined within 10 ft'},
+{icon:'🛏️',room:'Bunk Room',img:'Only 100 ducks fit in the tiny bunk — residential rooms are 10× smaller.',num:'100 ft³ / 12 in.',rule:'Residential pocket exception limits (§12.1.12.2)'},
+{icon:'🎚️',room:'Pole Hole',img:'Firefighters slide down the pole in pairs 6 ft apart so they don\'t land on each other.',num:'6 ft',rule:'Minimum spacing between standard spray sprinklers (cold soldering)'},
+{icon:'🧯',room:'Equipment Bay Wall',img:'An 18-inch ruler hangs on a hook, swinging and blocking a spray bottle\'s mist.',num:'18 in.',rule:'Obstructions ≤18" below deflector = pattern development rules · storage clearance (standard)'},
+{icon:'🚒',room:'Apparatus Floor',img:'The engine\'s pump panel shows three gauges: 140 / 100 / 65.',num:'140% · 100% · 65%',rule:'Pump curve: churn ≤140% · rated 100/100 · 150% flow @ ≥65% pressure'},
+{icon:'🪜',room:'Hose Tower',img:'A "500" jersey hangs at the top of the tower with "100 PSI" stenciled on the sleeve.',num:'500 gpm @ 100 psi',rule:'Class I standpipe: first riser demand at topmost outlet'},
+{icon:'📐',room:'Chief\'s Office',img:'The chief\'s desk calculator is stuck showing "0.433".',num:'0.433 psi/ft',rule:'Elevation pressure — 2.31 ft per psi going the other way'},
+{icon:'🧮',room:'Training Room',img:'A whiteboard reads "4×3=12" circled in red marker.',num:'12 heads (4×3)',rule:'ESFR design area: 4 branch lines × 3 sprinklers'},
+{icon:'❄️',room:'Dry Storage Attic',img:'The attic is freezing; a sign says "+30%" — everything up here takes 30% longer.',num:'+30%',rule:'Dry system design area increase (CMDA storage & non-storage)'},
+];
+
+/* ═══════════════════════════════════════════
+   DATA — SCENARIOS
+════════════════════════════════════════════ */
+const SCENARIOS = [
+{id:'lab',title:'The Rehearsal Lab',diff:1,diffName:'Foundation',
+desc:'Rehearsal Lab 308: perimeter ceiling at 7\'-2" on all four walls, raised center ceiling at 9\'-9½". The raised zone has 6\'-2" × 3\'-10" acoustic cloud panels with gaps between them. You are laying out the sprinklers.',
+steps:[
+{q:'First move: the ceiling steps from 7\'-2" to 9\'-9½". How do you treat the vertical change?',opts:['As a wall — space each level independently','As a flat ceiling — 31.5 in. is under the 36 in. threshold','Ignore it — steps under 4 ft don\'t matter','Ask the AHJ before doing anything'],a:1,exp:'9\'-9.5" − 7\'-2" = 31.5 in. ≤ 36 in. → not a wall (§10.2.6.1.1.3). Obstruction rules still apply.'},
+{q:'The raised center is a ceiling pocket. What determines whether the pocket itself needs sprinklers?',opts:['Depth alone — under 36 in. means no sprinklers needed','The 6-condition exception — ALL must pass or the pocket gets heads','Whether the room is sprinklered at all','The cloud panel width'],a:1,exp:'§10.2.9.2 — volume ≤1,000 ft³, depth ≤36 in., floor protected below, combined pockets ≤1,000 ft³ within 10 ft, noncombustible finish, QR throughout.'},
+{q:'The clouds are 6\'-2" wide. What do they trigger?',opts:['Nothing — clouds are exempt as decorative','Under-cloud sprinklers — they exceed 4 ft','Removal — obstructions over 4 ft are prohibited','Perforation to 70% open'],a:1,exp:'74 in. > 48 in. → §10.2.7.3.2 requires heads under each cloud, deflector within 12 in. of cloud bottom.'},
+{q:'The plan shows open circles in the gaps and filled circles on the clouds. This represents:',opts:['A drafting error','Two-level protection: ceiling heads in gaps + under-cloud heads','Optional heads the contractor may delete','Heat detectors, not sprinklers'],a:1,exp:'Correct two-level design — structural-ceiling heads cover the gaps/pocket volume; under-cloud heads cover the floor shadowed by panels.'},
+{q:'The room spec calls for standard-response heads. Effect on the pocket exception?',opts:['None — response type is irrelevant','Exception fails — condition 6 requires QR throughout the compartment','Only pocket heads must be QR','Standard response is fine if the pocket is small'],a:1,exp:'Condition 6: quick-response throughout the ENTIRE compartment. One SR head kills the exception → pocket sprinklers required.'}
+]},
+{id:'wh',title:'The Warehouse Bid',diff:2,diffName:'Intermediate',
+desc:'You are bidding a 32-ft clear height warehouse. The owner will rack-store cartoned unexpanded Group A plastics to 25 ft. Wet supply is strong. Choose the protection approach.',
+steps:[
+{q:'Cartoned unexpanded Group A plastics stored 25 ft in racks. Which chapters are in play?',opts:['Chapter 4 miscellaneous storage','Storage chapters — CMDA/CMSA/ESFR ceiling options ± in-rack','Residential chapter','Chapter 55 special occupancy'],a:1,exp:'Over 12 ft = high-piled storage territory: pick a ceiling scheme (CMDA/CMSA/ESFR) and check if in-racks are mandatory for the height/commodity.'},
+{q:'The owner wants NO in-rack sprinklers (racks move constantly). Which ceiling-only scheme is designed for exactly this?',opts:['CMDA at minimum density','ESFR — suppression sized to eliminate in-racks for many rack configs','CMSA dry system','Sidewall coverage from the walls'],a:1,exp:'ESFR\'s core value: ceiling-only suppression for rack storage within its listed height/commodity limits — check storage vs ceiling height tables.'},
+{q:'For ESFR here (32 ft ceiling, over 30 ft), max head spacing is:',opts:['12 ft','10 ft','8 ft','15 ft'],a:1,exp:'Ceiling over 30 ft → 10 ft max spacing / 100 ft² max coverage.'},
+{q:'The building has a small unheated dock area the owner wants on dry pipe. Can the ESFR system extend there?',opts:['Yes — ESFR works on dry','No — ESFR is wet-only unless specifically listed; protect the dock differently','Yes if heads are high-temp','Only with AHJ variance'],a:1,exp:'ESFR on dry = prohibited (suppression can\'t wait for air to exhaust). Dock gets a separate dry system with its own criteria.'},
+{q:'A 14-in. deep solid beam crosses the ESFR area. You must:',opts:['Ignore beams under 24 in.','Place heads in each channel formed by members over 12 in. deep','Switch that bay to CMDA','Add one extra head at the beam midpoint'],a:1,exp:'Solid members >12 in. deep: ESFR heads in every channel — the pattern cannot jump deep obstructions.'},
+{q:'Owner asks: "why is clearance to top of storage 36 inches for ESFR?" Best answer:',opts:['Code says so','Large droplets need fall distance to develop momentum and penetrate the plume','It\'s for forklift clearance','To keep heads cooler'],a:1,exp:'ESFR suppression depends on droplet momentum punching through the fire plume — 36 in. minimum gives the spray room to organize.'}
+]},
+{id:'calc',title:'The Remote Area Calc',diff:3,diffName:'Advanced',
+desc:'Ordinary Hazard Group 2 office/light-manufacturing area. Density 0.2 gpm/ft² over 1,500 ft². Heads cover 130 ft² each, K-5.6, wet system, new steel pipe. Walk the calculation.',
+steps:[
+{q:'How many sprinklers minimum in the design area?',opts:['11','12','13','15'],a:1,exp:'1,500 / 130 = 11.54 → round UP = 12 heads.'},
+{q:'Minimum flow from the first (most remote) sprinkler:',opts:['20.8 gpm','26 gpm','28 gpm','30 gpm'],a:1,exp:'Density × coverage = 0.2 × 130 = 26 gpm minimum.'},
+{q:'Starting pressure at that first head (K-5.6, 26 gpm):',opts:['15.0 psi','18.5 psi','21.6 psi','25.0 psi'],a:2,exp:'P = (Q/K)² = (26/5.6)² = (4.643)² ≈ 21.6 psi. Also ≥7 psi floor — 21.6 governs.'},
+{q:'Moving toward the supply, pressure at each successive head:',opts:['Stays the same','Increases — so each head flows MORE than the minimum','Decreases','Is capped at 26 gpm'],a:1,exp:'Friction + elevation accumulate → higher P at each head → Q=K√P rises. That\'s why total demand exceeds density × area.'},
+{q:'C-factor for this pipe:',opts:['100','120','140','150'],a:1,exp:'Wet system, steel pipe → C=120. (Dry steel=100, copper/CPVC=150.)'},
+{q:'The area has a 20-ft elevation rise from the riser gauge to the heads. Pressure cost:',opts:['4.33 psi','8.66 psi','9.20 psi','20 psi'],a:1,exp:'20 × 0.433 = 8.66 psi of elevation loss added to the demand.'},
+{q:'Total demand at the base of riser must include:',opts:['Sprinkler flow only','Sprinklers + friction + elevation + 250 gpm hose allowance (OH)','Sprinklers + hose only','Density × area, nothing else'],a:1,exp:'OH hose allowance = 250 gpm added (typically at the connection). Compare final demand point against the supply curve with a safety margin.'}
+]},
+];
+
+/* ═══════════════════════════════════════════
+   STATE — localStorage
+════════════════════════════════════════════ */
+const LS='fsmp_v1';
+let S = load();
+function load(){
+  try{const d=JSON.parse(localStorage.getItem(LS));if(d&&d.cards)return d;}catch(e){}
+  return {cards:{},topics:{},streak:{last:'',count:0},total:0,correct:0};
+}
+function save(){localStorage.setItem(LS,JSON.stringify(S));}
+function today(){return new Date().toISOString().slice(0,10);}
+function bumpStreak(){
+  const t=today();
+  if(S.streak.last===t)return;
+  const y=new Date(Date.now()-864e5).toISOString().slice(0,10);
+  S.streak.count=(S.streak.last===y)?S.streak.count+1:1;
+  S.streak.last=t;save();
+}
+const INTERVALS=[1,3,7,14,30,60];
+function gradeCard(id,ok){
+  let c=S.cards[id]||{step:-1,due:today()};
+  if(ok){c.step=Math.min(c.step+1,INTERVALS.length-1);}else{c.step=-1;}
+  const days=c.step<0?1:INTERVALS[c.step];
+  c.due=new Date(Date.now()+days*864e5).toISOString().slice(0,10);
+  S.cards[id]=c;
+  const q=BANK.find(b=>b.id===id);
+  if(q){let t=S.topics[q.topic]||{seen:0,ok:0};t.seen++;if(ok)t.ok++;S.topics[q.topic]=t;}
+  S.total++;if(ok)S.correct++;
+  bumpStreak();save();
+}
+function dueCards(){
+  const t=today();
+  const due=BANK.filter(b=>S.cards[b.id]&&S.cards[b.id].due<=t);
+  const fresh=BANK.filter(b=>!S.cards[b.id]);
+  return {due,fresh};
+}
+function topicMastery(k){
+  const t=S.topics[k];
+  if(!t||t.seen===0)return null;
+  return Math.round(100*t.ok/t.seen);
+}
+function weakestTopic(){
+  let worst=null,worstPct=101;
+  for(const k in TOPICS){const m=topicMastery(k);if(m!==null&&m<worstPct){worstPct=m;worst=k;}}
+  return worst;
+}
+
+/* ═══════════════════════════════════════════
+   NAV
+════════════════════════════════════════════ */
+document.getElementById('nav').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;switchTab(b.dataset.tab);
+});
+function switchTab(t){
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.getElementById('tab-'+t).classList.add('active');
+  if(t==='dash')renderDash();
+  if(t==='path')renderPath();
+  if(t==='drill')renderDrillHome();
+  window.scrollTo(0,0);
+}
+
+/* ═══════════════════════════════════════════
+   DASHBOARD
+════════════════════════════════════════════ */
+function renderDash(){
+  const {due,fresh}=dueCards();
+  document.getElementById('st-streak').textContent=S.streak.last===today()?S.streak.count:(S.streak.count&&S.streak.last===new Date(Date.now()-864e5).toISOString().slice(0,10)?S.streak.count:0);
+  document.getElementById('st-due').textContent=due.length;
+  document.getElementById('st-answered').textContent=S.total;
+  document.getElementById('st-acc').textContent=S.total?Math.round(100*S.correct/S.total)+'%':'—';
+  const pill=document.getElementById('due-pill');
+  if(due.length>0){pill.textContent=due.length;pill.classList.remove('hide');}else pill.classList.add('hide');
+
+  let html='';
+  for(const k in TOPICS){
+    const m=topicMastery(k);
+    const pct=m===null?0:m;
+    const col=m===null?'#4a5a6a':(m>=80?'var(--green)':m>=60?'var(--yellow)':'var(--red)');
+    html+=`<div class="mastery-row"><div class="mastery-name">${TOPICS[k].icon} ${TOPICS[k].name}</div>
+      <div class="mastery-bar"><div class="mastery-fill" style="width:${pct}%;background:${col}"></div></div>
+      <div class="mastery-pct">${m===null?'—':m+'%'}</div></div>`;
+  }
+  document.getElementById('mastery-list').innerHTML=html;
+
+  const weak=weakestTopic();
+  const wc=document.getElementById('weak-callout');
+  if(weak&&topicMastery(weak)<80){
+    wc.classList.remove('hide');
+    document.getElementById('weak-text').innerHTML=`<strong>Focus recommendation:</strong> ${TOPICS[weak].name} is your weakest area (${topicMastery(weak)}%). Hit "Drill Weakest Topic."`;
+  } else wc.classList.add('hide');
+}
+
+/* ═══════════════════════════════════════════
+   LEARNING PATH
+════════════════════════════════════════════ */
+const PATH=[
+{title:'Phase 1 — Layout Fundamentals',topics:['spacing'],desc:'Coverage areas, min/max spacing, deflector distances, the 18-inch rule, A/B obstruction tables. Everything else builds on this.',links:[]},
+{title:'Phase 2 — Special Ceiling Conditions',topics:['pockets'],desc:'Ceiling pockets, the 36-inch step rule, cloud ceilings, two-level protection. Your current job-site topic.',links:[{n:'Teaching Guide',u:'Ceiling-Pockets-and-Clouds-Teaching.html'},{n:'Print Sheet',u:'Ceiling-Pockets-and-Clouds-PRINTABLE.html'}]},
+{title:'Phase 3 — Storage Foundations',topics:['storage'],desc:'Commodity classification, plastics groups, encapsulation, flue spaces, miscellaneous storage. The vocabulary of every storage chapter.',links:[{n:'Ch.20 Study Quiz',u:'Storage-Interactive-Study.html'},{n:'Ch.20 Pop Quiz',u:'Pop-Quiz-Ch20-Storage-Overview.html'}]},
+{title:'Phase 4 — Ceiling Protection Schemes',topics:['cmda','cmsa','esfr'],desc:'The three philosophies: CMDA (density/area control), CMSA (big droplets, head count), ESFR (suppression). Know when each wins.',links:[{n:'CMDA·CMSA·ESFR Quiz',u:'CMDA-CMSA-ESFR-Quiz.html'},{n:'CMDA Pop',u:'Pop-Quiz-Ch21-CMDA.html'},{n:'CMSA Pop',u:'Pop-Quiz-Ch22-CMSA.html'},{n:'ESFR Pop',u:'Pop-Quiz-Ch23-ESFR.html'}]},
+{title:'Phase 5 — Rack Storage & In-Racks',topics:['rack'],desc:'Aisle widths, flue spaces, face sprinklers, in-rack demand combination, water shields.',links:[{n:'Rack Quiz',u:'Rack-Storage-Quiz.html'},{n:'Rack Pop Quiz',u:'Pop-Quiz-Ch25-Rack-Storage.html'}]},
+{title:'Phase 6 — Hydraulic Calculations',topics:['hydraulics'],desc:'Q=K√P, Hazen-Williams, C-factors, elevation, remote area selection, stepping through a design area. The Level III core.',links:[]},
+{title:'Phase 7 — Supply, Pumps & Standpipes',topics:['supply'],desc:'NFPA 20 pump curves, jockey pumps, NFPA 14 standpipe demands, hose allowances, durations, supply analysis.',links:[]},
+];
+function renderPath(){
+  let html='';let foundCurrent=false;
+  PATH.forEach(p=>{
+    const scores=p.topics.map(topicMastery).filter(x=>x!==null);
+    const avg=scores.length===p.topics.length?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):null;
+    let cls='',st='',stCls='';
+    if(avg!==null&&avg>=80){cls='done';st='MASTERED '+avg+'%';stCls='st-done';}
+    else if(!foundCurrent){cls='current';st=avg===null?'START HERE':'IN PROGRESS '+avg+'%';stCls='st-current';foundCurrent=true;}
+    else{st='UPCOMING';stCls='st-locked';}
+    html+=`<div class="phase ${cls}"><div class="phase-title">${p.title}<span class="phase-status ${stCls}">${st}</span></div>
+      <div class="phase-desc">${p.desc}</div>
+      <div class="phase-links">${p.links.map(l=>`<a class="phase-link" href="${l.u}">${l.n} →</a>`).join('')}
+      <a class="phase-link" href="#" onclick="drillTopics(${JSON.stringify(p.topics).replace(/"/g,'&quot;')});return false" style="color:var(--orange)">⚡ Drill this phase</a></div></div>`;
+  });
+  document.getElementById('path-list').innerHTML=html;
+}
+
+/* ═══════════════════════════════════════════
+   DRILL ENGINE
+════════════════════════════════════════════ */
+let drill={cards:[],i:0,ok:0,missed:[]};
+function renderDrillHome(){
+  const {due,fresh}=dueCards();
+  document.getElementById('drill-count').textContent=Math.min(12,due.length+fresh.length);
+}
+function pickCards(mode){
+  const {due,fresh}=dueCards();
+  let pool=[];
+  if(mode==='due'){pool=[...due,...shuffle(fresh)].slice(0,12);}
+  else if(mode==='all'){pool=shuffle([...BANK]).slice(0,12);}
+  else if(mode==='weak'){
+    const w=weakestTopic()||'spacing';
+    pool=shuffle(BANK.filter(b=>b.topic===w)).slice(0,12);
+  }
+  return shuffle(pool);
+}
+function drillTopics(topics){
+  switchTab('drill');
+  drill={cards:shuffle(BANK.filter(b=>topics.includes(b.topic))).slice(0,12),i:0,ok:0,missed:[]};
+  if(!drill.cards.length){alert('No cards for this phase yet.');return;}
+  showDrillUI();drillRender();
+}
+function startDrill(mode){
+  switchTab('drill');
+  drill={cards:pickCards(mode),i:0,ok:0,missed:[]};
+  if(!drill.cards.length){alert('No cards available — nice work, everything is scheduled for later!');return;}
+  showDrillUI();drillRender();
+}
+function showDrillUI(){
+  document.getElementById('drill-home').classList.add('hide');
+  document.getElementById('drill-done').classList.add('hide');
+  document.getElementById('drill-session').classList.remove('hide');
+}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function drillRender(){
+  const c=drill.cards[drill.i];
+  document.getElementById('drill-prog').style.width=(100*drill.i/drill.cards.length)+'%';
+  document.getElementById('drill-topic').textContent=TOPICS[c.topic].icon+' '+TOPICS[c.topic].name;
+  document.getElementById('drill-tier').textContent='Tier '+c.tier;
+  document.getElementById('drill-pos').textContent=(drill.i+1)+' / '+drill.cards.length;
+  document.getElementById('drill-q').textContent=c.q;
+  const box=document.getElementById('drill-opts');box.innerHTML='';
+  c.opts.forEach((o,idx)=>{
+    const b=document.createElement('button');b.className='opt-btn';b.textContent=String.fromCharCode(65+idx)+') '+o;
+    b.onclick=()=>drillAnswer(idx);box.appendChild(b);
+  });
+  document.getElementById('drill-exp').classList.remove('show');
+  document.getElementById('drill-next').classList.remove('show');
+}
+function drillAnswer(idx){
+  const c=drill.cards[drill.i];
+  const ok=idx===c.a;
+  gradeCard(c.id,ok);
+  if(ok)drill.ok++;else drill.missed.push({q:c.q,correct:c.opts[c.a],yours:c.opts[idx],explain:c.exp});
+  document.querySelectorAll('#drill-opts .opt-btn').forEach((b,i)=>{
+    b.disabled=true;
+    if(i===c.a)b.classList.add('correct');
+    else if(i===idx)b.classList.add('wrong');
+    else b.classList.add('revealed');
+  });
+  const exp=document.getElementById('drill-exp');exp.textContent=c.exp;exp.classList.add('show');
+  document.getElementById('drill-next').classList.add('show');
+}
+function drillNext(){
+  drill.i++;
+  if(drill.i>=drill.cards.length){drillFinish();return;}
+  drillRender();
+}
+function drillFinish(){
+  document.getElementById('drill-session').classList.add('hide');
+  document.getElementById('drill-done').classList.remove('hide');
+  const pct=Math.round(100*drill.ok/drill.cards.length);
+  document.getElementById('done-emoji').textContent=pct===100?'🔥':pct>=75?'💪':'📖';
+  document.getElementById('done-score').textContent=drill.ok+' / '+drill.cards.length+' ('+pct+'%)';
+  document.getElementById('done-msg').textContent=pct===100?'Perfect session. Intervals extended.':pct>=75?'Strong — missed cards return tomorrow.':'Missed cards reset to tomorrow. Repetition is the point.';
+  const wrap=document.getElementById('drill-ai-wrap');
+  if(drill.missed.length>0){
+    wrap.classList.remove('hide');
+    const k=localStorage.getItem('fsm_key');if(k)document.getElementById('ai-key').value=k;
+  } else wrap.classList.add('hide');
+}
+function resetDrillUI(){
+  document.getElementById('drill-done').classList.add('hide');
+  document.getElementById('drill-home').classList.remove('hide');
+  const o=document.getElementById('drill-ai-out');o.style.display='none';o.textContent='';
+  renderDrillHome();
+}
+
+/* ═══════════════════════════════════════════
+   AI REVIEW (drill missed questions)
+════════════════════════════════════════════ */
+async function runAIReview(){
+  const key=document.getElementById('ai-key').value.trim();
+  if(!key){alert('Enter your Anthropic API key to continue.');return;}
+  localStorage.setItem('fsm_key',key);
+  const btn=document.getElementById('ai-gen-btn'),out=document.getElementById('drill-ai-out');
+  btn.disabled=true;btn.textContent='Generating…';
+  out.style.display='block';out.textContent='FSM Professor is building your study session…';
+  const summary=drill.missed.map((m,i)=>'['+(i+1)+'] Q: '+m.q+'\n    Correct: '+m.correct+'\n    You chose: '+m.yours+'\n    Context: '+m.explain).join('\n\n');
+  const prompt='You are FSM Professor, an expert NFPA 13 / NICET Level III instructor. The student missed these drill questions:\n\n'+summary+'\n\nFor EACH missed question give: THE RULE (plain statement + NFPA 13 section), WHY IT EXISTS (fire physics/logic), JOB SITE EXAMPLE (concrete scenario a designer/estimator would face), MEMORY HOOK (vivid mnemonic), QUICK CHECK (one new self-test question with the answer at the end). Reference NFPA 13. Be direct and practical.';
+  try{await streamClaude(key,prompt,out);btn.textContent='Regenerate →';btn.disabled=false;}
+  catch(e){out.textContent='Error: '+e.message;btn.disabled=false;btn.textContent='Retry →';}
+}
+async function streamClaude(key,prompt,outEl){
+  const r=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2048,stream:true,messages:[{role:'user',content:prompt}]})
+  });
+  if(!r.ok){const err=await r.json().catch(()=>({}));throw new Error(err.error?.message||('HTTP '+r.status));}
+  outEl.textContent='';
+  const reader=r.body.getReader(),dec=new TextDecoder();let buf='';
+  while(true){
+    const{done,value}=await reader.read();if(done)break;
+    buf+=dec.decode(value,{stream:true});
+    const lines=buf.split('\n');buf=lines.pop();
+    for(const line of lines){
+      if(!line.startsWith('data: '))continue;
+      const data=line.slice(6);if(data==='[DONE]')continue;
+      try{const j=JSON.parse(data);if(j.type==='content_block_delta'&&j.delta&&j.delta.text)outEl.textContent+=j.delta.text;}catch(e){}
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════
+   TEACH-BACK
+════════════════════════════════════════════ */
+let tbIdx=Math.floor(Math.random()*TEACH.length);
+function tbRender(){
+  const t=TEACH[tbIdx];
+  document.getElementById('tb-name').textContent='📖 '+t.name;
+  document.getElementById('tb-q').textContent=t.q;
+  document.getElementById('tb-keypoints').classList.add('hide');
+  document.getElementById('tb-input').value='';
+  const o=document.getElementById('tb-out');o.style.display='none';o.textContent='';
+  const k=localStorage.getItem('fsm_key');if(k)document.getElementById('tb-key').value=k;
+}
+function tbShuffle(){let n;do{n=Math.floor(Math.random()*TEACH.length);}while(n===tbIdx&&TEACH.length>1);tbIdx=n;tbRender();}
+function tbReveal(){
+  const t=TEACH[tbIdx];
+  document.getElementById('tb-kp-text').innerHTML='<strong>Key points your explanation should hit:</strong><br>• '+t.kp.join('<br>• ');
+  document.getElementById('tb-keypoints').classList.remove('hide');
+}
+async function tbGrade(){
+  const key=document.getElementById('tb-key').value.trim();
+  const ans=document.getElementById('tb-input').value.trim();
+  if(!ans){alert('Write your explanation first — that\'s the whole point!');return;}
+  if(!key){alert('Enter your Anthropic API key (or use "Show Key Points" for offline self-check).');return;}
+  localStorage.setItem('fsm_key',key);
+  const t=TEACH[tbIdx];
+  const btn=document.getElementById('tb-btn'),out=document.getElementById('tb-out');
+  btn.disabled=true;btn.textContent='Grading…';
+  out.style.display='block';out.textContent='FSM Professor is reading your explanation…';
+  const prompt='You are FSM Professor, grading a Feynman-technique teach-back for NICET Level III prep.\n\nCONCEPT: '+t.name+'\nTASK GIVEN TO STUDENT: '+t.q+'\nKEY POINTS A COMPLETE EXPLANATION MUST COVER:\n- '+t.kp.join('\n- ')+'\n\nSTUDENT\'S EXPLANATION:\n"""\n'+ans+'\n"""\n\nGrade it:\n1. SCORE: x/10 with one-line justification\n2. WHAT YOU NAILED: specific things they got right\n3. GAPS: key points missed or stated wrong (be precise — cite NFPA 13 concepts)\n4. UPGRADE: rewrite ONE of their weakest sentences the way a pro would say it\n5. FOLLOW-UP: one harder question to test whether they really own this concept.\nBe encouraging but honest. A vague explanation scores low even if not wrong.';
+  try{await streamClaude(key,prompt,out);btn.textContent='Grade Again →';btn.disabled=false;}
+  catch(e){out.textContent='Error: '+e.message;btn.disabled=false;btn.textContent='Retry →';}
+}
+
+/* ═══════════════════════════════════════════
+   PALACE
+════════════════════════════════════════════ */
+let palaceTest=false;
+function renderPalace(){
+  let html='';
+  PALACE.forEach((p,i)=>{
+    html+=`<div class="palace-room"><div class="palace-icon">${p.icon}</div><div>
+      <h4>Room ${i+1} — ${p.room}</h4>
+      <div class="palace-image">${p.img}</div>
+      <div class="palace-num ${palaceTest?'hidden-mode':''}" onclick="this.classList.add('revealed')">${p.num}</div>
+      <div style="font-size:11px;color:var(--dim);margin-top:2px">${p.rule}</div>
+    </div></div>`;
+  });
+  document.getElementById('palace-list').innerHTML=html;
+}
+function palaceToggle(){
+  palaceTest=!palaceTest;
+  document.getElementById('palace-mode-btn').textContent=palaceTest?'👁️ Study Mode — Show Numbers':'🙈 Test Mode — Hide Numbers';
+  renderPalace();
+}
+
+/* ═══════════════════════════════════════════
+   SCENARIOS
+════════════════════════════════════════════ */
+let scen={s:null,i:0,ok:0};
+function renderScenHome(){
+  let html='';
+  SCENARIOS.forEach(s=>{
+    html+=`<div class="scen-card" onclick="scenStart('${s.id}')">
+      <h4>🎯 ${s.title}</h4><p>${s.desc}</p>
+      <span class="scen-diff d${s.diff}">${s.diffName} · ${s.steps.length} steps</span></div>`;
+  });
+  document.getElementById('scen-home').innerHTML=html;
+}
+function scenStart(id){
+  scen={s:SCENARIOS.find(x=>x.id===id),i:0,ok:0};
+  document.getElementById('scen-home').classList.add('hide');
+  document.getElementById('scen-done').classList.add('hide');
+  document.getElementById('scen-session').classList.remove('hide');
+  document.getElementById('scen-desc').textContent='📋 '+scen.s.desc;
+  scenRender();
+}
+function scenRender(){
+  const st=scen.s.steps[scen.i];
+  document.getElementById('scen-prog').style.width=(100*scen.i/scen.s.steps.length)+'%';
+  document.getElementById('scen-step-lbl').textContent='Step '+(scen.i+1)+' of '+scen.s.steps.length;
+  document.getElementById('scen-q').textContent=st.q;
+  const box=document.getElementById('scen-opts');box.innerHTML='';
+  st.opts.forEach((o,idx)=>{
+    const b=document.createElement('button');b.className='opt-btn';b.textContent=String.fromCharCode(65+idx)+') '+o;
+    b.onclick=()=>scenAnswer(idx);box.appendChild(b);
+  });
+  document.getElementById('scen-exp').classList.remove('show');
+  document.getElementById('scen-next').classList.remove('show');
+}
+function scenAnswer(idx){
+  const st=scen.s.steps[scen.i];
+  if(idx===st.a)scen.ok++;
+  document.querySelectorAll('#scen-opts .opt-btn').forEach((b,i)=>{
+    b.disabled=true;
+    if(i===st.a)b.classList.add('correct');
+    else if(i===idx)b.classList.add('wrong');
+    else b.classList.add('revealed');
+  });
+  const exp=document.getElementById('scen-exp');exp.textContent=st.exp;exp.classList.add('show');
+  document.getElementById('scen-next').classList.add('show');
+  document.getElementById('scen-next').textContent=scen.i===scen.s.steps.length-1?'Finish →':'Next Step →';
+}
+function scenNext(){
+  scen.i++;
+  if(scen.i>=scen.s.steps.length){
+    document.getElementById('scen-session').classList.add('hide');
+    document.getElementById('scen-done').classList.remove('hide');
+    const pct=Math.round(100*scen.ok/scen.s.steps.length);
+    document.getElementById('scen-score').textContent=scen.ok+' / '+scen.s.steps.length+' ('+pct+'%)';
+    document.getElementById('scen-msg').textContent=pct===100?'Flawless design decisions. Ship the bid.':pct>=70?'Solid — review the steps you missed before the real thing.':'Rough job site day — rerun this scenario tomorrow.';
+    bumpStreak();
+    return;
+  }
+  scenRender();
+}
+function scenReset(){
+  document.getElementById('scen-done').classList.add('hide');
+  document.getElementById('scen-home').classList.remove('hide');
+}
+
+/* ═══════════════════════════════════════════
+   INIT
+════════════════════════════════════════════ */
+renderDash();renderPath();renderDrillHome();tbRender();renderPalace();renderScenHome();
+</script>
+</body>
+</html>
