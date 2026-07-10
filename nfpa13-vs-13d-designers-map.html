@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NFPA 13 vs 13D — Designer's Map</title>
+<style>
+:root{
+  --orange:#D85A30; --blue:#185FA5; --green:#1D9E75; --red:#C0392B;
+  --dark:#1e2430; --mid:#3a4356; --light:#f5f6f8; --card:#ffffff;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--light);color:var(--dark);line-height:1.55;padding-bottom:90px}
+header{background:linear-gradient(135deg,var(--dark) 0%,#2a3040 100%);color:#fff;padding:22px 16px 18px;text-align:center}
+header h1{font-size:1.25rem;letter-spacing:.3px}
+header h1 .vs{color:var(--orange)}
+header p{font-size:.8rem;opacity:.75;margin-top:4px}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--dark);z-index:50;box-shadow:0 -2px 12px rgba(0,0,0,.3)}
+nav button{flex:1;background:none;border:none;color:#aab;padding:10px 2px 12px;font-size:.68rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+nav button .ico{font-size:1.15rem}
+nav button.active{color:var(--orange)}
+main{max-width:760px;margin:0 auto;padding:16px 14px}
+.panel{display:none}
+.panel.active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h2{font-size:1.1rem;margin:18px 0 10px;color:var(--blue)}
+.card{background:var(--card);border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.bigidea{border-left:5px solid var(--orange)}
+.bigidea.b{border-left-color:var(--blue)}
+.bigidea h3{font-size:1rem;margin-bottom:6px}
+.bigidea p{font-size:.9rem}
+.hook{background:var(--dark);color:#fff;border-radius:14px;padding:14px 16px;font-size:.92rem;margin:12px 0;text-align:center}
+.hook b{color:var(--orange)}
+.decide .q{font-weight:700;margin-bottom:10px}
+.decide-opt{display:block;width:100%;text-align:left;background:#fff;border:2px solid #dde;border-radius:12px;padding:13px 14px;margin-bottom:9px;font-size:.9rem;cursor:pointer}
+.decide-opt:active{border-color:var(--orange)}
+.decide-result{border-radius:12px;padding:14px;margin-top:10px;font-size:.9rem;display:none}
+.decide-result.show{display:block}
+.decide-result.r13{background:#e8f0f8;border:2px solid var(--blue)}
+.decide-result.r13d{background:#fdeee8;border:2px solid var(--orange)}
+.decide-result.r13r{background:#eef7f3;border:2px solid var(--green)}
+.step{background:var(--card);border-radius:12px;margin-bottom:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.step-head{display:flex;align-items:center;gap:11px;padding:13px 14px;cursor:pointer;user-select:none}
+.step-num{min-width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.85rem}
+.trackA .step-num{background:var(--blue)}
+.trackB .step-num{background:var(--orange)}
+.step-head h4{font-size:.92rem;flex:1}
+.step-head .chev{color:#99a;transition:transform .2s}
+.step.open .chev{transform:rotate(90deg)}
+.step-body{display:none;padding:0 15px 14px 60px;font-size:.87rem;color:#333}
+.step.open .step-body{display:block}
+.step-body ul{padding-left:16px;margin-top:6px}
+.step-body li{margin-bottom:4px}
+.cite{display:inline-block;background:#eef1f6;color:var(--blue);border-radius:6px;padding:1px 7px;font-size:.74rem;font-weight:600;margin-top:4px}
+.trap{background:#fff6f3;border:1.5px dashed var(--orange);border-radius:10px;padding:10px 12px;font-size:.84rem;margin-top:8px}
+.trap b{color:var(--orange)}
+.tablewrap{overflow-x:auto;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+table{width:100%;border-collapse:collapse;background:#fff;font-size:.8rem;min-width:520px}
+th{background:var(--dark);color:#fff;padding:9px 10px;text-align:left;font-size:.76rem}
+th:nth-child(2){color:#7db3e8}
+th:nth-child(3){color:#f0906a}
+td{padding:8px 10px;border-bottom:1px solid #eef;vertical-align:top}
+tr:nth-child(even) td{background:#f8f9fb}
+td:first-child{font-weight:600;color:var(--mid)}
+.flipnum{display:flex;gap:10px;align-items:flex-start;background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:9px;box-shadow:0 1px 3px rgba(0,0,0,.06);font-size:.86rem}
+.flipnum .n{min-width:26px;height:26px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.78rem;margin-top:2px}
+.qcard{background:var(--card);border-radius:14px;padding:18px 16px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.qtopic{display:inline-block;background:var(--blue);color:#fff;border-radius:20px;padding:2px 11px;font-size:.7rem;font-weight:700;margin-bottom:9px}
+.qtext{font-size:.95rem;font-weight:600;margin-bottom:13px}
+.opt{display:block;width:100%;text-align:left;background:#f6f7fa;border:2px solid transparent;border-radius:11px;padding:12px 13px;margin-bottom:8px;font-size:.88rem;cursor:pointer;font-family:inherit}
+.opt:not(:disabled):active{border-color:var(--blue)}
+.opt.correct{background:#e6f5ef;border-color:var(--green);font-weight:600}
+.opt.wrong{background:#fbeae7;border-color:var(--red)}
+.explain{display:none;margin-top:11px;border-radius:11px;padding:13px;font-size:.85rem}
+.explain.show{display:block}
+.explain.good{background:#e6f5ef;border-left:4px solid var(--green)}
+.explain.bad{background:#fbeae7;border-left:4px solid var(--red)}
+.explain .cite{background:#fff}
+.qmeta{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:.8rem;color:#667}
+.nextbtn{display:none;width:100%;background:var(--orange);color:#fff;border:none;border-radius:11px;padding:14px;font-size:.95rem;font-weight:700;margin-top:12px;cursor:pointer}
+.nextbtn.show{display:block}
+.score-big{font-size:2.6rem;font-weight:800;text-align:center;margin:6px 0}
+.score-msg{text-align:center;font-size:.95rem;margin-bottom:14px}
+.topicbar{margin-bottom:10px}
+.topicbar .lbl{display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:3px}
+.topicbar .bar{height:9px;background:#e8eaf0;border-radius:6px;overflow:hidden}
+.topicbar .fill{height:100%;border-radius:6px;background:var(--green)}
+.topicbar .fill.weak{background:var(--red)}
+.topicbar .fill.mid{background:var(--orange)}
+.restart{display:block;width:100%;background:var(--blue);color:#fff;border:none;border-radius:11px;padding:14px;font-size:.95rem;font-weight:700;margin-top:14px;cursor:pointer}
+.cheat{background:var(--dark);color:#fff;border-radius:14px;padding:16px}
+.cheat h3{color:var(--orange);font-size:.95rem;margin-bottom:10px}
+.cheat-row{display:flex;gap:12px;padding:7px 0;border-bottom:1px solid #39404f;font-size:.84rem;align-items:baseline}
+.cheat-row:last-child{border-bottom:none}
+.cheat-row .num{min-width:64px;font-weight:800;color:var(--orange);font-size:1rem}
+.cheat-row .cite{background:#39404f;color:#9fc3e8}
+.foot{font-size:.72rem;color:#889;text-align:center;margin-top:18px;padding:0 10px}
+</style>
+</head>
+<body>
+<header>
+  <h1>NFPA 13 <span class="vs">vs</span> 13D</h1>
+  <p>The Designer's Map — start on the right track, flip without traps</p>
+</header>
+
+<main>
+<!-- START PANEL -->
+<div class="panel active" id="p-start">
+  <div class="card bigidea">
+    <h3>🏰 NFPA 13 — protects the whole castle</h3>
+    <p>Every room, every closet, every attic. Mission: save the people <b>and</b> the building. Big water, heads everywhere, full paperwork.</p>
+  </div>
+  <div class="card bigidea b">
+    <h3>🚪 NFPA 13D — protects the path out</h3>
+    <p>One job: give the family about <b>10 minutes</b> of escape time from the living areas. It doesn't care if the garage or attic burns.</p>
+  </div>
+  <div class="hook">Memory hook: <b>13 protects the property. 13D protects the path out.</b><br>The four words 13 has that 13D doesn't: <b>hose · duration · everywhere · FDC</b></div>
+
+  <h2>Step 0 — Which book am I in?</h2>
+  <div class="card decide">
+    <p class="q">What is the building?</p>
+    <button class="decide-opt" onclick="decide('d13d')">🏠 One- or two-family dwelling, townhouse, or manufactured home</button>
+    <button class="decide-opt" onclick="decide('d13r')">🏢 Residential building up to 4 stories (apartments, small hotel)</button>
+    <button class="decide-opt" onclick="decide('d13')">🏭 Anything else — or the architect wants height/area increases</button>
+    <div class="decide-result r13d" id="d13d"><b>NFPA 13D allowed</b> (per IBC 903.3.1.3). Go to the <b>13D Track</b> tab. ⚠️ But: 13D earns <b>zero</b> IBC height/area increases — if the design counts on those, you're back in NFPA 13.</div>
+    <div class="decide-result r13r" id="d13r"><b>NFPA 13R territory</b> (per IBC 903.3.1.2) — the middle sibling. Not covered in this tool, but it thinks like 13D inside the units and like 13 for the building shell.</div>
+    <div class="decide-result r13" id="d13"><b>Full NFPA 13 required</b> (per IBC 903.3.1.1). Go to the <b>13 Track</b> tab. Only NFPA 13 unlocks IBC height/area increases (IBC Tables 504.3, 504.4, 506.2).</div>
+  </div>
+
+  <div class="card cheat">
+    <h3>13D pocket numbers</h3>
+    <div class="cheat-row"><span class="num">2</span><span>Max design sprinklers <span class="cite">§10.2.1</span></span></div>
+    <div class="cheat-row"><span class="num">0.05</span><span>Min density (gpm/ft²) or listing, whichever is greater <span class="cite">§10.1.1</span></span></div>
+    <div class="cheat-row"><span class="num">10 / 7</span><span>Minutes of stored water (7 only if 1-story AND &lt;2,000 ft²) <span class="cite">§6.1.2–6.1.3</span></span></div>
+    <div class="cheat-row"><span class="num">7 psi</span><span>Min operating pressure or listing <span class="cite">§8.1.4</span></span></div>
+    <div class="cheat-row"><span class="num">55 / 24</span><span>Omit: bathrooms ≤55 ft² / qualifying closets ≤24 ft² <span class="cite">§8.3.2–8.3.3</span></span></div>
+    <div class="cheat-row"><span class="num">5 gpm</span><span>Added domestic demand when supply serves &gt;1 dwelling unit <span class="cite">§6.5.2</span></span></div>
+  </div>
+</div>
+
+<!-- TRACK A -->
+<div class="panel trackA" id="p-13">
+  <h2>Designing under NFPA 13 — start here</h2>
+  <div id="stepsA"></div>
+</div>
+
+<!-- TRACK B -->
+<div class="panel trackB" id="p-13d">
+  <h2>Designing under NFPA 13D — start here</h2>
+  <div id="stepsB"></div>
+</div>
+
+<!-- COMPARE -->
+<div class="panel" id="p-compare">
+  <h2>Side by side</h2>
+  <div class="tablewrap">
+  <table>
+    <tr><th>Question</th><th>NFPA 13</th><th>NFPA 13D</th></tr>
+    <tr><td>Mission</td><td>Life safety + property</td><td>Escape only</td></tr>
+    <tr><td>Where allowed</td><td>Anywhere</td><td>1–2 family, townhomes, manufactured homes</td></tr>
+    <tr><td>IBC height/area increases</td><td>Yes</td><td>No</td></tr>
+    <tr><td>Coverage</td><td>Everywhere (default)</td><td>Living areas; big omit list (§8.3)</td></tr>
+    <tr><td>Design area</td><td>Density/area by hazard; residential = 4 heads</td><td>2 heads max (§10.2.1)</td></tr>
+    <tr><td>Min residential density</td><td>0.10 gpm/ft² new (§19.4.1.3)</td><td>0.05 gpm/ft² or listing (§10.1.1)</td></tr>
+    <tr><td>Hose allowance</td><td>100 / 250 / 500 gpm</td><td>None</td></tr>
+    <tr><td>Duration</td><td>30–120 min</td><td>10 min (7 if 1-story &lt;2,000 ft²)</td></tr>
+    <tr><td>Water sources</td><td>Approved supply + flow data</td><td>Main, tank, pressure tank, pump+tank, well (§6.2)</td></tr>
+    <tr><td>Calc method</td><td>Full hydraulic calc</td><td>Tables / simplified / full calc (§10.4.3)</td></tr>
+    <tr><td>Pipe materials</td><td>Steel, copper, listed CPVC</td><td>+ PEX, multipurpose &amp; network OK</td></tr>
+    <tr><td>Min pipe size</td><td>1" steel / ¾" copper</td><td>1" steel / ¾" other / ½" network (§10.4.2)</td></tr>
+    <tr><td>FDC</td><td>Required (§16.12)</td><td>Not required</td></tr>
+    <tr><td>Hangers / seismic</td><td>Ch. 17 / Ch. 18</td><td>Basics only; no seismic chapter</td></tr>
+    <tr><td>Hydro test</td><td>200 psi / 2 hr (§25.2.1)</td><td>Normal operating pressure (§11.2.1.1)</td></tr>
+    <tr><td>Life after install</td><td>NFPA 25 ITM</td><td>Homeowner ITM (13D Ch. 12)</td></tr>
+  </table>
+  </div>
+
+  <h2>“The job flipped to 13” — 10 traps</h2>
+  <div id="flips"></div>
+</div>
+
+<!-- QUIZ -->
+<div class="panel" id="p-quiz">
+  <h2>Scenario quiz</h2>
+  <div id="quizbox"></div>
+</div>
+</main>
+
+<nav>
+  <button class="active" data-p="p-start"><span class="ico">🧭</span>Start</button>
+  <button data-p="p-13"><span class="ico">🏭</span>13 Track</button>
+  <button data-p="p-13d"><span class="ico">🏠</span>13D Track</button>
+  <button data-p="p-compare"><span class="ico">⚖️</span>Compare</button>
+  <button data-p="p-quiz"><span class="ico">✅</span>Quiz</button>
+</nav>
+
+<script>
+// ---------- nav ----------
+document.querySelectorAll('nav button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById(b.dataset.p).classList.add('active');
+    window.scrollTo({top:0});
+  });
+});
+function decide(id){
+  document.querySelectorAll('.decide-result').forEach(r=>r.classList.remove('show'));
+  document.getElementById(id).classList.add('show');
+}
+
+// ---------- tracks ----------
+const stepsA=[
+ ["Classify the hazard","Light, ordinary, extra, storage — density, spacing, and coverage all hang off this. A dwelling under 13 typically designs with residential sprinklers or as light hazard.",""],
+ ["Sprinkler everywhere","Default rule: sprinklers throughout. Bathrooms, closets, attics, and combustible concealed spaces are all in unless a specific §9.2 exception lets you out.","NFPA 13 §9.2.1"],
+ ["Pick sprinklers + coverage","Standard spray caps: 225 ft² light / 130 ft² ordinary / 100 ft² extra. Residential and EC heads per their listings.","NFPA 13 Ch. 10"],
+ ["Spacing + obstructions","Max 15 ft between standard spray heads (light/ordinary), beam rule, three-times rule — the full obstruction analysis.","NFPA 13 Ch. 9–10"],
+ ["Design area + density","Density/area method (e.g., light hazard 0.10/1,500). Residential heads under 13: 4 adjacent sprinklers, min 0.10 gpm/ft² for new work.","NFPA 13 §19.2.3, §19.4.1.1, §19.4.1.3"],
+ ["Hose allowance + duration","Light: 100 gpm / 30 min. Ordinary: 250 gpm / 60–90 min. Extra: 500 gpm / 90–120 min. Added on top of sprinkler demand.","NFPA 13 Table 19.2.3.1.2"],
+ ["Domestic demand","Combined service? Include domestic demand unless there's an automatic domestic shutoff.","NFPA 13 §19.3.1.6 (2019)"],
+ ["Water supply + full calc","Flow test data, Hazen-Williams, every segment calculated. Under-4-inch services get extra scrutiny.","NFPA 13 §5.1.3.3"],
+ ["Hardware package","Supervised control valves, waterflow alarm, inspector's test, FDC, signage, spare cabinet, hangers Ch. 17, seismic Ch. 18.","NFPA 13 §16.12"],
+ ["Acceptance","Hydro at 200 psi for 2 hours (or +50 over max working). Contractor's test certificate. Then NFPA 25 for life.","NFPA 13 §25.2.1"]
+];
+const stepsB=[
+ ["Confirm scope","1- or 2-family dwelling, townhouse, or manufactured home only. Wet pipe default; dry and preaction permitted. Mission = 10 minutes of escape.","NFPA 13D §1.2, §9.1"],
+ ["Find the water — 5 legal sources","Public waterworks (± pump), elevated tank, pressure tank, stored water + automatic pump, or a well with pump + tank. Yes — a tank and a small pump is a real supply.","NFPA 13D §6.2"],
+ ["Size water for TIME","Stored water = demand × 10 minutes. Drops to 7 minutes only if the home is BOTH one story AND under 2,000 ft². Tank + auto refill rate may combine.","NFPA 13D §6.1.2, §6.1.3, §6.1.5"],
+ ["Place heads — use the omit list","Sprinklers in all areas EXCEPT: baths ≤55 ft², qualifying closets ≤24 ft², garages, carports, open porches, attics, crawl spaces, ceiling pockets ≤100 ft³, exterior closets.","NFPA 13D §8.3.2–8.3.8"],
+ ["Residential sprinklers","Listed residential heads per listing. Min pressure = higher of listing or 7 psi. Pendent deflectors 1–4 in. down, sidewalls 4–6 in., unless listed otherwise.","NFPA 13D §8.1.4, §8.2.1.1, §8.2.2.1"],
+ ["Design area = 2 heads. Done.","All heads in the worst compartment, max TWO, at greatest demand (flat smooth ceiling ≤24 ft). 13R uses 4. 13-residential uses 4. 13D uses 2.","NFPA 13D §10.2.1"],
+ ["Discharge: 0.05 or listing","Whichever is GREATER. In practice the listed flow for the coverage area usually governs. (13's new-work residential floor is 0.10 — double.)","NFPA 13D §10.1.1"],
+ ["Size pipe — easiest method first","(1) Simplified method for ≥4\" city mains, (2) prescriptive length tables — no software, (3) full NFPA 13 calc (required for loops and <4\" mains). Min sizes: 1\" steel, ¾\" other, ½\" network. CPVC + PEX everyday; multipurpose OK.","NFPA 13D §10.4.2–10.4.9, §6.3"],
+ ["Keep hardware tiny","One control valve preferred; separate sprinkler valve only if supervised or locked open. ½\" drain. Serving >1 unit: +5 gpm domestic and per-unit valves. No FDC. No hose allowance.","NFPA 13D §7.1.2, §7.2.1, §6.5.2, §6.2.3"],
+ ["Acceptance = working pressure","No FDC → hydro test at normal system operating pressure, no leaks. Pump? Prove it runs the full duration through the drain/test. Hand the owner Ch. 12 ITM instructions.","NFPA 13D §11.2.1.1, §11.2.2.1.1"]
+];
+const trapB={3:"Closets with a water heater, furnace, or washer/dryer DO get a head (§8.3.9). Mechanical closet ≠ clothes closet."};
+function buildSteps(arr,el,trapMap){
+  const box=document.getElementById(el);
+  arr.forEach((s,i)=>{
+    const d=document.createElement('div');d.className='step';
+    d.innerHTML=`<div class="step-head"><div class="step-num">${i+1}</div><h4>${s[0]}</h4><span class="chev">▶</span></div>
+    <div class="step-body"><p>${s[1]}</p>${s[2]?`<span class="cite">per ${s[2]}</span>`:''}
+    ${trapMap&&trapMap[i]?`<div class="trap"><b>Trap:</b> ${trapMap[i]}</div>`:''}</div>`;
+    d.querySelector('.step-head').addEventListener('click',()=>d.classList.toggle('open'));
+    box.appendChild(d);
+  });
+}
+buildSteps(stepsA,'stepsA');
+buildSteps(stepsB,'stepsB',trapB);
+
+// ---------- flip traps ----------
+const flips=[
+ "The omit list evaporates — every bathroom, closet, garage, attic, and combustible concealed space comes back. Recount heads; don't extrapolate.",
+ "Design area doubles: 2 heads → 4 (residential under 13, §19.4.1.1).",
+ "Density doubles: 0.05 → 0.10 gpm/ft² minimum for new work (§19.4.1.3).",
+ "Hose allowance appears: +100 gpm on top of sprinkler demand.",
+ "Duration: 10 min → 30 min. Tank supplies usually die here; a real main takes over.",
+ "FDC, inspector's test, supervised valves, signage, spare cabinet all materialize (Ch. 16).",
+ "Hydro test: operating pressure → 200 psi / 2 hr. PEX generally exits the design.",
+ "Hangers and seismic go formal (Ch. 17–18) — real money in bracing categories.",
+ "Obstruction analysis goes full NFPA 13 — the friendly 13D shortcuts (§8.2.5) are gone.",
+ "Paperwork lifecycle: homeowner instructions → contractor's certificate + lifetime NFPA 25 ITM."
+];
+document.getElementById('flips').innerHTML=flips.map((f,i)=>`<div class="flipnum"><div class="n">${i+1}</div><div>${f}</div></div>`).join('');
+
+// ---------- quiz ----------
+const QS=[
+ {t:"Scope",q:"A developer wants a 3-story, 6-unit apartment building sprinklered as cheaply as possible. Can you use NFPA 13D?",o:["Yes — it's residential","No — 13D is only for 1- and 2-family dwellings, townhomes, and manufactured homes","Yes, if every unit has two exits","Only if the AHJ signs a waiver"],a:1,e:"13D's scope is one- and two-family dwellings, townhouses, and manufactured homes (per NFPA 13D §1.2; IBC 903.3.1.3). A 6-unit building is 13R (up to 4 stories) or 13 territory."},
+ {t:"Calcs",q:"Your 13D design has a great room with 3 sprinklers in the compartment under a flat 12-ft ceiling. How many go in the design area?",o:["All 3","The 2 with the greatest hydraulic demand","4, same as 13R","1 — worst case only"],a:1,e:"The design area is all sprinklers in the compartment up to a MAXIMUM of two, taking the pair with the greatest demand (per NFPA 13D §10.2.1)."},
+ {t:"Water Supply",q:"Two-story house, 1,800 ft², stored-water tank supply. How many minutes of water must the tank hold?",o:["7 — it's under 2,000 ft²","10 — the 7-minute break needs one story AND under 2,000 ft²","30 — always","20 — two stories × 10"],a:1,e:"The 7-minute reduction requires BOTH conditions: one story in height AND less than 2,000 ft² (per NFPA 13D §6.1.3). Two stories = 10 minutes (per §6.1.2). Classic exam trap."},
+ {t:"Omissions",q:"Master bath measures 60 ft². Sprinkler required under 13D?",o:["No — bathrooms are always exempt","Yes — the exemption stops at 55 ft²","No, if it has a fan","Only if it has a tub"],a:1,e:"The bathroom omission is capped at 55 ft² (per NFPA 13D §8.3.2). At 60 ft² this bathroom gets a sprinkler."},
+ {t:"Omissions",q:"A 20 ft² closet with noncombustible surfaces holds the water heater. Sprinkler?",o:["Omit — under 24 ft²","Required — closets with water heaters, furnaces, or laundry equipment must be sprinklered","Omit — water heaters are noncombustible","Required only if gas-fired"],a:1,e:"The ≤24 ft² closet omission (per NFPA 13D §8.3.3) does NOT apply to closets containing heating/AC equipment, washers/dryers, or water heaters — those need a head (per NFPA 13D §8.3.9)."},
+ {t:"Omissions",q:"Attached two-car garage on a 13D house. Heads?",o:["Required — vehicles are a fire hazard","Not required — garages are on the omit list","Required if it has an opener","One head at the house door only"],a:1,e:"Garages, carports, and open attached porches may be omitted (per NFPA 13D §8.3.4). The mission is escape from living areas, not saving the garage. AHJs sometimes add it back locally — check (per NFPA 13D A.8.3.4)."},
+ {t:"Calcs",q:"A residential pendent is listed at 13 gpm over its coverage area of 144 ft². 0.05 × 144 = 7.2 gpm. What flow do you design to?",o:["7.2 gpm — the 0.05 minimum","13 gpm — the greater of listing or 0.05 density","10 gpm — split the difference","20 gpm — safety factor"],a:1,e:"Design discharge is the flow producing 0.05 gpm/ft² OR the listing, whichever is GREATER (per NFPA 13D §10.1.1). The listing usually governs."},
+ {t:"Calcs",q:"Minimum operating pressure at any 13D sprinkler?",o:["15 psi","The higher of the listing or 7 psi","5 psi","Whatever the street gives you"],a:1,e:"Minimum operating pressure = the listed minimum or 7 psi, whichever is higher (per NFPA 13D §8.1.4)."},
+ {t:"Water Supply",q:"One water service feeds both halves of a duplex (two dwelling units), no domestic shutoff provision. What do you add to the sprinkler demand for the common piping?",o:["Nothing","5 gpm","The full domestic demand","100 gpm hose allowance"],a:1,e:"Common supplies serving more than one dwelling unit add 5 gpm domestic allowance (per NFPA 13D §6.5.2). Each unit also needs its own accessible control valve (per §6.2.3). Single-family: no adder."},
+ {t:"Calcs",q:"The city main on the street is 3 inches. Which pipe-sizing method must you use?",o:["Prescriptive tables","Simplified method","Full NFPA 13 hydraulic calculation","Any of them"],a:2,e:"The simplified and table methods assume a city main of at least 4 inches. Under 4 inches you must run NFPA 13 hydraulic calcs (per NFPA 13D §10.4.8). Loops also require full calcs (per §10.4.7)."},
+ {t:"Flip Traps",q:"Your 13D house (no FDC) is done. What acceptance pressure test does 13D require?",o:["200 psi for 2 hours","Normal system operating pressure with no leakage","50 psi over static","No test required"],a:1,e:"Without a fire department connection, 13D tests at normal system operating pressure with no evidence of leakage (per NFPA 13D §11.2.1.1). The 200 psi / 2 hr test is NFPA 13 (§25.2.1) — a huge flip trap for PEX/CPVC selections."},
+ {t:"Flip Traps",q:"The AHJ flips your job from 13D to full NFPA 13 with residential sprinklers. Design area and minimum density become…",o:["Still 2 heads at 0.05","4 heads at 0.10 gpm/ft² minimum (new work)","6 heads at 0.05","2 heads at 0.10"],a:1,e:"Under NFPA 13, residential sprinkler design uses 4 adjacent sprinklers (per NFPA 13 §19.4.1.1, 2019 ed.) at a minimum 0.10 gpm/ft² for new construction (per §19.4.1.3). Demand roughly quadruples once hose allowance joins."},
+ {t:"Scope",q:"The architect is counting on an IBC allowable-area increase because 'the building is sprinklered.' Which system earns it?",o:["13D","13R","Full NFPA 13 only","Any NFPA sprinkler system"],a:2,e:"Only a full NFPA 13 system unlocks IBC height and area increases (IBC Tables 504.3, 504.4, 506.2). 13R and 13D earn none — the #1 reason residential jobs flip to 13 mid-design."},
+ {t:"Water Supply",q:"Rural 13D house, no municipal water. Which is a legitimate sole water supply?",o:["A stored-water tank with an automatic pump","A garden hose from the neighbor","A swimming pool with a sign","None — city water is mandatory"],a:0,e:"13D accepts five sources: reliable waterworks, elevated tank, pressure tank, stored water with automatic pump, and a well with pump + tank (per NFPA 13D §6.2). Size it for 10 (or 7) minutes of demand (per §6.1.2–6.1.3)."}
+];
+let qi=0,score=0,answered=false;
+const topics={};
+function renderQ(){
+  answered=false;
+  const box=document.getElementById('quizbox');
+  if(qi>=QS.length){return renderScore();}
+  const q=QS[qi];
+  box.innerHTML=`<div class="qcard">
+    <div class="qmeta"><span>Question ${qi+1} of ${QS.length}</span><span>Score: ${score}</span></div>
+    <span class="qtopic">${q.t}</span>
+    <p class="qtext">${q.q}</p>
+    ${q.o.map((o,i)=>`<button class="opt" data-i="${i}">${o}</button>`).join('')}
+    <div class="explain" id="exp"></div>
+    <button class="nextbtn" id="next">${qi===QS.length-1?'See results →':'Next question →'}</button>
+  </div>`;
+  box.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',()=>pick(b)));
+  document.getElementById('next').addEventListener('click',()=>{qi++;renderQ();window.scrollTo({top:0});});
+}
+function pick(btn){
+  if(answered)return;answered=true;
+  const q=QS[qi],i=+btn.dataset.i;
+  topics[q.t]=topics[q.t]||{r:0,w:0};
+  const exp=document.getElementById('exp');
+  document.querySelectorAll('.opt').forEach(b=>{b.disabled=true;if(+b.dataset.i===q.a)b.classList.add('correct');});
+  if(i===q.a){score++;topics[q.t].r++;exp.className='explain show good';exp.innerHTML=`<b>✔ Correct.</b> ${q.e}`;}
+  else{topics[q.t].w++;btn.classList.add('wrong');exp.className='explain show bad';exp.innerHTML=`<b>✘ Not quite.</b> ${q.e}`;}
+  document.getElementById('next').classList.add('show');
+}
+function renderScore(){
+  const pct=Math.round(score/QS.length*100);
+  let msg= pct>=90?"You're ready to stamp the 13D track. 🔥":pct>=70?"Solid — drill the weak topics below and re-run.":"Run the 13D Track tab again, then retake. The numbers will stick.";
+  let bars='';
+  for(const t in topics){
+    const tot=topics[t].r+topics[t].w, p=Math.round(topics[t].r/tot*100);
+    const cls=p>=80?'':(p>=50?'mid':'weak');
+    bars+=`<div class="topicbar"><div class="lbl"><span>${t}</span><span>${topics[t].r}/${tot}</span></div><div class="bar"><div class="fill ${cls}" style="width:${p}%"></div></div></div>`;
+  }
+  document.getElementById('quizbox').innerHTML=`<div class="qcard">
+    <div class="score-big" style="color:${pct>=70?'var(--green)':'var(--orange)'}">${score}/${QS.length}</div>
+    <p class="score-msg">${msg}</p>
+    <h2 style="font-size:.95rem">Topic breakdown</h2>${bars}
+    <button class="restart" onclick="qi=0;score=0;for(const k in topics)delete topics[k];renderQ()">Restart quiz</button>
+  </div>`;
+}
+renderQ();
+</script>
+<p class="foot">Fire System Mastery — original educational content. NFPA 13 &amp; 13D (2019 eds.) section numbers cited for reference; confirm against the edition your AHJ enforces. Not a substitute for the standards.</p>
+</body>
+</html>
