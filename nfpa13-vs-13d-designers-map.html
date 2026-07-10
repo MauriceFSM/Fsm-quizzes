@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NFPA 13 vs 13D — Designer's Map</title>
+<title>NFPA 13 vs 13R vs 13D — Designer's Map</title>
 <style>
 :root{
   --orange:#D85A30; --blue:#185FA5; --green:#1D9E75; --red:#C0392B;
@@ -25,8 +25,9 @@ main{max-width:760px;margin:0 auto;padding:16px 14px}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 h2{font-size:1.1rem;margin:18px 0 10px;color:var(--blue)}
 .card{background:var(--card);border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
-.bigidea{border-left:5px solid var(--orange)}
-.bigidea.b{border-left-color:var(--blue)}
+.bigidea{border-left:5px solid var(--blue)}
+.bigidea.r{border-left-color:var(--green)}
+.bigidea.b{border-left-color:var(--orange)}
 .bigidea h3{font-size:1rem;margin-bottom:6px}
 .bigidea p{font-size:.9rem}
 .hook{background:var(--dark);color:#fff;border-radius:14px;padding:14px 16px;font-size:.92rem;margin:12px 0;text-align:center}
@@ -43,6 +44,7 @@ h2{font-size:1.1rem;margin:18px 0 10px;color:var(--blue)}
 .step-head{display:flex;align-items:center;gap:11px;padding:13px 14px;cursor:pointer;user-select:none}
 .step-num{min-width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:.85rem}
 .trackA .step-num{background:var(--blue)}
+.trackR .step-num{background:var(--green)}
 .trackB .step-num{background:var(--orange)}
 .step-head h4{font-size:.92rem;flex:1}
 .step-head .chev{color:#99a;transition:transform .2s}
@@ -55,10 +57,11 @@ h2{font-size:1.1rem;margin:18px 0 10px;color:var(--blue)}
 .trap{background:#fff6f3;border:1.5px dashed var(--orange);border-radius:10px;padding:10px 12px;font-size:.84rem;margin-top:8px}
 .trap b{color:var(--orange)}
 .tablewrap{overflow-x:auto;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
-table{width:100%;border-collapse:collapse;background:#fff;font-size:.8rem;min-width:520px}
-th{background:var(--dark);color:#fff;padding:9px 10px;text-align:left;font-size:.76rem}
+table{width:100%;border-collapse:collapse;background:#fff;font-size:.78rem;min-width:600px}
+th{background:var(--dark);color:#fff;padding:9px 9px;text-align:left;font-size:.74rem}
 th:nth-child(2){color:#7db3e8}
-th:nth-child(3){color:#f0906a}
+th:nth-child(3){color:#5fcfa3}
+th:nth-child(4){color:#f0906a}
 td{padding:8px 10px;border-bottom:1px solid #eef;vertical-align:top}
 tr:nth-child(even) td{background:#f8f9fb}
 td:first-child{font-weight:600;color:var(--mid)}
@@ -99,8 +102,8 @@ td:first-child{font-weight:600;color:var(--mid)}
 </head>
 <body>
 <header>
-  <h1>NFPA 13 <span class="vs">vs</span> 13D</h1>
-  <p>The Designer's Map — start on the right track, flip without traps</p>
+  <h1>NFPA 13 <span class="vs">·</span> 13R <span class="vs">·</span> 13D</h1>
+  <p>The Designer's Map — pick your track, flip without traps</p>
 </header>
 
 <main>
@@ -110,11 +113,15 @@ td:first-child{font-weight:600;color:var(--mid)}
     <h3>🏰 NFPA 13 — protects the whole castle</h3>
     <p>Every room, every closet, every attic. Mission: save the people <b>and</b> the building. Big water, heads everywhere, full paperwork.</p>
   </div>
+  <div class="card bigidea r">
+    <h3>🏢 NFPA 13R — protects everyone's way out</h3>
+    <p>Low-rise apartments &amp; small hotels (<b>≤4 stories, ≤60 ft</b>). Thinks like 13D <i>inside</i> each unit — skip the tiny baths and closets — but like 13 for the shared bones: <b>garages, attics, stairwells and corridors all get heads</b>, because many families' escape rides on them. 4-head design area, <b>30 minutes</b> of water.</p>
+  </div>
   <div class="card bigidea b">
-    <h3>🚪 NFPA 13D — protects the path out</h3>
+    <h3>🚪 NFPA 13D — protects one family's path out</h3>
     <p>One job: give the family about <b>10 minutes</b> of escape time from the living areas. It doesn't care if the garage or attic burns.</p>
   </div>
-  <div class="hook">Memory hook: <b>13 protects the property. 13D protects the path out.</b><br>The four words 13 has that 13D doesn't: <b>hose · duration · everywhere · FDC</b></div>
+  <div class="hook">Memory hook: <b>13</b> protects the <b>property</b> · <b>13R</b> protects the <b>shared</b> way out · <b>13D</b> protects <b>one family's</b> way out.<br><span style="opacity:.8;font-size:.85rem">More people sharing the building → fewer things you're allowed to skip.</span></div>
 
   <h2>Step 0 — Which book am I in?</h2>
   <div class="card decide">
@@ -123,8 +130,18 @@ td:first-child{font-weight:600;color:var(--mid)}
     <button class="decide-opt" onclick="decide('d13r')">🏢 Residential building up to 4 stories (apartments, small hotel)</button>
     <button class="decide-opt" onclick="decide('d13')">🏭 Anything else — or the architect wants height/area increases</button>
     <div class="decide-result r13d" id="d13d"><b>NFPA 13D allowed</b> (per IBC 903.3.1.3). Go to the <b>13D Track</b> tab. ⚠️ But: 13D earns <b>zero</b> IBC height/area increases — if the design counts on those, you're back in NFPA 13.</div>
-    <div class="decide-result r13r" id="d13r"><b>NFPA 13R territory</b> (per IBC 903.3.1.2) — the middle sibling. Not covered in this tool, but it thinks like 13D inside the units and like 13 for the building shell.</div>
+    <div class="decide-result r13r" id="d13r"><b>NFPA 13R allowed</b> (per IBC 903.3.1.2) — the middle sibling, up to 4 stories / 60 ft. Go to the <b>13R Track</b> tab. It thinks like 13D inside the units but like 13 for the shared bones (garages, attics, stairs, corridors). ⚠️ Still earns <b>zero</b> IBC height/area increases.</div>
     <div class="decide-result r13" id="d13"><b>Full NFPA 13 required</b> (per IBC 903.3.1.1). Go to the <b>13 Track</b> tab. Only NFPA 13 unlocks IBC height/area increases (IBC Tables 504.3, 504.4, 506.2).</div>
+  </div>
+
+  <div class="card cheat">
+    <h3>13R pocket numbers</h3>
+    <div class="cheat-row"><span class="num">4 / 60</span><span>Scope ceiling: stories / feet above grade plane <span class="cite">§1.1</span></span></div>
+    <div class="cheat-row"><span class="num">4</span><span>Max design sprinklers (per compartment) <span class="cite">§7.1.1.3</span></span></div>
+    <div class="cheat-row"><span class="num">0.05</span><span>Min density (gpm/ft²) or listing, whichever is greater <span class="cite">§7.1.1.1</span></span></div>
+    <div class="cheat-row"><span class="num">30</span><span>Minutes the supply must feed system demand <span class="cite">§9.2.1</span></span></div>
+    <div class="cheat-row"><span class="num">55 / 24</span><span>Omit inside units: baths ≤55 ft² / closets ≤24 ft² <span class="cite">§6.6.2–6.6.3</span></span></div>
+    <div class="cheat-row"><span class="num">MUST</span><span>Protect garages, attics, stairwells, corridors <span class="cite">§7.3, §7.4, §6.6.9</span></span></div>
   </div>
 
   <div class="card cheat">
@@ -144,6 +161,13 @@ td:first-child{font-weight:600;color:var(--mid)}
   <div id="stepsA"></div>
 </div>
 
+<!-- TRACK R -->
+<div class="panel trackR" id="p-13r">
+  <h2>Designing under NFPA 13R — start here</h2>
+  <div class="hook" style="text-align:left"><b>The one idea that unlocks 13R:</b> split the building into <b>inside the dwelling unit</b> (economy — think 13D) and <b>outside the unit</b> (shared danger — think 13). Get that split right and every rule below falls into place.</div>
+  <div id="stepsR"></div>
+</div>
+
 <!-- TRACK B -->
 <div class="panel trackB" id="p-13d">
   <h2>Designing under NFPA 13D — start here</h2>
@@ -155,27 +179,30 @@ td:first-child{font-weight:600;color:var(--mid)}
   <h2>Side by side</h2>
   <div class="tablewrap">
   <table>
-    <tr><th>Question</th><th>NFPA 13</th><th>NFPA 13D</th></tr>
-    <tr><td>Mission</td><td>Life safety + property</td><td>Escape only</td></tr>
-    <tr><td>Where allowed</td><td>Anywhere</td><td>1–2 family, townhomes, manufactured homes</td></tr>
-    <tr><td>IBC height/area increases</td><td>Yes</td><td>No</td></tr>
-    <tr><td>Coverage</td><td>Everywhere (default)</td><td>Living areas; big omit list (§8.3)</td></tr>
-    <tr><td>Design area</td><td>Density/area by hazard; residential = 4 heads</td><td>2 heads max (§10.2.1)</td></tr>
-    <tr><td>Min residential density</td><td>0.10 gpm/ft² new (§19.4.1.3)</td><td>0.05 gpm/ft² or listing (§10.1.1)</td></tr>
-    <tr><td>Hose allowance</td><td>100 / 250 / 500 gpm</td><td>None</td></tr>
-    <tr><td>Duration</td><td>30–120 min</td><td>10 min (7 if 1-story &lt;2,000 ft²)</td></tr>
-    <tr><td>Water sources</td><td>Approved supply + flow data</td><td>Main, tank, pressure tank, pump+tank, well (§6.2)</td></tr>
-    <tr><td>Calc method</td><td>Full hydraulic calc</td><td>Tables / simplified / full calc (§10.4.3)</td></tr>
-    <tr><td>Pipe materials</td><td>Steel, copper, listed CPVC</td><td>+ PEX, multipurpose &amp; network OK</td></tr>
-    <tr><td>Min pipe size</td><td>1" steel / ¾" copper</td><td>1" steel / ¾" other / ½" network (§10.4.2)</td></tr>
-    <tr><td>FDC</td><td>Required (§16.12)</td><td>Not required</td></tr>
-    <tr><td>Hangers / seismic</td><td>Ch. 17 / Ch. 18</td><td>Basics only; no seismic chapter</td></tr>
-    <tr><td>Hydro test</td><td>200 psi / 2 hr (§25.2.1)</td><td>Normal operating pressure (§11.2.1.1)</td></tr>
-    <tr><td>Life after install</td><td>NFPA 25 ITM</td><td>Homeowner ITM (13D Ch. 12)</td></tr>
+    <tr><th>Question</th><th>NFPA 13</th><th>NFPA 13R</th><th>NFPA 13D</th></tr>
+    <tr><td>Mission</td><td>Life safety + property</td><td>Life safety, low-rise multifamily</td><td>Escape only</td></tr>
+    <tr><td>Where allowed</td><td>Anywhere</td><td>Residential ≤4 stories / ≤60 ft (IBC 903.3.1.2)</td><td>1–2 family, townhomes, mfd homes</td></tr>
+    <tr><td>IBC height/area increases</td><td>Yes</td><td>No</td><td>No</td></tr>
+    <tr><td>Coverage inside units</td><td>Everywhere (default)</td><td>Omit list — baths/closets (§6.6)</td><td>Living areas; big omit list (§8.3)</td></tr>
+    <tr><td>Garage · attic · stairs</td><td>Protected</td><td><b>Protected</b> (§7.3, §7.4, §6.6.9)</td><td>Omitted (§8.3.4–8.3.5)</td></tr>
+    <tr><td>Design area</td><td>By hazard; residential = 4 heads</td><td>4 heads max (§7.1.1.3)</td><td>2 heads max (§10.2.1)</td></tr>
+    <tr><td>Min residential density</td><td>0.10 gpm/ft² new (§19.4.1.3)</td><td>0.05 or listing (§7.1.1.1)</td><td>0.05 or listing (§10.1.1)</td></tr>
+    <tr><td>Hose allowance</td><td>100 / 250 / 500 gpm</td><td>None (residential)</td><td>None</td></tr>
+    <tr><td>Duration</td><td>30–120 min</td><td>30 min (§9.2.1)</td><td>10 min (7 if 1-story &lt;2,000 ft²)</td></tr>
+    <tr><td>Water sources</td><td>Approved supply + flow data</td><td>Waterworks, tanks, fire pump (§9.6–9.8)</td><td>Main, tank, pressure tank, pump+tank, well (§6.2)</td></tr>
+    <tr><td>Calc method</td><td>Full hydraulic calc</td><td>Full calc (NFPA 13 procedures)</td><td>Tables / simplified / full (§10.4.3)</td></tr>
+    <tr><td>Pipe / materials</td><td>Steel, copper, listed CPVC</td><td>Per NFPA 13 + listed residential (CPVC/PEX)</td><td>+ PEX, multipurpose &amp; network OK</td></tr>
+    <tr><td>FDC</td><td>Required (§16.12)</td><td>Per code; drives the hydro test</td><td>Not required</td></tr>
+    <tr><td>Hydro test</td><td>200 psi / 2 hr (§25.2.1)</td><td>&gt;20 heads or FDC → NFPA 13; else +50 psi (§10.2.2)</td><td>Operating pressure (§11.2.1.1)</td></tr>
+    <tr><td>Spare sprinklers</td><td>Required</td><td>Required (§11.1)</td><td>Not required</td></tr>
+    <tr><td>Life after install</td><td>NFPA 25 ITM</td><td>NFPA 25 ITM</td><td>Homeowner ITM (13D Ch. 12)</td></tr>
   </table>
   </div>
 
+  <div class="trap" style="margin-top:14px"><b>The #1 13R trap:</b> designers carry the 13D omit list into a 13R job and leave <b>garages, attics, stairwells and corridors</b> bare. In 13D those are optional because one family is escaping their own house. In 13R, other people's escape runs through those shared spaces — so they get heads (per NFPA 13R §7.3, §7.4, §6.6.9). Inside the unit, 13R and 13D skip the same tiny baths and closets; outside the unit, 13R behaves like 13.</div>
+
   <h2>“The job flipped to 13” — 10 traps</h2>
+  <p style="font-size:.85rem;color:#667;margin:-4px 0 10px">Your live job is bid 13D but could be forced to full NFPA 13. Here's what silently changes. (13R sits in the middle — heavier than 13D, lighter than 13.)</p>
   <div id="flips"></div>
 </div>
 
@@ -188,8 +215,9 @@ td:first-child{font-weight:600;color:var(--mid)}
 
 <nav>
   <button class="active" data-p="p-start"><span class="ico">🧭</span>Start</button>
-  <button data-p="p-13"><span class="ico">🏭</span>13 Track</button>
-  <button data-p="p-13d"><span class="ico">🏠</span>13D Track</button>
+  <button data-p="p-13"><span class="ico">🏭</span>13</button>
+  <button data-p="p-13r"><span class="ico">🏢</span>13R</button>
+  <button data-p="p-13d"><span class="ico">🏠</span>13D</button>
   <button data-p="p-compare"><span class="ico">⚖️</span>Compare</button>
   <button data-p="p-quiz"><span class="ico">✅</span>Quiz</button>
 </nav>
@@ -235,6 +263,19 @@ const stepsB=[
  ["Keep hardware tiny","One control valve preferred; separate sprinkler valve only if supervised or locked open. ½\" drain. Serving >1 unit: +5 gpm domestic and per-unit valves. No FDC. No hose allowance.","NFPA 13D §7.1.2, §7.2.1, §6.5.2, §6.2.3"],
  ["Acceptance = working pressure","No FDC → hydro test at normal system operating pressure, no leaks. Pump? Prove it runs the full duration through the drain/test. Hand the owner Ch. 12 ITM instructions.","NFPA 13D §11.2.1.1, §11.2.2.1.1"]
 ];
+const stepsR=[
+ ["Confirm scope","Residential occupancy up to 4 stories, in a building not over 60 ft above grade plane — apartments, condos, dorms, small hotels/motels. Above that, it's full NFPA 13. Mission = life safety for many families under one roof.","NFPA 13R §1.1 · IBC 903.3.1.2"],
+ ["Split the building in two","Design 'inside the dwelling unit' for residential economy (like 13D) and 'outside the dwelling unit' — corridors, stairs, common rooms — closer to NFPA 13. Every later rule keys off which side you're on.","NFPA 13R §7.1 vs §7.2"],
+ ["Place heads inside units — omit list","Skip the small stuff, same as 13D: baths ≤55 ft² (§6.6.2) and clothes/linen closets & pantries ≤24 ft² with noncombustible/limited-combustible surfaces (§6.6.3).","NFPA 13R §6.6.2, §6.6.3"],
+ ["Protect what 13D skips","The heart of 13R: garages (§7.3), occupied or storage attics (§7.4.1), interior enclosed stairwells throughout (§6.6.9.1), and corridors/breezeways outside units (§7.2). Many people's escape rides on these — they are NOT optional.","NFPA 13R §7.3, §7.4, §6.6.9"],
+ ["Residential heads, 0.05 floor","Listed residential sprinklers inside units. Minimum discharge density 0.05 gpm/ft² or the listing, whichever is greater — same floor as 13D.","NFPA 13R §7.1.1.1"],
+ ["Design area = up to 4 heads","All sprinklers in the most demanding compartment, to a MAXIMUM of four (§7.1.1.3). Corridors/breezeways outside the unit also use up to the 4 most demanding heads (§7.2.2). Compare: 13D = 2, 13-residential = 4.","NFPA 13R §7.1.1.3, §7.2.2"],
+ ["Automatic water supply","At least one automatic supply — reliable waterworks, pressure or gravity tank (per NFPA 22), or a fire pump (per NFPA 20). Sized to feed the full system demand; no 'garage tank + tiny pump for a house' shortcut like 13D.","NFPA 13R §9.2.1, §9.6–9.8"],
+ ["Duration = 30 minutes","The supply must deliver the design demand for at least 30 minutes — triple 13D's 10. This is what usually rules out small stored-water supplies and forces a real main or sized tank/pump.","NFPA 13R §9.2.1"],
+ ["Domestic + hardware","Common domestic/fire main serving >1 unit: add the building's domestic demand unless it's prevented (§9.3.1). Local waterflow alarm on every system (§6.16.1). A combustible concealed space does NOT force the design area up to 3,000 ft² (§7.5).","NFPA 13R §9.3.1, §6.16.1, §7.5"],
+ ["Acceptance — hybrid hydro test","More than 20 sprinklers OR an FDC → hydrostatic test to the NFPA 13 rule (200 psi class). Fewer than 20 heads AND no FDC → test at 50 psi over max system pressure. Keep spare sprinklers on site; hand off to NFPA 25 for life.","NFPA 13R §10.2.2, §11.1"]
+];
+const trapR={3:"This is the divergence from 13D. A garage, attic, stairwell, or corridor left bare on a 13R job is a real violation — don't reuse a 13D omit list here."};
 const trapB={3:"Closets with a water heater, furnace, or washer/dryer DO get a head (§8.3.9). Mechanical closet ≠ clothes closet."};
 function buildSteps(arr,el,trapMap){
   const box=document.getElementById(el);
@@ -248,6 +289,7 @@ function buildSteps(arr,el,trapMap){
   });
 }
 buildSteps(stepsA,'stepsA');
+buildSteps(stepsR,'stepsR',trapR);
 buildSteps(stepsB,'stepsB',trapB);
 
 // ---------- flip traps ----------
@@ -280,7 +322,12 @@ const QS=[
  {t:"Flip Traps",q:"Your 13D house (no FDC) is done. What acceptance pressure test does 13D require?",o:["200 psi for 2 hours","Normal system operating pressure with no leakage","50 psi over static","No test required"],a:1,e:"Without a fire department connection, 13D tests at normal system operating pressure with no evidence of leakage (per NFPA 13D §11.2.1.1). The 200 psi / 2 hr test is NFPA 13 (§25.2.1) — a huge flip trap for PEX/CPVC selections."},
  {t:"Flip Traps",q:"The AHJ flips your job from 13D to full NFPA 13 with residential sprinklers. Design area and minimum density become…",o:["Still 2 heads at 0.05","4 heads at 0.10 gpm/ft² minimum (new work)","6 heads at 0.05","2 heads at 0.10"],a:1,e:"Under NFPA 13, residential sprinkler design uses 4 adjacent sprinklers (per NFPA 13 §19.4.1.1, 2019 ed.) at a minimum 0.10 gpm/ft² for new construction (per §19.4.1.3). Demand roughly quadruples once hose allowance joins."},
  {t:"Scope",q:"The architect is counting on an IBC allowable-area increase because 'the building is sprinklered.' Which system earns it?",o:["13D","13R","Full NFPA 13 only","Any NFPA sprinkler system"],a:2,e:"Only a full NFPA 13 system unlocks IBC height and area increases (IBC Tables 504.3, 504.4, 506.2). 13R and 13D earn none — the #1 reason residential jobs flip to 13 mid-design."},
- {t:"Water Supply",q:"Rural 13D house, no municipal water. Which is a legitimate sole water supply?",o:["A stored-water tank with an automatic pump","A garden hose from the neighbor","A swimming pool with a sign","None — city water is mandatory"],a:0,e:"13D accepts five sources: reliable waterworks, elevated tank, pressure tank, stored water with automatic pump, and a well with pump + tank (per NFPA 13D §6.2). Size it for 10 (or 7) minutes of demand (per §6.1.2–6.1.3)."}
+ {t:"Water Supply",q:"Rural 13D house, no municipal water. Which is a legitimate sole water supply?",o:["A stored-water tank with an automatic pump","A garden hose from the neighbor","A swimming pool with a sign","None — city water is mandatory"],a:0,e:"13D accepts five sources: reliable waterworks, elevated tank, pressure tank, stored water with automatic pump, and a well with pump + tank (per NFPA 13D §6.2). Size it for 10 (or 7) minutes of demand (per §6.1.2–6.1.3)."},
+ {t:"13R Scope",q:"A 4-story, 55-ft-tall apartment building. Can it be sprinklered to NFPA 13R?",o:["No — 13R stops at 3 stories","Yes — within 4 stories and 60 ft above grade plane","Only the ground floor","No — anything multifamily needs full 13"],a:1,e:"13R covers residential occupancies up to and including 4 stories in buildings not exceeding 60 ft above grade plane (per NFPA 13R §1.1; IBC 903.3.1.2). Over either limit, it's full NFPA 13."},
+ {t:"13R Design",q:"On a 13R job, the compartment under design has 5 residential heads. How many are in the design area?",o:["All 5","The 4 most hydraulically demanding — max is four","2, same as 13D","1 remote head"],a:1,e:"13R's design area is all heads in the compartment up to a maximum of FOUR, taking the most hydraulically demanding (per NFPA 13R §7.1.1.3). That's double 13D's two and matches residential design under NFPA 13."},
+ {t:"13R Design",q:"You're placing heads in a 13R apartment building. The attached parking garage under the units — heads or not?",o:["Omit — garages are on the omit list","Protect it — 13R requires garage protection","Only if it's heated","Owner's choice"],a:1,e:"That's the 13R trap. 13D omits garages (one family escaping their own house), but 13R requires garage protection (per NFPA 13R §7.3) because the shared structure protects many people's escape. Attics and interior stairwells are protected too (§7.4, §6.6.9)."},
+ {t:"13R Water Supply",q:"How long must a 13R water supply feed the system demand?",o:["10 minutes","30 minutes","7 minutes if small","60 minutes"],a:1,e:"At least 30 minutes (per NFPA 13R §9.2.1) — triple 13D's 10-minute escape window. That longer duration is usually what forces a reliable main, sized tank, or fire pump instead of a small stored-water supply."},
+ {t:"13R Design",q:"A 13R system has 14 sprinklers and no fire department connection. What acceptance pressure test applies?",o:["The full NFPA 13 test (200 psi class)","50 psi over the maximum system pressure","Normal operating pressure, like 13D","No test needed under 20 heads"],a:1,e:"13R splits the test: >20 heads OR an FDC → NFPA 13's test; fewer than 20 heads AND no FDC → 50 psi above max system pressure (per NFPA 13R §10.2.2.2). At 14 heads with no FDC, it's the 50-psi-over test."}
 ];
 let qi=0,score=0,answered=false;
 const topics={};
@@ -312,7 +359,7 @@ function pick(btn){
 }
 function renderScore(){
   const pct=Math.round(score/QS.length*100);
-  let msg= pct>=90?"You're ready to stamp the 13D track. 🔥":pct>=70?"Solid — drill the weak topics below and re-run.":"Run the 13D Track tab again, then retake. The numbers will stick.";
+  let msg= pct>=90?"You can hold all three books apart in your head. 🔥":pct>=70?"Solid — drill the weak topics below and re-run.":"Walk the 13, 13R, and 13D Track tabs again, then retake. The numbers will stick.";
   let bars='';
   for(const t in topics){
     const tot=topics[t].r+topics[t].w, p=Math.round(topics[t].r/tot*100);
@@ -328,6 +375,6 @@ function renderScore(){
 }
 renderQ();
 </script>
-<p class="foot">Fire System Mastery — original educational content. NFPA 13 &amp; 13D (2019 eds.) section numbers cited for reference; confirm against the edition your AHJ enforces. Not a substitute for the standards.</p>
+<p class="foot">Fire System Mastery — original educational content. NFPA 13, 13R &amp; 13D (2019 eds.) section numbers cited for reference; confirm against the edition your AHJ enforces. Not a substitute for the standards.</p>
 </body>
 </html>
