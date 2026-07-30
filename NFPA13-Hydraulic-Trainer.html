@@ -1,0 +1,2033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hydraulic Trainer — Remote Area &amp; Coverage | Fire System Mastery</title>
+<style>
+/* ============================================================
+   FSM HYDRAULIC TRAINER
+   Design language: apprentice training manual, drafted by hand.
+   Grayscale technical illustration + ink linework + hatching.
+   Colour is used the way a red pencil is used on a drawing:
+   sparingly, and only to mean something.
+   ============================================================ */
+
+:root{
+  --paper:      #FCFAF6;
+  --paper-tint: #F4F0E7;
+  --paper-deep: #EBE5D8;
+  --ink:        #16130F;
+  --ink-2:      #4A443C;
+  --ink-3:      #8B8275;
+  --line:       #D6CEC0;
+  --line-hard:  #16130F;
+  --redline:    #D85A30;   /* FSM orange — annotation / active */
+  --blueprint:  #185FA5;   /* FSM blue — code citation only */
+  --pass:       #1D9E75;   /* FSM green — verified / correct */
+  --fail:       #B3341F;
+
+  --mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", "Consolas", monospace;
+  --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--sans);
+  color:var(--ink);
+  background:var(--paper);
+  /* drafting sheet: faint graph grid */
+  background-image:
+    linear-gradient(var(--paper-tint) 1px, transparent 1px),
+    linear-gradient(90deg, var(--paper-tint) 1px, transparent 1px);
+  background-size:24px 24px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- sheet ---------- */
+.sheet{
+  max-width:940px;margin:0 auto;background:var(--paper);
+  border-left:1px solid var(--line);border-right:1px solid var(--line);
+  min-height:100vh;
+}
+@media(max-width:960px){.sheet{border:none}}
+
+/* ---------- masthead: a drawing title block ---------- */
+.masthead{
+  border-bottom:2px solid var(--line-hard);
+  padding:20px 22px 0;
+}
+.mast-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.mast-title{
+  font-size:1.45rem;font-weight:800;letter-spacing:-.02em;line-height:1.1;
+  text-transform:uppercase;
+}
+.mast-sub{
+  font-family:var(--mono);font-size:.7rem;color:var(--ink-3);
+  letter-spacing:.09em;text-transform:uppercase;margin-top:5px;
+}
+.mast-stamp{
+  border:1.5px solid var(--ink);padding:5px 9px;text-align:center;flex-shrink:0;
+  transform:rotate(-1.5deg);
+}
+.mast-stamp b{display:block;font-size:.66rem;letter-spacing:.13em;font-weight:800}
+.mast-stamp span{font-family:var(--mono);font-size:.6rem;color:var(--ink-2)}
+
+/* ---------- tabs: index tabs on a manual ---------- */
+.tabs{display:flex;gap:2px;margin-top:16px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:9px 13px;border:1px solid var(--line);border-bottom:none;
+  background:var(--paper-tint);color:var(--ink-2);cursor:pointer;white-space:nowrap;
+  position:relative;top:1px;font-weight:700;
+}
+.tab:hover{background:var(--paper-deep);color:var(--ink)}
+.tab.on{background:var(--paper);color:var(--ink);border-color:var(--line-hard);
+  border-bottom:2px solid var(--paper);box-shadow:0 -2px 0 var(--redline) inset}
+.tab .tnum{color:var(--ink-3);margin-right:5px}
+.tab.on .tnum{color:var(--redline)}
+
+/* ---------- panels ---------- */
+.panel{display:none;padding:24px 22px 60px}
+.panel.on{display:block}
+@media(max-width:600px){.panel{padding:18px 14px 60px}}
+
+.eyebrow{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--redline);font-weight:700;margin-bottom:5px;
+}
+h2.head{font-size:1.3rem;font-weight:800;letter-spacing:-.015em;margin-bottom:8px;line-height:1.2}
+h3.sub{
+  font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;
+  margin:26px 0 9px;padding-bottom:5px;border-bottom:1px solid var(--line);
+}
+p{margin-bottom:11px;font-size:.93rem;color:var(--ink-2)}
+p strong{color:var(--ink);font-weight:700}
+.lead{font-size:1rem;color:var(--ink);max-width:62ch}
+
+/* ---------- plain-language callout ---------- */
+.plain{
+  border-left:3px solid var(--ink);background:var(--paper-tint);
+  padding:12px 15px;margin:14px 0;font-size:.93rem;
+}
+.plain .pl-tag{
+  font-family:var(--mono);font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:700;display:block;margin-bottom:4px;
+}
+.plain p:last-child{margin-bottom:0}
+
+/* ---------- code citation chip ---------- */
+.cite{
+  font-family:var(--mono);font-size:.74rem;color:var(--blueprint);
+  border-bottom:1px dotted var(--blueprint);white-space:nowrap;font-weight:600;
+}
+
+/* ---------- redline warning ---------- */
+.redline{
+  border:1px solid var(--redline);border-left-width:3px;padding:11px 14px;margin:14px 0;
+  background:#FFF8F4;font-size:.9rem;color:#7A2E12;
+}
+.redline b{color:var(--redline)}
+
+/* ---------- the workbench (interactive) ---------- */
+.bench{
+  border:1.5px solid var(--line-hard);background:var(--paper);margin:18px 0 22px;
+}
+.bench-head{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:9px 13px;border-bottom:1px solid var(--line-hard);background:var(--paper-tint);
+}
+.bench-head h4{
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.11em;text-transform:uppercase;font-weight:800;
+}
+.bench-head .hint{font-family:var(--mono);font-size:.62rem;color:var(--ink-3);letter-spacing:.05em}
+.bench-body{padding:14px 13px}
+.bench-figure{background:#fff;border-bottom:1px solid var(--line);padding:6px}
+svg{display:block;width:100%;height:auto;touch-action:manipulation}
+
+/* ---------- controls ---------- */
+.ctrl{margin-bottom:13px}
+.ctrl-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;gap:8px}
+.ctrl label{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-2);font-weight:700;
+}
+.ctrl .val{font-family:var(--mono);font-size:.9rem;font-weight:700;color:var(--ink)}
+input[type=range]{
+  -webkit-appearance:none;appearance:none;width:100%;height:26px;background:transparent;cursor:pointer;
+}
+input[type=range]::-webkit-slider-runnable-track{
+  height:2px;background:var(--ink);border:none;
+}
+input[type=range]::-moz-range-track{height:2px;background:var(--ink)}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;width:20px;height:20px;margin-top:-9px;
+  background:var(--paper);border:2px solid var(--ink);border-radius:50%;
+}
+input[type=range]::-webkit-slider-thumb:active{background:var(--redline);border-color:var(--redline)}
+input[type=range]::-moz-range-thumb{
+  width:18px;height:18px;background:var(--paper);border:2px solid var(--ink);border-radius:50%;
+}
+/* native checkboxes are ~13px — too small to hit reliably on a phone */
+input[type=checkbox]{width:20px;height:20px;accent-color:#D85A30;flex-shrink:0}
+select,input[type=number],input[type=text]{
+  width:100%;padding:8px 10px;border:1px solid var(--ink);background:#fff;
+  font-family:var(--mono);font-size:.88rem;color:var(--ink);border-radius:0;
+}
+select:focus,input:focus{outline:2px solid var(--redline);outline-offset:-2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.grid2{grid-template-columns:1fr}}
+
+/* ---------- readout ---------- */
+.readout{border-top:1px solid var(--line-hard);background:var(--paper-tint);padding:12px 13px}
+.ro-row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;gap:10px}
+.ro-row + .ro-row{border-top:1px dotted var(--line)}
+.ro-k{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.ro-v{font-family:var(--mono);font-size:.95rem;font-weight:700}
+.ro-v.big{font-size:1.15rem}
+.verdict{
+  margin-top:10px;padding:9px 12px;font-family:var(--mono);font-size:.76rem;
+  font-weight:700;letter-spacing:.05em;text-transform:uppercase;border:1.5px solid;
+}
+.verdict.ok{color:var(--pass);border-color:var(--pass);background:#F1FAF6}
+.verdict.no{color:var(--fail);border-color:var(--fail);background:#FDF3F1}
+
+/* ---------- worked math ---------- */
+.math{
+  font-family:var(--mono);font-size:.8rem;line-height:1.85;background:#fff;
+  border:1px solid var(--line);padding:11px 13px;margin:10px 0;overflow-x:auto;
+}
+.math .lbl{color:var(--ink-3)}
+.math .hi{color:var(--redline);font-weight:700}
+.math .ok{color:var(--pass);font-weight:700}
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;
+  font-weight:800;padding:11px 16px;border:1.5px solid var(--ink);background:var(--paper);
+  color:var(--ink);cursor:pointer;border-radius:0;
+}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn.primary:hover{background:var(--redline);border-color:var(--redline)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+
+/* ---------- drill / quiz ---------- */
+.scenario{
+  border:1.5px solid var(--line-hard);background:#fff;padding:16px 15px;margin-bottom:13px;
+}
+.scenario .q-meta{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:8px;
+}
+.scenario .q-text{font-size:1rem;color:var(--ink);line-height:1.5}
+.opts{display:flex;flex-direction:column;gap:7px;margin-top:13px}
+.opt{
+  text-align:left;padding:12px 14px;border:1.5px solid var(--line);background:#fff;
+  cursor:pointer;font-size:.92rem;color:var(--ink);display:flex;gap:10px;align-items:flex-start;
+}
+.opt:hover:not(:disabled){border-color:var(--ink);background:var(--paper-tint)}
+.opt .k{
+  font-family:var(--mono);font-weight:800;font-size:.78rem;color:var(--ink-3);flex-shrink:0;
+  border:1px solid var(--line);width:22px;height:22px;display:flex;align-items:center;
+  justify-content:center;line-height:1;
+}
+.opt.right{border-color:var(--pass);background:#F1FAF6}
+.opt.right .k{border-color:var(--pass);color:var(--pass)}
+.opt.wrong{border-color:var(--fail);background:#FDF3F1}
+.opt.wrong .k{border-color:var(--fail);color:var(--fail)}
+.opt:disabled{cursor:default}
+.explain{
+  margin-top:13px;padding:13px 15px;border-left:3px solid var(--ink);background:var(--paper-tint);
+  font-size:.9rem;
+}
+.explain .ex-h{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;
+  font-weight:800;margin-bottom:6px;
+}
+
+/* ---------- score / streak ---------- */
+.scorebar{
+  display:flex;gap:0;border:1.5px solid var(--line-hard);margin-bottom:16px;background:#fff;
+}
+.score-cell{flex:1;padding:10px 8px;text-align:center;border-right:1px solid var(--line)}
+.score-cell:last-child{border-right:none}
+.score-cell .sc-k{
+  font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);
+}
+.score-cell .sc-v{font-family:var(--mono);font-size:1.25rem;font-weight:800;line-height:1.3}
+.score-cell .sc-v.flame{color:var(--redline)}
+
+/* ---------- mastery bars ---------- */
+.mastery{margin-top:8px}
+.m-row{display:flex;align-items:center;gap:10px;padding:6px 0}
+.m-name{
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--ink-2);width:128px;flex-shrink:0;
+}
+.m-track{flex:1;height:9px;background:var(--paper-deep);border:1px solid var(--line);position:relative}
+.m-fill{height:100%;background:var(--ink);transition:width .45s cubic-bezier(.2,.8,.3,1)}
+.m-fill.gold{background:var(--redline)}
+.m-pct{font-family:var(--mono);font-size:.72rem;font-weight:700;width:38px;text-align:right}
+
+/* ---------- badges earned ---------- */
+.badges{display:flex;flex-wrap:wrap;gap:9px;margin-top:10px}
+.badge{
+  border:1.5px solid var(--line);padding:8px 11px;text-align:center;min-width:84px;
+  opacity:.32;filter:grayscale(1);
+}
+.badge.got{opacity:1;filter:none;border-color:var(--ink);transform:rotate(-1deg)}
+.badge .b-ico{font-size:1.1rem;line-height:1}
+.badge .b-n{
+  font-family:var(--mono);font-size:.55rem;letter-spacing:.08em;text-transform:uppercase;
+  font-weight:800;margin-top:4px;
+}
+
+/* ---------- footer ---------- */
+.foot{
+  border-top:1px solid var(--line);margin-top:30px;padding:14px 22px 30px;
+  font-family:var(--mono);font-size:.62rem;color:var(--ink-3);letter-spacing:.05em;
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
+}
+
+/* ---------- SVG drafting conventions ---------- */
+.obj-line{stroke:var(--ink);stroke-width:2;fill:none}
+.thin-line{stroke:var(--ink);stroke-width:1;fill:none}
+.dim-line{stroke:var(--redline);stroke-width:1;fill:none}
+.ext-line{stroke:var(--ink-3);stroke-width:.75;fill:none;stroke-dasharray:3 2}
+.ctr-line{stroke:var(--ink-3);stroke-width:.75;fill:none;stroke-dasharray:9 3 2 3}
+.dim-txt{font-family:var(--mono);font-size:11px;fill:var(--redline);font-weight:700}
+.obj-txt{font-family:var(--sans);font-size:11px;fill:var(--ink);font-weight:700}
+.note-txt{font-family:var(--mono);font-size:10px;fill:var(--ink-3)}
+/* On a phone the SVG is scaled to about half size, so type inside it must be
+   drawn larger in user units to stay legible in the hand. */
+@media(max-width:600px){
+  .dim-txt{font-size:19px}
+  .obj-txt{font-size:18px}
+  .note-txt{font-size:16px}
+}
+.fig-label{
+  font-family:var(--sans);font-size:.64rem;font-weight:800;letter-spacing:.13em;
+  text-transform:uppercase;text-align:center;padding:7px 0 3px;color:var(--ink);
+}
+.fig-cap{font-size:.76rem;color:var(--ink-3);text-align:center;padding-bottom:9px}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- ============ MASTHEAD ============ -->
+  <header class="masthead">
+    <div class="mast-row">
+      <div>
+        <div class="mast-title">Hydraulic Trainer</div>
+        <div class="mast-sub">Remote Area &middot; Coverage Area &middot; Starting Flow</div>
+      </div>
+      <div class="mast-stamp">
+        <b>NFPA 13</b>
+        <span>2019 ED.</span>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button class="tab on" data-p="learn"><span class="tnum">00</span>Start Here</button>
+      <button class="tab" data-p="coverage"><span class="tnum">01</span>Coverage Area</button>
+      <button class="tab" data-p="remote"><span class="tnum">02</span>Remote Area</button>
+      <button class="tab" data-p="flow"><span class="tnum">03</span>Starting Flow</button>
+      <button class="tab" data-p="drill"><span class="tnum">04</span>Drill</button>
+      <button class="tab" data-p="progress"><span class="tnum">05</span>Progress</button>
+    </nav>
+  </header>
+
+  <!-- ============ 00 START HERE ============ -->
+  <section class="panel on" id="p-learn">
+    <div class="eyebrow">Start here</div>
+    <h2 class="head">What a hydraulic calculation actually proves</h2>
+    <p class="lead">One sentence: <strong>the water we need must be less than the water we have.</strong>
+    Everything else is bookkeeping.</p>
+
+    <div class="plain">
+      <span class="pl-tag">Explain it like I'm ten</span>
+      <p>Think of a drinking fountain. If four kids drink at once, the water dribbles.
+      If one kid drinks, it shoots up. A sprinkler system is the same. We guess how many
+      sprinklers will open in a fire, add up how much water they want, and check that the
+      city pipe can still push that much. If it can — with a little extra left over — the
+      design passes.</p>
+    </div>
+
+    <p>To do that check you must answer two questions first. They are the two hardest
+    things for a new designer, so this trainer gives each one its own workbench:</p>
+
+    <div class="bench">
+      <div class="bench-head"><h4>The two questions</h4></div>
+      <div class="bench-body" style="padding:0">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+          <div style="padding:15px 14px;border-right:1px solid var(--line)">
+            <div style="font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;color:var(--redline);font-weight:800">QUESTION 01</div>
+            <div style="font-weight:800;margin:5px 0 6px;font-size:1rem">How much floor does ONE sprinkler cover?</div>
+            <p style="font-size:.86rem;margin:0">That is the <strong>coverage area</strong>.
+            It sets how much water that one sprinkler must pour out.</p>
+          </div>
+          <div style="padding:15px 14px">
+            <div style="font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;color:var(--redline);font-weight:800">QUESTION 02</div>
+            <div style="font-weight:800;margin:5px 0 6px;font-size:1rem">Which sprinklers do we pretend are open?</div>
+            <p style="font-size:.86rem;margin:0">That is the <strong>remote area</strong>.
+            It sets how many sprinklers are pouring at once.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p><strong>Coverage area &times; density</strong> tells you the water from one head.
+    <strong>The remote area</strong> tells you how many heads. Multiply, add the fire hose
+    allowance, and you have the demand. Compare that to the water supply. Done.</p>
+
+    <h3 class="sub">Words you need, in plain English</h3>
+    <div class="bench">
+      <div class="bench-body">
+        <div id="glossary"></div>
+      </div>
+    </div>
+
+    <h3 class="sub">Where the density comes from</h3>
+    <p>The density and the area of operation are not invented — you read them off one
+    figure, the density/area curves. One curve per hazard class. Pick <strong>any single
+    point on your curve</strong> and you have satisfied the requirement; you do not have to
+    meet every point on it. <span class="cite">§19.3.3.2.1.2, §19.3.3.2.1.3</span></p>
+
+    <div class="bench">
+      <div class="bench-head"><h4>What each curve actually covers</h4>
+        <span class="hint">Figure 19.3.3.1.1</span></div>
+      <div class="bench-body">
+        <p style="font-size:.88rem">The figure's axes run 1500–5000 ft², but no single curve
+        spans all of it. Each hazard is plotted only over its own range:</p>
+        <div class="math" id="curveTable"></div>
+        <p style="font-size:.85rem;margin:10px 0 0">Minor gridlines are 0.01 gpm/ft² and
+        200 ft². Read to about ±0.005 gpm/ft² — precise enough to choose a design point,
+        not precise enough to argue over. The curves are plotted as straight-line segments,
+        so interpolating between the ends is legitimate.</p>
+      </div>
+    </div>
+
+    <div class="redline">
+      <b>Read your own point off your own book.</b> The endpoints above were read from the
+      2019 edition figure. If your project adopts a different edition, the curves may differ
+      — and densities for storage, ESFR and special occupancies do not come from this figure
+      at all. <span class="cite">§19.3.3.2.2.1 — the figure is for spray sprinklers only</span>
+    </div>
+  </section>
+
+  <!-- ============ 01 COVERAGE AREA ============ -->
+  <section class="panel" id="p-coverage">
+    <div class="eyebrow">Workbench 01</div>
+    <h2 class="head">Coverage area: <span style="font-family:var(--mono)">A<sub>s</sub> = S &times; L</span></h2>
+    <p class="lead">Every sprinkler owns a rectangle of floor. Find the two sides, multiply.
+    That's the whole formula.</p>
+
+    <div class="plain">
+      <span class="pl-tag">Explain it like I'm ten</span>
+      <p>Imagine sprinklers are streetlights on a parking lot. Each light owns the patch of
+      pavement around it — half way to the light on the left, half way to the light on the
+      right, half way to the ones in front and behind. Draw a box around that patch. The
+      box is the coverage area. A big box means that light has a lot of ground to cover.</p>
+    </div>
+
+    <h3 class="sub">The trap that catches everyone</h3>
+    <p>For each side of the box you use the <strong>bigger</strong> of two numbers:
+    the distance to the next sprinkler, <em>or</em> <strong>double</strong> the distance to
+    the wall. The wall side is the trap — an end sprinkler pushed a little too far off the
+    wall silently blows the box up past the limit.</p>
+    <div class="plain">
+      <span class="pl-tag">Two things the rule actually says</span>
+      <p style="margin-bottom:6px"><strong>It is not only walls.</strong> The standard says
+      &ldquo;wall <em>or obstruction</em>.&rdquo; A structural column or a full-height partition
+      sets S or L exactly the way a wall does. <span class="cite">§9.5.2.1.1</span></p>
+      <p style="margin-bottom:0"><strong>Look both ways.</strong> You check upstream
+      <em>and</em> downstream (and both sides of the branch line), then take the
+      <strong>largest</strong> result. Never average the two. If a sprinkler has 12 ft one way
+      and 10 ft the other, S is 12 ft.</p>
+    </div>
+
+    <div class="bench">
+      <div class="bench-head">
+        <h4>Coverage Area Workbench</h4>
+        <span class="hint">drag the sliders &rarr;</span>
+      </div>
+      <div class="bench-figure">
+        <svg id="covSvg" viewBox="0 0 640 380" role="img" aria-label="Plan view of sprinkler coverage area"></svg>
+      </div>
+      <div class="fig-label">Fig. 01 &mdash; Coverage area, plan view</div>
+      <div class="fig-cap">Red = the box this sprinkler owns. Dashed = how each side was measured.</div>
+      <div class="bench-body">
+        <div class="grid2">
+          <div class="ctrl">
+            <div class="ctrl-top"><label>Spacing along branch line</label><span class="val" id="covSVal">12.0 ft</span></div>
+            <input type="range" id="covS" min="6" max="16" step="0.5" value="12">
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-top"><label>Distance to end wall</label><span class="val" id="covWVal">6.0 ft</span></div>
+            <input type="range" id="covW" min="1" max="9" step="0.5" value="6">
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-top"><label>Spacing between branches</label><span class="val" id="covLVal">10.0 ft</span></div>
+            <input type="range" id="covL" min="6" max="16" step="0.5" value="10">
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-top"><label>Distance to side wall</label><span class="val" id="covL2Val">5.0 ft</span></div>
+            <input type="range" id="covL2" min="1" max="9" step="0.5" value="5">
+          </div>
+        </div>
+        <div class="ctrl">
+          <div class="ctrl-top"><label>Check against</label></div>
+          <select id="covHaz"></select>
+        </div>
+        <div class="math" id="covMath"></div>
+      </div>
+      <div class="readout">
+        <div class="ro-row"><span class="ro-k">S &mdash; along branch line</span><span class="ro-v" id="covSOut">—</span></div>
+        <div class="ro-row"><span class="ro-k">L &mdash; between branches</span><span class="ro-v" id="covLOut">—</span></div>
+        <div class="ro-row"><span class="ro-k">Coverage area A<sub>s</sub></span><span class="ro-v big" id="covAOut">—</span></div>
+        <div class="verdict" id="covVerdict">—</div>
+      </div>
+    </div>
+
+    <div class="redline" id="covCoach"></div>
+
+    <h3 class="sub">Small rooms play by a different rule</h3>
+    <div id="smallRoomBox"></div>
+  </section>
+
+  <!-- ============ 02 REMOTE AREA ============ -->
+  <section class="panel" id="p-remote">
+    <div class="eyebrow">Workbench 02</div>
+    <h2 class="head">Remote area: the worst corner of the building</h2>
+    <p class="lead">We do not design for the whole building flowing. We design for the patch
+    of sprinklers that is <strong>hardest to get water to</strong> — and make sure that patch works.</p>
+
+    <div class="plain">
+      <span class="pl-tag">Explain it like I'm ten</span>
+      <p>Think of a garden hose with sprinklers along it. The ones nearest the tap spray
+      hard. The ones at the very far end dribble, because the water had a long way to travel.
+      If you can make the far end spray properly, everything closer is fine automatically.
+      So we do the math on the far end. That far patch is the remote area.</p>
+    </div>
+
+    <h3 class="sub">Why the shape rule exists</h3>
+    <p>You could cheat by making the patch one long skinny line down a single branch line —
+    easy to feed, and nothing like a real fire. So the standard forces the patch to be a
+    <strong>rectangle at least <span style="font-family:var(--mono)">1.2&radic;A</span> wide</strong>
+    in the direction the branch lines run. That spreads it across several branch lines, the
+    way a real fire spreads. <span class="cite">§27.2.4.2.1</span></p>
+
+    <h3 class="sub">Step one — pick your point off the curve</h3>
+    <p>Every curve in Figure 19.3.3.1.1 is drawn as a single straight line, so any point
+    between its two ends is a legitimate reading. Drag along your hazard's line and watch the
+    trade: push the density up and the area you must cover comes down.</p>
+
+    <div class="bench">
+      <div class="bench-head">
+        <h4>Density / Area Curve Reader</h4>
+        <span class="hint">drag the dot along the line &rarr;</span>
+      </div>
+      <div class="bench-figure">
+        <svg id="curveSvg" viewBox="0 0 640 400" role="img" aria-label="Density area curves"></svg>
+      </div>
+      <div class="fig-label">Fig. 04 &mdash; Density/area curves, after Figure 19.3.3.1.1</div>
+      <div class="fig-cap">Redrawn from the endpoints read off the 2019 edition. Verify against your own book.</div>
+      <div class="bench-body">
+        <div class="ctrl">
+          <div class="ctrl-top"><label>Hazard class</label></div>
+          <select id="curveHaz"></select>
+        </div>
+        <div class="ctrl">
+          <div class="ctrl-top"><label>Slide along the curve</label><span class="val" id="curvePosVal">—</span></div>
+          <input type="range" id="curvePos" min="0" max="100" step="1" value="0">
+        </div>
+        <div class="math" id="curveMath"></div>
+        <div class="btn-row">
+          <button class="btn primary" id="curveUse">Send this area to the builder &darr;</button>
+        </div>
+      </div>
+      <div class="readout">
+        <div class="ro-row"><span class="ro-k">Design density</span><span class="ro-v big" id="curveDOut">—</span></div>
+        <div class="ro-row"><span class="ro-k">Area of operation</span><span class="ro-v big" id="curveAOut">—</span></div>
+        <div class="ro-row"><span class="ro-k">Total water on the floor (density &times; area)</span><span class="ro-v" id="curveTotOut">—</span></div>
+      </div>
+    </div>
+
+    <div class="redline" id="curveCoach"></div>
+
+    <h3 class="sub">Step two — give the area a shape</h3>
+
+    <div class="bench">
+      <div class="bench-head">
+        <h4>Remote Area Builder</h4>
+        <span class="hint">watch the rectangle move &rarr;</span>
+      </div>
+      <div class="bench-figure">
+        <svg id="remSvg" viewBox="0 0 640 400" role="img" aria-label="Plan view of the remote area rectangle over a sprinkler grid"></svg>
+      </div>
+      <div class="fig-label">Fig. 02 &mdash; Remote area, plan view</div>
+      <div class="fig-cap">Filled heads are inside the design area. Hatched band = the 1.2&radic;A minimum width.</div>
+      <div class="bench-body">
+        <div class="grid2">
+          <div class="ctrl">
+            <div class="ctrl-top"><label>Area of operation</label><span class="val" id="remAVal">1500 ft²</span></div>
+            <input type="range" id="remA" min="1500" max="5000" step="100" value="1500">
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-top"><label>Spacing along branch</label><span class="val" id="remSVal">12.0 ft</span></div>
+            <input type="range" id="remS" min="6" max="15" step="0.5" value="12">
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-top"><label>Branch line spacing</label><span class="val" id="remLVal">10.0 ft</span></div>
+            <input type="range" id="remL" min="6" max="15" step="0.5" value="10">
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-top"><label>Ceiling height (for QR)</label><span class="val" id="remHVal">12 ft</span></div>
+            <input type="range" id="remH" min="8" max="24" step="1" value="12">
+          </div>
+        </div>
+        <div class="ctrl">
+          <div class="ctrl-top"><label>Adjustments that apply</label></div>
+          <div id="remAdj"></div>
+        </div>
+        <div class="math" id="remMath"></div>
+      </div>
+      <div class="readout">
+        <div class="ro-row"><span class="ro-k">Adjusted area of operation</span><span class="ro-v" id="remAdjOut">—</span></div>
+        <div class="ro-row"><span class="ro-k">Minimum width 1.2&radic;A</span><span class="ro-v" id="remWOut">—</span></div>
+        <div class="ro-row"><span class="ro-k">Sprinklers per branch line</span><span class="ro-v" id="remPerOut">—</span></div>
+        <div class="ro-row"><span class="ro-k">Branch lines involved</span><span class="ro-v" id="remLinesOut">—</span></div>
+        <div class="ro-row"><span class="ro-k">Total calculated sprinklers</span><span class="ro-v big" id="remNOut">—</span></div>
+      </div>
+    </div>
+
+    <div class="redline" id="remCoach"></div>
+  </section>
+
+  <!-- ============ 03 STARTING FLOW ============ -->
+  <section class="panel" id="p-flow">
+    <div class="eyebrow">Workbench 03</div>
+    <h2 class="head">Starting flow: two rules, the bigger one wins</h2>
+    <p class="lead">The calculation begins at the most remote sprinkler. Two separate rules
+    each demand a minimum flow. You must satisfy <strong>both</strong> — so you take the larger.</p>
+
+    <div class="plain">
+      <span class="pl-tag">Explain it like I'm ten</span>
+      <p>Two grown-ups tell you how much milk to pour. Mum says "at least one cup, because
+      that's how much the cereal needs." Dad says "at least one and a half cups, because
+      that's the smallest our jug can pour." To keep them both happy you pour one and a half
+      cups. You always obey the bigger number.</p>
+    </div>
+
+    <div class="bench">
+      <div class="bench-head">
+        <h4>Which Driver Wins?</h4>
+        <span class="hint">change the inputs &rarr;</span>
+      </div>
+      <div class="bench-figure">
+        <svg id="flowSvg" viewBox="0 0 640 260" role="img" aria-label="Comparison of density-driven and K-factor-driven flow"></svg>
+      </div>
+      <div class="fig-label">Fig. 03 &mdash; Density driver vs. K-factor driver</div>
+      <div class="fig-cap">The taller bar sets the starting flow.</div>
+      <div class="bench-body">
+        <div class="grid2">
+          <div class="ctrl">
+            <div class="ctrl-top"><label>Design density</label><span class="val" id="flDVal">0.15</span></div>
+            <input type="range" id="flD" min="0.05" max="0.40" step="0.01" value="0.15">
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-top"><label>Coverage area</label><span class="val" id="flAVal">120 ft²</span></div>
+            <input type="range" id="flA" min="60" max="225" step="5" value="120">
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-top"><label>Sprinkler K-factor</label></div>
+            <select id="flK"></select>
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-top"><label>Minimum pressure</label><span class="val" id="flPVal">7.0 psi</span></div>
+            <input type="range" id="flP" min="7" max="30" step="0.5" value="7">
+          </div>
+        </div>
+        <div class="math" id="flMath"></div>
+      </div>
+      <div class="readout">
+        <div class="ro-row"><span class="ro-k">Density driver &nbsp;q = density &times; area</span><span class="ro-v" id="flDOut">—</span></div>
+        <div class="ro-row"><span class="ro-k">K-factor driver &nbsp;q = K&radic;P</span><span class="ro-v" id="flKOut">—</span></div>
+        <div class="ro-row"><span class="ro-k">Governing flow</span><span class="ro-v big" id="flQOut">—</span></div>
+        <div class="ro-row"><span class="ro-k">Pressure needed at that head</span><span class="ro-v big" id="flPOut">—</span></div>
+        <div class="verdict ok" id="flVerdict">—</div>
+      </div>
+    </div>
+
+    <div class="redline" id="flCoach"></div>
+  </section>
+
+  <!-- ============ 04 DRILL ============ -->
+  <section class="panel" id="p-drill">
+    <div class="eyebrow">Workbench 04</div>
+    <h2 class="head">Drill</h2>
+    <p class="lead">Short scenarios, instant feedback, every answer tied to a section number.
+    Miss one and it comes back later — that's the point.</p>
+
+    <div class="scorebar">
+      <div class="score-cell"><div class="sc-k">Streak</div><div class="sc-v flame" id="dStreak">0</div></div>
+      <div class="score-cell"><div class="sc-k">Best</div><div class="sc-v" id="dBest">0</div></div>
+      <div class="score-cell"><div class="sc-k">Correct</div><div class="sc-v" id="dRight">0</div></div>
+      <div class="score-cell"><div class="sc-k">Seen</div><div class="sc-v" id="dSeen">0</div></div>
+    </div>
+
+    <div id="drillHost"></div>
+
+    <div class="btn-row">
+      <button class="btn primary" id="dNext">Next question</button>
+      <button class="btn" id="dReset">Reset stats</button>
+    </div>
+  </section>
+
+  <!-- ============ 05 PROGRESS ============ -->
+  <section class="panel" id="p-progress">
+    <div class="eyebrow">Workbench 05</div>
+    <h2 class="head">Your progress</h2>
+    <p class="lead">Everything below is stored on this device only. Nothing is uploaded.</p>
+
+    <h3 class="sub">Mastery by topic</h3>
+    <div class="mastery" id="masteryHost"></div>
+
+    <h3 class="sub">Badges</h3>
+    <div class="badges" id="badgeHost"></div>
+
+    <h3 class="sub">Study log</h3>
+    <div class="bench"><div class="bench-body"><div id="logHost"></div></div></div>
+
+    <div class="btn-row">
+      <button class="btn" id="wipeAll">Clear all saved progress</button>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>Fire System Mastery &middot; Hydraulic Trainer</span>
+    <span><a href="NFPA13-Design-Workflow-Wizard.html" style="color:var(--redline);font-weight:700">
+      Design Workflow &rarr;</a> &nbsp;the nine steps, start to finish</span>
+    <span><a href="index.html" style="color:var(--ink-3)">&larr; Quiz Hub</a></span>
+    <span>Single file &middot; works offline</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   NFPA DATA — single source of truth.
+   Every value below is transcribed from NFPA 13, 2019 edition.
+   Citations are the 2019 section/table numbers.
+   ============================================================ */
+var NFPA = {
+
+  /* Table 10.2.4.2.1(a),(b),(c) — max protection area & spacing,
+     standard spray upright/pendent. */
+  coverage: {
+    lh_nc_hyd:  {name:"Light Hazard — noncombustible (obstructed or not), hyd. calculated", max:225, spac:15, cite:"Table 10.2.4.2.1(a)"},
+    lh_nc_ps:   {name:"Light Hazard — noncombustible (obstructed or not), pipe schedule",   max:200, spac:15, cite:"Table 10.2.4.2.1(a)"},
+    lh_comb_ob: {name:"Light Hazard — combustible obstructed, members ≥3 ft OC", max:168, spac:15, cite:"Table 10.2.4.2.1(a)"},
+    lh_comb_cl: {name:"Light Hazard — combustible, members <3 ft OC",            max:130, spac:15, cite:"Table 10.2.4.2.1(a)"},
+    oh:         {name:"Ordinary Hazard — all construction, all systems",         max:130, spac:15, cite:"Table 10.2.4.2.1(b)"},
+    eh_hi:      {name:"Extra Hazard — hydraulically calc., density ≥0.25",       max:100, spac:12, cite:"Table 10.2.4.2.1(c)"},
+    eh_lo:      {name:"Extra Hazard — hydraulically calc., density <0.25",       max:130, spac:15, cite:"Table 10.2.4.2.1(c)"},
+    eh_ps:      {name:"Extra Hazard — pipe schedule",                            max:90,  spac:12, cite:"Table 10.2.4.2.1(c)"}
+  },
+
+  /* §10.2.4.2.2 — absolute ceiling on any standard spray sprinkler */
+  absoluteMaxCoverage: 225,
+
+  /* §10.2.5.3 / §10.2.5.4.1 */
+  minFromWall: 4/12,
+  minBetween: 6,
+
+  /* §19.3.3.2 — design area adjustments */
+  adj: {
+    dry:   {label:"Dry pipe or double-interlock preaction — increase 30%", mult:1.30, cite:"§19.3.3.2.5"},
+    slope: {label:"Sloped ceiling, pitch over 2 in 12 (16.7%), nonstorage — increase 30%", mult:1.30, cite:"§19.3.3.2.4"},
+    qr:    {label:"Quick-response reduction — all five conditions must be met: wet pipe · light or ordinary hazard · ceiling 20 ft or less · no unprotected ceiling pockets over 32 ft² · no unprotected areas above cloud ceilings", mult:null, cite:"§19.3.3.2.3.1"}
+  },
+
+  /* §19.3.3.2.3.2 — floor on the design area where the QR reduction is taken */
+  minSprinklersQR: 5,
+
+  /* Figure 19.3.3.2.3.1 — QR percent reduction to design area.
+     Printed with the figure: y = -3x/2 + 55 for ceiling ≥10 ft and ≤20 ft;
+     y = 40 for ceiling <10 ft; y = 0 for ceiling >20 ft.  (x = ceiling ht, ft) */
+  qrReduction: function(ceilFt){
+    if(ceilFt > 20) return 0;
+    if(ceilFt < 10) return 40;
+    return (-3*ceilFt/2) + 55;
+  },
+
+  /* §27.2.4.11.1 */
+  minPressure: 7,
+
+  /* K-factors — nominal values in common use. The sprinkler's listing governs. */
+  kFactors: [
+    {k:2.8,  label:"K-2.8 (40)"},
+    {k:4.2,  label:"K-4.2 (60)"},
+    {k:5.6,  label:"K-5.6 (80)"},
+    {k:8.0,  label:"K-8.0 (115)"},
+    {k:11.2, label:"K-11.2 (160)"},
+    {k:14.0, label:"K-14.0 (200)"},
+    {k:16.8, label:"K-16.8 (240)"},
+    {k:25.2, label:"K-25.2 (360)"}
+  ],
+
+  /* Table 19.3.3.1.2 — hose stream allowance & duration */
+  hose: {
+    light:    {combined:100, dur:"30",     cite:"Table 19.3.3.1.2"},
+    ordinary: {combined:250, dur:"60–90",  cite:"Table 19.3.3.1.2"},
+    extra:    {combined:500, dur:"90–120", cite:"Table 19.3.3.1.2"}
+  },
+
+  /* Figure 19.3.3.1.1 — the plotted extent of each density/area curve, read off the
+     2019 edition figure. Each curve is a straight-line segment between these two ends. */
+  curves: [
+    {name:"Light Hazard",       aMin:1500, dMin:0.10, aMax:3000, dMax:0.07},
+    {name:"Ordinary Hazard 1",  aMin:1500, dMin:0.15, aMax:4000, dMax:0.10},
+    {name:"Ordinary Hazard 2",  aMin:1500, dMin:0.20, aMax:4000, dMax:0.15},
+    {name:"Extra Hazard 1",     aMin:2500, dMin:0.30, aMax:5000, dMax:0.20},
+    {name:"Extra Hazard 2",     aMin:2500, dMin:0.40, aMax:5000, dMax:0.30}
+  ]
+};
+
+/* ============================================================
+   STORAGE
+   ============================================================ */
+var KEY = "fsm_hydraulic_trainer_v1";
+var store = load();
+
+function load(){
+  try{
+    var raw = localStorage.getItem(KEY);
+    if(!raw) return blank();
+    var o = JSON.parse(raw);
+    if(!o || typeof o !== "object") return blank();
+    o.topics = o.topics || blank().topics;
+    o.log = o.log || [];
+    return o;
+  }catch(e){ return blank(); }
+}
+function blank(){
+  return {
+    streak:0, best:0, right:0, seen:0,
+    topics:{ coverage:{r:0,s:0}, remote:{r:0,s:0}, flow:{r:0,s:0}, hazard:{r:0,s:0}, rules:{r:0,s:0} },
+    missed:[], badges:[], log:[], visits:0, lastVisit:null
+  };
+}
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify(store)); }catch(e){}
+}
+
+/* ============================================================
+   SMALL HELPERS
+   ============================================================ */
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s).replace(/[&<>"]/g,function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+function f1(n){ return (Math.round(n*10)/10).toFixed(1); }
+function f0(n){ return String(Math.round(n)); }
+function f2(n){ return (Math.round(n*100)/100).toFixed(2); }
+function todayISO(){
+  var d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+}
+
+/* SVG helpers — drafting conventions */
+function svgEl(tag, attrs){
+  var e = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  for(var k in attrs){ if(attrs.hasOwnProperty(k)) e.setAttribute(k, attrs[k]); }
+  return e;
+}
+/* true when the drawing is being scaled down for a phone — the label gaps and
+   type inside the SVG both need to open up so the numbers stay readable */
+function isNarrow(){ return window.innerWidth <= 600; }
+
+/* every workbench registers its draw function so a rotation or window resize
+   re-runs the drafting with the right label spacing */
+var REDRAW = [];
+var wasNarrow = isNarrow();
+window.addEventListener("resize", function(){
+  var now = isNarrow();
+  if(now === wasNarrow) return;   /* only redraw when we cross the breakpoint */
+  wasNarrow = now;
+  REDRAW.forEach(function(fn){ try{ fn(); }catch(e){} });
+});
+
+/* a dimension line with tick ends and a label in a gap */
+function dimLine(x1,y1,x2,y2,label,flip){
+  var g = svgEl("g",{});
+  var horiz = Math.abs(y2-y1) < 0.5;
+  var mx = (x1+x2)/2, my = (y1+y2)/2;
+  var gap = horiz ? (isNarrow()?40:26) : (isNarrow()?32:20);
+  if(horiz){
+    g.appendChild(svgEl("line",{x1:x1,y1:y1,x2:mx-gap,y2:y1,class:"dim-line"}));
+    g.appendChild(svgEl("line",{x1:mx+gap,y1:y1,x2:x2,y2:y1,class:"dim-line"}));
+  }else{
+    g.appendChild(svgEl("line",{x1:x1,y1:y1,x2:x1,y2:my-gap,class:"dim-line"}));
+    g.appendChild(svgEl("line",{x1:x1,y1:my+gap,x2:x1,y2:y2,class:"dim-line"}));
+  }
+  /* tick marks at 45 degrees, drafting style */
+  [[x1,y1],[x2,y2]].forEach(function(p){
+    g.appendChild(svgEl("line",{x1:p[0]-4,y1:p[1]+4,x2:p[0]+4,y2:p[1]-4,class:"dim-line"}));
+  });
+  var t = svgEl("text",{x:mx, y:horiz? my+4 : my+4, class:"dim-txt", "text-anchor":"middle"});
+  if(!horiz) t.setAttribute("transform","rotate(-90 "+mx+" "+my+")");
+  t.textContent = label;
+  g.appendChild(t);
+  return g;
+}
+function sprinklerGlyph(cx,cy,r,filled){
+  var g = svgEl("g",{});
+  g.appendChild(svgEl("circle",{cx:cx,cy:cy,r:r,fill:filled?"#16130F":"#fff",stroke:"#16130F","stroke-width":1.5}));
+  if(!filled){
+    g.appendChild(svgEl("line",{x1:cx-r*0.55,y1:cy,x2:cx+r*0.55,y2:cy,stroke:"#16130F","stroke-width":1}));
+  }
+  return g;
+}
+
+/* ============================================================
+   TABS
+   ============================================================ */
+var panels = ["learn","coverage","remote","flow","drill","progress"];
+$("tabs").addEventListener("click", function(e){
+  var b = e.target.closest(".tab");
+  if(!b) return;
+  showPanel(b.getAttribute("data-p"));
+});
+function showPanel(p){
+  panels.forEach(function(x){
+    $("p-"+x).classList.toggle("on", x===p);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(t){
+    t.classList.toggle("on", t.getAttribute("data-p")===p);
+  });
+  if(p==="progress") renderProgress();
+  if(p==="drill" && !currentQ) nextQuestion();
+  window.scrollTo(0,0);
+}
+
+/* ============================================================
+   GLOSSARY (Start Here)
+   ============================================================ */
+var GLOSSARY = [
+  ["Density","How hard it rains. Gallons per minute spread over each square foot of floor. Written 0.15 gpm/ft²."],
+  ["Coverage area","The patch of floor one sprinkler is responsible for. Side S times side L."],
+  ["Remote area","The worst-case group of sprinklers we assume open at once — the group hardest to supply."],
+  ["Density × area","Multiply them and you get the gallons per minute that one sprinkler must pour."],
+  ["K-factor","How big the sprinkler's hole is. Bigger K, more water at the same pressure."],
+  ["Friction loss","Pressure lost as water scrapes along the inside of the pipe. Longer and skinnier means more lost."],
+  ["Demand","Everything the system needs: gallons per minute, at a pressure, for a length of time."],
+  ["Supply","What the water source can actually deliver, measured by a flow test."],
+  ["Safety margin","The gap between supply and demand. No gap, no confidence."]
+];
+(function(){
+  var h = "";
+  GLOSSARY.forEach(function(g,i){
+    h += '<div style="display:flex;gap:12px;padding:8px 0;'+(i? 'border-top:1px dotted var(--line)':'')+'">'
+      +  '<div style="font-family:var(--mono);font-size:.72rem;font-weight:800;letter-spacing:.04em;'
+      +  'text-transform:uppercase;width:118px;flex-shrink:0;color:var(--ink)">'+esc(g[0])+'</div>'
+      +  '<div style="font-size:.88rem;color:var(--ink-2)">'+esc(g[1])+'</div></div>';
+  });
+  $("glossary").innerHTML = h;
+})();
+
+/* ============================================================
+   WORKBENCH 01 — COVERAGE AREA
+   ============================================================ */
+(function(){
+  var sel = $("covHaz");
+  var html = "";
+  for(var k in NFPA.coverage){
+    if(!NFPA.coverage.hasOwnProperty(k)) continue;
+    html += '<option value="'+k+'"'+(k==="oh"?" selected":"")+'>'+esc(NFPA.coverage[k].name)+'</option>';
+  }
+  sel.innerHTML = html;
+
+  var ids = ["covS","covW","covL","covL2","covHaz"];
+  ids.forEach(function(id){
+    $(id).addEventListener("input", drawCoverage);
+    $(id).addEventListener("change", drawCoverage);
+  });
+  REDRAW.push(drawCoverage);
+  drawCoverage();
+
+  function drawCoverage(){
+    var sSpac = parseFloat($("covS").value);
+    var wall  = parseFloat($("covW").value);
+    var lSpac = parseFloat($("covL").value);
+    var wall2 = parseFloat($("covL2").value);
+    var haz   = NFPA.coverage[$("covHaz").value];
+
+    $("covSVal").textContent  = f1(sSpac)+" ft";
+    $("covWVal").textContent  = f1(wall)+" ft";
+    $("covLVal").textContent  = f1(lSpac)+" ft";
+    $("covL2Val").textContent = f1(wall2)+" ft";
+
+    var S = Math.max(sSpac, 2*wall);
+    var L = Math.max(lSpac, 2*wall2);
+    var A = S*L;
+    var overArea = A > haz.max;
+    var overSpacS = sSpac > haz.spac;
+    var overSpacL = lSpac > haz.spac;
+    var pass = !overArea && !overSpacS && !overSpacL;
+
+    $("covSOut").textContent = f1(S)+" ft";
+    $("covLOut").textContent = f1(L)+" ft";
+    $("covAOut").textContent = f0(A)+" ft²";
+    $("covSOut").style.color = overSpacS ? "var(--fail)" : "var(--ink)";
+    $("covLOut").style.color = overSpacL ? "var(--fail)" : "var(--ink)";
+    $("covAOut").style.color = overArea ? "var(--fail)" : "var(--pass)";
+
+    var v = $("covVerdict");
+    v.className = "verdict " + (pass ? "ok" : "no");
+    v.textContent = pass
+      ? "PASS — " + f0(A) + " ft² of " + haz.max + " ft² allowed"
+      : "OVER LIMIT — " + (overArea ? f0(A)+" ft² exceeds "+haz.max+" ft²" : "spacing exceeds "+haz.spac+" ft");
+
+    /* worked math, always visible — this is the teaching */
+    var sWins = (2*wall) > sSpac;
+    var lWins = (2*wall2) > lSpac;
+    $("covMath").innerHTML =
+      '<span class="lbl">S = greater of ( spacing , 2 × wall )</span>\n' +
+      '  = greater of ( ' + f1(sSpac) + ' , 2 × ' + f1(wall) + ' = ' + f1(2*wall) + ' )'
+      + '  →  <span class="' + (sWins?"hi":"ok") + '">' + f1(S) + ' ft</span>'
+      + (sWins ? '   <span class="hi">← the wall is driving it</span>' : '') + '\n' +
+      '<span class="lbl">L = greater of ( spacing , 2 × wall )</span>\n' +
+      '  = greater of ( ' + f1(lSpac) + ' , 2 × ' + f1(wall2) + ' = ' + f1(2*wall2) + ' )'
+      + '  →  <span class="' + (lWins?"hi":"ok") + '">' + f1(L) + ' ft</span>'
+      + (lWins ? '   <span class="hi">← the wall is driving it</span>' : '') + '\n' +
+      '<span class="lbl">A</span> = S × L = ' + f1(S) + ' × ' + f1(L) + ' = '
+      + '<span class="' + (overArea?"hi":"ok") + '">' + f0(A) + ' ft²</span>   '
+      + '<span class="lbl">(max ' + haz.max + ' ft², ' + esc(haz.cite) + ')</span>';
+
+    /* coaching note changes with the situation — a reason to fiddle */
+    var coach = $("covCoach");
+    if(overArea && (sWins || lWins)){
+      var need = sWins ? sSpac/2 : lSpac/2;
+      coach.innerHTML = '<b>This is the classic mistake.</b> The box blew past the limit because a '
+        + 'wall distance is doing the driving, not the sprinkler spacing. Pull that end sprinkler in to '
+        + f1(need) + ' ft or less from the wall and the box shrinks back — no extra sprinkler needed.';
+      coach.style.display = "block";
+    }else if(overArea){
+      coach.innerHTML = '<b>Too much floor per head.</b> Spacing itself is too generous for this hazard. '
+        + 'Tighten the branch line or add a branch line until A is at or under ' + haz.max + ' ft².';
+      coach.style.display = "block";
+    }else if(2*wall === sSpac || 2*wall2 === lSpac){
+      coach.innerHTML = '<b>Right on the balance point.</b> Twice the wall distance exactly equals the '
+        + 'sprinkler spacing. This is the sweet spot designers aim for — the wall costs you nothing.';
+      coach.style.display = "block";
+    }else{
+      coach.style.display = "none";
+    }
+
+    renderCovSvg(sSpac, wall, lSpac, wall2, S, L, overArea);
+  }
+
+  function renderCovSvg(sSpac, wall, lSpac, wall2, S, L, over){
+    var svg = $("covSvg");
+    while(svg.firstChild) svg.removeChild(svg.firstChild);
+
+    /* hatch pattern for the coverage box */
+    var defs = svgEl("defs",{});
+    var pat = svgEl("pattern",{id:"hatch",width:7,height:7,patternTransform:"rotate(45)",patternUnits:"userSpaceOnUse"});
+    pat.appendChild(svgEl("line",{x1:0,y1:0,x2:0,y2:7,stroke:(over?"#B3341F":"#D85A30"),"stroke-width":1.1,opacity:.35}));
+    defs.appendChild(pat);
+    svg.appendChild(defs);
+
+    /* scale: feet -> px */
+    var maxFt = Math.max(sSpac*2+wall, lSpac*2+wall2) + 4;
+    var px = 300/maxFt;
+    var ox = 120, oy = 60;   /* origin = wall corner */
+
+    /* walls (heavy object lines) */
+    svg.appendChild(svgEl("line",{x1:ox,y1:oy-26,x2:ox,y2:oy+300,class:"obj-line"}));
+    svg.appendChild(svgEl("line",{x1:ox-26,y1:oy,x2:ox+420,y2:oy,class:"obj-line"}));
+    /* wall hatching, drafting convention */
+    for(var i=0;i<16;i++){
+      svg.appendChild(svgEl("line",{x1:ox-9,y1:oy-20+i*20,x2:ox-1,y2:oy-28+i*20,class:"thin-line",opacity:.5}));
+    }
+    for(var j=0;j<20;j++){
+      svg.appendChild(svgEl("line",{x1:ox-18+j*22,y1:oy-9,x2:ox-10+j*22,y2:oy-1,class:"thin-line",opacity:.5}));
+    }
+
+    /* sprinkler positions: 3 along branch x 3 branches, subject sprinkler at [0][0] */
+    var xs = [ox+wall*px, ox+(wall+sSpac)*px, ox+(wall+2*sSpac)*px];
+    var ys = [oy+wall2*px, oy+(wall2+lSpac)*px, oy+(wall2+2*lSpac)*px];
+
+    /* branch lines (pipe) */
+    ys.forEach(function(y){
+      svg.appendChild(svgEl("line",{x1:ox+4,y1:y,x2:xs[2]+38,y2:y,class:"thin-line"}));
+    });
+
+    /* the coverage box for the subject sprinkler */
+    var bx = xs[0] - S*px/2, by = ys[0] - L*px/2;
+    svg.appendChild(svgEl("rect",{x:bx,y:by,width:S*px,height:L*px,fill:"url(#hatch)",
+      stroke:(over?"#B3341F":"#D85A30"),"stroke-width":2}));
+
+    /* all sprinklers */
+    for(var a=0;a<3;a++) for(var b=0;b<3;b++){
+      svg.appendChild(sprinklerGlyph(xs[a], ys[b], 6, a===0&&b===0));
+    }
+
+    /* extension + dimension lines */
+    var dimY = ys[2] + 46;
+    svg.appendChild(svgEl("line",{x1:ox,y1:oy,x2:ox,y2:dimY+8,class:"ext-line"}));
+    svg.appendChild(svgEl("line",{x1:xs[0],y1:ys[0],x2:xs[0],y2:dimY+8,class:"ext-line"}));
+    svg.appendChild(svgEl("line",{x1:xs[1],y1:ys[0],x2:xs[1],y2:dimY+8,class:"ext-line"}));
+    svg.appendChild(dimLine(ox, dimY, xs[0], dimY, f1(wall)+"'"));
+    svg.appendChild(dimLine(xs[0], dimY, xs[1], dimY, f1(sSpac)+"'"));
+
+    var dimX = xs[2] + 62;
+    svg.appendChild(svgEl("line",{x1:xs[2],y1:oy,x2:dimX+8,y2:oy,class:"ext-line"}));
+    svg.appendChild(svgEl("line",{x1:xs[2],y1:ys[0],x2:dimX+8,y2:ys[0],class:"ext-line"}));
+    svg.appendChild(svgEl("line",{x1:xs[2],y1:ys[1],x2:dimX+8,y2:ys[1],class:"ext-line"}));
+    svg.appendChild(dimLine(dimX, oy, dimX, ys[0], f1(wall2)+"'"));
+    svg.appendChild(dimLine(dimX, ys[0], dimX, ys[1], f1(lSpac)+"'"));
+
+    /* the S and L callouts on the box itself */
+    var sTxt = svgEl("text",{x:xs[0], y:by-7, class:"obj-txt","text-anchor":"middle"});
+    sTxt.textContent = "S = "+f1(S)+" ft";
+    svg.appendChild(sTxt);
+    var lTxt = svgEl("text",{x:bx-8, y:ys[0], class:"obj-txt","text-anchor":"middle"});
+    lTxt.setAttribute("transform","rotate(-90 "+(bx-8)+" "+ys[0]+")");
+    lTxt.textContent = "L = "+f1(L)+" ft";
+    svg.appendChild(lTxt);
+
+    /* leader + note on the subject head */
+    var nx = xs[0]+S*px/2+14, ny = by-24;
+    svg.appendChild(svgEl("line",{x1:xs[0]+8,y1:ys[0]-8,x2:nx-6,y2:ny+4,class:"thin-line"}));
+    var note = svgEl("text",{x:nx, y:ny+8, class:"note-txt"});
+    note.textContent = "SUBJECT SPRINKLER";
+    svg.appendChild(note);
+  }
+})();
+
+/* small room box — content injected so the citation lives in one place */
+$("smallRoomBox").innerHTML =
+  '<div class="plain"><span class="pl-tag">First: does the room even qualify?</span>'
++ '<p>A <strong>small room</strong> is a defined term, and all three of these must be true at once:</p>'
++ '<p style="margin:6px 0 8px 0"><strong>1.</strong> light hazard occupancy &nbsp;·&nbsp; '
++ '<strong>2.</strong> unobstructed construction &nbsp;·&nbsp; <strong>3.</strong> floor area not over 800 ft²</p>'
++ '<p style="margin-bottom:0">Fail any one of the three and it is an ordinary room — go back to S × L. '
++ 'This is the mistake to avoid: the shortcut is <em>not</em> available just because a room is small. '
++ '<span class="cite">§3.3.196</span></p></div>'
+
++ '<div class="plain"><span class="pl-tag">Then: the shortcut</span>'
++ '<p>In a qualifying small room you do not measure S and L at all. Take the room area and divide it by the '
++ 'number of sprinklers in the room. <span class="cite">§10.2.4.1.2.1</span></p>'
++ '<p><strong>Example.</strong> A 10 ft × 12 ft light hazard office of unobstructed construction is 120 ft² — '
++ 'under 800, so it qualifies. One sprinkler: coverage = 120 ÷ 1 = 120 ft². Comfortably inside the light hazard '
++ 'limit.</p>'
++ '<p style="margin-bottom:0"><strong>Second example.</strong> A 12 ft × 24 ft light hazard room is 288 ft² — still '
++ 'a small room. Two sprinklers: 288 ÷ 2 = 144 ft² each. That passes, because the light hazard limit is 225 ft² '
++ 'hydraulically calculated — <em>not</em> the 130 ft² you may have in your head from ordinary hazard. Watch which '
++ 'limit you are testing against. The spacing limits still apply, and no sprinkler may be more than 9 ft from any '
++ 'single wall. <span class="cite">Table 10.2.4.2.1(a); §10.2.5.2.3.1</span></p></div>';
+
+/* ============================================================
+   CURVE TABLE (Start Here) + CURVE READER (Workbench 02)
+   Endpoints below are read from Figure 19.3.3.1.1 of the 2019
+   edition. Each curve is plotted as a single straight segment on
+   linear axes, so interpolating between the two ends reproduces
+   the printed line exactly.
+   ============================================================ */
+(function(){
+  /* static table on the Start Here panel */
+  var t = '<span class="lbl">hazard              small-area end         large-area end</span>\n';
+  NFPA.curves.forEach(function(c){
+    var nm = (c.name+"                    ").slice(0,20);
+    t += nm
+      + '<span class="ok">'+f2(c.dMin)+'</span> over '+f0(c.aMin)+' ft²'
+      + '     →     <span class="ok">'+f2(c.dMax)+'</span> over '+f0(c.aMax)+' ft²\n';
+  });
+  $("curveTable").innerHTML = t;
+
+  /* interactive reader */
+  var sel = $("curveHaz");
+  sel.innerHTML = NFPA.curves.map(function(c,i){
+    return '<option value="'+i+'"'+(i===1?" selected":"")+'>'+esc(c.name)+'</option>';
+  }).join("");
+  $("curvePos").value = 0;
+
+  $("curveHaz").addEventListener("change", drawCurve);
+  $("curvePos").addEventListener("input", drawCurve);
+  $("curveUse").addEventListener("click", function(){
+    var st = current();
+    var a = Math.round(st.a/100)*100;
+    if(a < 1500) a = 1500;
+    if(a > 5000) a = 5000;
+    var slider = $("remA");
+    slider.value = a;
+    slider.dispatchEvent(new Event("input",{bubbles:true}));
+    toast("Area of operation set to "+f0(a)+" ft²");
+    document.getElementById("remSvg").scrollIntoView({behavior:"smooth",block:"center"});
+  });
+  REDRAW.push(drawCurve);
+  drawCurve();
+
+  function current(){
+    var c = NFPA.curves[parseInt($("curveHaz").value,10)];
+    var pos = parseInt($("curvePos").value,10)/100;
+    /* linear interpolation between the two verified endpoints */
+    return {
+      c: c,
+      d: c.dMin + (c.dMax - c.dMin)*pos,
+      a: c.aMin + (c.aMax - c.aMin)*pos,
+      pos: pos
+    };
+  }
+
+  function drawCurve(){
+    var st = current(), c = st.c;
+    $("curvePosVal").textContent = st.pos===0 ? "at the dense end"
+      : (st.pos===1 ? "at the wide end" : Math.round(st.pos*100)+"% along");
+    $("curveDOut").textContent = f2(st.d)+" gpm/ft²";
+    $("curveAOut").textContent = f0(st.a)+" ft²";
+    $("curveTotOut").textContent = f0(st.d*st.a)+" gpm";
+
+    $("curveMath").innerHTML =
+      '<span class="lbl">'+esc(c.name)+' curve runs</span>\n'
+    + '  from <span class="ok">'+f2(c.dMin)+' gpm/ft² over '+f0(c.aMin)+' ft²</span>\n'
+    + '  to   <span class="ok">'+f2(c.dMax)+' gpm/ft² over '+f0(c.aMax)+' ft²</span>\n\n'
+    + '<span class="lbl">your point</span>  <span class="hi">'+f2(st.d)+' gpm/ft²</span> over '
+    + '<span class="hi">'+f0(st.a)+' ft²</span>\n'
+    + '<span class="lbl">water on the floor</span> = '+f2(st.d)+' × '+f0(st.a)+' = '
+    + f0(st.d*st.a)+' gpm  <span class="lbl">(before hose allowance)</span>';
+
+    var coach = $("curveCoach");
+    var totA = c.dMin*c.aMin, totB = c.dMax*c.aMax;
+    if(st.pos === 0){
+      coach.innerHTML = '<b>The dense end.</b> Smallest area to cover, hardest rain. This end usually '
+        + 'wins when the water supply is strong but the pipe run is long — fewer sprinklers flowing means '
+        + 'less friction to fight.';
+    }else if(st.pos === 1){
+      coach.innerHTML = '<b>The wide end.</b> Gentlest rain, but spread over the largest area — so more '
+        + 'sprinklers are flowing at once. Total water is '+f0(totB)+' gpm here versus '+f0(totA)+' gpm at '
+        + 'the dense end. Bigger total flow is harder on a weak supply.';
+    }else{
+      coach.innerHTML = '<b>Both ends are legal.</b> Any single point on the curve satisfies the code '
+        + '<span class="cite">§19.3.3.2.1.2</span>. Designers try several and keep whichever calculates out '
+        + 'best against the actual water supply. That is the whole game.';
+    }
+    coach.style.display = "block";
+
+    render(st);
+  }
+
+  function render(st){
+    var svg = $("curveSvg");
+    while(svg.firstChild) svg.removeChild(svg.firstChild);
+    var L=78, R=606, T=34, B=316;             /* plot frame */
+    var dMin=0.05, dMax=0.40, aMin=1500, aMax=5000;
+    function X(d){ return L + (d-dMin)/(dMax-dMin)*(R-L); }
+    function Y(a){ return B - (a-aMin)/(aMax-aMin)*(B-T); }
+
+    /* minor grid — 0.01 density, 200 ft² */
+    for(var d=dMin; d<=dMax+1e-9; d+=0.01){
+      svg.appendChild(svgEl("line",{x1:X(d),y1:T,x2:X(d),y2:B,stroke:"#D6CEC0","stroke-width":.5}));
+    }
+    for(var a=aMin; a<=aMax; a+=200){
+      svg.appendChild(svgEl("line",{x1:L,y1:Y(a),x2:R,y2:Y(a),stroke:"#D6CEC0","stroke-width":.5}));
+    }
+    /* major grid + labels */
+    [0.05,0.10,0.15,0.20,0.25,0.30,0.35,0.40].forEach(function(d){
+      svg.appendChild(svgEl("line",{x1:X(d),y1:T,x2:X(d),y2:B,stroke:"#8B8275","stroke-width":.8}));
+      var t=svgEl("text",{x:X(d),y:B+20,class:"note-txt","text-anchor":"middle"});
+      t.textContent = f2(d); svg.appendChild(t);
+    });
+    [1500,2000,2500,3000,4000,5000].forEach(function(a){
+      svg.appendChild(svgEl("line",{x1:L,y1:Y(a),x2:R,y2:Y(a),stroke:"#8B8275","stroke-width":.8}));
+      var t=svgEl("text",{x:L-8,y:Y(a)+4,class:"note-txt","text-anchor":"end"});
+      t.textContent = f0(a); svg.appendChild(t);
+    });
+    /* frame */
+    svg.appendChild(svgEl("rect",{x:L,y:T,width:R-L,height:B-T,fill:"none",stroke:"#16130F","stroke-width":1.5}));
+
+    /* axis titles */
+    var xt=svgEl("text",{x:(L+R)/2,y:B+42,class:"obj-txt","text-anchor":"middle"});
+    xt.textContent="DENSITY (gpm/ft²)"; svg.appendChild(xt);
+    var yt=svgEl("text",{x:22,y:(T+B)/2,class:"obj-txt","text-anchor":"middle"});
+    yt.setAttribute("transform","rotate(-90 22 "+((T+B)/2)+")");
+    yt.textContent="AREA OF OPERATION (ft²)"; svg.appendChild(yt);
+
+    /* all five curves; the selected one heavy */
+    var selIdx = parseInt($("curveHaz").value,10);
+    NFPA.curves.forEach(function(c,i){
+      var on = (i===selIdx);
+      svg.appendChild(svgEl("line",{
+        x1:X(c.dMin),y1:Y(c.aMin),x2:X(c.dMax),y2:Y(c.aMax),
+        stroke: on ? "#16130F" : "#8B8275",
+        "stroke-width": on ? 2.6 : 1,
+        opacity: on ? 1 : .5
+      }));
+      /* endpoint ticks */
+      [[c.dMin,c.aMin],[c.dMax,c.aMax]].forEach(function(p){
+        svg.appendChild(svgEl("circle",{cx:X(p[0]),cy:Y(p[1]),r: on?3.5:2,
+          fill: on ? "#16130F" : "#8B8275"}));
+      });
+      var lt = svgEl("text",{x:X(c.dMin)+7,y:Y(c.aMin)-7,class:"note-txt"});
+      if(on){ lt.setAttribute("fill","#16130F"); lt.setAttribute("font-weight","700"); }
+      lt.textContent = c.name.replace("Ordinary Hazard","OH").replace("Extra Hazard","EH").replace("Light Hazard","LIGHT");
+      svg.appendChild(lt);
+    });
+
+    /* the moving point */
+    var px = X(st.d), py = Y(st.a);
+    svg.appendChild(svgEl("line",{x1:L,y1:py,x2:px,y2:py,class:"dim-line","stroke-dasharray":"4 3"}));
+    svg.appendChild(svgEl("line",{x1:px,y1:py,x2:px,y2:B,class:"dim-line","stroke-dasharray":"4 3"}));
+    svg.appendChild(svgEl("circle",{cx:px,cy:py,r:7,fill:"#D85A30",stroke:"#fff","stroke-width":2}));
+
+    var rt = svgEl("text",{x:px+13,y:py-11,class:"dim-txt"});
+    rt.textContent = f2(st.d)+" over "+f0(st.a);
+    /* keep the label on the page */
+    if(px > R-140){ rt.setAttribute("text-anchor","end"); rt.setAttribute("x", px-13); }
+    svg.appendChild(rt);
+  }
+})();
+
+/* ============================================================
+   WORKBENCH 02 — REMOTE AREA
+   ============================================================ */
+(function(){
+  var adjHost = $("remAdj");
+  adjHost.innerHTML =
+    ['dry','slope','qr'].map(function(k){
+      var a = NFPA.adj[k];
+      return '<label style="display:flex;gap:11px;align-items:flex-start;padding:11px 0;font-size:.88rem;cursor:pointer;min-height:44px">'
+        + '<input type="checkbox" class="remAdjBox" value="'+k+'" style="margin-top:2px">'
+        + '<span>'+esc(a.label)+' <span class="cite">'+esc(a.cite)+'</span></span></label>';
+    }).join("");
+
+  ["remA","remS","remL","remH"].forEach(function(id){
+    $(id).addEventListener("input", drawRemote);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll(".remAdjBox"), function(b){
+    b.addEventListener("change", drawRemote);
+  });
+  REDRAW.push(drawRemote);
+  drawRemote();
+
+  function drawRemote(){
+    var A0 = parseFloat($("remA").value);
+    var S  = parseFloat($("remS").value);
+    var L  = parseFloat($("remL").value);
+    var H  = parseFloat($("remH").value);
+
+    $("remAVal").textContent = f0(A0)+" ft²";
+    $("remSVal").textContent = f1(S)+" ft";
+    $("remLVal").textContent = f1(L)+" ft";
+    $("remHVal").textContent = f0(H)+" ft";
+
+    var on = {};
+    Array.prototype.forEach.call(document.querySelectorAll(".remAdjBox"), function(b){
+      if(b.checked) on[b.value] = true;
+    });
+
+    var steps = [];
+    var A = A0;
+    steps.push(['<span class="lbl">start — off the density/area curve</span>', f0(A)+" ft²"]);
+    if(on.dry){  A = A*1.30; steps.push(["dry / double-interlock preaction  × 1.30", f0(A)+" ft²"]); }
+    if(on.slope){A = A*1.30; steps.push(["sloped ceiling over 2 in 12  × 1.30", f0(A)+" ft²"]); }
+    var qrPct = 0;
+    if(on.qr){
+      qrPct = NFPA.qrReduction(H);
+      A = A*(1 - qrPct/100);
+      steps.push(["quick-response at "+f0(H)+" ft ceiling  − "+f1(qrPct)+"%", f0(A)+" ft²"]);
+    }
+
+    var Aadj = A;
+    var covA = S*L;
+    var nRaw = Math.ceil(Aadj/covA);
+    /* §19.3.3.2.3.2 — where the quick-response reduction is taken, the design area
+       shall never contain fewer than five sprinklers */
+    var floored = on.qr && nRaw < NFPA.minSprinklersQR;
+    var nHeads = floored ? NFPA.minSprinklersQR : nRaw;
+    var width = 1.2*Math.sqrt(Aadj);
+    var perLine = Math.ceil(width/S);
+    var lines = Math.ceil(nHeads/perLine);
+
+    $("remAdjOut").textContent = f0(Aadj)+" ft²";
+    $("remWOut").textContent   = f1(width)+" ft";
+    $("remPerOut").textContent = perLine;
+    $("remLinesOut").textContent = lines;
+    $("remNOut").textContent   = nHeads;
+
+    var mh = "";
+    steps.forEach(function(s){ mh += s[0] + '\n    → <span class="ok">' + s[1] + '</span>\n'; });
+    mh += '\n<span class="lbl">coverage per sprinkler</span> = '+f1(S)+' × '+f1(L)+' = '+f0(covA)+' ft²\n';
+    mh += '<span class="lbl">sprinklers needed</span> = '+f0(Aadj)+' ÷ '+f0(covA)+' = '+f2(Aadj/covA)
+       +  ' → round up → <span class="hi">'+nRaw+'</span>   <span class="lbl">(§27.2.4.2.2)</span>\n';
+    if(floored){
+      mh += '<span class="hi">floor applied</span> — with the quick-response reduction the design area '
+         +  'shall never hold fewer than five sprinklers → <span class="hi">'+nHeads+'</span>'
+         +  '   <span class="lbl">(§19.3.3.2.3.2)</span>\n';
+    }
+    mh += '<span class="lbl">minimum width</span> = 1.2 × √'+f0(Aadj)+' = 1.2 × '+f1(Math.sqrt(Aadj))
+       +  ' = <span class="hi">'+f1(width)+' ft</span>   <span class="lbl">(§27.2.4.2.1)</span>\n';
+    mh += '<span class="lbl">heads per branch line</span> = '+f1(width)+' ÷ '+f1(S)+' = '+f2(width/S)
+       +  ' → round up → <span class="hi">'+perLine+'</span>\n';
+    mh += '<span class="lbl">branch lines</span> = '+nHeads+' ÷ '+perLine+' = '+f2(nHeads/perLine)
+       +  ' → round up → <span class="hi">'+lines+'</span>';
+    $("remMath").innerHTML = mh;
+
+    var coach = $("remCoach");
+    if(on.qr && H > 20){
+      coach.innerHTML = '<b>No reduction above a 20 ft ceiling.</b> The quick-response reduction stops at '
+        + '20 ft — above that the figure gives zero. The box is ticked but it is buying you nothing here.';
+      coach.style.display="block";
+    }else if(on.qr && on.slope){
+      coach.innerHTML = '<b>Watch the order.</b> You are adding 30% for slope and then taking the '
+        + 'quick-response reduction off the bigger number. Adjustments compound — they are applied to the '
+        + 'area you already adjusted, not to the original. <span class="cite">§19.3.3.2.8</span>';
+      coach.style.display="block";
+    }else if(on.dry && on.slope){
+      coach.innerHTML = '<b>Both penalties stack.</b> 1.30 × 1.30 = 1.69. A dry system on a sloped roof needs '
+        + 'a design area <b>69% larger</b> than the flat wet version — that is a lot more water, and it is the '
+        + 'single most expensive pair of checkboxes on this page.';
+      coach.style.display="block";
+    }else{
+      coach.style.display="none";
+    }
+
+    renderRemSvg(S,L,perLine,lines,nHeads,width);
+  }
+
+  function renderRemSvg(S,L,perLine,lines,nHeads,width){
+    var svg = $("remSvg");
+    while(svg.firstChild) svg.removeChild(svg.firstChild);
+
+    var defs = svgEl("defs",{});
+    var pat = svgEl("pattern",{id:"band",width:8,height:8,patternTransform:"rotate(45)",patternUnits:"userSpaceOnUse"});
+    pat.appendChild(svgEl("line",{x1:0,y1:0,x2:0,y2:8,stroke:"#D85A30","stroke-width":1,opacity:.28}));
+    defs.appendChild(pat);
+    svg.appendChild(defs);
+
+    /* draw a field of sprinklers larger than the remote area */
+    var cols = Math.max(perLine+3, 8);
+    var rows = Math.max(lines+2, 6);
+    var availW = 470, availH = 250;
+    var px = Math.min(availW/(cols*S), availH/(rows*L));
+    var ox = 60, oy = 62;
+
+    /* cross main (heavy) down the left */
+    svg.appendChild(svgEl("line",{x1:ox-24,y1:oy-16,x2:ox-24,y2:oy+rows*L*px,class:"obj-line"}));
+    var cm = svgEl("text",{x:ox-30,y:oy-24,class:"note-txt","text-anchor":"start"});
+    cm.textContent = "CROSS MAIN";
+    svg.appendChild(cm);
+
+    /* branch lines */
+    for(var r=0;r<rows;r++){
+      var y = oy + r*L*px;
+      svg.appendChild(svgEl("line",{x1:ox-24,y1:y,x2:ox+(cols-1)*S*px+16,y2:y,class:"thin-line"}));
+    }
+
+    /* the remote area rectangle — placed at the far end (right), top rows */
+    var startCol = cols - perLine;
+    var rx = ox + startCol*S*px - S*px/2;
+    var ry = oy - L*px/2;
+    var rw = perLine*S*px;
+    var rh = lines*L*px;
+    svg.appendChild(svgEl("rect",{x:rx,y:ry,width:rw,height:rh,fill:"url(#band)",stroke:"#D85A30","stroke-width":2}));
+
+    /* sprinklers */
+    var placed = 0;
+    for(var rr=0;rr<rows;rr++){
+      for(var c=0;c<cols;c++){
+        var inArea = (c>=startCol) && (rr<lines);
+        var isCalc = false;
+        if(inArea){
+          var idxInArea = rr*perLine + (c-startCol);
+          if(idxInArea < nHeads){ isCalc = true; placed++; }
+        }
+        svg.appendChild(sprinklerGlyph(ox+c*S*px, oy+rr*L*px, 4.5, isCalc));
+      }
+    }
+
+    /* width dimension across the rectangle */
+    var dy = ry + rh + 34;
+    svg.appendChild(svgEl("line",{x1:rx,y1:ry+rh,x2:rx,y2:dy+8,class:"ext-line"}));
+    svg.appendChild(svgEl("line",{x1:rx+rw,y1:ry+rh,x2:rx+rw,y2:dy+8,class:"ext-line"}));
+    svg.appendChild(dimLine(rx,dy,rx+rw,dy,f1(perLine*S)+"' ≥ "+f1(width)+"'"));
+
+    var lbl = svgEl("text",{x:rx+rw/2,y:ry-10,class:"obj-txt","text-anchor":"middle"});
+    lbl.textContent = "REMOTE AREA — "+nHeads+" SPRINKLERS";
+    svg.appendChild(lbl);
+
+    var far = svgEl("text",{x:ox+(cols-1)*S*px+22,y:oy+rows*L*px/2,class:"note-txt","text-anchor":"middle"});
+    far.setAttribute("transform","rotate(90 "+(ox+(cols-1)*S*px+22)+" "+(oy+rows*L*px/2)+")");
+    far.textContent = "FARTHEST FROM SUPPLY";
+    svg.appendChild(far);
+  }
+})();
+
+/* ============================================================
+   WORKBENCH 03 — STARTING FLOW
+   ============================================================ */
+(function(){
+  var sel = $("flK");
+  sel.innerHTML = NFPA.kFactors.map(function(o){
+    return '<option value="'+o.k+'"'+(o.k===8.0?" selected":"")+'>'+esc(o.label)+'</option>';
+  }).join("");
+
+  ["flD","flA","flK","flP"].forEach(function(id){
+    $(id).addEventListener("input", drawFlow);
+    $(id).addEventListener("change", drawFlow);
+  });
+  REDRAW.push(drawFlow);
+  drawFlow();
+
+  function drawFlow(){
+    var d = parseFloat($("flD").value);
+    var a = parseFloat($("flA").value);
+    var k = parseFloat($("flK").value);
+    var p = parseFloat($("flP").value);
+
+    $("flDVal").textContent = f2(d);
+    $("flAVal").textContent = f0(a)+" ft²";
+    $("flPVal").textContent = f1(p)+" psi";
+
+    var qD = d*a;
+    var qK = k*Math.sqrt(p);
+    var q  = Math.max(qD,qK);
+    var densityWins = qD >= qK;
+    var pNeed = Math.pow(q/k, 2);
+
+    $("flDOut").textContent = f1(qD)+" gpm";
+    $("flKOut").textContent = f1(qK)+" gpm";
+    $("flQOut").textContent = f1(q)+" gpm";
+    $("flPOut").textContent = f1(pNeed)+" psi";
+    $("flDOut").style.color = densityWins ? "var(--redline)" : "var(--ink-3)";
+    $("flKOut").style.color = densityWins ? "var(--ink-3)" : "var(--redline)";
+
+    var v = $("flVerdict");
+    v.className = "verdict ok";
+    v.textContent = densityWins
+      ? "DENSITY GOVERNS — the code's rain rate is asking for more than the minimum pressure delivers"
+      : "K-FACTOR GOVERNS — the sprinkler already pours more than the density asks for";
+
+    $("flMath").innerHTML =
+      '<span class="lbl">driver 1 — density</span>\n'
+    + '  q = density × area = ' + f2(d) + ' × ' + f0(a) + ' = <span class="'
+    + (densityWins?"hi":"lbl") + '">' + f1(qD) + ' gpm</span>\n\n'
+    + '<span class="lbl">driver 2 — K-factor at ' + f1(p) + ' psi</span>\n'
+    + '  q = K√P = ' + f1(k) + ' × √' + f1(p) + ' = ' + f1(k) + ' × ' + f2(Math.sqrt(p))
+    + ' = <span class="' + (densityWins?"lbl":"hi") + '">' + f1(qK) + ' gpm</span>\n\n'
+    + '<span class="lbl">take the larger</span> → <span class="ok">' + f1(q) + ' gpm</span>\n'
+    + '<span class="lbl">pressure to make that flow</span>  P = (q ÷ K)² = ('
+    + f1(q) + ' ÷ ' + f1(k) + ')² = <span class="ok">' + f1(pNeed) + ' psi</span>';
+
+    var coach = $("flCoach");
+    if(pNeed < NFPA.minPressure - 0.01){
+      coach.innerHTML = '<b>Careful.</b> That works out below the 7 psi floor. No sprinkler is calculated '
+        + 'below 7 psi <span class="cite">§27.2.4.11.1</span>, so the real answer is 7 psi and the flow '
+        + 'that comes with it.';
+      coach.style.display="block";
+    }else if(!densityWins){
+      coach.innerHTML = '<b>Free water.</b> The sprinkler is pouring ' + f1(qK-qD) + ' gpm more than the '
+        + 'density strictly requires — that is the K-factor and the minimum pressure talking. A smaller K '
+        + 'would bring the flow down, but check the listing before you swap.';
+      coach.style.display="block";
+    }else{
+      coach.innerHTML = '<b>Density is in charge.</b> To deliver ' + f1(q) + ' gpm this head needs '
+        + f1(pNeed) + ' psi — above the 7 psi floor. Every other sprinkler in the design area will need '
+        + 'at least this much, and the ones nearer the riser will get more.';
+      coach.style.display="block";
+    }
+
+    renderFlowSvg(qD,qK,densityWins);
+  }
+
+  function renderFlowSvg(qD,qK,densityWins){
+    var svg = $("flowSvg");
+    while(svg.firstChild) svg.removeChild(svg.firstChild);
+    var maxQ = Math.max(qD,qK,1)*1.18;
+    var base = 210, top = 34, h = base-top;
+    var bw = 96;
+    /* type is drawn larger on a phone, so the label stack needs more air */
+    var nar = isNarrow();
+    var dValY = nar ? 14 : 9;    /* gap above bar to the gpm figure   */
+    var dWinY = nar ? 42 : 26;   /* gap above bar to the GOVERNS mark */
+    var dLabY = nar ? 26 : 17;   /* gap below baseline to the name    */
+    var dSubY = nar ? 50 : 31;   /* gap below baseline to the formula */
+    svg.setAttribute("viewBox", nar ? "0 0 640 292" : "0 0 640 260");
+
+    /* baseline */
+    svg.appendChild(svgEl("line",{x1:40,y1:base,x2:600,y2:base,class:"obj-line"}));
+
+    function bar(x,val,label,sub,win){
+      var bh = (val/maxQ)*h;
+      var g = svgEl("g",{});
+      g.appendChild(svgEl("rect",{x:x,y:base-bh,width:bw,height:bh,
+        fill: win? "#16130F" : "#fff", stroke:"#16130F","stroke-width":1.5}));
+      if(!win){
+        for(var i=0;i<40;i++){
+          var yy = base-bh+i*7;
+          if(yy>base-2) break;
+          g.appendChild(svgEl("line",{x1:x+1,y1:yy,x2:x+bw-1,y2:yy,stroke:"#16130F","stroke-width":.5,opacity:.25}));
+        }
+      }
+      var t = svgEl("text",{x:x+bw/2,y:base-bh-dValY,class:"dim-txt","text-anchor":"middle"});
+      t.textContent = f1(val)+" gpm";
+      g.appendChild(t);
+      var l = svgEl("text",{x:x+bw/2,y:base+dLabY,class:"obj-txt","text-anchor":"middle"});
+      l.textContent = label;
+      g.appendChild(l);
+      var s = svgEl("text",{x:x+bw/2,y:base+dSubY,class:"note-txt","text-anchor":"middle"});
+      s.textContent = sub;
+      g.appendChild(s);
+      if(win){
+        var w = svgEl("text",{x:x+bw/2,y:base-bh-dWinY,class:"obj-txt","text-anchor":"middle"});
+        w.setAttribute("fill","#D85A30");
+        w.textContent = "▼ GOVERNS";
+        g.appendChild(w);
+      }
+      return g;
+    }
+    svg.appendChild(bar(150,qD,"DENSITY","density × area",densityWins));
+    svg.appendChild(bar(390,qK,"K-FACTOR","K√P",!densityWins));
+  }
+})();
+
+/* ============================================================
+   WORKBENCH 04 — DRILL
+   ============================================================ */
+var QUESTIONS = [
+  {
+    topic:"coverage", q:"Sprinklers on a branch line are 12 ft apart. The end sprinkler sits 7 ft from the wall. What is S?",
+    opts:["12 ft","14 ft","19 ft","7 ft"], a:1,
+    why:"S is the greater of the spacing (12 ft) or twice the wall distance (2 × 7 = 14 ft). 14 wins. "
+       + "That single foot of extra wall distance just added 2 ft to the box.",
+    cite:"Coverage area is A = S × L; each side takes the greater of spacing or twice the wall distance."
+  },
+  {
+    topic:"coverage", q:"Same line, 12 ft apart, but the end sprinkler is 5 ft from the wall. What is S?",
+    opts:["10 ft","12 ft","17 ft","5 ft"], a:1,
+    why:"Twice the wall distance is 10 ft, which is less than the 12 ft spacing — so the spacing governs and S = 12 ft. "
+       + "Pulling the head closer to the wall never hurts the box.",
+    cite:"Greater of spacing or 2 × wall distance."
+  },
+  {
+    topic:"coverage", q:"S = 14 ft, L = 10 ft, ordinary hazard. Does the coverage area pass?",
+    opts:["Yes — 140 ft² is fine","No — 140 ft² is over the 130 ft² limit","Yes — the limit is 225 ft²","Cannot tell without the density"], a:1,
+    why:"14 × 10 = 140 ft². Ordinary hazard caps standard spray at 130 ft², so this fails. The 225 ft² figure is the "
+       + "light hazard maximum, not an all-purpose limit.",
+    cite:"Table 10.2.4.2.1(b) — ordinary hazard, 130 ft², 15 ft."
+  },
+  {
+    topic:"remote", q:"A design area of 1500 ft². What is the minimum width the rectangle must have along the branch lines?",
+    opts:["38.7 ft","46.5 ft","1800 ft","15 ft"], a:1,
+    why:"1.2 × √1500 = 1.2 × 38.73 = 46.5 ft. The 38.7 ft answer is the square root on its own — a very common slip, "
+       + "because people forget to multiply by 1.2.",
+    cite:"§27.2.4.2.1 — dimension parallel to the branch lines at least 1.2√A."
+  },
+  {
+    topic:"remote", q:"Why does the standard force the remote area to be a wide rectangle instead of letting you pick any shape?",
+    opts:[
+      "To make the drawing tidier",
+      "So the area spreads across several branch lines, like a real fire, instead of a skinny easy-to-feed strip",
+      "Because square areas are easier to calculate",
+      "To match the shape of the building"
+    ], a:1,
+    why:"A long thin strip down one branch line would be unrealistically easy to supply and would flatter the design. "
+       + "The 1.2√A rule forces the operating sprinklers across multiple branch lines — closer to how a fire actually spreads.",
+    cite:"§27.2.4.2.1 — the rule explicitly permits inclusion of sprinklers on both sides of the cross main."
+  },
+  {
+    topic:"remote", q:"Design area 1500 ft², coverage 120 ft² per sprinkler. How many sprinklers are calculated?",
+    opts:["12","12.5","13","15"], a:2,
+    why:"1500 ÷ 120 = 12.5 sprinklers. Any fraction of a sprinkler is carried up to the next whole sprinkler, so 13. "
+       + "You can never calculate half a sprinkler.",
+    cite:"§27.2.4.2.2 — any fractional sprinkler carried to the next higher whole sprinkler."
+  },
+  {
+    topic:"remote", q:"A dry-pipe system under a roof sloped steeper than 2 in 12. Starting area 1500 ft². What is the adjusted area?",
+    opts:["1950 ft²","2535 ft²","3000 ft²","1500 ft² — the two cancel out"], a:1,
+    why:"Both adjustments apply and they compound: 1500 × 1.30 = 1950 for the dry system, then 1950 × 1.30 = 2535 for "
+       + "the slope. Not 1500 × 1.60 — you multiply in turn.",
+    cite:"§19.3.3.2.4 and §19.3.3.2.5, compounded per §19.3.3.2.8."
+  },
+  {
+    topic:"flow", q:"K-8.0 sprinkler, density 0.15 gpm/ft², coverage 120 ft², minimum 7 psi. What flow starts the calculation?",
+    opts:["18.0 gpm","21.2 gpm","24.0 gpm","8.0 gpm"], a:1,
+    why:"Density asks for 0.15 × 120 = 18.0 gpm. But the sprinkler at 7 psi already pours 8.0 × √7 = 21.2 gpm. "
+       + "You take the larger, so 21.2 gpm. The head physically cannot deliver less at that pressure.",
+    cite:"Minimum operating pressure 7 psi — §27.2.4.11.1."
+  },
+  {
+    topic:"flow", q:"Same K-8.0 head, but density is 0.20 gpm/ft² over 120 ft². What pressure does that head need?",
+    opts:["7.0 psi","9.0 psi","24.0 psi","3.0 psi"], a:1,
+    why:"Density now asks 0.20 × 120 = 24.0 gpm, which beats the 21.2 gpm the head gives at 7 psi. To get 24 gpm from a "
+       + "K-8.0: P = (24 ÷ 8)² = 3² = 9.0 psi.",
+    cite:"K-factor formula, K = Q ÷ √P — §27.2.2.5."
+  },
+  {
+    topic:"flow", q:"Doubling the flow through a given pipe increases friction loss by roughly how much?",
+    opts:["It doubles","It roughly triples and a half (about 3.6×)","It stays the same","It halves"], a:1,
+    why:"Friction loss goes with flow to the power 1.85. Two to the power 1.85 is about 3.6. That is why a small increase "
+       + "in flow hurts so much, and why upsizing pipe is such a powerful fix.",
+    cite:"Hazen-Williams formula — §27.2.2.1.1."
+  },
+  {
+    topic:"coverage", q:"A 700 ft² ordinary hazard storeroom of unobstructed construction. Can you use the small-room rule (room area ÷ number of sprinklers)?",
+    opts:[
+      "Yes — it is under 800 ft²",
+      "No — a small room must be LIGHT hazard, and this is ordinary hazard",
+      "Yes — unobstructed construction is the only test",
+      "Only if it has one sprinkler"
+    ], a:1,
+    why:"A small room has to satisfy all three conditions at once: light hazard occupancy, unobstructed "
+       + "construction, AND not more than 800 ft². This room passes two of the three and fails the first, so it "
+       + "is an ordinary room — go back to measuring S and L.",
+    cite:"§3.3.196 defines small room; the coverage shortcut is §10.2.4.1.2.1."
+  },
+  {
+    topic:"remote", q:"Extra hazard, and your design area works out to 1800 ft². What density do you use?",
+    opts:[
+      "The density at 1800 ft² read off the curve",
+      "The density for 2500 ft² — the extra hazard curves do not go below 2500 ft²",
+      "The density for 1500 ft²",
+      "Any density you like, since 1800 is on the curve"
+    ], a:1,
+    why:"The extra hazard curves are only plotted from 2500 ft² up. Below that, the code tells you to use the "
+       + "density for 2500 ft². For light and ordinary hazard the equivalent floor is 1500 ft². You never get a "
+       + "cheaper density by shrinking the area below the end of your curve.",
+    cite:"§19.3.3.1.4(2) for extra hazard; §19.3.3.1.4(1) for light and ordinary."
+  },
+  {
+    topic:"rules", q:"Table 27.2.3.1.1 says a 2 in. 90° elbow equals 5 ft of pipe. You are calculating a DRY system (C = 100). What equivalent length do you use?",
+    opts:["5 ft — the table is the table","3.6 ft — multiply by 0.713","7.6 ft — multiply by 1.51","6.5 ft — multiply by 1.30"], a:1,
+    why:"The equivalent-length table is built for C = 120 only. For any other C you multiply by the factor in "
+       + "Table 27.2.3.2.1: C=100 → 0.713, C=130 → 1.16, C=140 → 1.33, C=150 → 1.51. So 5 × 0.713 = 3.6 ft. "
+       + "Forgetting this is one of the most common quiet errors in a hand calculation.",
+    cite:"§27.2.3.2 and Table 27.2.3.2.1."
+  },
+  {
+    topic:"hazard", q:"Ordinary Hazard Group 2 is defined by moderate-to-high quantity and combustibility of contents, OR stockpiles not exceeding 12 ft. How do those two parts relate?",
+    opts:[
+      "Both must be true",
+      "Either one on its own puts you in OH2",
+      "The stockpile height overrides the contents",
+      "Neither — they are examples only"
+    ], a:1,
+    why:"The hazard definitions are written as separate numbered items, not as a joint test. Meeting any one of "
+       + "them lands you in that class. Reading them as 'AND' makes designers classify too low, which is the "
+       + "dangerous direction.",
+    cite:"§4.3.4; the same OR structure applies to §4.3.3, §4.3.5 and §4.3.6."
+  },
+  {
+    topic:"hazard", q:"A machine shop with metalworking benches and moderate combustible stock. Most likely hazard class?",
+    opts:["Light Hazard","Ordinary Hazard Group 1","Ordinary Hazard Group 2","Extra Hazard Group 1"], a:2,
+    why:"Machine shops and metal working are both listed as ordinary hazard Group 2 examples in the annex.",
+    cite:"Annex A.4.3.4 — ordinary hazard (Group 2) example occupancies."
+  },
+  {
+    topic:"hazard", q:"An open-plan office with normal desks, paper and computers. Hazard class?",
+    opts:["Light Hazard","Ordinary Hazard Group 1","Ordinary Hazard Group 2","Depends on the ceiling height"], a:0,
+    why:"Offices, including data processing, are listed under light hazard. Low quantity and low combustibility of contents. "
+       + "Fill that same office with stacked boxes of paper and the call changes.",
+    cite:"Annex A.4.3.2 — light hazard example occupancies."
+  },
+  {
+    topic:"hazard", q:"An automobile parking garage. Hazard class?",
+    opts:["Light Hazard","Ordinary Hazard Group 1","Ordinary Hazard Group 2","Extra Hazard Group 2"], a:1,
+    why:"Automobile parking and showrooms are listed as ordinary hazard Group 1. People often guess light hazard because "
+       + "the space looks empty — but the cars are the fuel.",
+    cite:"Annex A.4.3.3 — ordinary hazard (Group 1) example occupancies."
+  },
+  {
+    topic:"hazard", q:"A shop doing varnish and paint dipping. Hazard class?",
+    opts:["Ordinary Hazard Group 2","Extra Hazard Group 1","Extra Hazard Group 2","Light Hazard"], a:2,
+    why:"Varnish and paint dipping is an extra hazard Group 2 example — the giveaway is substantial flammable or "
+       + "combustible liquids.",
+    cite:"Annex A.4.3.6 — extra hazard (Group 2) example occupancies."
+  },
+  {
+    topic:"rules", q:"What is the minimum distance allowed between two standard spray sprinklers, without baffles?",
+    opts:["4 in.","3 ft","6 ft","8 ft"], a:2,
+    why:"6 ft on centre. Any closer and the spray from one wets the heat-sensing element of its neighbour, delaying or "
+       + "preventing it from opening. You may go closer where baffles are provided — the standard describes what the "
+       + "baffle must be (solid and rigid, at least 8 in. long and 6 in. high, positioned between the sprinklers) "
+       + "rather than requiring a listed product. In-rack sprinklers are separately exempt.",
+    cite:"§10.2.5.4.1; baffle construction §10.2.5.4.2; in-rack exemption §10.2.5.4.3."
+  },
+  {
+    topic:"rules", q:"Light hazard office. A 12 in. wide DUCT runs below the ceiling. Does the three-times rule set how far away the sprinkler must be?",
+    opts:[
+      "Yes — 3 × 12 in. = 36 in.",
+      "No — in light and ordinary hazard, only STRUCTURAL members trigger the 3× rule",
+      "Yes, but capped at 24 in.",
+      "No — ducts never need any clearance"
+    ], a:1,
+    why:"This is the trap. In light and ordinary hazard occupancies, only structural members are considered when "
+       + "applying the 3× rule. A duct, a light fixture or a pipe in an office is evaluated with the positioning "
+       + "table instead — you look up how far the deflector may sit above the bottom of the obstruction. The duct "
+       + "still matters; it is just a different test.",
+    cite:"§10.2.7.2.1.4 limits the 3× rule to structural members in LH/OH; Table 10.2.7.1.2 is the test you use instead."
+  },
+  {
+    topic:"rules", q:"Extra hazard area. A 10 in. deep beam runs below the ceiling. How far must the sprinkler be from it under the three-times rule?",
+    opts:["10 in.","24 in.","30 in.","No limit"], a:1,
+    why:"3 × 10 in. = 30 in. — but for obstructions in the HORIZONTAL orientation the required clear distance is "
+       + "capped at 24 in., so 24 in. is the answer. That cap does not apply to obstructions in the vertical "
+       + "orientation such as columns.",
+    cite:"§10.2.7.2.1.3 with the 24 in. maximum at (A); the vertical-orientation exclusion at (B)."
+  },
+  {
+    topic:"rules", q:"Minimum clearance between a sprinkler deflector and the top of storage?",
+    opts:["6 in.","12 in.","18 in.","36 in."], a:2,
+    why:"18 in. minimum. The spray needs room to develop into a pattern before it hits anything — stack goods higher and "
+       + "you are shooting water at the side of a box, not over the fire.",
+    cite:"§10.2.8.1."
+  },
+  {
+    topic:"rules", q:"Under unobstructed construction, how far below the ceiling may a standard spray deflector sit?",
+    opts:["Between 1 in. and 12 in.","Between 1 in. and 6 in.","Up to 22 in.","No limit"], a:0,
+    why:"1 in. minimum to 12 in. maximum. Too tight and the ceiling interferes with the pattern; too low and hot gases "
+       + "flow past above the sprinkler without ever tripping it.",
+    cite:"§10.2.6.1.1.1."
+  },
+  {
+    topic:"rules", q:"Quick-response sprinklers and extra hazard occupancies:",
+    opts:[
+      "Always required",
+      "Not permitted under the density/area design method",
+      "Permitted with a 30% area increase",
+      "Only permitted on dry systems"
+    ], a:1,
+    why:"Quick-response sprinklers are not permitted for use in extra hazard occupancies under the density/area design "
+       + "method. Extra hazard fires want water on the ground fast and in volume, across a big area.",
+    cite:"§10.2.3."
+  },
+  {
+    topic:"rules", q:"A flow test dated 20 months before your working plan submittal. Can you design from it?",
+    opts:[
+      "Yes, tests are good for five years",
+      "Yes, if nothing has changed on the street",
+      "No — not unless the AHJ approves it, the test must be within 12 months",
+      "Only for light hazard projects"
+    ], a:2,
+    why:"The waterflow test used for design must be conducted no more than 12 months before the working plan submittal "
+       + "unless the authority having jurisdiction approves otherwise. Supplies change — mains get re-routed, demand grows.",
+    cite:"§4.6.1.1 (the required test data itself is listed in §4.6.1)."
+  }
+];
+
+var currentQ = null, answered = false, queue = [];
+
+function pickQuestion(){
+  /* spaced repetition, lightly: previously missed questions come back first */
+  if(store.missed && store.missed.length && Math.random() < 0.45){
+    var idx = store.missed[Math.floor(Math.random()*store.missed.length)];
+    if(QUESTIONS[idx]) return idx;
+  }
+  if(!queue.length){
+    queue = QUESTIONS.map(function(_,i){ return i; });
+    /* shuffle */
+    for(var i=queue.length-1;i>0;i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var t = queue[i]; queue[i]=queue[j]; queue[j]=t;
+    }
+  }
+  return queue.pop();
+}
+
+function nextQuestion(){
+  var idx = pickQuestion();
+  currentQ = idx;
+  answered = false;
+  var q = QUESTIONS[idx];
+  var wasMissed = store.missed.indexOf(idx) !== -1;
+
+  var h = '<div class="scenario">'
+    + '<div class="q-meta">' + esc(q.topic.toUpperCase())
+    + (wasMissed ? ' &nbsp;·&nbsp; <span style="color:var(--redline)">RETURNING — you missed this before</span>' : '')
+    + '</div>'
+    + '<div class="q-text">' + esc(q.q) + '</div>'
+    + '<div class="opts">';
+  q.opts.forEach(function(o,i){
+    h += '<button class="opt" data-i="'+i+'"><span class="k">'+"ABCD"[i]+'</span><span>'+esc(o)+'</span></button>';
+  });
+  h += '</div><div id="qExplain"></div></div>';
+  $("drillHost").innerHTML = h;
+
+  Array.prototype.forEach.call(document.querySelectorAll("#drillHost .opt"), function(b){
+    b.addEventListener("click", function(){ answer(parseInt(b.getAttribute("data-i"),10)); });
+  });
+  $("dNext").textContent = "Skip";
+  renderScore();
+}
+
+function answer(i){
+  if(answered) return;
+  answered = true;
+  var q = QUESTIONS[currentQ];
+  var right = (i === q.a);
+
+  Array.prototype.forEach.call(document.querySelectorAll("#drillHost .opt"), function(b){
+    var bi = parseInt(b.getAttribute("data-i"),10);
+    b.disabled = true;
+    if(bi === q.a) b.classList.add("right");
+    else if(bi === i) b.classList.add("wrong");
+  });
+
+  store.seen++;
+  store.topics[q.topic].s++;
+  if(right){
+    store.right++;
+    store.streak++;
+    store.topics[q.topic].r++;
+    if(store.streak > store.best) store.best = store.streak;
+    var mi = store.missed.indexOf(currentQ);
+    if(mi !== -1) store.missed.splice(mi,1);
+  }else{
+    store.streak = 0;
+    if(store.missed.indexOf(currentQ) === -1) store.missed.push(currentQ);
+  }
+  checkBadges();
+  logToday();
+  save();
+  renderScore();
+
+  $("qExplain").innerHTML =
+    '<div class="explain"><div class="ex-h">' + (right ? "Correct" : "Not quite") + '</div>'
+    + '<p style="margin-bottom:7px">' + esc(q.why) + '</p>'
+    + '<div style="font-size:.8rem"><span class="cite">' + esc(q.cite) + '</span></div></div>';
+  $("dNext").textContent = "Next question";
+}
+
+$("dNext").addEventListener("click", nextQuestion);
+$("dReset").addEventListener("click", function(){
+  if(!confirm("Reset your drill statistics? Mastery bars and badges will be cleared.")) return;
+  var log = store.log;
+  store = blank();
+  store.log = log;
+  save(); renderScore(); renderProgress(); nextQuestion();
+});
+
+function renderScore(){
+  $("dStreak").textContent = store.streak;
+  $("dBest").textContent   = store.best;
+  $("dRight").textContent  = store.right;
+  $("dSeen").textContent   = store.seen;
+}
+
+/* ============================================================
+   BADGES + PROGRESS
+   ============================================================ */
+var BADGES = [
+  {id:"first",  ico:"◉", name:"First Answer", test:function(){ return store.seen >= 1; }},
+  {id:"ten",    ico:"◈", name:"Ten Down",     test:function(){ return store.right >= 10; }},
+  {id:"streak5",ico:"▲", name:"Streak 5",     test:function(){ return store.best >= 5; }},
+  {id:"streak10",ico:"★",name:"Streak 10",    test:function(){ return store.best >= 10; }},
+  {id:"allTopics",ico:"◆",name:"All Topics",  test:function(){
+      var ok = true;
+      for(var t in store.topics){ if(store.topics.hasOwnProperty(t) && store.topics[t].r < 1) ok = false; }
+      return ok; }},
+  {id:"clean",  ico:"✦", name:"Nothing Missed",test:function(){ return store.seen >= 10 && store.missed.length === 0; }},
+  {id:"return", ico:"◐", name:"Came Back",    test:function(){ return (store.log||[]).length >= 2; }},
+  {id:"week",   ico:"⬢", name:"Five Days",    test:function(){ return (store.log||[]).length >= 5; }}
+];
+
+function checkBadges(){
+  BADGES.forEach(function(b){
+    if(store.badges.indexOf(b.id) === -1 && b.test()){
+      store.badges.push(b.id);
+      toast("Badge earned — " + b.name);
+    }
+  });
+}
+
+function toast(msg){
+  var t = document.createElement("div");
+  t.textContent = msg;
+  t.style.cssText = "position:fixed;left:50%;bottom:26px;transform:translateX(-50%);"
+    + "background:#16130F;color:#FCFAF6;font-family:var(--mono);font-size:.72rem;"
+    + "letter-spacing:.08em;text-transform:uppercase;padding:11px 18px;border:1.5px solid #D85A30;"
+    + "z-index:99;font-weight:700;box-shadow:0 3px 0 rgba(0,0,0,.18)";
+  document.body.appendChild(t);
+  setTimeout(function(){ t.style.transition="opacity .5s"; t.style.opacity="0"; }, 1900);
+  setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); }, 2500);
+}
+
+function logToday(){
+  var d = todayISO();
+  if(store.log.indexOf(d) === -1){ store.log.push(d); }
+  store.lastVisit = d;
+}
+
+var TOPIC_NAMES = {
+  coverage:"Coverage area", remote:"Remote area", flow:"Starting flow",
+  hazard:"Hazard class", rules:"Spacing rules"
+};
+
+function renderProgress(){
+  var h = "";
+  for(var t in store.topics){
+    if(!store.topics.hasOwnProperty(t)) continue;
+    var o = store.topics[t];
+    var pct = o.s ? Math.round((o.r/o.s)*100) : 0;
+    var gold = o.s >= 3 && pct >= 80;
+    h += '<div class="m-row"><div class="m-name">'+esc(TOPIC_NAMES[t]||t)+'</div>'
+      +  '<div class="m-track"><div class="m-fill'+(gold?" gold":"")+'" style="width:'+pct+'%"></div></div>'
+      +  '<div class="m-pct">'+(o.s? pct+"%" : "—")+'</div></div>';
+  }
+  $("masteryHost").innerHTML = h;
+
+  $("badgeHost").innerHTML = BADGES.map(function(b){
+    var got = store.badges.indexOf(b.id) !== -1;
+    return '<div class="badge'+(got?" got":"")+'"><div class="b-ico">'+b.ico+'</div>'
+      + '<div class="b-n">'+esc(b.name)+'</div></div>';
+  }).join("");
+
+  var log = (store.log||[]).slice().sort();
+  var lh = "";
+  if(!log.length){
+    lh = '<p style="margin:0;font-size:.88rem">No sessions logged yet. Answer a drill question to start the log.</p>';
+  }else{
+    lh = '<div style="font-family:var(--mono);font-size:.76rem;line-height:2">';
+    log.slice(-14).forEach(function(d){
+      lh += '<div style="display:flex;justify-content:space-between;border-bottom:1px dotted var(--line)">'
+         +  '<span>'+esc(d)+'</span><span style="color:var(--ink-3)">studied</span></div>';
+    });
+    lh += '</div>';
+    if(store.missed.length){
+      lh += '<p style="margin:12px 0 0;font-size:.86rem"><strong>'+store.missed.length+'</strong> question'
+         + (store.missed.length===1?"":"s") + ' still coming back to you in the drill.</p>';
+    }else if(store.seen){
+      lh += '<p style="margin:12px 0 0;font-size:.86rem">Nothing in your review pile right now. Clean slate.</p>';
+    }
+  }
+  $("logHost").innerHTML = lh;
+}
+
+$("wipeAll").addEventListener("click", function(){
+  if(!confirm("Erase all saved progress on this device?")) return;
+  try{ localStorage.removeItem(KEY); }catch(e){}
+  store = blank(); save(); renderScore(); renderProgress();
+});
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+store.visits = (store.visits||0) + 1;
+logToday();
+checkBadges();
+save();
+renderScore();
+renderProgress();
+
+})();
+</script>
+</body>
+</html>

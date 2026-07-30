@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprinkler Design Workflow — 9 Steps | Fire System Mastery</title>
+<style>
+/* ============================================================
+   FSM SPRINKLER DESIGN WORKFLOW
+   Same drafting language as the FSM Hydraulic Trainer:
+   drawing-sheet paper, ink linework, hatching, bold sans labels.
+   Colour means something — orange annotates, blue cites code,
+   green passes, red fails. Nothing is decorative.
+   ============================================================ */
+:root{
+  --paper:#FCFAF6; --paper-tint:#F4F0E7; --paper-deep:#EBE5D8;
+  --ink:#16130F; --ink-2:#4A443C; --ink-3:#8B8275;
+  --line:#D6CEC0; --redline:#D85A30; --blueprint:#185FA5;
+  --pass:#1D9E75; --fail:#B3341F;
+  --mono:ui-monospace,"SFMono-Regular","Cascadia Mono","Consolas",monospace;
+  --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--sans);color:var(--ink);background:var(--paper);
+  background-image:linear-gradient(var(--paper-tint) 1px,transparent 1px),
+    linear-gradient(90deg,var(--paper-tint) 1px,transparent 1px);
+  background-size:24px 24px;line-height:1.55;-webkit-font-smoothing:antialiased;
+}
+.sheet{max-width:940px;margin:0 auto;background:var(--paper);
+  border-left:1px solid var(--line);border-right:1px solid var(--line);min-height:100vh}
+@media(max-width:960px){.sheet{border:none}}
+
+/* masthead / title block */
+.masthead{border-bottom:2px solid var(--ink);padding:18px 22px 0}
+.mast-row{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+.mast-title{font-size:1.4rem;font-weight:800;letter-spacing:-.02em;line-height:1.1;text-transform:uppercase}
+.mast-sub{font-family:var(--mono);font-size:.68rem;color:var(--ink-3);
+  letter-spacing:.09em;text-transform:uppercase;margin-top:5px}
+.mast-stamp{border:1.5px solid var(--ink);padding:5px 9px;text-align:center;flex-shrink:0;transform:rotate(-1.5deg)}
+.mast-stamp b{display:block;font-size:.64rem;letter-spacing:.13em;font-weight:800}
+.mast-stamp span{font-family:var(--mono);font-size:.58rem;color:var(--ink-2)}
+
+/* project bar */
+.projbar{display:flex;gap:8px;align-items:center;padding:10px 0 12px;flex-wrap:wrap}
+.projbar select{flex:1;min-width:150px}
+.iron{
+  border-left:3px solid var(--redline);background:#FFF8F4;padding:9px 13px;
+  font-size:.83rem;color:#7A2E12;margin-bottom:14px
+}
+
+/* step rail */
+.rail{display:flex;gap:0;border-top:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+.rstep{
+  flex:1;min-width:64px;border-right:1px solid var(--line);background:var(--paper-tint);
+  padding:8px 4px 7px;cursor:pointer;text-align:center;position:relative;
+}
+.rstep:last-child{border-right:none}
+.rstep:hover{background:var(--paper-deep)}
+.rstep.on{background:var(--paper);box-shadow:0 -3px 0 var(--redline) inset}
+.rstep .rn{font-family:var(--mono);font-size:.72rem;font-weight:800;color:var(--ink-3)}
+.rstep.on .rn{color:var(--redline)}
+.rstep .rl{font-size:.56rem;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--ink-2);font-weight:700;margin-top:2px;line-height:1.25}
+.rstep .rdot{width:5px;height:5px;border-radius:50%;background:var(--line);
+  margin:4px auto 0;transition:background .3s}
+.rstep.done .rdot{background:var(--pass)}
+@media(max-width:640px){.rstep .rl{display:none}.rstep{min-width:40px}}
+
+.container{padding:20px 22px 60px}
+@media(max-width:600px){.container{padding:16px 14px 60px}}
+
+.eyebrow{font-family:var(--mono);font-size:.64rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--redline);font-weight:700;margin-bottom:4px}
+h2.head{font-size:1.25rem;font-weight:800;letter-spacing:-.015em;margin-bottom:7px;line-height:1.2}
+.intro{font-size:.92rem;color:var(--ink-2);margin-bottom:14px;max-width:64ch}
+h3.sub{font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;
+  margin:22px 0 9px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+p{font-size:.9rem;color:var(--ink-2);margin-bottom:10px}
+.cite{font-family:var(--mono);font-size:.72rem;color:var(--blueprint);
+  border-bottom:1px dotted var(--blueprint);white-space:nowrap;font-weight:600}
+
+/* plain-language box */
+.plain{border-left:3px solid var(--ink);background:var(--paper-tint);padding:11px 14px;margin:12px 0;font-size:.9rem}
+.plain .pl-tag{font-family:var(--mono);font-size:.58rem;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--ink-3);font-weight:700;display:block;margin-bottom:4px}
+.plain p:last-child{margin-bottom:0}
+.warn{border:1px solid var(--redline);border-left-width:3px;padding:10px 13px;margin:12px 0;
+  background:#FFF8F4;font-size:.87rem;color:#7A2E12}
+.warn b{color:var(--redline)}
+
+/* help disclosure */
+details.help{margin:12px 0 16px;border:1px solid var(--line);background:#fff}
+details.help summary{cursor:pointer;padding:10px 13px;font-family:var(--mono);
+  font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink);list-style:none;user-select:none;display:flex;justify-content:space-between;gap:10px}
+details.help summary::-webkit-details-marker{display:none}
+details.help summary:after{content:"OPEN";color:var(--redline);font-size:.62rem}
+details.help[open] summary:after{content:"CLOSE"}
+details.help summary:hover{background:var(--paper-tint)}
+.help-body{padding:2px 15px 14px;font-size:.87rem;line-height:1.6;color:var(--ink-2);
+  border-top:1px solid var(--line)}
+.help-body h4{font-size:.72rem;color:var(--ink);margin:13px 0 5px;
+  text-transform:uppercase;letter-spacing:.07em;font-weight:800}
+.help-body ul{margin:5px 0 9px 19px}
+.help-body li{margin-bottom:3px}
+.help-body p{font-size:.87rem}
+.ex{background:var(--paper-tint);border-left:3px solid var(--ink-3);padding:8px 11px;margin:7px 0}
+.ex .ex-t{font-weight:800;color:var(--ink);display:block;margin-bottom:2px;font-size:.84rem}
+
+/* form */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid.three{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:640px){.grid,.grid.three{grid-template-columns:1fr}}
+.fg{margin-bottom:2px}
+.fg.full{grid-column:1/-1}
+.fg label{display:block;font-family:var(--mono);font-size:.64rem;font-weight:700;
+  letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2);margin-bottom:5px}
+input[type=text],input[type=number],input[type=date],select,textarea{
+  width:100%;padding:9px 11px;border:1px solid var(--ink);background:#fff;
+  font-family:var(--mono);font-size:.86rem;color:var(--ink);border-radius:0}
+textarea{font-family:var(--sans);font-size:.88rem;resize:vertical;min-height:56px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--redline);outline-offset:-2px}
+.fg small{display:block;margin-top:4px;font-size:.7rem;color:var(--ink-3)}
+.radios{display:flex;flex-direction:column;gap:6px}
+.radios label{display:flex;gap:9px;align-items:flex-start;padding:10px 12px;
+  border:1px solid var(--line);background:#fff;cursor:pointer;font-family:var(--sans);
+  font-size:.88rem;text-transform:none;letter-spacing:0;color:var(--ink)}
+.radios label:hover{border-color:var(--ink)}
+.radios label.sel{border-color:var(--redline);background:#FFF8F4;border-left-width:3px}
+.radios input{margin-top:3px;flex-shrink:0}
+.radios .rt{font-weight:800}
+.radios .rd{font-size:.82rem;color:var(--ink-2);margin-top:2px}
+.checks label{display:flex;gap:11px;align-items:flex-start;padding:10px 0;font-size:.87rem;cursor:pointer;min-height:44px}
+.checks input{margin-top:2px;flex-shrink:0}
+/* native checkboxes and radios are ~13px, too small to hit reliably on a phone.
+   The whole label is clickable, but the control itself should be findable too. */
+.checks input[type=checkbox],.radios input[type=radio]{width:20px;height:20px;accent-color:#D85A30}
+@media(max-width:600px){
+  .btn.small{padding:10px 13px}
+  .checks label{padding:12px 0}
+}
+
+/* live feedback */
+.live{border:1.5px solid var(--ink);background:#fff;margin:14px 0}
+.live-h{font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;
+  font-weight:800;padding:8px 12px;border-bottom:1px solid var(--ink);background:var(--paper-tint)}
+.live-b{padding:11px 12px;font-size:.87rem}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:5px 0;align-items:baseline}
+.kv+.kv{border-top:1px dotted var(--line)}
+.kv .k{font-family:var(--mono);font-size:.68rem;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--ink-2)}
+.kv .v{font-family:var(--mono);font-size:.88rem;font-weight:700}
+.flag{margin-top:9px;padding:8px 11px;font-size:.85rem;border-left:3px solid}
+.flag.ok{border-color:var(--pass);background:#F1FAF6;color:#106b4d}
+.flag.no{border-color:var(--fail);background:#FDF3F1;color:#8c2818}
+.flag.info{border-color:var(--blueprint);background:#EEF4FB;color:#14456f}
+
+/* buttons */
+.btn{font-family:var(--mono);font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;
+  font-weight:800;padding:10px 15px;border:1.5px solid var(--ink);background:var(--paper);
+  color:var(--ink);cursor:pointer;border-radius:0}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn.primary:hover{background:var(--redline);border-color:var(--redline)}
+.btn.small{padding:7px 11px;font-size:.64rem}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.btnrow .spacer{flex:1}
+
+/* table */
+table.t{width:100%;border-collapse:collapse;font-size:.8rem;margin:9px 0}
+table.t th,table.t td{border:1px solid var(--line);padding:6px 8px;text-align:left}
+table.t th{background:var(--paper-tint);font-weight:800;font-size:.72rem;
+  text-transform:uppercase;letter-spacing:.05em}
+table.t tr.hl td{background:#FFF8F4;font-weight:700}
+
+/* report */
+#report{display:none}
+.rpt-block{border:2px solid var(--ink);margin-bottom:16px}
+.rpt-tb{display:grid;grid-template-columns:2fr 1fr;border-bottom:1px solid var(--ink)}
+@media(max-width:600px){.rpt-tb{grid-template-columns:1fr}}
+.rpt-tb .tb-l{padding:12px 14px;border-right:1px solid var(--ink)}
+@media(max-width:600px){.rpt-tb .tb-l{border-right:none;border-bottom:1px solid var(--ink)}}
+.rpt-tb .tb-r{padding:12px 14px}
+.tb-k{font-family:var(--mono);font-size:.58rem;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--ink-3);font-weight:700}
+.tb-v{font-size:1rem;font-weight:800;margin-top:1px}
+.rsec{border-bottom:1px solid var(--line)}
+.rsec:last-child{border-bottom:none}
+.rsec-h{font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;
+  font-weight:800;padding:7px 13px;background:var(--paper-tint);border-bottom:1px solid var(--line)}
+.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+@media(max-width:600px){.rgrid{grid-template-columns:1fr}}
+.ri{padding:7px 13px;border-bottom:1px dotted var(--line);border-right:1px dotted var(--line);font-size:.85rem}
+.ri.full{grid-column:1/-1;border-right:none}
+.ri .rk{font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-3);font-weight:700;display:block}
+.ri .rv{font-weight:600;color:var(--ink)}
+.ri .rv.miss{color:var(--redline);font-weight:400;font-style:italic}
+
+.foot{border-top:1px solid var(--line);margin-top:26px;padding:13px 22px 30px;
+  font-family:var(--mono);font-size:.6rem;color:var(--ink-3);letter-spacing:.05em;
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+@media print{
+  body{background:#fff;background-image:none}
+  .masthead,.rail,#wizard,.no-print,.foot{display:none!important}
+  .sheet{border:none;max-width:100%}
+  .container{padding:0}
+  #report{display:block!important}
+  .rpt-block{page-break-inside:avoid}
+  .rsec{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<header class="masthead">
+  <div class="mast-row">
+    <div>
+      <div class="mast-title">Sprinkler Design Workflow</div>
+      <div class="mast-sub">Nine steps &middot; no heads, no pipe until step 8</div>
+    </div>
+    <div class="mast-stamp"><b>NFPA 13</b><span>2019 ED.</span></div>
+  </div>
+  <div class="projbar no-print">
+    <select id="projSel" title="Saved projects"></select>
+    <button class="btn small" id="projNew">New</button>
+    <button class="btn small" id="projDel">Delete</button>
+    <span style="font-family:var(--mono);font-size:.6rem;color:var(--ink-3)" id="saveNote">saved on this device</span>
+  </div>
+  <nav class="rail" id="rail"></nav>
+</header>
+
+<div class="container">
+  <div id="wizard"></div>
+
+  <!-- ===== REPORT ===== -->
+  <div id="report">
+    <div class="rpt-block">
+      <div class="rpt-tb">
+        <div class="tb-l">
+          <div class="tb-k">Project</div>
+          <div class="tb-v" id="rp_project">—</div>
+          <div class="tb-k" style="margin-top:8px">Fire area / room</div>
+          <div class="tb-v" id="rp_area" style="font-size:.9rem">—</div>
+        </div>
+        <div class="tb-r">
+          <div class="tb-k">Designer</div>
+          <div class="tb-v" id="rp_designer" style="font-size:.9rem">—</div>
+          <div class="tb-k" style="margin-top:8px">Date</div>
+          <div class="tb-v" id="rp_date" style="font-size:.9rem">—</div>
+        </div>
+      </div>
+      <div id="reportBody"></div>
+    </div>
+    <p style="font-size:.72rem;color:var(--ink-3);text-align:center">
+      Pre-layout design basis. Values must be confirmed against the NFPA 13 edition adopted
+      for this project and any local amendments. Not a substitute for the standard.
+    </p>
+    <div class="btnrow no-print">
+      <button class="btn" id="backToWiz">&larr; Back to the steps</button>
+      <span class="spacer"></span>
+      <button class="btn primary" id="printBtn">Print / save as PDF</button>
+    </div>
+  </div>
+</div>
+
+<footer class="foot">
+  <span>Fire System Mastery &middot; Design Workflow</span>
+  <span><a href="NFPA13-Hydraulic-Trainer.html" style="color:var(--redline);font-weight:700">
+    Hydraulic Trainer &rarr;</a> &nbsp;remote area, coverage area, drills</span>
+  <span><a href="index.html" style="color:var(--ink-3)">&larr; Quiz Hub</a></span>
+  <span>Single file &middot; works offline &middot; nothing leaves this device</span>
+</footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   NFPA REFERENCE DATA — NFPA 13, 2019 edition.
+   Checked page by page against the vault PDF.
+   ============================================================ */
+var NFPA = {
+  hazards:[
+    {id:"LH",  name:"Light Hazard", cite:"§4.3.2",
+     def:"Spaces where the quantity of contents is low AND their combustibility is low.",
+     ex:"animal shelters; churches; clubs; combustible eaves and overhangs with nothing combustible beneath; educational; hospitals and veterinary facilities; institutional; kennels; libraries except large stack rooms; museums; nursing and convalescent homes; offices including data processing; residential; restaurant SEATING areas; theaters and auditoriums excluding stages and prosceniums; unused attics",
+     exCite:"§A.4.3.2",
+     curve:"0.10 gpm/ft² over 1500 ft²  →  0.07 gpm/ft² over 3000 ft²",
+     hose:"100 gpm combined, 30 min"},
+    {id:"OH1", name:"Ordinary Hazard Group 1", cite:"§4.3.3",
+     def:"EITHER moderate quantity with low combustibility of contents, OR stockpiles of low-combustibility contents not over 8 ft high. Either one on its own puts you here.",
+     ex:"automobile parking and showrooms; bakeries; beverage manufacturing; canneries; dairy product manufacturing and processing; electronic plants; glass and glass products manufacturing; laundries; restaurant SERVICE areas; porte cocheres; mechanical rooms",
+     exCite:"§A.4.3.3",
+     curve:"0.15 gpm/ft² over 1500 ft²  →  0.10 gpm/ft² over 4000 ft²",
+     hose:"250 gpm combined, 60–90 min"},
+    {id:"OH2", name:"Ordinary Hazard Group 2", cite:"§4.3.4",
+     def:"EITHER moderate-to-high quantity and combustibility of contents, OR stockpiles of moderate-to-high combustibility not over 12 ft high.",
+     ex:"agricultural facilities; barns and stables; cereal mills; ordinary chemical plants; confectionery products; distilleries; dry cleaners; exterior loading docks (see the note below); feed mills; horse stables; leather goods manufacturing; libraries — large stack room areas; machine shops; metal working; mercantile; paper and pulp mills; paper process plants; piers and wharves; plastics fabrication including blow molding, extruding and machining, EXCLUDING operations using combustible hydraulic fluids; post offices; printing and publishing; racetrack stable and kennel areas, including barns and associated buildings at fairgrounds; repair garages; resin application area; stages; textile manufacturing; tire manufacturing; tobacco products manufacturing; wood machining; wood product assembly",
+     exCite:"§A.4.3.4",
+     curve:"0.20 gpm/ft² over 1500 ft²  →  0.15 gpm/ft² over 4000 ft²",
+     hose:"250 gpm combined, 60–90 min"},
+    {id:"EH1", name:"Extra Hazard Group 1", cite:"§4.3.5",
+     def:"EITHER very high quantity and combustibility of contents, OR spaces where dust, lint or similar materials introduce the probability of rapidly developing fires.",
+     ex:"aircraft hangars except as governed by NFPA 409; combustible hydraulic fluid use areas; die casting; metal extruding; plywood and particleboard manufacturing; printing using inks with flash points below 100°F; rubber reclaiming, compounding, drying, milling and vulcanizing; saw mills; textile picking, opening, blending, garnetting or carding; upholstering with plastic foams",
+     exCite:"§A.4.3.5",
+     curve:"0.30 gpm/ft² over 2500 ft²  →  0.20 gpm/ft² over 5000 ft²",
+     hose:"500 gpm combined, 90–120 min"},
+    {id:"EH2", name:"Extra Hazard Group 2", cite:"§4.3.6",
+     def:"ANY ONE of: very high quantity and combustibility of contents; substantial amounts of flammable or combustible liquids; extensive shielding of combustibles.",
+     ex:"asphalt saturating; flammable liquids spraying; flow coating; manufactured home or modular building assemblies where a finished enclosure is present and has combustible interiors; open oil quenching; plastics manufacturing; solvent cleaning; varnish and paint dipping; car stackers and car lift systems with 2 cars stacked vertically",
+     exCite:"§A.4.3.6",
+     curve:"0.40 gpm/ft² over 2500 ft²  →  0.30 gpm/ft² over 5000 ft²",
+     hose:"500 gpm combined, 90–120 min"}
+  ],
+
+  /* Tables 10.2.4.2.1(a)–(d), standard spray upright/pendent */
+  coverage:{
+    LH:[["Noncombustible, obstructed or unobstructed — hydraulically calculated",225,15],
+        ["Noncombustible, obstructed or unobstructed — pipe schedule",200,15],
+        ["Combustible unobstructed, no exposed members or members ≥3 ft OC — hyd. calc.",225,15],
+        ["Combustible unobstructed, no exposed members or members ≥3 ft OC — pipe sched.",200,15],
+        ["Combustible unobstructed, members <3 ft OC",130,15],
+        ["Combustible obstructed, exposed members ≥3 ft OC",168,15],
+        ["Combustible obstructed, members <3 ft OC",130,15],
+        ["Combustible concealed space per §10.2.6.1.4",120,"15 ∥ / 10 ⊥ slope"]],
+    OH1:[["All construction types, all system types",130,15]],
+    OH2:[["All construction types, all system types",130,15]],
+    EH1:[["Hydraulically calculated, density ≥0.25 gpm/ft²",100,"12*"],
+         ["Hydraulically calculated, density <0.25 gpm/ft²",130,15],
+         ["Pipe schedule",90,"12*"]],
+    EH2:[["Hydraulically calculated, density ≥0.25 gpm/ft²",100,"12*"],
+         ["Hydraulically calculated, density <0.25 gpm/ft²",130,15],
+         ["Pipe schedule",90,"12*"]]
+  },
+
+  /* §4.5.1 + A.4.5.1(3) — max floor area ON ANY ONE FLOOR per riser */
+  riserArea:[
+    ["Light hazard","52,000 ft²"],
+    ["Ordinary hazard","52,000 ft²"],
+    ["Extra hazard — hydraulically calculated","40,000 ft²"],
+    ["Extra hazard — pipe schedule","25,000 ft² (A.4.5.1(3))"],
+    ["High-piled storage and storage under other NFPA standards","40,000 ft²"],
+    ["In-rack storage","40,000 ft²"]
+  ]
+};
+
+/* ============================================================
+   STORAGE — multiple named projects
+   ============================================================ */
+var KEY="fsm_design_wizard_v2";
+var db=loadDB(), curId=null;
+
+function loadDB(){
+  try{
+    var r=localStorage.getItem(KEY);
+    if(!r) return {projects:{},order:[],last:null};
+    var o=JSON.parse(r);
+    if(!o||!o.projects) return {projects:{},order:[],last:null};
+    return o;
+  }catch(e){ return {projects:{},order:[],last:null}; }
+}
+function saveDB(){ try{ localStorage.setItem(KEY,JSON.stringify(db)); }catch(e){} }
+function newId(){ return "p"+(db.order.length+1)+"_"+String(db.order.length*7+13); }
+
+function newProject(name){
+  var id=newId();
+  db.projects[id]={name:name||"Untitled project",data:{},created:todayISO(),touched:todayISO()};
+  db.order.push(id); db.last=id; saveDB();
+  return id;
+}
+function proj(){ return db.projects[curId]; }
+function val(k){ var p=proj(); return (p&&p.data[k]!=null)?p.data[k]:""; }
+function setVal(k,v){ var p=proj(); if(!p) return; p.data[k]=v; p.touched=todayISO(); saveDB(); }
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+function todayISO(){ var d=new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function monthsBetween(iso){
+  if(!iso) return null;
+  var a=new Date(iso+"T00:00:00"), b=new Date();
+  if(isNaN(a.getTime())) return null;
+  return (b.getFullYear()-a.getFullYear())*12 + (b.getMonth()-a.getMonth())
+       + ((b.getDate()<a.getDate())?-1:0);
+}
+function hazById(id){
+  for(var i=0;i<NFPA.hazards.length;i++) if(NFPA.hazards[i].id===id) return NFPA.hazards[i];
+  return null;
+}
+
+/* ============================================================
+   STEP DEFINITIONS — every field from the original wizard is
+   carried over. Nothing was dropped in the rebuild.
+   ============================================================ */
+var STEPS=[
+ {n:1,key:"scope",label:"Scope",title:"Scope &amp; standard",
+  intro:"Pin the standard and the edition before anything else. Every table value downstream is edition-specific.",
+  fields:[
+    {k:"project",t:"text",l:"Project name",full:false},
+    {k:"date",t:"date",l:"Date"},
+    {k:"designer",t:"text",l:"Designer"},
+    {k:"standard",t:"select",l:"NFPA standard",opts:["","NFPA 13 — full commercial","NFPA 13R — residential to 4 stories AND ≤60 ft","NFPA 13D — one- and two-family dwellings"]},
+    {k:"nfpaEd",t:"text",l:"NFPA edition",ph:"e.g. 2019"},
+    {k:"code",t:"text",l:"Building code",ph:"e.g. IBC"},
+    {k:"codeEd",t:"text",l:"Building code edition",ph:"e.g. 2021"},
+    {k:"ahj",t:"text",l:"Authority having jurisdiction"},
+    {k:"amend",t:"textarea",l:"Local amendments / known AHJ requirements",full:true}
+  ]},
+ {n:2,key:"occ",label:"Occupancy",title:"Occupancy &amp; use",
+  intro:"What the space is actually used for, fire area by fire area.",
+  fields:[
+    {k:"firearea",t:"text",l:"Fire area / room"},
+    {k:"ibc",t:"select",l:"IBC occupancy group",opts:["","A — Assembly","B — Business","E — Educational","F — Factory / Industrial","H — High Hazard","I — Institutional","M — Mercantile","R — Residential","S — Storage","U — Utility / Miscellaneous"]},
+    {k:"use",t:"textarea",l:"Plain-language description of use",full:true,ph:"office, patient care, retail sales, warehouse, manufacturing, parking…"},
+    {k:"mixed",t:"textarea",l:"Mixed-use / incidental-use areas",full:true}
+  ]},
+ {n:3,key:"haz",label:"Hazard",title:"Hazard classification",
+  intro:"The most consequential decision in the whole process. Classify by quantity and combustibility of contents, the processes present, and any storage.",
+  custom:"hazard"},
+ {n:4,key:"con",label:"Construction",title:"Construction, ceiling &amp; environment",
+  intro:"The physical conditions that drive coverage, spacing and system type.",
+  fields:[
+    {k:"construction",t:"select",l:"Construction type",opts:["","Noncombustible","Limited-combustible","Combustible"]},
+    {k:"obstructed",t:"select",l:"Construction is",opts:["","Unobstructed","Obstructed"]},
+    {k:"membersOC",t:"select",l:"Structural members on centre",opts:["","No exposed members","≥ 3 ft on centre","< 3 ft on centre"]},
+    {k:"chordDepth",t:"select",l:"Bar joist / truss chord depth",opts:["","Not applicable","≤ 4 in. — counts as unobstructed","> 4 in. — counts as obstructed"]},
+    {k:"concealed",t:"select",l:"Combustible concealed space",opts:["","None","Yes — sprinklered","Yes — UNsprinklered"]},
+    {k:"ceilHt",t:"number",l:"Ceiling height (ft)"},
+    {k:"slope",t:"text",l:"Ceiling slope / pitch",ph:"flat, 4/12, etc."},
+    {k:"pockets",t:"text",l:"Ceiling pockets / clouds / soffits"},
+    {k:"freeze",t:"select",l:"Freezing possible?",opts:["","No","Yes"]}
+  ]},
+ {n:5,key:"water",label:"Water",title:"Water supply",
+  intro:"The step most often skipped. You cannot run a hydraulic calculation without it.",
+  fields:[
+    {k:"static",t:"number",l:"Static pressure (psi)"},
+    {k:"residual",t:"number",l:"Residual pressure (psi)"},
+    {k:"flow",t:"number",l:"Flow (gpm)"},
+    {k:"testDate",t:"date",l:"Flow test date"},
+    {k:"testLoc",t:"text",l:"Test location &amp; elevation vs. riser reference"},
+    {k:"supplyType",t:"select",l:"Supply type",opts:["","Public waterworks connection","Private waterworks connection","Connection including a fire pump","Water storage tank at or below grade (NFPA 22)","Pressure tank","Gravity tank","Penstock, flume, river, lake, pond or reservoir","Recycled or reclaimed water source"]},
+    {k:"pump",t:"select",l:"Fire pump or tank needed?",opts:["","No","Yes — fire pump","Yes — storage tank","Yes — pump and tank"]}
+  ]},
+ {n:6,key:"sys",label:"System",title:"System type &amp; sprinkler",
+  intro:"System type follows the environment from step 4. Sprinkler selection follows the hazard and the listing.",
+  fields:[
+    {k:"system",t:"select",l:"System type",opts:["","Wet pipe (§8.1)","Dry pipe (§8.2)","Preaction (§8.3)","Deluge (§8.3)"]},
+    {k:"sprinkler",t:"select",l:"Sprinkler type",opts:["","Standard spray — pendent","Standard spray — upright","Standard spray — sidewall","Extended coverage (Ch. 11)","Residential (Ch. 12)","CMSA (Ch. 13)","ESFR (Ch. 14)","Special application (Ch. 15)"]},
+    {k:"kfactor",t:"text",l:"K-factor",ph:"e.g. 5.6, 8.0, 11.2"},
+    {k:"response",t:"select",l:"Response type",opts:["","Quick-response (QR)","Standard-response"]},
+    {k:"temp",t:"text",l:"Temperature rating",ph:"ordinary / intermediate / high"},
+    {k:"listing",t:"textarea",l:"Listing limitations noted",full:true,ph:"The listed spacing, area, pressure and obstruction limits can be stricter than the NFPA table — and govern where they differ."}
+  ]},
+ {n:7,key:"crit",label:"Criteria",title:"Design criteria &amp; coverage",
+  intro:"The numbers your layout in step 8 has to satisfy.",
+  custom:"criteria"},
+ {n:8,key:"layout",label:"Layout",title:"Lay out sprinklers &amp; branch lines",
+  intro:"Now — and only now — you may place sprinklers.",
+  fields:[
+    {k:"layout",t:"textarea",l:"Branch-line orientation &amp; spacing notes",full:true},
+    {k:"headCount",t:"number",l:"Head count in the design area"},
+    {k:"deflector",t:"text",l:"Deflector position set"},
+    {k:"obstructions",t:"textarea",l:"Obstruction resolution notes",full:true}
+  ]},
+ {n:9,key:"check",label:"Check",title:"Hydraulic design &amp; self-check",
+  intro:"Prove the system delivers what you locked in. Tick a box only when you have actually verified it.",
+  custom:"check"}
+];
+
+var CHECKS=[
+ "Density, design area and head count all match the hazard class and the layout actually drawn",
+ "Every area adjustment applied, and compounded on the area originally selected from the curve",
+ "Hose allowance added at the right point — outside hose at the main or hydrant, inside hose at the most remote connection",
+ "Each sprinkler within the maximum coverage area and maximum spacing for its construction type",
+ "All obstructions resolved — and the right test used for the hazard class",
+ "18 in. minimum clearance to storage maintained",
+ "Coverage criteria checked against the sprinkler's LISTING, not just the NFPA table",
+ "Floor area on any one floor within the §4.5.1 limit for this riser",
+ "Seismic protection addressed where required (Chapter 18)",
+ "Demand plus hose allowance sits below the supply curve with margin, for the full duration"
+];
+
+/* ============================================================
+   HELP CONTENT — carried over from the original wizard,
+   corrected against the 2019 edition and expanded.
+   ============================================================ */
+var HELP={
+ scope:{t:"Which standard, and which edition?",h:
+  '<h4>Which NFPA standard</h4><ul>'
+ +'<li><b>NFPA 13D</b> — one- and two-family dwellings and manufactured homes.</li>'
+ +'<li><b>NFPA 13R</b> — residential occupancies up to and including four stories in height, '
+ +'located in buildings <b>not exceeding 60 ft in height above grade plane</b>. Both limits must be met '
+ +'(NFPA 13R 2019 §1.1). A four-storey residential building taller than 60 ft is outside 13R scope.</li>'
+ +'<li><b>NFPA 13</b> — everything else.</li></ul>'
+ +'<div class="ex"><span class="ex-t">The podium case</span>NFPA 13R §A.1.1 follows the model building code method '
+ +'for counting stories, so four residential storeys over a one-storey pedestal can still be in scope — but the '
+ +'pedestal must be Type I construction protected by an NFPA 13 system, and the 60 ft cap still applies. The '
+ +'pedestal allowance affects story counting only, never height measurement.</div>'
+ +'<h4>Which edition</h4><p>The AHJ adopts a specific edition through the local code, and it is often not the '
+ +'newest. Confirm it against the jurisdiction&rsquo;s adopted-codes list. This tool&rsquo;s reference values are the '
+ +'2019 edition.</p>'
+ +'<h4>Scope is a ceiling, not a trigger</h4><p>The 13R scope tells you the largest building a 13R system may be '
+ +'used in. It does not tell you whether sprinklers are required at all, or whether 13R is permitted instead of '
+ +'NFPA 13 — that comes from the adopted building and fire code. NFPA 13R itself defers to the model building '
+ +'code for counting stories and measuring height.</p>'
+ +'<div class="warn"><b>Not verifiable here.</b> The IBC is not in the FSM library, so this tool states no IBC '
+ +'section, story count or height threshold as verified. Check those against the code your jurisdiction adopts.</div>'},
+
+ occ:{t:"How do I identify the occupancy?",h:
+  '<h4>Start with the code sheet</h4><p>The drawing set almost always states the IBC occupancy group on the '
+ +'code or cover sheet. Start there, then sanity-check it against what the space is really used for.</p>'
+ +'<h4>The groups in one line each</h4><ul>'
+ +'<li><b>A</b> Assembly &middot; <b>B</b> Business &middot; <b>E</b> Educational &middot; <b>F</b> Factory/Industrial</li>'
+ +'<li><b>H</b> High Hazard &middot; <b>I</b> Institutional &middot; <b>M</b> Mercantile</li>'
+ +'<li><b>R</b> Residential &middot; <b>S</b> Storage &middot; <b>U</b> Utility/Miscellaneous</li></ul>'
+ +'<div class="warn"><b>Keep the two systems apart.</b> NFPA 13 occupancy classifications relate to sprinkler '
+ +'design, installation and water supply requirements only, and are not to be used as a general classification of '
+ +'occupancy hazard <span class="cite">§4.3.1.1, §4.3.1.2</span>. One IBC group can contain rooms of several '
+ +'different NFPA hazard classes. Classify hazard room by room in step 3.</div>'},
+
+ haz:{t:"How do I decide the hazard classification?",h:
+  '<p>The hazard class is a judgement about how fast and how hard a fire would burn here. It sets the density, '
+ +'the area of operation, and the coverage you are allowed. Everything downstream follows from it.</p>'
+ +'<h4>1 — Ask three questions</h4><ul>'
+ +'<li><b>Fuel load.</b> What is actually in the room — furniture and paper, or plastics, packaging and flammable liquids?</li>'
+ +'<li><b>Process risk.</b> Any open flame, spraying, dipping, quenching, coating or high heat?</li>'
+ +'<li><b>Storage.</b> Anything stacked or stored, and how high? If yes, tick the storage box — storage criteria in '
+ +'Chapters 20–25 can override the occupancy hazard entirely.</li></ul>'
+ +'<h4>2 — Where to look it up</h4><ul>'
+ +'<li><span class="cite">§4.3</span> — the definitions.</li>'
+ +'<li><span class="cite">§A.4.3.2 – §A.4.3.6</span> — the example occupancy lists, printed pp. 13-332 to 13-333. '
+ +'This is how most designers and AHJs benchmark a call.</li>'
+ +'<li><span class="cite">Table 4.3.1.7.1</span> — small and miscellaneous storage up to 12 ft, which hands you a '
+ +'design curve directly.</li></ul>'
+ +'<h4>3 — Read the definitions as OR, not AND</h4>'
+ +'<p>Each definition is a list of separate conditions. Meeting <b>any one</b> of them puts you in that class. '
+ +'Reading them as a joint test makes designers classify too low, which is the dangerous direction.</p>'
+ +'<div class="warn"><b>The examples are the norm, not a guarantee.</b> <span class="cite">§A.4.3</span> says the '
+ +'listed occupancies represent the norm for that occupancy type, and that unusual or abnormal fuel loading, unusual '
+ +'combustible characteristics, and the likelihood those characteristics will change are all considerations to weigh. '
+ +'An office packed with stacked cartons of paper is no longer light hazard.</div>'
+ +'<div class="ex"><span class="ex-t">Trap 1 — libraries</span>Ordinary shelving around 8 ft tall with books upright '
+ +'and aisles wider than 30 in. is light hazard. Large <i>stack room areas</i> behave like shelf or record storage and '
+ +'are ordinary hazard. Two different answers in one building.</div>'
+ +'<div class="ex"><span class="ex-t">Trap 2 — loading docks</span>Exterior docks are OH2 only where used solely for '
+ +'loading and unloading ordinary combustibles. Where flammable or combustible liquids or hazardous materials are '
+ +'handled, or the dock is used for storage, exterior docks <b>and all interior docks</b> are classified by the actual '
+ +'materials handled, as if they were stored in that configuration. <span class="cite">§A.4.3.4(8)</span></div>'
+ +'<div class="ex"><span class="ex-t">Trap 3 — plastics with hydraulic fluid</span>Plastics fabrication is OH2, but '
+ +'that entry expressly <b>excludes operations using combustible hydraulic fluids</b> — those are combustible hydraulic '
+ +'fluid use areas, which is Extra Hazard Group 1. One clause, two hazard classes apart. '
+ +'<span class="cite">§A.4.3.4(19), §A.4.3.5(2)</span></div>'},
+
+ con:{t:"Construction and ceiling terms explained",h:
+  '<h4>Combustible vs. noncombustible</h4><ul>'
+ +'<li><b>Noncombustible</b> — will not ignite or burn: steel, concrete, masonry, glass. <span class="cite">§4.10.1</span></li>'
+ +'<li><b>Limited-combustible</b> — not noncombustible, but potential heat value not exceeding 3500 Btu/lb per '
+ +'NFPA 259, and meeting the surfacing and flame-spread conditions of §4.10.2.1 or §4.10.2.2. '
+ +'<span class="cite">§4.10.2</span></li>'
+ +'<li><b>Combustible</b> — anything else. In practice, wood (that shorthand is trade usage, not a code definition).</li></ul>'
+ +'<p>Wherever the standard says limited-combustible it also includes noncombustible <span class="cite">§4.10.1.2</span>.</p>'
+ +'<h4>Obstructed vs. unobstructed — and the 4 in. hinge</h4>'
+ +'<p>This is about whether structural members channel heat or block spray. It changes the maximum coverage area in step 8.</p>'
+ +'<ul><li><b>Unobstructed</b> — smooth ceiling construction; flat slab and pan-type reinforced concrete; continuous '
+ +'smooth bays formed by wood, concrete or steel beams spaced more than 7½ ft on centre and supported by columns, '
+ +'girders <b>or trusses</b>; bar joist construction and open-web truss construction <b>where top and bottom chord '
+ +'members do not exceed 4 in. in depth</b>. <span class="cite">§A.3.3.41.2</span></li>'
+ +'<li><b>Obstructed</b> — beam and girder; solid or composite wood joists; concrete tee; panel construction; and the '
+ +'same trusses and bar joists once those chord members are <b>greater than 4 in. deep</b>. '
+ +'<span class="cite">§A.3.3.41.1(9), (10)</span></li></ul>'
+ +'<div class="ex"><span class="ex-t">Why the 4 in. matters</span>Two buildings with visually identical open-web '
+ +'trusses can land in different rows of the coverage table purely on chord depth. Measure it; do not eyeball it. '
+ +'Bar joists covered in fireproofing are obstructed once more than 30 percent of the joist area is obstructed '
+ +'<span class="cite">§A.3.3.41.1(7)</span>.</div>'
+ +'<div class="warn"><b>Concealed spaces.</b> An <i>unsprinklered</i> combustible concealed space adjacent to the area '
+ +'forces a 3000 ft² minimum design area <span class="cite">§19.3.3.1.5</span>. It is applied last, after every other '
+ +'adjustment <span class="cite">§19.3.3.2.8.2</span>, and §19.3.3.1.5.2 lists eleven configurations that are exempt — '
+ +'check them before assuming it bites.</div>'},
+
+ water:{t:"How do I read a flow test?",h:
+  '<h4>The three numbers</h4><ul>'
+ +'<li><b>Static pressure</b> — pressure with no water flowing. The system at rest.</li>'
+ +'<li><b>Residual pressure</b> — pressure measured while water is flowing. How far it drops tells you how strong '
+ +'the supply really is.</li>'
+ +'<li><b>Flow</b> — gpm actually discharged at the flowing hydrant, read with a pitot gauge.</li></ul>'
+ +'<h4>How the test is run</h4>'
+ +'<p>Put a gauge on the hydrant nearest the building (A) and read static. Flow the next hydrant out (B) — preferably '
+ +'the one farthest from the source of supply if the main is fed one way — and pitot the stream for gpm. Read residual '
+ +'on A while B is flowing. <span class="cite">§A.5.2.2</span></p>'
+ +'<h4>What must be recorded</h4>'
+ +'<p>Location and elevation of the static and residual gauge relative to the riser reference point; flow location; '
+ +'static; residual; flow; date; time; who conducted or supplied the test; and any other supply sources with their '
+ +'pressure or elevation. <span class="cite">§4.6.1</span></p>'
+ +'<div class="warn"><b>Twelve months.</b> A waterflow test used for system design must be conducted no more than '
+ +'12 months before working plan submittal unless the AHJ approves otherwise <span class="cite">§4.6.1.1</span>. '
+ +'Enter the date above and this tool will check it for you.</div>'
+ +'<div class="ex"><span class="ex-t">Allow for the seasons</span>Public supplies vary by season, by time of day, and '
+ +'with drought or ice. Test at a representative time and adjust the data for daily and seasonal fluctuation, large '
+ +'simultaneous industrial use, and future demand on the system. <span class="cite">§A.5.2.2, §A.5.2.2.2</span></div>'},
+
+ sys:{t:"Choosing the system and the sprinkler",h:
+  '<h4>System type — let the environment decide</h4><ul>'
+ +'<li><b>Wet pipe</b> — the default. Heated space, no freezing risk. Water is already there, so it is fastest.</li>'
+ +'<li><b>Dry pipe</b> — freezing possible. Pipe holds pressurised air or nitrogen; water arrives after a head opens. '
+ +'Costs you a 30 percent larger design area.</li>'
+ +'<li><b>Preaction</b> — freezing risk or water-sensitive contents. Needs detection to admit water.</li>'
+ +'<li><b>Deluge</b> — open sprinklers, everything flows at once. High-hazard, fast-spreading fires.</li></ul>'
+ +'<h4>Sprinkler selection</h4><ul>'
+ +'<li><b>K-factor</b> — the orifice constant, chosen with the density. Bigger K, more flow at the same pressure.</li>'
+ +'<li><b>Response</b> — quick-response elements operate sooner. QR is <b>not permitted in extra hazard occupancies</b>, '
+ +'nor in any occupancy with substantial flammable liquids or combustible dusts '
+ +'<span class="cite">§10.2.3, §19.3.3.2.2.2</span>.</li>'
+ +'<li><b>Temperature rating</b> — pick for the ambient and for any heat source: skylights, unit heaters, cooking '
+ +'equipment. Do not default to ordinary temperature near heat.</li></ul>'
+ +'<div class="warn"><b>The listing governs.</b> The manufacturer&rsquo;s cut sheet carries listed spacing, area, '
+ +'pressure and obstruction limits that can be <i>stricter</i> than the NFPA table. Where they differ, the listing '
+ +'wins. The table is the ceiling, not the answer.</div>'},
+
+ crit:{t:"Reading the density/area curve",h:
+  '<h4>Figure 19.3.3.1.1</h4>'
+ +'<p>One curve per hazard class. The horizontal axis is density in gpm/ft²; the vertical axis is the area of '
+ +'operation in ft². Pick <b>any single point</b> on your curve and you have satisfied the requirement '
+ +'<span class="cite">§19.3.3.2.1.2</span>; you do not have to meet every point on it '
+ +'<span class="cite">§19.3.3.2.1.3</span>.</p>'
+ +'<p>Each curve is drawn as one straight segment, so interpolating between its two ends reproduces the printed line. '
+ +'Minor gridlines are 0.01 gpm/ft² and 200 ft².</p>'
+ +'<h4>The curves stop</h4>'
+ +'<p>Light hazard is plotted only to 3000 ft², ordinary only to 4000 ft², and the extra hazard curves do not extend '
+ +'<i>below</i> 2500 ft². And you cannot shrink your way to a cheaper density: below 1500 ft² (light and ordinary) you '
+ +'use the 1500 ft² density; below 2500 ft² (extra hazard) you use the 2500 ft² density '
+ +'<span class="cite">§19.3.3.1.4</span>.</p>'
+ +'<p>The figure is for <b>spray sprinklers only</b> <span class="cite">§19.3.3.2.2.1</span>.</p>'
+ +'<h4>Adjustments — two you must, two you may</h4>'
+ +'<p><b>Mandatory increases:</b> dry pipe or double-interlock preaction, +30% <span class="cite">§19.3.3.2.5</span>; '
+ +'sloped ceiling with pitch over 2 in 12 in nonstorage applications, +30% <span class="cite">§19.3.3.2.4</span>.</p>'
+ +'<p><b>Permitted reductions:</b> quick-response <span class="cite">§19.3.3.2.3</span>; high-temperature sprinklers in '
+ +'extra hazard, −25% with a 2000 ft² floor <span class="cite">§19.3.3.2.6</span>; K-11.2 or larger on the extra hazard '
+ +'curves, −25% with a 2000 ft² floor <span class="cite">§19.3.3.2.7, §4.3.9</span>.</p>'
+ +'<div class="warn"><b>The QR reduction has five conditions and all five must hold:</b> wet pipe system; light or '
+ +'ordinary hazard; ceiling 20 ft or less; no unprotected ceiling pockets over 32 ft²; no unprotected areas above cloud '
+ +'ceilings <span class="cite">§19.3.3.2.3.1</span>. It also requires listed QR sprinklers throughout the system or '
+ +'throughout a portion with the same hydraulic design basis. And the design area may never hold fewer than five '
+ +'sprinklers <span class="cite">§19.3.3.2.3.2</span>.</div>'
+ +'<div class="ex"><span class="ex-t">Compounding</span>Where several adjustments apply they compound on the area '
+ +'originally selected from the curve <span class="cite">§19.3.3.2.8.1</span>. A dry system on a sloped roof starting '
+ +'at 1500 ft²: 1500 × 1.30 = 1950, then × 1.30 = <b>2535 ft²</b>. Apply the 3000 ft² concealed-space minimum last '
+ +'<span class="cite">§19.3.3.2.8.2</span>.</div>'},
+
+ layout:{t:"Spacing and obstruction rules",h:
+  '<h4>Spacing</h4><ul>'
+ +'<li><b>Maximum distance to a wall is one-half the allowable distance between sprinklers</b> '
+ +'<span class="cite">§10.2.5.2.1</span>. If the table allows 15 ft, the first head sits no more than 7½ ft off the wall.</li>'
+ +'<li><b>Minimum 4 in. from a wall</b> <span class="cite">§10.2.5.3</span>.</li>'
+ +'<li><b>Minimum 6 ft between sprinklers</b> <span class="cite">§10.2.5.4.1</span> — closer is permitted where baffles '
+ +'meeting the construction requirements of §10.2.5.4.2 are provided (solid and rigid, at least 8 in. long and 6 in. '
+ +'high, positioned between the sprinklers). In-rack sprinklers are separately exempt '
+ +'<span class="cite">§10.2.5.4.3</span>.</li>'
+ +'<li>Angled or irregular walls have their own test: no point of protected floor more than 0.75 × the allowable '
+ +'spacing from a sprinkler <span class="cite">§10.2.5.2.2</span>. Small rooms have another '
+ +'<span class="cite">§10.2.5.2.3</span>.</li></ul>'
+ +'<h4>Deflector position</h4>'
+ +'<p>Under unobstructed construction, 1 in. minimum to 12 in. maximum below the ceiling '
+ +'<span class="cite">§10.2.6.1.1.1</span>. Obstructed construction offers five alternative arrangements '
+ +'<span class="cite">§10.2.6.1.2</span>.</p>'
+ +'<h4>Obstructions — use the right test</h4>'
+ +'<div class="warn"><b>This is the rule most often misapplied.</b> The &ldquo;three times the maximum dimension&rdquo; '
+ +'rule <span class="cite">§10.2.7.2.1.3</span> is not a universal rule. In <b>light and ordinary hazard occupancies '
+ +'only structural members are considered</b> when applying it <span class="cite">§10.2.7.2.1.4</span>. A duct, a light '
+ +'fixture or a pipe in an office is evaluated with the positioning table instead '
+ +'<span class="cite">Table 10.2.7.1.2</span>.</div>'
+ +'<ul><li>For horizontal obstructions the required clear distance never exceeds <b>24 in.</b> '
+ +'<span class="cite">§10.2.7.2.1.3(A)</span>; that cap does not apply to obstructions in the vertical orientation such '
+ +'as columns <span class="cite">§10.2.7.2.1.3(B)</span>.</li>'
+ +'<li>The 3× rule does not apply to sprinkler system piping less than 3 in. in diameter '
+ +'<span class="cite">§10.2.7.2.1.8</span>.</li>'
+ +'<li>Sprinklers are required <b>under</b> fixed obstructions over 4 ft wide '
+ +'<span class="cite">§10.2.7.3.2</span>.</li></ul>'
+ +'<h4>Clearance to storage</h4>'
+ +'<p>18 in. minimum between deflector and the top of storage <span class="cite">§10.2.8.1</span>. That rule does not '
+ +'limit shelving height on a wall <span class="cite">§10.2.8.2</span>.</p>'},
+
+ check:{t:"What the self-check proves",h:
+  '<h4>The point of the calculation</h4>'
+ +'<p>Chapter 27 proves one thing: that the demand — density × area of operation, balanced through the pipe network, '
+ +'plus the hose stream allowance — can be delivered by the supply from step 5, for the required duration, with margin.</p>'
+ +'<h4>Where the hose allowance goes</h4>'
+ +'<p>Outside hose is added at the connection to the city main or a private fire hydrant, whichever is closer to the '
+ +'riser <span class="cite">§19.2.6.2, §27.3</span>. Inside hose is added in 50 gpm increments starting at the most '
+ +'remote hose connection <span class="cite">§19.2.6.3</span>. You only get the lower duration figure where waterflow '
+ +'alarm and supervisory devices are electrically supervised and monitored at an approved, constantly attended location '
+ +'<span class="cite">§19.3.3.1.3</span>.</p>'
+ +'<div class="warn"><b>If anything fails, the fix is upstream.</b> A failed calculation usually means the hazard call, '
+ +'the point chosen on the curve, the head layout or the supply assumption was wrong. Go back and fix the cause. Never '
+ +'fudge an input.</div>'}
+};
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+var cur=1;
+
+function fieldHTML(f){
+  var v=esc(val(f.k));
+  var h='<div class="fg'+(f.full?' full':'')+'"><label for="f_'+f.k+'">'+f.l+'</label>';
+  if(f.t==="select"){
+    h+='<select id="f_'+f.k+'" data-k="'+f.k+'">';
+    f.opts.forEach(function(o){
+      h+='<option'+(o===val(f.k)?' selected':'')+'>'+esc(o)+'</option>';
+    });
+    h+='</select>';
+  }else if(f.t==="textarea"){
+    h+='<textarea id="f_'+f.k+'" data-k="'+f.k+'"'+(f.ph?' placeholder="'+esc(f.ph)+'"':'')+'>'+v+'</textarea>';
+  }else{
+    h+='<input type="'+f.t+'" id="f_'+f.k+'" data-k="'+f.k+'" value="'+v+'"'
+      +(f.ph?' placeholder="'+esc(f.ph)+'"':'')+'>';
+  }
+  if(f.hint) h+='<small>'+f.hint+'</small>';
+  h+='</div>';
+  return h;
+}
+
+function render(){
+  var s=STEPS[cur-1];
+  var h='<div class="eyebrow">Step '+s.n+' of 9</div><h2 class="head">'+s.title+'</h2>'
+      + '<p class="intro">'+s.intro+'</p>';
+  if(s.n===1){
+    h+='<div class="iron"><b>The iron rule.</b> No heads. No pipe. Not until step 8. '
+      +'Steps 1 to 7 are thinking — and they are where the design is actually decided.</div>';
+  }
+  var help=HELP[s.key];
+  if(help){
+    h+='<details class="help"><summary>Help — '+help.t+'</summary><div class="help-body">'+help.h+'</div></details>';
+  }
+  if(s.custom==="hazard")       h+=hazardStep();
+  else if(s.custom==="criteria")h+=criteriaStep();
+  else if(s.custom==="check")   h+=checkStep();
+  else{
+    h+='<div class="grid">';
+    s.fields.forEach(function(f){ h+=fieldHTML(f); });
+    h+='</div>';
+  }
+  h+='<div id="liveHost"></div>';
+  h+='<div class="btnrow no-print">'
+    +(cur>1?'<button class="btn" id="prevBtn">&larr; Back</button>':'')
+    +'<span class="spacer"></span>'
+    +(cur<9?'<button class="btn primary" id="nextBtn">Next step &rarr;</button>'
+           :'<button class="btn primary" id="doneBtn">Build the design basis sheet</button>')
+    +'</div>';
+  $("wizard").innerHTML=h;
+  wire();
+  live();
+  paintRail();
+}
+
+function hazardStep(){
+  var sel=val("hazard");
+  var h='<h3 class="sub">Pick the class</h3><div class="radios" id="hazRadios">';
+  NFPA.hazards.forEach(function(z){
+    h+='<label class="'+(sel===z.id?'sel':'')+'"><input type="radio" name="haz" value="'+z.id+'"'
+      +(sel===z.id?' checked':'')+'>'
+      +'<span><span class="rt">'+esc(z.name)+'</span> <span class="cite">'+z.cite+'</span>'
+      +'<span class="rd">'+esc(z.def)+'</span></span></label>';
+  });
+  h+='</div>';
+  if(sel){
+    var z=hazById(sel);
+    h+='<div class="live"><div class="live-h">Example occupancies — '+z.exCite+'</div>'
+      +'<div class="live-b" style="font-size:.85rem;color:var(--ink-2)">'+esc(z.ex)+'</div></div>';
+  }
+  h+='<div class="grid"><div class="fg full"><label>Justification — the contents, process or storage facts that drove the call</label>'
+    +'<textarea id="f_hazJust" data-k="hazJust">'+esc(val("hazJust"))+'</textarea></div></div>';
+  h+='<h3 class="sub">Storage</h3><div class="checks"><label>'
+    +'<input type="checkbox" id="f_storage" data-k="storage"'+(val("storage")==="yes"?" checked":"")+'>'
+    +'<span>This space contains storage — open the storage branch</span></label></div>';
+  if(val("storage")==="yes"){
+    h+='<div class="warn" style="margin-top:10px"><b>Storage changes the rulebook.</b> Miscellaneous and low-piled '
+      +'storage is handled by <span class="cite">Table 4.3.1.7.1</span>, which hands you a design curve directly. '
+      +'Anything beyond those limits goes to Chapters 20–25 rather than the occupancy curves. Miscellaneous storage '
+      +'is also capped — no more than 10 percent of the building area or 4000 ft², and no more than 1000 ft² in one '
+      +'pile <span class="cite">§4.3.1.4</span>.</div>'
+      +'<div class="grid">'
+      +fieldHTML({k:"commodity",t:"select",l:"Commodity class",opts:["","Class I","Class II","Class III","Class IV","Group A plastic","Group B plastic","Group C plastic"]})
+      +fieldHTML({k:"storMethod",t:"text",l:"Storage method",ph:"solid pile / palletized / rack…"})
+      +fieldHTML({k:"storHt",t:"number",l:"Storage height (ft)"})
+      +fieldHTML({k:"storChap",t:"select",l:"Governing chapter",opts:["","Ch. 4 — miscellaneous / low-piled","Ch. 21 — CMDA","Ch. 22 — CMSA","Ch. 23 — ESFR","Ch. 24 — alternative","Ch. 25 — in-rack"]})
+      +'</div>';
+  }
+  return h;
+}
+
+function criteriaStep(){
+  var hz=val("hazard"), z=hz?hazById(hz):null;
+  var h="";
+  if(z){
+    h+='<div class="live"><div class="live-h">Carried forward from step 3 — '+esc(z.name)+'</div><div class="live-b">'
+      +'<div class="kv"><span class="k">Curve runs</span><span class="v">'+esc(z.curve)+'</span></div>'
+      +'<div class="kv"><span class="k">Hose allowance &amp; duration</span><span class="v">'+esc(z.hose)+'</span></div>'
+      +'<div class="flag info">Read your own point off Figure 19.3.3.1.1 — any single point on this curve is valid.</div>'
+      +'</div></div>';
+  }else{
+    h+='<div class="warn">Pick a hazard class in step 3 and this step will show you that curve&rsquo;s range and hose allowance.</div>';
+  }
+  h+='<div class="grid">'
+    +fieldHTML({k:"density",t:"number",l:"Design density (gpm/ft²)",hint:"read off Figure 19.3.3.1.1"})
+    +fieldHTML({k:"designArea",t:"number",l:"Area of operation (ft²)",hint:"any single point on the curve satisfies §19.3.3.2.1.2"})
+    +'</div>';
+  h+='<h3 class="sub">Adjustments that apply</h3><div class="checks">'
+    +adjBox("adjDry","Dry pipe or double-interlock preaction — increase 30%","§19.3.3.2.5")
+    +adjBox("adjSlope","Sloped ceiling over 2 in 12, nonstorage — increase 30%","§19.3.3.2.4")
+    +adjBox("adjQR","Quick-response reduction — all five conditions met","§19.3.3.2.3")
+    +adjBox("adjHiTemp","High-temperature sprinklers, extra hazard — reduce 25%, floor 2000 ft²","§19.3.3.2.6")
+    +adjBox("adjK112","K-11.2 or larger on an extra hazard curve — reduce 25%, floor 2000 ft²","§19.3.3.2.7")
+    +adjBox("adjConcealed","Adjacent unsprinklered combustible concealed space — 3000 ft² minimum, applied last","§19.3.3.1.5")
+    +'</div>';
+  h+='<h3 class="sub">Coverage limits for this design</h3>';
+  if(hz){
+    h+='<table class="t"><thead><tr><th>Construction / system</th><th>Max area</th><th>Max spacing</th></tr></thead><tbody>';
+    NFPA.coverage[hz].forEach(function(r){
+      h+='<tr><td>'+esc(r[0])+'</td><td>'+r[1]+' ft²</td><td>'+esc(String(r[2]))+' ft</td></tr>';
+    });
+    h+='</tbody></table>'
+      +'<p style="font-size:.78rem;color:var(--ink-3)">Standard spray upright and pendent, Table 10.2.4.2.1. '
+      +'* bays up to 25 ft wide permit 12 ft 6 in. Absolute caps: 225 ft² standard spray, 196 ft² sidewall, '
+      +'400 ft² any sprinkler.</p>';
+  }
+  h+='<div class="grid">'
+    +fieldHTML({k:"maxArea",t:"number",l:"Max area per sprinkler used (ft²)"})
+    +fieldHTML({k:"maxSpacing",t:"text",l:"Max spacing used (ft)",ph:"e.g. 12 × 10"})
+    +'</div>';
+  h+='<h3 class="sub">Floor area per riser</h3><table class="t"><tbody>';
+  NFPA.riserArea.forEach(function(r){ h+='<tr><td>'+esc(r[0])+'</td><td>'+esc(r[1])+'</td></tr>'; });
+  h+='</tbody></table><p style="font-size:.78rem;color:var(--ink-3)">Maximum floor area '
+    +'<b>on any one floor</b> per sprinkler system riser or combined riser — §4.5.1.</p>';
+  return h;
+}
+
+function adjBox(k,label,cite){
+  return '<label><input type="checkbox" id="f_'+k+'" data-k="'+k+'"'+(val(k)==="yes"?" checked":"")+'>'
+    +'<span>'+esc(label)+' <span class="cite">'+cite+'</span></span></label>';
+}
+
+function checkStep(){
+  var h='<div class="checks">';
+  CHECKS.forEach(function(c,i){
+    h+='<label><input type="checkbox" id="f_chk'+i+'" data-k="chk'+i+'"'
+      +(val("chk"+i)==="yes"?" checked":"")+'><span>'+esc(c)+'</span></label>';
+  });
+  h+='</div><div class="grid"><div class="fg full"><label>Hydraulic calculation notes / remaining items</label>'
+    +'<textarea id="f_hydraulic" data-k="hydraulic">'+esc(val("hydraulic"))+'</textarea></div></div>';
+  return h;
+}
+
+/* live coaching per step */
+function live(){
+  var host=$("liveHost"); if(!host) return;
+  var h="", s=STEPS[cur-1];
+
+  if(s.n===5){
+    var m=monthsBetween(val("testDate"));
+    if(m!==null){
+      h+='<div class="live"><div class="live-h">Flow test age check</div><div class="live-b">'
+        +'<div class="kv"><span class="k">Test date</span><span class="v">'+esc(val("testDate"))+'</span></div>'
+        +'<div class="kv"><span class="k">Age</span><span class="v">'+m+' month'+(m===1?"":"s")+'</span></div>';
+      if(m>12){
+        h+='<div class="flag no"><b>Too old.</b> This test is '+m+' months old. A waterflow test used for design '
+          +'must be no more than 12 months before working plan submittal unless the AHJ approves otherwise '
+          +'(§4.6.1.1). Get a fresh test or written AHJ acceptance.</div>';
+      }else if(m>9){
+        h+='<div class="flag info">Valid, but it will pass 12 months in '+(12-m)+' month'+((12-m)===1?"":"s")+'. '
+          +'If submittal may slip, line up a fresh test now.</div>';
+      }else{
+        h+='<div class="flag ok">Within the 12-month window required by §4.6.1.1.</div>';
+      }
+      h+='</div></div>';
+    }
+    var st=parseFloat(val("static")), rs=parseFloat(val("residual"));
+    if(!isNaN(st)&&!isNaN(rs)&&rs>st){
+      h+='<div class="live"><div class="live-b"><div class="flag no"><b>Check these two.</b> Residual pressure is '
+        +'higher than static. Residual is measured while water flows, so it is always the lower of the two.</div></div></div>';
+    }
+  }
+
+  if(s.n===7){
+    var d=parseFloat(val("density")), a=parseFloat(val("designArea")), hz=val("hazard");
+    if(!isNaN(d)&&!isNaN(a)){
+      var adj=a, steps=[];
+      if(val("adjDry")==="yes"){ adj*=1.30; steps.push("dry / preaction × 1.30"); }
+      if(val("adjSlope")==="yes"){ adj*=1.30; steps.push("sloped ceiling × 1.30"); }
+      if(val("adjHiTemp")==="yes"){ adj*=0.75; steps.push("high-temperature × 0.75"); }
+      if(val("adjK112")==="yes"){ adj*=0.75; steps.push("K-11.2 or larger × 0.75"); }
+      var floorNote="";
+      if((val("adjHiTemp")==="yes"||val("adjK112")==="yes") && adj<2000){ adj=2000; floorNote="2000 ft² floor applied"; }
+      if(val("adjConcealed")==="yes" && adj<3000){ adj=3000; floorNote="3000 ft² concealed-space minimum applied last"; }
+      h+='<div class="live"><div class="live-h">Design criteria — running total</div><div class="live-b">'
+        +'<div class="kv"><span class="k">Point off the curve</span><span class="v">'+d.toFixed(2)+' gpm/ft² over '+Math.round(a)+' ft²</span></div>';
+      if(steps.length) h+='<div class="kv"><span class="k">Adjustments</span><span class="v">'+esc(steps.join("  ·  "))+'</span></div>';
+      h+='<div class="kv"><span class="k">Adjusted area of operation</span><span class="v">'+Math.round(adj)+' ft²</span></div>'
+        +'<div class="kv"><span class="k">Minimum width 1.2√A</span><span class="v">'+(1.2*Math.sqrt(adj)).toFixed(1)+' ft</span></div>'
+        +'<div class="kv"><span class="k">Sprinkler demand before hose</span><span class="v">'+Math.round(d*adj)+' gpm</span></div>';
+      if(floorNote) h+='<div class="flag info">'+esc(floorNote)+'</div>';
+      if(hz==="LH"&&a>3000) h+='<div class="flag no">The light hazard curve is not plotted above 3000 ft².</div>';
+      if((hz==="OH1"||hz==="OH2")&&a>4000) h+='<div class="flag no">The ordinary hazard curves are not plotted above 4000 ft².</div>';
+      if((hz==="EH1"||hz==="EH2")&&a<2500) h+='<div class="flag no">The extra hazard curves stop at 2500 ft². Below that, use the density for 2500 ft² (§19.3.3.1.4).</div>';
+      if((hz==="LH"||hz==="OH1"||hz==="OH2")&&a<1500) h+='<div class="flag no">Below 1500 ft² you still use the density for 1500 ft² (§19.3.3.1.4).</div>';
+      if(val("adjQR")==="yes"&&(hz==="EH1"||hz==="EH2")) h+='<div class="flag no"><b>Not permitted.</b> Quick-response sprinklers are not allowed in extra hazard occupancies (§10.2.3, §19.3.3.2.2.2).</div>';
+      if(val("adjQR")==="yes"&&val("system").indexOf("Wet")!==0&&val("system")) h+='<div class="flag no"><b>Check condition 1.</b> The quick-response reduction requires a wet pipe system, and step 6 says '+esc(val("system"))+'.</div>';
+      if(val("adjQR")==="yes"&&parseFloat(val("ceilHt"))>20) h+='<div class="flag no"><b>Check condition 3.</b> Ceiling height from step 4 is '+esc(val("ceilHt"))+' ft. The reduction requires 20 ft or less.</div>';
+      if(val("adjSlope")!=="yes"&&val("slope")&&!/^flat/i.test(val("slope"))) h+='<div class="flag info">Step 4 records a slope of &ldquo;'+esc(val("slope"))+'&rdquo;. If the pitch exceeds 2 in 12 the 30% increase is mandatory.</div>';
+      if(val("adjDry")!=="yes"&&/Dry|Preaction/i.test(val("system"))) h+='<div class="flag info">Step 6 selected '+esc(val("system"))+'. A dry pipe or double-interlock preaction system requires the 30% increase.</div>';
+      h+='</div></div>';
+    }
+  }
+
+  if(s.n===8){
+    var ma=parseFloat(val("maxArea")), hz2=val("hazard");
+    if(!isNaN(ma)&&hz2){
+      var lim=0;
+      NFPA.coverage[hz2].forEach(function(r){ if(r[1]>lim) lim=r[1]; });
+      h+='<div class="live"><div class="live-h">Coverage check</div><div class="live-b">'
+        +'<div class="kv"><span class="k">Area per sprinkler used</span><span class="v">'+Math.round(ma)+' ft²</span></div>'
+        +'<div class="kv"><span class="k">Highest value in the table for this hazard</span><span class="v">'+lim+' ft²</span></div>';
+      h+= ma>lim
+        ? '<div class="flag no"><b>Over every row.</b> '+Math.round(ma)+' ft² exceeds the largest value in the table for '
+          +esc(hazById(hz2).name)+'. Re-check the construction row you are using.</div>'
+        : '<div class="flag ok">Within the table — now confirm the specific construction row, and the sprinkler&rsquo;s own listing.</div>';
+      h+='</div></div>';
+    }
+  }
+
+  if(s.n===9){
+    var done=0;
+    CHECKS.forEach(function(_,i){ if(val("chk"+i)==="yes") done++; });
+    h+='<div class="live"><div class="live-h">Self-check</div><div class="live-b">'
+      +'<div class="kv"><span class="k">Confirmed</span><span class="v">'+done+' of '+CHECKS.length+'</span></div>';
+    h+= done===CHECKS.length
+      ? '<div class="flag ok">All ten confirmed. Build the sheet and keep it with the calculation.</div>'
+      : '<div class="flag info">'+(CHECKS.length-done)+' still to confirm. You can still build the sheet — unconfirmed items are listed on it.</div>';
+    h+='</div></div>';
+  }
+  host.innerHTML=h;
+}
+
+function wire(){
+  Array.prototype.forEach.call(document.querySelectorAll("[data-k]"),function(el){
+    var k=el.getAttribute("data-k");
+    if(el.type==="checkbox"){
+      el.addEventListener("change",function(){ setVal(k, el.checked?"yes":"no");
+        if(k==="storage") render(); else { live(); paintRail(); } });
+    }else{
+      el.addEventListener("input",function(){ setVal(k,el.value); live(); paintRail(); });
+      el.addEventListener("change",function(){ setVal(k,el.value); live(); paintRail();
+        if(k==="project") refreshProjName(); });
+    }
+  });
+  var hr=$("hazRadios");
+  if(hr){
+    hr.addEventListener("change",function(e){
+      if(e.target.name!=="haz") return;
+      setVal("hazard",e.target.value); render();
+    });
+  }
+  if($("prevBtn")) $("prevBtn").addEventListener("click",function(){ cur--; render(); window.scrollTo(0,0); });
+  if($("nextBtn")) $("nextBtn").addEventListener("click",function(){ cur++; render(); window.scrollTo(0,0); });
+  if($("doneBtn")) $("doneBtn").addEventListener("click",buildReport);
+}
+
+function refreshProjName(){
+  var p=proj(); if(!p) return;
+  var n=val("project");
+  p.name = n && n.trim() ? n.trim() : "Untitled project";
+  saveDB(); paintProjects();
+}
+
+/* step rail */
+function paintRail(){
+  var h="";
+  STEPS.forEach(function(s){
+    h+='<div class="rstep'+(s.n===cur?' on':'')+(stepDone(s)?' done':'')+'" data-n="'+s.n+'">'
+      +'<div class="rn">'+s.n+'</div><div class="rl">'+s.label+'</div><div class="rdot"></div></div>';
+  });
+  $("rail").innerHTML=h;
+  Array.prototype.forEach.call(document.querySelectorAll(".rstep"),function(el){
+    el.addEventListener("click",function(){
+      cur=parseInt(el.getAttribute("data-n"),10); render(); window.scrollTo(0,0);
+    });
+  });
+}
+function stepDone(s){
+  if(s.custom==="hazard") return !!val("hazard");
+  if(s.custom==="criteria") return !!val("density") && !!val("designArea");
+  if(s.custom==="check"){
+    var n=0; CHECKS.forEach(function(_,i){ if(val("chk"+i)==="yes") n++; });
+    return n===CHECKS.length;
+  }
+  if(!s.fields) return false;
+  var need=s.fields.filter(function(f){ return f.t!=="textarea"; });
+  var got=need.filter(function(f){ return String(val(f.k)).trim()!==""; });
+  return need.length>0 && got.length>=Math.ceil(need.length*0.6);
+}
+
+/* ============================================================
+   PROJECTS
+   ============================================================ */
+function paintProjects(){
+  var h="";
+  db.order.forEach(function(id){
+    var p=db.projects[id];
+    if(!p) return;
+    h+='<option value="'+id+'"'+(id===curId?' selected':'')+'>'+esc(p.name)+' · '+esc(p.touched)+'</option>';
+  });
+  $("projSel").innerHTML=h;
+}
+$("projSel").addEventListener("change",function(){
+  curId=$("projSel").value; db.last=curId; saveDB(); cur=1; render();
+});
+$("projNew").addEventListener("click",function(){
+  var n=prompt("Name this project:","");
+  if(n===null) return;
+  curId=newProject(n||"Untitled project");
+  setVal("date",todayISO());
+  paintProjects(); cur=1; render();
+});
+$("projDel").addEventListener("click",function(){
+  if(!curId) return;
+  var p=proj();
+  if(!confirm('Delete "'+(p?p.name:"this project")+'"? This cannot be undone.')) return;
+  delete db.projects[curId];
+  db.order=db.order.filter(function(x){ return x!==curId; });
+  curId = db.order.length? db.order[db.order.length-1] : newProject("Untitled project");
+  db.last=curId; saveDB(); paintProjects(); cur=1; render();
+});
+
+/* ============================================================
+   REPORT
+   ============================================================ */
+function row(label,v,full){
+  var has = v!=null && String(v).trim()!=="";
+  return '<div class="ri'+(full?' full':'')+'"><span class="rk">'+label+'</span>'
+    +'<span class="rv'+(has?'':' miss')+'">'+(has?esc(v):"not recorded")+'</span></div>';
+}
+function sec(title,inner){
+  return '<div class="rsec"><div class="rsec-h">'+title+'</div><div class="rgrid">'+inner+'</div></div>';
+}
+
+function buildReport(){
+  var z = val("hazard")? hazById(val("hazard")) : null;
+  $("rp_project").textContent  = val("project")||"Untitled project";
+  $("rp_area").textContent     = val("firearea")||"—";
+  $("rp_designer").textContent = val("designer")||"—";
+  $("rp_date").textContent     = val("date")||todayISO();
+
+  var b="";
+  b+=sec("1 · Scope &amp; standard",
+      row("NFPA standard",val("standard"))+row("NFPA edition",val("nfpaEd"))
+     +row("Building code",(val("code")+" "+val("codeEd")).trim())+row("AHJ",val("ahj"))
+     +row("Local amendments",val("amend"),true));
+
+  b+=sec("2 · Occupancy &amp; use",
+      row("Fire area / room",val("firearea"))+row("IBC occupancy group",val("ibc"))
+     +row("Use",val("use"),true)+row("Mixed / incidental areas",val("mixed"),true));
+
+  var hazTxt = z ? z.name+"  ("+z.cite+")" : "";
+  var st=row("Hazard classification",hazTxt,true)+row("Justification",val("hazJust"),true);
+  if(val("storage")==="yes"){
+    st+=row("Storage present","Yes")+row("Commodity class",val("commodity"))
+       +row("Storage method",val("storMethod"))
+       +row("Storage height",val("storHt")?val("storHt")+" ft":"")
+       +row("Governing chapter",val("storChap"));
+  }else{ st+=row("Storage present","No"); }
+  b+=sec("3 · Hazard classification",st);
+
+  b+=sec("4 · Construction, ceiling &amp; environment",
+      row("Construction type",val("construction"))+row("Obstructed / unobstructed",val("obstructed"))
+     +row("Members on centre",val("membersOC"))+row("Bar joist / truss chord depth",val("chordDepth"))
+     +row("Combustible concealed space",val("concealed"))
+     +row("Ceiling height",val("ceilHt")?val("ceilHt")+" ft":"")
+     +row("Ceiling slope / pitch",val("slope"))+row("Pockets / clouds / soffits",val("pockets"))
+     +row("Freezing possible",val("freeze")));
+
+  var m=monthsBetween(val("testDate"));
+  var ageTxt = (m===null)?"":(m+" months old"+(m>12?" — EXCEEDS the 12-month limit of §4.6.1.1":" — within §4.6.1.1"));
+  b+=sec("5 · Water supply",
+      row("Static pressure",val("static")?val("static")+" psi":"")
+     +row("Residual pressure",val("residual")?val("residual")+" psi":"")
+     +row("Flow",val("flow")?val("flow")+" gpm":"")
+     +row("Flow test date",val("testDate"))
+     +row("Test age",ageTxt)
+     +row("Supply type",val("supplyType"))+row("Fire pump / tank",val("pump"))
+     +row("Test location &amp; elevation",val("testLoc"),true));
+
+  b+=sec("6 · System type &amp; sprinkler",
+      row("System type",val("system"))+row("Sprinkler type",val("sprinkler"))
+     +row("K-factor",val("kfactor"))+row("Response type",val("response"))
+     +row("Temperature rating",val("temp"))
+     +row("Listing limitations",val("listing"),true));
+
+  var adjs=[];
+  if(val("adjDry")==="yes")   adjs.push("dry / double-interlock preaction +30% (§19.3.3.2.5)");
+  if(val("adjSlope")==="yes") adjs.push("sloped ceiling +30% (§19.3.3.2.4)");
+  if(val("adjQR")==="yes")    adjs.push("quick-response reduction (§19.3.3.2.3)");
+  if(val("adjHiTemp")==="yes")adjs.push("high-temperature −25% (§19.3.3.2.6)");
+  if(val("adjK112")==="yes")  adjs.push("K-11.2 or larger −25% (§19.3.3.2.7)");
+  if(val("adjConcealed")==="yes") adjs.push("unsprinklered concealed space, 3000 ft² minimum applied last (§19.3.3.1.5)");
+  var dd=parseFloat(val("density")), aa=parseFloat(val("designArea"));
+  var demand = (!isNaN(dd)&&!isNaN(aa)) ? Math.round(dd*aa)+" gpm before hose allowance" : "";
+  b+=sec("7 · Design criteria",
+      row("Design density",val("density")?val("density")+" gpm/ft²":"")
+     +row("Area of operation",val("designArea")?val("designArea")+" ft²":"")
+     +row("Hose allowance &amp; duration", z?z.hose:"")
+     +row("Sprinkler demand",demand)
+     +row("Max area per sprinkler",val("maxArea")?val("maxArea")+" ft²":"")
+     +row("Max spacing",val("maxSpacing"))
+     +row("Adjustments applied",adjs.length?adjs.join(" · "):"none",true));
+
+  b+=sec("8 · Layout",
+      row("Branch-line orientation &amp; spacing",val("layout"),true)
+     +row("Head count in the design area",val("headCount"))
+     +row("Deflector position",val("deflector"))
+     +row("Obstruction resolution",val("obstructions"),true));
+
+  var open=[];
+  CHECKS.forEach(function(c,i){ if(val("chk"+i)!=="yes") open.push(c); });
+  b+=sec("9 · Self-check",
+      row("Confirmed",(CHECKS.length-open.length)+" of "+CHECKS.length)
+     +row("Hydraulic notes",val("hydraulic"),true)
+     +(open.length? row("STILL OPEN","• "+open.join("   • "),true) : row("Outstanding items","none — all confirmed",true)));
+
+  $("reportBody").innerHTML=b;
+  $("wizard").style.display="none";
+  $("report").style.display="block";
+  window.scrollTo(0,0);
+}
+
+$("backToWiz").addEventListener("click",function(){
+  $("report").style.display="none";
+  $("wizard").style.display="block";
+  render(); window.scrollTo(0,0);
+});
+$("printBtn").addEventListener("click",function(){ window.print(); });
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+if(!db.order.length){
+  curId=newProject("Untitled project");
+  setVal("date",todayISO());
+}else{
+  curId = (db.last && db.projects[db.last]) ? db.last : db.order[db.order.length-1];
+}
+paintProjects();
+render();
+
+})();
+</script>
+</body>
+</html>
