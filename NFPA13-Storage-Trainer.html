@@ -1195,15 +1195,28 @@ $("tabs").addEventListener("click", function(e){
   if(!b) return;
   showPanel(b.getAttribute("data-p"));
 });
-function showPanel(p){
+function showPanel(p, keepHash){
+  if(panels.indexOf(p) === -1) p = "learn";
   panels.forEach(function(x){ $("p-"+x).classList.toggle("on", x===p); });
   Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(t){
     t.classList.toggle("on", t.getAttribute("data-p")===p);
   });
   if(p==="progress") renderProgress();
   if(p==="drill" && currentQ===null) nextQuestion();
+  if(!keepHash){
+    try{ history.replaceState(null, "", "#"+p); }catch(e){}
+  }
   window.scrollTo(0,0);
 }
+/* deep links — other FSM tools point straight at a tab, e.g.
+   NFPA13-Storage-Trainer.html#route */
+function openFromHash(){
+  var p = (location.hash || "").replace("#","");
+  if(p) showPanel(p, true);
+}
+window.addEventListener("hashchange", openFromHash);
+/* the initial call lives in the boot block at the end of this script —
+   running it here would hit QUESTIONS before it is defined */
 
 /* ============================================================
    GLOSSARY — plain words, then the section
@@ -2488,6 +2501,7 @@ function renderProgress(){
 /* boot */
 renderScore();
 renderProgress();
+openFromHash();
 </script>
 </body>
 </html>
