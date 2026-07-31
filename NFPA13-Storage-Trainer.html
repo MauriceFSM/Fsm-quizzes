@@ -1,0 +1,2493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Storage Trainer — Commodity, Racks &amp; In-Rack | Fire System Mastery</title>
+<style>
+/* ============================================================
+   FSM STORAGE TRAINER  —  NFPA 13 (2019) Chapters 20–25
+   Design language: apprentice training manual, drafted by hand.
+   Grayscale technical illustration + ink linework + hatching.
+   Colour is used the way a red pencil is used on a drawing:
+   sparingly, and only to mean something.
+   Matches NFPA13_Hydraulic_Trainer.html exactly.
+   ============================================================ */
+
+:root{
+  --paper:      #FCFAF6;
+  --paper-tint: #F4F0E7;
+  --paper-deep: #EBE5D8;
+  --ink:        #16130F;
+  --ink-2:      #4A443C;
+  --ink-3:      #8B8275;
+  --line:       #D6CEC0;
+  --line-hard:  #16130F;
+  --redline:    #D85A30;   /* FSM orange — annotation / active */
+  --blueprint:  #185FA5;   /* FSM blue — code citation only */
+  --pass:       #1D9E75;   /* FSM green — verified / correct */
+  --fail:       #B3341F;
+
+  --mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", "Consolas", monospace;
+  --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--sans);
+  color:var(--ink);
+  background:var(--paper);
+  background-image:
+    linear-gradient(var(--paper-tint) 1px, transparent 1px),
+    linear-gradient(90deg, var(--paper-tint) 1px, transparent 1px);
+  background-size:24px 24px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- sheet ---------- */
+.sheet{
+  max-width:940px;margin:0 auto;background:var(--paper);
+  border-left:1px solid var(--line);border-right:1px solid var(--line);
+  min-height:100vh;
+}
+@media(max-width:960px){.sheet{border:none}}
+
+/* ---------- masthead: a drawing title block ---------- */
+.masthead{
+  border-bottom:2px solid var(--line-hard);
+  padding:20px 22px 0;
+}
+.mast-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.mast-title{
+  font-size:1.45rem;font-weight:800;letter-spacing:-.02em;line-height:1.1;
+  text-transform:uppercase;
+}
+.mast-sub{
+  font-family:var(--mono);font-size:.7rem;color:var(--ink-3);
+  letter-spacing:.09em;text-transform:uppercase;margin-top:5px;
+}
+.mast-stamp{
+  border:1.5px solid var(--ink);padding:5px 9px;text-align:center;flex-shrink:0;
+  transform:rotate(-1.5deg);
+}
+.mast-stamp b{display:block;font-size:.66rem;letter-spacing:.13em;font-weight:800}
+.mast-stamp span{font-family:var(--mono);font-size:.6rem;color:var(--ink-2)}
+
+/* ---------- tabs ---------- */
+.tabs{display:flex;gap:2px;margin-top:16px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:9px 13px;border:1px solid var(--line);border-bottom:none;
+  background:var(--paper-tint);color:var(--ink-2);cursor:pointer;white-space:nowrap;
+  position:relative;top:1px;font-weight:700;
+}
+.tab:hover{background:var(--paper-deep);color:var(--ink)}
+.tab.on{background:var(--paper);color:var(--ink);border-color:var(--line-hard);
+  border-bottom:2px solid var(--paper);box-shadow:0 -2px 0 var(--redline) inset}
+.tab .tnum{color:var(--ink-3);margin-right:5px}
+.tab.on .tnum{color:var(--redline)}
+
+/* ---------- panels ---------- */
+.panel{display:none;padding:24px 22px 60px}
+.panel.on{display:block}
+@media(max-width:600px){.panel{padding:18px 14px 60px}}
+
+.eyebrow{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--redline);font-weight:700;margin-bottom:5px;
+}
+h2.head{font-size:1.3rem;font-weight:800;letter-spacing:-.015em;margin-bottom:8px;line-height:1.2}
+h3.sub{
+  font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;
+  margin:26px 0 9px;padding-bottom:5px;border-bottom:1px solid var(--line);
+}
+p{margin-bottom:11px;font-size:.93rem;color:var(--ink-2)}
+p strong{color:var(--ink);font-weight:700}
+.lead{font-size:1rem;color:var(--ink);max-width:62ch}
+ul.tight{margin:0 0 12px 18px;font-size:.92rem;color:var(--ink-2)}
+ul.tight li{margin-bottom:5px}
+
+/* ---------- plain-language callout ---------- */
+.plain{
+  border-left:3px solid var(--ink);background:var(--paper-tint);
+  padding:12px 15px;margin:14px 0;font-size:.93rem;
+}
+.plain .pl-tag{
+  font-family:var(--mono);font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:700;display:block;margin-bottom:4px;
+}
+.plain p:last-child{margin-bottom:0}
+
+/* ---------- code citation chip ---------- */
+.cite{
+  font-family:var(--mono);font-size:.74rem;color:var(--blueprint);
+  border-bottom:1px dotted var(--blueprint);white-space:nowrap;font-weight:600;
+}
+
+/* ---------- redline warning ---------- */
+.redline{
+  border:1px solid var(--redline);border-left-width:3px;padding:11px 14px;margin:14px 0;
+  background:#FFF8F4;font-size:.9rem;color:#7A2E12;
+}
+.redline b{color:var(--redline)}
+
+/* ---------- verify flag (unresolved / read-the-standard) ---------- */
+.verify{
+  border:1px dashed var(--ink-3);padding:11px 14px;margin:14px 0;
+  background:var(--paper-tint);font-size:.88rem;color:var(--ink-2);
+}
+.verify b{color:var(--ink);font-weight:800}
+
+/* ---------- the workbench (interactive) ---------- */
+.bench{
+  border:1.5px solid var(--line-hard);background:var(--paper);margin:18px 0 22px;
+}
+.bench-head{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:9px 13px;border-bottom:1px solid var(--line-hard);background:var(--paper-tint);
+}
+.bench-head h4{
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.11em;text-transform:uppercase;font-weight:800;
+}
+.bench-head .hint{font-family:var(--mono);font-size:.62rem;color:var(--ink-3);letter-spacing:.05em}
+.bench-body{padding:14px 13px}
+.bench-figure{background:#fff;border-bottom:1px solid var(--line);padding:6px}
+svg{display:block;width:100%;height:auto;touch-action:manipulation}
+
+/* ---------- controls ---------- */
+.ctrl{margin-bottom:13px}
+.ctrl-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;gap:8px}
+.ctrl label{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-2);font-weight:700;
+}
+.ctrl .val{font-family:var(--mono);font-size:.9rem;font-weight:700;color:var(--ink)}
+input[type=range]{
+  -webkit-appearance:none;appearance:none;width:100%;height:26px;background:transparent;cursor:pointer;
+}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--ink);border:none}
+input[type=range]::-moz-range-track{height:2px;background:var(--ink)}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;width:20px;height:20px;margin-top:-9px;
+  background:var(--paper);border:2px solid var(--ink);border-radius:50%;
+}
+input[type=range]::-webkit-slider-thumb:active{background:var(--redline);border-color:var(--redline)}
+input[type=range]::-moz-range-thumb{
+  width:18px;height:18px;background:var(--paper);border:2px solid var(--ink);border-radius:50%;
+}
+input[type=checkbox]{width:20px;height:20px;accent-color:#D85A30;flex-shrink:0}
+select,input[type=number],input[type=text]{
+  width:100%;padding:8px 10px;border:1px solid var(--ink);background:#fff;
+  font-family:var(--mono);font-size:.88rem;color:var(--ink);border-radius:0;
+}
+select:focus,input:focus{outline:2px solid var(--redline);outline-offset:-2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.grid2{grid-template-columns:1fr}}
+.chk-row{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.chk-row label{
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--ink-2);font-weight:700;cursor:pointer;
+}
+
+/* ---------- readout ---------- */
+.readout{border-top:1px solid var(--line-hard);background:var(--paper-tint);padding:12px 13px}
+.ro-row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;gap:10px}
+.ro-row + .ro-row{border-top:1px dotted var(--line)}
+.ro-k{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.ro-v{font-family:var(--mono);font-size:.95rem;font-weight:700;text-align:right}
+.ro-v.big{font-size:1.15rem}
+.verdict{
+  margin-top:10px;padding:9px 12px;font-family:var(--mono);font-size:.76rem;
+  font-weight:700;letter-spacing:.05em;text-transform:uppercase;border:1.5px solid;
+}
+.verdict.ok{color:var(--pass);border-color:var(--pass);background:#F1FAF6}
+.verdict.no{color:var(--fail);border-color:var(--fail);background:#FDF3F1}
+.verdict.warn{color:#8A5A00;border-color:#B98A2E;background:#FFFBF0}
+
+/* ---------- worked reasoning ---------- */
+.math{
+  font-family:var(--mono);font-size:.8rem;line-height:1.85;background:#fff;
+  border:1px solid var(--line);padding:11px 13px;margin:10px 0;overflow-x:auto;
+  white-space:pre-wrap;
+}
+.math .lbl{color:var(--ink-3)}
+.math .hi{color:var(--redline);font-weight:700}
+.math .ok{color:var(--pass);font-weight:700}
+
+/* coaching note */
+.coach{
+  border-left:3px solid var(--redline);background:#FFF8F4;padding:11px 14px;
+  margin-top:11px;font-size:.89rem;color:#7A2E12;
+}
+.coach b{color:var(--redline)}
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;
+  font-weight:800;padding:11px 16px;border:1.5px solid var(--ink);background:var(--paper);
+  color:var(--ink);cursor:pointer;border-radius:0;
+}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn.primary:hover{background:var(--redline);border-color:var(--redline)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+
+/* ---------- drill ---------- */
+.scenario{border:1.5px solid var(--line-hard);background:#fff;padding:16px 15px;margin-bottom:13px}
+.scenario .q-meta{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:8px;
+}
+.scenario .q-text{font-size:1rem;color:var(--ink);line-height:1.5}
+.opts{display:flex;flex-direction:column;gap:7px;margin-top:13px}
+.opt{
+  text-align:left;padding:12px 14px;border:1.5px solid var(--line);background:#fff;
+  cursor:pointer;font-size:.92rem;color:var(--ink);display:flex;gap:10px;align-items:flex-start;
+}
+.opt:hover:not(:disabled){border-color:var(--ink);background:var(--paper-tint)}
+.opt .k{
+  font-family:var(--mono);font-weight:800;font-size:.78rem;color:var(--ink-3);flex-shrink:0;
+  border:1px solid var(--line);width:22px;height:22px;display:flex;align-items:center;
+  justify-content:center;line-height:1;
+}
+.opt.right{border-color:var(--pass);background:#F1FAF6}
+.opt.right .k{border-color:var(--pass);color:var(--pass)}
+.opt.wrong{border-color:var(--fail);background:#FDF3F1}
+.opt.wrong .k{border-color:var(--fail);color:var(--fail)}
+.opt:disabled{cursor:default}
+.explain{
+  margin-top:13px;padding:13px 15px;border-left:3px solid var(--ink);background:var(--paper-tint);
+  font-size:.9rem;
+}
+.explain .ex-h{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;
+  font-weight:800;margin-bottom:6px;
+}
+
+/* ---------- score / mastery / badges ---------- */
+.scorebar{display:flex;gap:0;border:1.5px solid var(--line-hard);margin-bottom:16px;background:#fff}
+.score-cell{flex:1;padding:10px 8px;text-align:center;border-right:1px solid var(--line)}
+.score-cell:last-child{border-right:none}
+.score-cell .sc-k{
+  font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);
+}
+.score-cell .sc-v{font-family:var(--mono);font-size:1.25rem;font-weight:800;line-height:1.3}
+.score-cell .sc-v.flame{color:var(--redline)}
+.mastery{margin-top:8px}
+.m-row{display:flex;align-items:center;gap:10px;padding:6px 0}
+.m-name{
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--ink-2);width:132px;flex-shrink:0;
+}
+@media(max-width:520px){.m-name{width:96px;font-size:.6rem}}
+.m-track{flex:1;height:9px;background:var(--paper-deep);border:1px solid var(--line);position:relative}
+.m-fill{height:100%;background:var(--ink);transition:width .45s cubic-bezier(.2,.8,.3,1)}
+.m-fill.gold{background:var(--redline)}
+.m-pct{font-family:var(--mono);font-size:.72rem;font-weight:700;width:38px;text-align:right}
+.badges{display:flex;flex-wrap:wrap;gap:9px;margin-top:10px}
+.badge{border:1.5px solid var(--line);padding:8px 11px;text-align:center;min-width:84px;opacity:.32;filter:grayscale(1)}
+.badge.got{opacity:1;filter:none;border-color:var(--ink);transform:rotate(-1deg)}
+.badge .b-ico{font-size:1.1rem;line-height:1}
+.badge .b-n{
+  font-family:var(--mono);font-size:.55rem;letter-spacing:.08em;text-transform:uppercase;
+  font-weight:800;margin-top:4px;
+}
+
+/* ---------- reference table ---------- */
+table.ref{width:100%;border-collapse:collapse;font-size:.84rem;margin:12px 0}
+table.ref th{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;
+  text-align:left;padding:7px 8px;border-bottom:1.5px solid var(--line-hard);color:var(--ink-2);
+}
+table.ref td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+table.ref tr:last-child td{border-bottom:none}
+table.ref td.n{font-family:var(--mono);font-weight:700;white-space:nowrap}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);background:#fff;padding:0 10px}
+
+/* ---------- glossary ---------- */
+.gloss dt{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;
+  font-weight:800;color:var(--ink);margin-top:12px;
+}
+.gloss dd{font-size:.92rem;color:var(--ink-2);margin-top:2px}
+
+/* ---------- footer ---------- */
+.foot{
+  border-top:1px solid var(--line);margin-top:30px;padding:14px 22px 30px;
+  font-family:var(--mono);font-size:.62rem;color:var(--ink-3);letter-spacing:.05em;
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
+}
+.foot a{color:var(--blueprint);text-decoration:none;border-bottom:1px dotted var(--blueprint)}
+
+/* ---------- SVG drafting conventions ---------- */
+.obj-line{stroke:var(--ink);stroke-width:2;fill:none}
+.thin-line{stroke:var(--ink);stroke-width:1;fill:none}
+.dim-line{stroke:var(--redline);stroke-width:1;fill:none}
+.ext-line{stroke:var(--ink-3);stroke-width:.75;fill:none;stroke-dasharray:3 2}
+.ctr-line{stroke:var(--ink-3);stroke-width:.75;fill:none;stroke-dasharray:9 3 2 3}
+.dim-txt{font-family:var(--mono);font-size:11px;fill:var(--redline);font-weight:700}
+.obj-txt{font-family:var(--sans);font-size:11px;fill:var(--ink);font-weight:700}
+.note-txt{font-family:var(--mono);font-size:10px;fill:var(--ink-3)}
+/* On a phone the SVG is scaled to about half size, so type inside it must be
+   drawn larger in user units to stay legible in the hand. */
+@media(max-width:600px){
+  .dim-txt{font-size:19px}
+  .obj-txt{font-size:18px}
+  .note-txt{font-size:16px}
+}
+.fig-label{
+  font-family:var(--sans);font-size:.64rem;font-weight:800;letter-spacing:.13em;
+  text-transform:uppercase;text-align:center;padding:7px 0 3px;color:var(--ink);
+}
+.fig-cap{font-size:.76rem;color:var(--ink-3);text-align:center;padding-bottom:9px}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- ============ MASTHEAD ============ -->
+  <header class="masthead">
+    <div class="mast-row">
+      <div>
+        <div class="mast-title">Storage Trainer</div>
+        <div class="mast-sub">NFPA 13 · 2019 Edition · Chapters 20–25 · Fire System Mastery</div>
+      </div>
+      <div class="mast-stamp">
+        <b>VERIFIED</b>
+        <span>vs 13-19</span>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs">
+      <div class="tab on" data-p="learn"><span class="tnum">00</span>Start Here</div>
+      <div class="tab" data-p="commodity"><span class="tnum">01</span>Commodity</div>
+      <div class="tab" data-p="rack"><span class="tnum">02</span>Rack Builder</div>
+      <div class="tab" data-p="route"><span class="tnum">03</span>Route</div>
+      <div class="tab" data-p="inrack"><span class="tnum">04</span>In-Rack</div>
+      <div class="tab" data-p="drill"><span class="tnum">05</span>Drill</div>
+      <div class="tab" data-p="progress"><span class="tnum">06</span>Progress</div>
+    </nav>
+  </header>
+
+  <!-- ============ 00 START HERE ============ -->
+  <section class="panel on" id="p-learn">
+    <div class="eyebrow">Start Here</div>
+    <h2 class="head">Storage design, in the order the standard actually works</h2>
+    <p class="lead">Storage is where sprinkler design stops being about a room and starts being
+    about a <em>pile</em>. Four questions decide everything: what is it, how is it stacked, how
+    high, and how much air is above it. Get those four right and the chapters tell you the rest.</p>
+
+    <div class="plain">
+      <span class="pl-tag">Explain it like I'm ten</span>
+      <p>A warehouse fire is a fire in a tall stack of stuff. The taller the stack and the
+      easier the stuff burns, the harder it is to put out — because the fire gets a head start
+      climbing before the water can get down to it. Everything in these six chapters is just a
+      careful way of asking: <strong>how bad is this stack, and how much water do I need to
+      beat it?</strong></p>
+    </div>
+
+    <h3 class="sub">The six-step sequence — §20.2</h3>
+    <p>Chapter 20 spells this out. It is the only correct order, and skipping step 1 is the
+    most common way a storage design goes wrong.</p>
+    <ol style="margin:0 0 14px 20px;font-size:.93rem;color:var(--ink-2)">
+      <li style="margin-bottom:6px"><strong>Classify the commodity</strong> — <span class="cite">§20.3, §20.4</span></li>
+      <li style="margin-bottom:6px"><strong>Identify the storage method</strong> — <span class="cite">§20.5</span></li>
+      <li style="margin-bottom:6px"><strong>Establish storage height, building height, clearance</strong> — <span class="cite">§20.6</span></li>
+      <li style="margin-bottom:6px"><strong>Apply the general criteria common to all storage</strong> — <span class="cite">§20.7–20.15</span></li>
+      <li style="margin-bottom:6px"><strong>Select the sprinkler technology</strong> — Chapters 21–25</li>
+      <li><strong>Design and install</strong> per the rest of the standard</li>
+    </ol>
+
+    <div class="redline">
+      <b>Step 5 is a choice, not a lookup.</b> There is no table in Chapter 20 that tells you
+      "use CMDA" or "use ESFR." Chapter 20 establishes the inputs; each design chapter states
+      its own limits, and you pick the one whose limits your job fits inside. That is why the
+      Route tab in this trainer shows you which chapters are <em>still open</em> rather than
+      naming one answer.
+    </div>
+
+    <h3 class="sub">Where each thing actually lives</h3>
+    <p>This trips people up constantly: for CMSA and ESFR, the <em>design criteria</em> and the
+    <em>installation rules</em> are in different chapters. If you only read Chapter 23, you will
+    never find the ESFR clearance or obstruction rules — they are in Chapter 14.</p>
+
+    <div class="tbl-wrap">
+    <table class="ref">
+      <tr><th>Chapter</th><th>2019 title</th><th>What you go there for</th></tr>
+      <tr><td class="n">3</td><td>Definitions</td><td>Miscellaneous storage, encapsulation, rack types, flue spaces</td></tr>
+      <tr><td class="n">4</td><td>General Requirements</td><td>Miscellaneous &amp; low-piled storage criteria (§4.3.1.4–4.3.1.8)</td></tr>
+      <tr><td class="n">13</td><td>Installation Requirements for CMSA Sprinklers</td><td>CMSA spacing, coverage, deflector, clearance, obstructions</td></tr>
+      <tr><td class="n">14</td><td>Installation Requirements for ESFR Sprinklers</td><td>ESFR spacing, coverage, slope, clearance, obstructions</td></tr>
+      <tr><td class="n">20</td><td>General Requirements for Storage</td><td>Commodity classes, arrangement, heights, clearance, hose stream</td></tr>
+      <tr><td class="n">21</td><td>Protection of High Piled Storage Using CMDA Sprinklers</td><td>Density/area design — the curves</td></tr>
+      <tr><td class="n">22</td><td>CMSA Requirements for Storage Applications</td><td>Sprinkler count + minimum pressure tables</td></tr>
+      <tr><td class="n">23</td><td>ESFR Requirements for Storage Applications</td><td>ESFR design criteria</td></tr>
+      <tr><td class="n">24</td><td>Alternative Sprinkler System Designs for Ch. 20–25</td><td>Listed sprinklers with tested criteria; §24.5 obstruction</td></tr>
+      <tr><td class="n">25</td><td>Protection of Rack Storage Using In-Rack Sprinklers</td><td>All in-rack requirements — placement and design</td></tr>
+    </table>
+    </div>
+
+    <h3 class="sub">Words that mean something specific</h3>
+    <dl class="gloss" id="glossHost"></dl>
+
+    <div class="verify">
+      <b>How this tool was built.</b> Every number here was read off the NFPA 13 (2019) PDF and
+      is shown with its section number. Where the standard puts a value in a <em>plotted
+      curve</em> rather than a table — the CMDA density/area figures — this tool teaches you how
+      to read the curve and cites the figure, but does <strong>not</strong> print a density.
+      Those values must come off the actual figure in the standard. A guessed density is worse
+      than no density.
+    </div>
+  </section>
+
+  <!-- ============ 01 COMMODITY ============ -->
+  <section class="panel" id="p-commodity">
+    <div class="eyebrow">Workbench 01</div>
+    <h2 class="head">Commodity classification</h2>
+    <p class="lead">The commodity is not the product. It is the product <em>plus</em> its
+    packaging <em>plus</em> the pallet it sits on — and the worst of the three drives the
+    class. <span class="cite">§20.3.1.1</span></p>
+
+    <div class="plain">
+      <span class="pl-tag">Explain it like I'm ten</span>
+      <p>Imagine a metal wrench. On its own it will not burn. Put it in a cardboard box and now
+      there is something to burn. Stack the boxes on a wooden pallet and there is more. Wrap the
+      wrench in foam packing peanuts and suddenly the whole load burns like a puddle of gasoline.
+      <strong>Same wrench every time.</strong> What changed is everything around it — so that is
+      what we classify.</p>
+    </div>
+
+    <div class="bench">
+      <div class="bench-head">
+        <h4>Commodity Classifier</h4>
+        <span class="hint">set all four</span>
+      </div>
+      <div class="bench-body">
+        <div class="grid2">
+          <div class="ctrl">
+            <div class="ctrl-top"><label for="cmProd">Product itself</label></div>
+            <select id="cmProd"></select>
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-top"><label for="cmPack">Packaging</label></div>
+            <select id="cmPack"></select>
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="ctrl">
+            <div class="ctrl-top"><label for="cmPallet">Pallet</label></div>
+            <select id="cmPallet"></select>
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-top"><label for="cmPlastic">Group A plastic content</label></div>
+            <select id="cmPlastic"></select>
+          </div>
+        </div>
+        <div class="chk-row">
+          <input type="checkbox" id="cmExposed">
+          <label for="cmExposed">Plastic is exposed (not in a carton or wooden container)</label>
+        </div>
+        <div class="math" id="cmMath"></div>
+        <div class="coach" id="cmCoach" style="display:none"></div>
+      </div>
+      <div class="readout">
+        <div class="ro-row"><span class="ro-k">Base class from product + packaging</span><span class="ro-v" id="cmBase">—</span></div>
+        <div class="ro-row"><span class="ro-k">Pallet adjustment</span><span class="ro-v" id="cmAdj">—</span></div>
+        <div class="ro-row"><span class="ro-k">Design as</span><span class="ro-v big" id="cmFinal">—</span></div>
+        <div class="verdict ok" id="cmVerdict">SET THE FOUR INPUTS ABOVE</div>
+      </div>
+    </div>
+
+    <h3 class="sub">The 5 percent rule is two tests, not one</h3>
+    <p>Almost everyone remembers "5 percent" and then remembers it wrong. <span class="cite">§20.4.3.2</span>
+    says a Class III commodity may contain a limited amount of <strong>Group A or Group B</strong>
+    plastic, and it gives two separate thresholds:</p>
+    <div class="tbl-wrap">
+    <table class="ref">
+      <tr><th>Plastic form</th><th>Measured by</th><th>Class III limit</th></tr>
+      <tr><td>Nonexpanded</td><td class="n">Weight</td><td class="n">5% or less</td></tr>
+      <tr><td>Expanded</td><td class="n">Volume</td><td class="n">5% or less</td></tr>
+    </table>
+    </div>
+    <div class="redline">
+      <b>Class IV has a ceiling too.</b> Cartoned Class IV runs from <b>over 5% up to 15% by
+      weight</b> nonexpanded, or over 5% up to 25% by volume expanded <span class="cite">§20.4.4.1</span>.
+      Go past 15% by weight and it is no longer Class IV — it becomes a <b>Group A nonexpanded
+      commodity</b> <span class="cite">§20.4.5.4</span>. Treating ">5%" as open-ended will
+      under-protect a heavily plastic load.
+    </div>
+
+    <h3 class="sub">Plastic pallets raise the class</h3>
+    <p>This one costs real money on a bid and is missed constantly. The pallet is part of the
+    commodity, and a plastic pallet is not a neutral choice.</p>
+    <div class="tbl-wrap">
+    <table class="ref">
+      <tr><th>Pallet</th><th>Effect on Class I–IV</th><th>Section</th></tr>
+      <tr><td>Wood or metal (or listed equivalent)</td><td>No change — assumed in the classification</td><td class="n">§20.3.2.1</td></tr>
+      <tr><td>Unreinforced polypropylene or HDPE</td><td class="n">Increase one class</td><td class="n">§20.3.2.2.1.1</td></tr>
+      <tr><td>Reinforced polypropylene or HDPE</td><td class="n">Increase two classes<br>— except Class IV → cartoned nonexpanded Group A</td><td class="n">§20.3.2.2.2.1</td></tr>
+      <tr><td>Any other plastic pallet</td><td>Test at a national lab, or increase two classes</td><td class="n">§20.3.2.4</td></tr>
+      <tr><td>Group A plastic commodity on a plastic pallet</td><td>No increase required</td><td class="n">§20.3.2.2.3</td></tr>
+    </table>
+    </div>
+    <div class="verify">
+      <b>One relief worth knowing.</b> <span class="cite">§20.3.2.2.4</span> removes the
+      unreinforced/reinforced pallet increases for ceiling-only protection where the system uses
+      spray sprinklers of at least the K-factor stated in that section. Read the section before
+      you rely on it — the printed K-factor value should be confirmed against your copy.
+    </div>
+
+    <h3 class="sub">Plastics: Group A, B, C</h3>
+    <p>Group B and Group C do not get their own design criteria — they borrow.
+    <span class="cite">§20.4.8.1</span> Group B plastics and <em>free-flowing</em> Group A are
+    protected as <strong>Class IV</strong>. <span class="cite">§20.4.8.2</span> Group C plastics
+    are protected as <strong>Class III</strong>.</p>
+    <div class="redline">
+      <b>Natural rubber is a Group A material.</b> <span class="cite">§20.4.5.1</span> lists it
+      by name alongside ABS, acrylic, polyethylene, polystyrene and polyurethane. It is not a
+      separate "rubber commodity" class. What <em>is</em> separate is <b>rubber tire storage</b>
+      <span class="cite">§20.4.9</span>, which has its own criteria throughout Chapters 20–25.
+      Group B is a short list: chloroprene rubber, the fluoroplastics ECTFE/ETFE/FEP, and
+      silicone rubber <span class="cite">§20.4.6</span>.
+    </div>
+
+    <h3 class="sub">Mixed commodities</h3>
+    <p><span class="cite">§20.4.14.2</span> is the default: protect to the <strong>highest</strong>
+    classified commodity present. <span class="cite">§20.4.14.3</span> is the narrow escape, and
+    all three conditions must hold at once:</p>
+    <ul class="tight">
+      <li>Up to <strong>10 pallet loads</strong> of the higher hazard in an area not exceeding <strong>40,000 ft²</strong></li>
+      <li>Randomly dispersed with <strong>no adjacent loads in any direction, including diagonally</strong></li>
+      <li>Where ceiling protection is based on Class I or II, that allowance drops to <strong>five</strong> loads for Class IV or Group A plastics</li>
+    </ul>
+  </section>
+
+  <!-- ============ 02 RACK BUILDER ============ -->
+  <section class="panel" id="p-rack">
+    <div class="eyebrow">Workbench 02</div>
+    <h2 class="head">Rack elevation &amp; clearance</h2>
+    <p class="lead">Build the rack, watch the dimensions that decide your design. Two of these
+    sliders can silently change what <em>kind</em> of rack you have — and that changes which
+    table you are allowed to use.</p>
+
+    <div class="bench">
+      <div class="bench-head">
+        <h4>Rack Elevation</h4>
+        <span class="hint">drag — the drawing is to scale</span>
+      </div>
+      <div class="bench-figure">
+        <svg id="rkSvg" viewBox="0 0 640 330" role="img" aria-label="Rack elevation with storage height, clearance and ceiling height dimensioned"></svg>
+      </div>
+      <div class="bench-body">
+        <div class="grid2">
+          <div class="ctrl">
+            <div class="ctrl-top"><label for="rkStore">Storage height</label><span class="val" id="rkStoreVal">20.0 ft</span></div>
+            <input type="range" id="rkStore" min="5" max="40" step="0.5" value="20">
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-top"><label for="rkCeil">Ceiling height</label><span class="val" id="rkCeilVal">30.0 ft</span></div>
+            <input type="range" id="rkCeil" min="12" max="50" step="0.5" value="30">
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="ctrl">
+            <div class="ctrl-top"><label for="rkAisle">Aisle width</label><span class="val" id="rkAisleVal">8.0 ft</span></div>
+            <input type="range" id="rkAisle" min="2" max="12" step="0.5" value="8">
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-top"><label for="rkDepth">Rack depth</label><span class="val" id="rkDepthVal">8.0 ft</span></div>
+            <input type="range" id="rkDepth" min="3" max="24" step="0.5" value="8">
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="ctrl">
+            <div class="ctrl-top"><label for="rkComm">Commodity</label></div>
+            <select id="rkComm">
+              <option value="c14">Class I–IV</option>
+              <option value="ga">Group A plastic</option>
+              <option value="tire">Rubber tires</option>
+            </select>
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-top"><label for="rkSpk">Ceiling sprinkler</label></div>
+            <select id="rkSpk">
+              <option value="cmda">CMDA (spray)</option>
+              <option value="cmsa">CMSA</option>
+              <option value="esfr">ESFR</option>
+            </select>
+          </div>
+        </div>
+        <div class="chk-row">
+          <input type="checkbox" id="rkLongFlue">
+          <label for="rkLongFlue">Longitudinal flue space provided</label>
+        </div>
+        <div class="math" id="rkMath"></div>
+        <div class="coach" id="rkCoach" style="display:none"></div>
+      </div>
+      <div class="readout">
+        <div class="ro-row"><span class="ro-k">Rack classification</span><span class="ro-v" id="rkType">—</span></div>
+        <div class="ro-row"><span class="ro-k">Clearance to ceiling</span><span class="ro-v" id="rkClear">—</span></div>
+        <div class="ro-row"><span class="ro-k">Min deflector to storage</span><span class="ro-v" id="rkDefl">—</span></div>
+        <div class="ro-row"><span class="ro-k">Storage category</span><span class="ro-v" id="rkCat">—</span></div>
+        <div class="verdict ok" id="rkVerdict">—</div>
+      </div>
+    </div>
+
+    <h3 class="sub">Rack type is decided by depth AND aisle width</h3>
+    <div class="tbl-wrap">
+    <table class="ref">
+      <tr><th>Rack type</th><th>Criteria</th><th>Section</th></tr>
+      <tr><td>Single-row</td><td>Depth up to <strong>6 ft</strong>, <strong>no longitudinal flue</strong>, aisles at least 3.5 ft</td><td class="n">§3.3.191</td></tr>
+      <tr><td>Double-row</td><td>Depth <strong>≤12 ft</strong> (or two single-rows back to back totalling ≤12 ft), aisles at least 3.5 ft</td><td class="n">§3.3.56</td></tr>
+      <tr><td>Multiple-row</td><td>Depth <strong>&gt;12 ft</strong>, <em>or</em> single/double-rows separated by aisles <strong>under 3.5 ft</strong> with overall width over 12 ft</td><td class="n">§3.3.127</td></tr>
+    </table>
+    </div>
+    <div class="redline">
+      <b>The 3½ ft trap.</b> <span class="cite">§21.4.1.2.1(D)</span> and
+      <span class="cite">§25.2.3.2.1.1(D)</span> both say it: narrow the aisle below
+      <b>3.5 ft</b> and your single- or double-row racks are <b>treated as multiple-row racks</b>.
+      That moves you onto a much more restrictive table, and on deep or narrow-aisle multiple-row
+      racks it can remove ceiling-only protection entirely. Nobody moved a sprinkler — the
+      forklift driver just parked the racks closer together.
+    </div>
+    <div class="plain">
+      <span class="pl-tag">Measured how?</span>
+      <p><strong>Aisle width</strong> is measured face of load to face of load
+      <span class="cite">§3.3.4</span> — not upright to upright. If the pallets overhang the
+      rack, your real aisle is narrower than the drawing says.</p>
+    </div>
+
+    <h3 class="sub">Clearance — two different measurements</h3>
+    <ul class="tight">
+      <li><strong>Clearance to ceiling</strong> — top of storage up to the deck/ceiling. Drives whether CMDA is still allowed. <span class="cite">§20.6.4</span></li>
+      <li><strong>Clearance from deflector to storage</strong> — top of storage up to the sprinkler deflector. A minimum you must maintain. <span class="cite">§20.6.6</span></li>
+    </ul>
+    <div class="tbl-wrap">
+    <table class="ref">
+      <tr><th>Condition</th><th>Minimum deflector to top of storage</th><th>Section</th></tr>
+      <tr><td>General rule</td><td class="n">18 in.</td><td class="n">§20.6.6.1</td></tr>
+      <tr><td>Special sprinklers</td><td class="n">36 in. permitted</td><td class="n">§20.6.6.3</td></tr>
+      <tr><td>Rubber tires stored</td><td class="n">Not less than 36 in.</td><td class="n">§20.6.6.5</td></tr>
+      <tr><td>CMSA sprinklers</td><td class="n">36 in. or greater</td><td class="n">§13.2.9</td></tr>
+      <tr><td>ESFR sprinklers</td><td class="n">36 in. or greater</td><td class="n">§14.2.12</td></tr>
+    </table>
+    </div>
+    <p>Maximum <em>clearance to ceiling</em> for CMDA comes from Table 20.6.4.2 — 20 ft for
+    palletized/solid-piled either commodity; 20 ft for Class I–IV rack up to 25 ft but only
+    <strong>10 ft</strong> for Group A plastic in that same rack; 10 ft for any rack over 25 ft.
+    Exceed it and Tables 20.6.4.3 / 20.6.4.4 send you to a reduced design height or to in-rack
+    sprinklers.</p>
+
+    <h3 class="sub">Flue spaces</h3>
+    <div class="tbl-wrap">
+    <table class="ref">
+      <tr><th>Flue</th><th>Requirement</th><th>Section</th></tr>
+      <tr><td>Transverse</td><td>Nominal <strong>6 in.</strong> between loads and at rack uprights — single, double and multiple-row</td><td class="n">§20.5.3.3.2.1</td></tr>
+      <tr><td>Longitudinal</td><td><strong>Not required</strong> in double- and multiple-row open racks for storage up to and including 25 ft</td><td class="n">§20.5.3.3.1.1</td></tr>
+      <tr><td>Longitudinal</td><td>Nominal <strong>6 in.</strong> in double-row racks for storage <strong>over 25 ft</strong></td><td class="n">§20.5.3.3.1.2</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <!-- ============ 03 ROUTE ============ -->
+  <section class="panel" id="p-route">
+    <div class="eyebrow">Workbench 03</div>
+    <h2 class="head">Which chapter is still open to you</h2>
+    <p class="lead">Not "which one should I use" — the standard never answers that. This shows
+    which technologies your job still fits inside, and <em>why</em> each one is in or out.</p>
+
+    <div class="bench">
+      <div class="bench-head">
+        <h4>Technology Gate</h4>
+        <span class="hint">green = permitted · red = ruled out</span>
+      </div>
+      <div class="bench-body">
+        <div class="grid2">
+          <div class="ctrl">
+            <div class="ctrl-top"><label for="rtStore">Storage height</label><span class="val" id="rtStoreVal">20.0 ft</span></div>
+            <input type="range" id="rtStore" min="5" max="40" step="0.5" value="20">
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-top"><label for="rtCeil">Ceiling height</label><span class="val" id="rtCeilVal">30.0 ft</span></div>
+            <input type="range" id="rtCeil" min="12" max="50" step="0.5" value="30">
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="ctrl">
+            <div class="ctrl-top"><label for="rtArr">Storage arrangement</label></div>
+            <select id="rtArr">
+              <option value="pal">Palletized / solid-piled</option>
+              <option value="rack">Rack — open</option>
+              <option value="solid">Rack — solid shelves</option>
+            </select>
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-top"><label for="rtSlope">Roof slope</label></div>
+            <select id="rtSlope">
+              <option value="flat">2 in 12 or flatter</option>
+              <option value="steep">Steeper than 2 in 12</option>
+            </select>
+          </div>
+        </div>
+        <div class="chk-row">
+          <input type="checkbox" id="rtDry">
+          <label for="rtDry">Dry pipe or preaction system</label>
+        </div>
+        <div class="chk-row">
+          <input type="checkbox" id="rtVent">
+          <label for="rtVent">Automatic heat or smoke vents present</label>
+        </div>
+        <div id="rtGates"></div>
+      </div>
+    </div>
+
+    <h3 class="sub">The CMSA decision worth real money</h3>
+    <p>Chapter 22 hides a design lever in its footnotes. On rack storage, the cells marked with
+    an asterisk mean <em>in-rack sprinklers required, see Chapter 25</em> — and they cluster in
+    one place.</p>
+    <div class="tbl-wrap">
+    <table class="ref">
+      <tr><th>Choice</th><th>Consequence</th></tr>
+      <tr><td>K-11.2 or K-16.8 <strong>upright</strong></td><td>Rack storage at <strong>25 ft</strong> triggers in-rack sprinklers for Class III, Class IV and Group A plastics</td></tr>
+      <tr><td>K-19.6 or K-25.2 <strong>pendent</strong></td><td>Stays ceiling-only up to <strong>35 ft storage under a 40 ft ceiling</strong></td></tr>
+    </table>
+    </div>
+    <p>Note the pattern across every Chapter 22 table: <strong>K-11.2 and K-16.8 are always
+    upright; K-19.6 and K-25.2 are always pendent.</strong> No exceptions.</p>
+
+    <h3 class="sub">CMDA density sets your minimum K-factor</h3>
+    <p>This runs the other direction from what people expect — the density you land on tells you
+    what sprinkler you are allowed to use.</p>
+    <div class="tbl-wrap">
+    <table class="ref">
+      <tr><th>Required density</th><th>Sprinkler required</th><th>Section</th></tr>
+      <tr><td class="n">≤ 0.2 gpm/ft²</td><td>Standard response, K-5.6 or larger permitted</td><td class="n">§21.1.2</td></tr>
+      <tr><td class="n">&gt; 0.2 to 0.34</td><td><strong>K-8.0 or larger</strong> standard-response spray</td><td class="n">§21.1.3</td></tr>
+      <tr><td class="n">&gt; 0.34 gpm/ft²</td><td><strong>K-11.2 or larger, listed for storage</strong></td><td class="n">§21.1.4</td></tr>
+    </table>
+    </div>
+    <div class="plain">
+      <span class="pl-tag">A lever worth knowing</span>
+      <p><span class="cite">§21.1.9</span> — ordinary- and intermediate-temperature sprinklers of
+      <strong>K-11.2 or larger</strong> listed for storage are permitted to use the
+      <strong>high-temperature densities</strong>. The high-temperature column is consistently
+      the cheaper one. That is a real reduction available for choosing a bigger orifice.</p>
+    </div>
+
+    <h3 class="sub">Wet, dry and preaction</h3>
+    <div class="tbl-wrap">
+    <table class="ref">
+      <tr><th>Technology</th><th>System type rule</th><th>Section</th></tr>
+      <tr><td>All storage</td><td>Shall be wet pipe; dry and preaction permitted where subject to freezing or special conditions</td><td class="n">§20.13.2.1–.2</td></tr>
+      <tr><td>CMDA</td><td>Dry/preaction: <strong>increase area of operation 30%</strong>, density unchanged</td><td class="n">§20.13.3</td></tr>
+      <tr><td>CMSA</td><td>Permitted in <strong>wet, dry or preaction</strong>. Dry pipe requires <strong>high-temperature</strong> sprinklers</td><td class="n">§13.2.2, §13.2.3.4</td></tr>
+      <tr><td>ESFR</td><td>Wet pipe only — <strong>unless specifically listed</strong> for dry pipe or preaction</td><td class="n">§14.2.2</td></tr>
+    </table>
+    </div>
+    <div class="redline">
+      <b>Read §14.2.2 exactly.</b> It is a conditional prohibition, not an absolute one. "ESFR is
+      wet-only, no exceptions" is wrong for the 2019 edition — the permission is delegated
+      entirely to the sprinkler's listing. If the listing covers dry pipe, the standard allows it.
+    </div>
+    <div class="plain">
+      <span class="pl-tag">Compounding</span>
+      <p>Where more than one area adjustment applies, <span class="cite">§20.13.1.1</span> says
+      they compound <strong>on the area originally selected</strong> — not one on top of another.
+      And <span class="cite">§20.13.1.2</span>: unsprinklered combustible concealed spaces
+      (§20.7) are applied <strong>last</strong>, after every other modification.</p>
+    </div>
+  </section>
+
+  <!-- ============ 04 IN-RACK ============ -->
+  <section class="panel" id="p-inrack">
+    <div class="eyebrow">Workbench 04</div>
+    <h2 class="head">In-rack sprinkler placement</h2>
+    <p class="lead">Chapter 25 is the single biggest storage chapter, but its placement logic
+    reduces to a handful of fractions. Set the height and levels and watch where they land.</p>
+
+    <div class="plain">
+      <span class="pl-tag">Explain it like I'm ten</span>
+      <p>If the pile is too tall, water from the ceiling cannot reach the bottom in time — the
+      fire is already climbing inside the rack. So we put sprinklers <em>inside</em> the rack,
+      partway up, to catch it on the way. The question is just: how far up, and how many?</p>
+    </div>
+
+    <div class="bench">
+      <div class="bench-head">
+        <h4>In-Rack Level Placement</h4>
+        <span class="hint">§25.4.4 · §25.4.5</span>
+      </div>
+      <div class="bench-figure">
+        <svg id="irSvg" viewBox="0 0 640 340" role="img" aria-label="Rack elevation showing in-rack sprinkler levels and tier positions"></svg>
+      </div>
+      <div class="bench-body">
+        <div class="grid2">
+          <div class="ctrl">
+            <div class="ctrl-top"><label for="irStore">Storage height</label><span class="val" id="irStoreVal">24.0 ft</span></div>
+            <input type="range" id="irStore" min="8" max="40" step="1" value="24">
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-top"><label for="irTier">Tier height</label><span class="val" id="irTierVal">6.0 ft</span></div>
+            <input type="range" id="irTier" min="3" max="10" step="0.5" value="6">
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="ctrl">
+            <div class="ctrl-top"><label for="irLevels">In-rack levels required</label></div>
+            <select id="irLevels">
+              <option value="1">One level</option>
+              <option value="2">Two levels</option>
+            </select>
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-top"><label for="irCeil">Ceiling sprinkler</label></div>
+            <select id="irCeil">
+              <option value="cmda">CMDA</option>
+              <option value="cmsa">CMSA</option>
+              <option value="esfr">ESFR</option>
+            </select>
+          </div>
+        </div>
+        <div class="ctrl">
+          <div class="ctrl-top"><label for="irComm">Commodity / rack</label></div>
+          <select id="irComm">
+            <option value="c13open">Class I–III, open rack</option>
+            <option value="c4open">Class IV or Group A, open rack</option>
+            <option value="c13solid">Class I–III, solid shelf</option>
+            <option value="c4solid">Class IV or Group A, solid shelf</option>
+            <option value="tire">Rubber tires, open rack</option>
+            <option value="misc">Miscellaneous storage</option>
+          </select>
+        </div>
+        <div class="math" id="irMath"></div>
+        <div class="coach" id="irCoach" style="display:none"></div>
+      </div>
+      <div class="readout">
+        <div class="ro-row"><span class="ro-k">Levels placed at</span><span class="ro-v" id="irAt">—</span></div>
+        <div class="ro-row"><span class="ro-k">Sprinklers in the design</span><span class="ro-v big" id="irCount">—</span></div>
+        <div class="ro-row"><span class="ro-k">Minimum from most remote</span><span class="ro-v" id="irFlow">—</span></div>
+        <div class="ro-row"><span class="ro-k">Max horizontal spacing</span><span class="ro-v" id="irSpace">—</span></div>
+        <div class="verdict ok" id="irVerdict">—</div>
+      </div>
+    </div>
+
+    <h3 class="sub">Vertical placement, when no figure applies</h3>
+    <div class="tbl-wrap">
+    <table class="ref">
+      <tr><th>Levels required</th><th>Goes at</th><th>Section</th></tr>
+      <tr><td>One</td><td>First tier level at or above <strong>½</strong> the highest expected storage height</td><td class="n">§25.4.4</td></tr>
+      <tr><td>Two</td><td>First tier levels at or above <strong>⅓</strong> and <strong>⅔</strong></td><td class="n">§25.4.5</td></tr>
+    </table>
+    </div>
+    <p>Minimum <strong>6 in.</strong> vertical clear space between an in-rack deflector and the
+    top of the storage below it <span class="cite">§25.4.2</span> — with one exception, for
+    single- and double-row Class I–IV up to 20 ft, where less is permitted
+    <span class="cite">§25.4.2.1</span>. In-rack sprinklers are <strong>not</strong> required to
+    meet the Section 9.5 obstruction and clearance rules <span class="cite">§25.4.1</span>.</p>
+
+    <h3 class="sub">Solid shelves are tiered by area</h3>
+    <p>"Solid shelves always need a sprinkler under every shelf" is too strong. The actual rule
+    steps with shelf area, and a small solid shelf is not a solid shelf rack at all.</p>
+    <div class="tbl-wrap">
+    <table class="ref">
+      <tr><th>Shelf area</th><th>Requirement</th><th>Section</th></tr>
+      <tr><td>≤ 20 ft²</td><td>Defined as an <strong>open rack</strong> — not solid shelving</td><td class="n">§3.3.199</td></tr>
+      <tr><td>&gt; 20 ft² to 64 ft², CMDA ceiling</td><td>In-racks below shelves at intermediate levels <strong>not more than 6 ft apart vertically</strong></td><td class="n">§25.6.3.1</td></tr>
+      <tr><td>&gt; 64 ft², or storage levels over 6 ft</td><td>In-racks below <strong>each</strong> level of shelving</td><td class="n">§25.6.3.2</td></tr>
+      <tr><td>CMSA or ESFR ceiling</td><td>In-racks beneath <strong>all tiers under the highest solid shelf</strong></td><td class="n">§25.6.3.3, §25.6.3.4</td></tr>
+    </table>
+    </div>
+    <div class="plain">
+      <span class="pl-tag">And an escape hatch</span>
+      <p><span class="cite">§20.5.3.1.2</span> — multiple-row racks of any height with no
+      longitudinal flue, and double-row racks up to 25 ft with no longitudinal flue, are
+      <strong>not</strong> treated as solid shelves where transverse flues exist at maximum
+      <strong>5 ft</strong> intervals. In that case §25.6.3.1 and §25.6.3.2 do not add
+      sprinklers.</p>
+    </div>
+
+    <h3 class="sub">How in-rack demand meets ceiling demand</h3>
+    <ul class="tight">
+      <li><strong>Normal case</strong> — ceiling and in-rack over the same protected area are <strong>hydraulically balanced together at the higher pressure</strong> at their point of connection <span class="cite">§25.12.1.4</span></li>
+      <li><strong>Hose stream</strong> is <strong>added</strong> from Table 20.12.2.6 <span class="cite">§25.12.1.5, §25.2.1.6</span></li>
+      <li><strong>Section 25.8 options</strong> are the exception — those in-rack systems are <strong>not</strong> required to be balanced with the ceiling <span class="cite">§25.8.1.1, §25.8.3.5</span>, and each supply must stand alone <span class="cite">§25.8.2.10, §25.8.2.12</span></li>
+    </ul>
+    <div class="plain">
+      <span class="pl-tag">Credit for going further</span>
+      <p>Adding more in-rack levels than the minimum earns a ceiling density reduction:
+      <strong>20%</strong> for more than one level but not every tier, <strong>40%</strong> for
+      in-racks at each tier level <span class="cite">§25.2.3.2.4.2–.3</span>. But the floor holds
+      — never below <strong>0.15 gpm/ft²</strong> after all adjustments
+      <span class="cite">§25.2.3.1.10.4</span>.</p>
+    </div>
+
+    <h3 class="sub">In-rack sprinkler characteristics</h3>
+    <ul class="tight">
+      <li>Pendent or upright, standard or quick response, <strong>ordinary temperature</strong>, nominal <strong>K-5.6, K-8.0 or K-11.2</strong> <span class="cite">§25.3.1</span></li>
+      <li>Where <strong>ESFR</strong> protects open racks at the ceiling: in-racks must be <strong>quick response, ordinary temperature, K-8.0 or K-11.2</strong> <span class="cite">§25.3.2</span></li>
+      <li><strong>Water shields</strong> above in-racks where there is more than one level and no horizontal barrier shields them — or use listed intermediate-level / rack-storage sprinklers <span class="cite">§25.3.5.1–.2</span></li>
+      <li>A single in-rack system may not exceed <strong>40,000 ft²</strong> of rack floor area including aisles <span class="cite">§25.1.3.1</span></li>
+      <li>Where in-racks are installed per Chapter 25, <strong>building steel needs no special protection</strong> <span class="cite">§25.1.4</span></li>
+    </ul>
+  </section>
+
+  <!-- ============ 05 DRILL ============ -->
+  <section class="panel" id="p-drill">
+    <div class="eyebrow">Drill</div>
+    <h2 class="head">Scenario drill</h2>
+    <p class="lead">Miss one and it comes back. Every explanation carries the section number so
+    you can go read it in the standard.</p>
+    <div class="scorebar">
+      <div class="score-cell"><div class="sc-k">Streak</div><div class="sc-v flame" id="dStreak">0</div></div>
+      <div class="score-cell"><div class="sc-k">Best</div><div class="sc-v" id="dBest">0</div></div>
+      <div class="score-cell"><div class="sc-k">Right</div><div class="sc-v" id="dRight">0</div></div>
+      <div class="score-cell"><div class="sc-k">Seen</div><div class="sc-v" id="dSeen">0</div></div>
+    </div>
+    <div id="drillHost"></div>
+    <div class="btn-row">
+      <button class="btn primary" id="dNext">Skip</button>
+      <button class="btn" id="dReset">Reset stats</button>
+    </div>
+  </section>
+
+  <!-- ============ 06 PROGRESS ============ -->
+  <section class="panel" id="p-progress">
+    <div class="eyebrow">Progress</div>
+    <h2 class="head">Where you are strong, where you are not</h2>
+    <h3 class="sub">Mastery by topic</h3>
+    <div class="mastery" id="masteryHost"></div>
+    <h3 class="sub">Badges</h3>
+    <div class="badges" id="badgeHost"></div>
+    <h3 class="sub">Session log</h3>
+    <div id="logHost"></div>
+    <h3 class="sub">Still to review</h3>
+    <div id="missHost"></div>
+  </section>
+
+  <footer class="foot">
+    <span>FSM Storage Trainer · NFPA 13 (2019) Ch. 20–25</span>
+    <span><a href="NFPA13-Hydraulic-Trainer.html">Hydraulic Trainer →</a> · <a href="index.html">← Quiz Hub</a></span>
+  </footer>
+</div>
+<script>
+/* ============================================================
+   NFPA 13 (2019) VERIFIED DATA
+   Every value below was read off the standard and carries its
+   section number. Nothing here was written from memory.
+   Density/area CURVE coordinates are deliberately absent — those
+   are plotted figures and must be read from the standard itself.
+   ============================================================ */
+var NFPA = {
+
+  /* --- §3.3.95 / §3.3.118 : the height line, no commodity qualifier --- */
+  highPiledFt: 12,
+
+  /* --- §3.3.123 miscellaneous storage --- */
+  misc: { maxHt:12, pctBldg:10, areaFt2:4000, pileFt2:1000, sepFt:25, tireFt2:2000 },
+
+  /* --- §3.3.191 / §3.3.56 / §3.3.127 rack classification --- */
+  rack: { singleDepth:6, doubleDepth:12, aisleMin:3.5 },
+
+  /* --- §20.6.6 clearance, deflector to top of storage (inches) --- */
+  deflector: {
+    general:18,      /* §20.6.6.1 */
+    special:36,      /* §20.6.6.3 */
+    tires:36,        /* §20.6.6.5 */
+    cmsa:36,         /* §13.2.9  */
+    esfr:36          /* §14.2.12 */
+  },
+
+  /* --- Table 20.6.4.2 max clearance to ceiling for CMDA (ft) --- */
+  cmdaClearance: {
+    pal:   { c14:20, ga:20 },
+    rack25:{ c14:20, ga:10 },
+    rackHi:{ c14:10, ga:10 }
+  },
+
+  /* --- §21.1.2 / .3 / .4 density drives the minimum K-factor --- */
+  kByDensity: [
+    { upTo:0.20, k:"K-5.6 or larger, standard response", cite:"§21.1.2" },
+    { upTo:0.34, k:"K-8.0 or larger, standard-response spray", cite:"§21.1.3" },
+    { upTo:99,   k:"K-11.2 or larger, listed for storage",     cite:"§21.1.4" }
+  ],
+
+  /* --- Chapter 13 : CMSA installation --- */
+  cmsaInstall: {
+    areaMax:130, areaMaxObstrComb:100, areaMin:80,
+    spacingMax:12, spacingMaxObstrComb:10, spacingMin:8,
+    wallMin:4,
+    cites:{ area:"§13.2.5.2.2", areaMin:"§13.2.5.3", spacing:"§13.2.6", clear:"§13.2.9" }
+  },
+
+  /* --- Chapter 14 : ESFR installation --- */
+  esfrInstall: {
+    areaMax:100, areaMaxMoved:110, areaMin:64,
+    spacingLowCeil:12, spacingHiCeil:10, ceilBreak:30, spacingMin:8,
+    wallMin:4, slopeMax:"2 in 12 (16.7%)",
+    cites:{ area:"§14.2.8.2.2", areaMin:"§14.2.8.3", spacing:"Table 14.2.8.2.1",
+            clear:"§14.2.12", slope:"§14.2.3", wet:"§14.2.2" }
+  },
+
+  /* --- §23.6.3 ESFR design area --- */
+  esfrDesign: { n:12, shape:"four sprinklers on each of three branch lines", cite:"§23.6.3" },
+
+  /* --- Table 20.12.2.6, ESFR rows : hose stream + duration --- */
+  esfrHose: [
+    { upTo:12, gpm:250, min:60  },
+    { upTo:15, gpm:500, min:90  },
+    { upTo:25, gpm:500, min:120 },
+    { upTo:99, gpm:500, min:150 }
+  ],
+
+  /* --- Table 23.3.1 : ESFR, palletized & solid-piled, Class I–IV.
+         [storage ft, ceiling ft, K, orientation, min psi]           --- */
+  esfrPal: [
+    [20,25,14.0,"U/P",50],[20,25,16.8,"U/P",35],[20,25,22.4,"P",25],[20,25,25.2,"P",15],
+    [25,30,14.0,"U/P",50],[25,30,16.8,"U/P",35],[25,30,22.4,"P",25],[25,30,25.2,"P",15],
+    [25,32,14.0,"U/P",60],[25,32,16.8,"U/P",42],
+    [30,35,14.0,"U/P",75],[30,35,16.8,"U/P",52],[30,35,22.4,"P",35],[30,35,25.2,"P",20],
+    [35,40,16.8,"P",52],[35,40,22.4,"P",40],[35,40,25.2,"P",25],
+    [35,45,22.4,"P",40],[35,45,25.2,"P",40],
+    [40,45,22.4,"P",40],[40,45,25.2,"P",40]
+  ],
+
+  /* --- Table 23.5.1 : ESFR, rack storage, Class I–IV.
+         inRack:true means the cell reads "in-rack sprinklers required" --- */
+  esfrRack: [
+    [20,25,14.0,"U/P",50,false],[20,25,16.8,"U/P",35,false],[20,25,22.4,"P",25,false],[20,25,25.2,"P",15,false],
+    [20,30,14.0,"U/P",50,false],[20,30,16.8,"U/P",35,false],[20,30,22.4,"P",25,false],[20,30,25.2,"P",15,false],
+    [20,35,14.0,"U/P",75,false],[20,35,16.8,"U/P",52,false],[20,35,22.4,"P",35,false],[20,35,25.2,"P",20,false],
+    [20,40,16.8,"P",52,false],[20,40,22.4,"P",40,false],[20,40,25.2,"P",25,false],
+    [20,45,14.0,"P",0,true],[20,45,16.8,"P",0,true],[20,45,22.4,"P",40,false],[20,45,25.2,"P",40,false],
+    [25,30,14.0,"U/P",50,false],[25,30,16.8,"U/P",35,false],[25,30,22.4,"P",25,false],[25,30,25.2,"P",15,false],
+    [25,32,14.0,"U/P",60,false],[25,32,16.8,"U/P",42,false],
+    [25,35,14.0,"U/P",75,false],[25,35,16.8,"U/P",52,false],[25,35,22.4,"P",35,false],[25,35,25.2,"P",20,false],
+    [25,40,16.8,"P",52,false],[25,40,22.4,"P",40,false],[25,40,25.2,"P",25,false],
+    [25,45,14.0,"P",0,true],[25,45,16.8,"P",0,true],[25,45,22.4,"P",40,false],[25,45,25.2,"P",40,false],
+    [30,35,14.0,"U/P",75,false],[30,35,16.8,"U/P",52,false],[30,35,22.4,"P",35,false],[30,35,25.2,"P",20,false],
+    [30,40,16.8,"P",52,false],[30,40,22.4,"P",40,false],[30,40,25.2,"P",25,false],
+    [30,45,14.0,"P",0,true],[30,45,16.8,"P",0,true],[30,45,22.4,"P",40,false],[30,45,25.2,"P",40,false],
+    [35,40,16.8,"P",52,false],[35,40,22.4,"P",40,false],[35,40,25.2,"P",25,false],
+    [35,45,14.0,"P",0,true],[35,45,16.8,"P",0,true],[35,45,22.4,"P",40,false],[35,45,25.2,"P",40,false],
+    [40,45,16.8,"P",0,true],[40,45,22.4,"P",40,false],[40,45,25.2,"P",40,false]
+  ],
+
+  /* --- Table 25.12.2.1 : how many in-rack sprinklers in the design --- */
+  inRackCount: {
+    misc:        { one:4,  many:4  },
+    c13open_cmda:{ one:6,  many:10 },
+    c13solid:    { one:6,  many:10 },
+    c4open_cmda: { one:8,  many:14 },
+    c4solid:     { one:8,  many:14 },
+    c14open_cmsa:{ one:8,  many:8  },
+    esfr:        { one:8,  many:8  },
+    tire:        { one:12, many:12 }
+  },
+
+  /* --- §25.4.4 / §25.4.5 vertical placement fractions --- */
+  levelFractions: { 1:[0.5], 2:[1/3, 2/3] },
+
+  /* --- §20.5.3.3 flue spaces --- */
+  flue: { transverseIn:6, longitudinalIn:6, longNotReqUpToFt:25 }
+};
+
+/* ============================================================
+   STORAGE (localStorage) — progress survives closing the phone
+   ============================================================ */
+var KEY = "fsm_storage_trainer_v1";
+var store = load();
+
+function load(){
+  try{
+    var raw = localStorage.getItem(KEY);
+    if(!raw) return blank();
+    var o = JSON.parse(raw);
+    if(!o || typeof o !== "object") return blank();
+    o.topics = o.topics || blank().topics;
+    o.log = o.log || [];
+    o.missed = o.missed || [];
+    o.badges = o.badges || [];
+    return o;
+  }catch(e){ return blank(); }
+}
+function blank(){
+  return {
+    streak:0, best:0, right:0, seen:0,
+    topics:{ commodity:{r:0,s:0}, arrange:{r:0,s:0}, heights:{r:0,s:0},
+             route:{r:0,s:0}, inrack:{r:0,s:0}, install:{r:0,s:0} },
+    missed:[], badges:[], log:[], lastVisit:null
+  };
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(store)); }catch(e){} }
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s).replace(/[&<>"]/g,function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+function f1(n){ return (Math.round(n*10)/10).toFixed(1); }
+function f0(n){ return String(Math.round(n)); }
+function todayISO(){
+  var d = new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function svgEl(tag, attrs){
+  var e = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  for(var k in attrs){ if(attrs.hasOwnProperty(k)) e.setAttribute(k, attrs[k]); }
+  return e;
+}
+function isNarrow(){ return window.innerWidth <= 600; }
+
+/* every workbench registers its draw fn so crossing the phone
+   breakpoint re-runs the drafting with the right label spacing */
+var REDRAW = [];
+var wasNarrow = isNarrow();
+window.addEventListener("resize", function(){
+  var now = isNarrow();
+  if(now === wasNarrow) return;
+  wasNarrow = now;
+  REDRAW.forEach(function(fn){ try{ fn(); }catch(e){} });
+});
+
+/* a dimension line with tick ends and a label in a gap */
+function dimLine(x1,y1,x2,y2,label){
+  var g = svgEl("g",{});
+  var horiz = Math.abs(y2-y1) < 0.5;
+  var mx = (x1+x2)/2, my = (y1+y2)/2;
+  var gap = horiz ? (isNarrow()?42:28) : (isNarrow()?34:22);
+  if(horiz){
+    g.appendChild(svgEl("line",{x1:x1,y1:y1,x2:mx-gap,y2:y1,class:"dim-line"}));
+    g.appendChild(svgEl("line",{x1:mx+gap,y1:y1,x2:x2,y2:y1,class:"dim-line"}));
+  }else{
+    g.appendChild(svgEl("line",{x1:x1,y1:y1,x2:x1,y2:my-gap,class:"dim-line"}));
+    g.appendChild(svgEl("line",{x1:x1,y1:my+gap,x2:x2,y2:y2,class:"dim-line"}));
+  }
+  [[x1,y1],[x2,y2]].forEach(function(p){
+    g.appendChild(svgEl("line",{x1:p[0]-4,y1:p[1]+4,x2:p[0]+4,y2:p[1]-4,class:"dim-line"}));
+  });
+  var t = svgEl("text",{x:mx, y:my+4, class:"dim-txt", "text-anchor":"middle"});
+  if(!horiz) t.setAttribute("transform","rotate(-90 "+mx+" "+my+")");
+  t.textContent = label;
+  g.appendChild(t);
+  return g;
+}
+function sprinklerGlyph(cx,cy,r,filled){
+  var g = svgEl("g",{});
+  g.appendChild(svgEl("circle",{cx:cx,cy:cy,r:r,fill:filled?"#16130F":"#fff",stroke:"#16130F","stroke-width":1.5}));
+  if(!filled) g.appendChild(svgEl("line",{x1:cx-r*0.55,y1:cy,x2:cx+r*0.55,y2:cy,stroke:"#16130F","stroke-width":1}));
+  return g;
+}
+function txt(x,y,s,cls,anchor){
+  var t = svgEl("text",{x:x,y:y,class:cls||"obj-txt","text-anchor":anchor||"start"});
+  t.textContent = s; return t;
+}
+
+/* ============================================================
+   TABS
+   ============================================================ */
+var panels = ["learn","commodity","rack","route","inrack","drill","progress"];
+$("tabs").addEventListener("click", function(e){
+  var b = e.target.closest(".tab");
+  if(!b) return;
+  showPanel(b.getAttribute("data-p"));
+});
+function showPanel(p){
+  panels.forEach(function(x){ $("p-"+x).classList.toggle("on", x===p); });
+  Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(t){
+    t.classList.toggle("on", t.getAttribute("data-p")===p);
+  });
+  if(p==="progress") renderProgress();
+  if(p==="drill" && currentQ===null) nextQuestion();
+  window.scrollTo(0,0);
+}
+
+/* ============================================================
+   GLOSSARY — plain words, then the section
+   ============================================================ */
+var GLOSSARY = [
+  ["Commodity","The product, its packing material and its container together — §3.3.35. When you classify it you also count the storage pallet, per §20.3.1.1."],
+  ["High-piled storage","Solid-piled, palletized, rack, bin box or shelf storage over 12 ft. One number, every commodity — §3.3.95."],
+  ["Miscellaneous storage","Small, incidental storage that gets to skip the storage chapters. Five conditions, all must hold — §3.3.123."],
+  ["Encapsulation","Plastic sheet completely enclosing the sides AND top of a pallet load, or commodities individually wrapped and stored exposed — §3.3.64. Banding the sides only is not encapsulation."],
+  ["Clearance to ceiling","Top of storage up to the ceiling — §3.3.29. Not to the deflector."],
+  ["Aisle width","Face of load to face of load — §3.3.4. Not upright to upright."],
+  ["Open rack","No shelving, or solid shelves 20 ft² or less, or shelving at least 50% open with flues maintained — §3.3.140."],
+  ["Transverse flue","The space between rows of storage parallel to the direction of loading — §3.3.220."],
+  ["Longitudinal flue","The space between rows perpendicular to loading, width not over 24 in. — §3.3.116."],
+  ["CMDA","Control Mode Density/Area. You design to a density over an area, read off a curve. Chapter 21."],
+  ["CMSA","Control Mode Specific Application. You design to a number of sprinklers at a minimum pressure. Chapter 22."],
+  ["ESFR","Early Suppression Fast-Response. Meant to put the fire out, not hold it. 12 sprinklers at a listed pressure. Chapter 23."],
+  ["Face sprinkler","An in-rack sprinkler in a transverse flue near the aisle, within 18 in. of the aisle face of storage — §3.3.71."],
+  ["Free-flowing plastic","Plastic that spills out during a fire and fills the flues — powder, pellets, flakes. Protected as Class IV — §3.3.85, §20.4.8.1."]
+];
+(function(){
+  var h="";
+  GLOSSARY.forEach(function(g){
+    h += "<dt>"+esc(g[0])+"</dt><dd>"+esc(g[1])+"</dd>";
+  });
+  $("glossHost").innerHTML = h;
+})();
+
+/* ============================================================
+   WORKBENCH 01 — COMMODITY CLASSIFIER
+   ============================================================ */
+(function(){
+  var PROD = [
+    {v:"nc",   t:"Noncombustible (metal, glass, ceramic)", base:1},
+    {v:"wood", t:"Wood, paper or natural fibre",           base:3},
+    {v:"gc",   t:"Group C plastic (PTFE, melamine, phenolic)", base:3},
+    {v:"gb",   t:"Group B plastic (chloroprene, silicone)", base:4},
+    {v:"ga",   t:"Group A plastic (ABS, PE, PP, PS, natural rubber)", base:9},
+    {v:"gaff", t:"Group A, free-flowing (pellets, powder, flakes)", base:4}
+  ];
+  var PACK = [
+    {v:"none", t:"None, or shrink/paper-wrapped as a unit load", lift:0},
+    {v:"single",t:"Single-layer corrugated carton",              lift:0},
+    {v:"multi", t:"Multi-layer carton, wood crate or solid box", lift:1},
+    {v:"foam",  t:"Expanded plastic (foam) cushioning",          lift:2}
+  ];
+  var PALLET = [
+    {v:"wood", t:"Wood or metal (or listed equivalent)", inc:0, cite:"§20.3.2.1"},
+    {v:"unre", t:"Unreinforced polypropylene or HDPE",   inc:1, cite:"§20.3.2.2.1.1"},
+    {v:"reinf",t:"Reinforced polypropylene or HDPE",     inc:2, cite:"§20.3.2.2.2.1"},
+    {v:"other",t:"Other plastic pallet (untested)",      inc:2, cite:"§20.3.2.4"}
+  ];
+  var PLASTIC = [
+    {v:"none", t:"None",                          pct:0},
+    {v:"lt5",  t:"5% or less",                    pct:1},
+    {v:"5to15",t:"Over 5% up to 15% by weight",   pct:2},
+    {v:"gt15", t:"Over 15% by weight",            pct:3}
+  ];
+
+  function fill(sel, arr, def){
+    var h="";
+    arr.forEach(function(o){ h += '<option value="'+o.v+'"'+(o.v===def?" selected":"")+'>'+esc(o.t)+'</option>'; });
+    $(sel).innerHTML = h;
+  }
+  fill("cmProd", PROD, "nc");
+  fill("cmPack", PACK, "single");
+  fill("cmPallet", PALLET, "wood");
+  fill("cmPlastic", PLASTIC, "none");
+
+  ["cmProd","cmPack","cmPallet","cmPlastic","cmExposed"].forEach(function(id){
+    $(id).addEventListener("change", run);
+    $(id).addEventListener("input", run);
+  });
+  run();
+
+  function find(arr,v){ for(var i=0;i<arr.length;i++) if(arr[i].v===v) return arr[i]; return arr[0]; }
+  function className(n){
+    if(n>=9) return "Group A plastic commodity";
+    return ["","Class I","Class II","Class III","Class IV"][n] || "Class IV";
+  }
+
+  function run(){
+    var prod = find(PROD, $("cmProd").value);
+    var pack = find(PACK, $("cmPack").value);
+    var pal  = find(PALLET, $("cmPallet").value);
+    var pl   = find(PLASTIC, $("cmPlastic").value);
+    var exposed = $("cmExposed").checked;
+
+    var lines = [], base, note = "", coach = "";
+
+    /* ---- product route ---- */
+    if(prod.v === "ga"){
+      base = 9;
+      lines.push('<span class="lbl">Product is a Group A plastic</span>  →  <span class="hi">Group A plastic commodity</span>');
+      lines.push('<span class="lbl">  Group A is a listed set of materials — §20.4.5.1</span>');
+      note = "Group A gets its own criteria throughout Chapters 20–25. It is not folded into Class IV.";
+    }else if(prod.v === "gaff"){
+      base = 4;
+      lines.push('<span class="lbl">Free-flowing Group A</span>  →  protect as <span class="hi">Class IV</span>   <span class="lbl">§20.4.8.1</span>');
+      note = "Free-flowing plastic spills into the flue spaces during a fire — it is treated as Class IV, not as Group A.";
+    }else if(prod.v === "gb"){
+      base = 4;
+      lines.push('<span class="lbl">Group B plastic</span>  →  protect as <span class="hi">Class IV</span>   <span class="lbl">§20.4.8.1</span>');
+      note = "Note the wording: protected AS Class IV. The standard does not say it IS a Class IV commodity.";
+    }else if(prod.v === "gc"){
+      base = 3;
+      lines.push('<span class="lbl">Group C plastic</span>  →  protect as <span class="hi">Class III</span>   <span class="lbl">§20.4.8.2</span>');
+      note = "Protected AS Class III — §20.4.8.2.";
+    }else if(prod.v === "wood"){
+      base = 3;
+      lines.push('<span class="lbl">Combustible product (wood, paper, natural fibre)</span>  →  <span class="ok">Class III</span>   <span class="lbl">§20.4.3.1</span>');
+    }else{
+      base = 1;
+      lines.push('<span class="lbl">Noncombustible product</span>  →  starts at <span class="ok">Class I</span>   <span class="lbl">§20.4.1</span>');
+      if(pack.lift >= 1 && base < 2){
+        base = 2;
+        lines.push('<span class="lbl">  packaging is a wood crate / multi-layer carton</span>  →  <span class="hi">Class II</span>   <span class="lbl">§20.4.2</span>');
+      }
+    }
+
+    /* ---- plastic content overlay (only where it can apply) ---- */
+    if(prod.v !== "ga" && prod.v !== "gaff" && pl.pct > 0){
+      if(pl.pct === 1){
+        lines.push('<span class="lbl">Group A content 5% or less</span>  →  stays <span class="ok">Class III or below</span>   <span class="lbl">§20.4.3.2</span>');
+        if(base < 3) base = base;
+      }else if(pl.pct === 2){
+        base = Math.max(base, 4);
+        lines.push('<span class="lbl">Over 5% up to 15% by weight nonexpanded</span>  →  <span class="hi">Class IV</span>   <span class="lbl">§20.4.4.1(3)</span>');
+      }else if(pl.pct === 3){
+        base = 9;
+        lines.push('<span class="lbl">Over 15% by weight nonexpanded</span>  →  <span class="hi">Group A nonexpanded commodity</span>   <span class="lbl">§20.4.5.4(1)</span>');
+        coach = "<b>This is the ceiling people forget.</b> Class IV stops at 15% by weight. Past that it is no longer Class IV — it is a Group A nonexpanded commodity, and the design gets substantially harder. Treating “over 5%” as open-ended under-protects the load.";
+      }
+    }
+    if(pack.v === "foam" && base < 9){
+      lines.push('<span class="lbl">Expanded (foam) plastic present</span>  <span class="lbl">→ measured BY VOLUME, not weight — §20.4.3.2</span>');
+      if(base < 4){ base = 4; }
+    }
+
+    var beforePallet = base;
+
+    /* ---- pallet adjustment ---- */
+    var adjTxt = "none";
+    if(pal.inc > 0){
+      if(base >= 9){
+        adjTxt = "no increase — §20.3.2.2.3";
+        lines.push('<span class="lbl">Plastic pallet under a Group A commodity</span>  →  <span class="ok">no increase</span>   <span class="lbl">§20.3.2.2.3</span>');
+      }else if(pal.inc === 2 && base === 4){
+        base = 9;
+        adjTxt = "Class IV → cartoned nonexpanded Group A";
+        lines.push('<span class="lbl">Reinforced plastic pallet under Class IV</span>  →  <span class="hi">cartoned nonexpanded Group A</span>   <span class="lbl">'+pal.cite+'</span>');
+      }else{
+        base = Math.min(base + pal.inc, 4);
+        adjTxt = "+" + pal.inc + " class";
+        lines.push('<span class="lbl">'+esc(pal.t)+'</span>  →  <span class="hi">increase '+(pal.inc===1?"one class":"two classes")+'</span>   <span class="lbl">'+pal.cite+'</span>');
+      }
+    }else{
+      lines.push('<span class="lbl">Wood or metal pallet</span>  →  <span class="ok">assumed in the classification</span>   <span class="lbl">§20.3.2.1</span>');
+    }
+
+    if(exposed && base >= 9){
+      lines.push('<span class="lbl">Exposed (not cartoned)</span>  <span class="lbl">→ thresholds tighten — §20.4.5.4(4)(5)</span>');
+    }
+
+    $("cmMath").innerHTML = lines.join("\n");
+    $("cmBase").textContent  = className(beforePallet);
+    $("cmAdj").textContent   = adjTxt;
+    $("cmFinal").textContent = className(base) + (exposed && base>=9 ? " (exposed)" : "");
+
+    var v = $("cmVerdict");
+    if(base >= 9){
+      v.className = "verdict no";
+      v.textContent = "GROUP A PLASTIC — the hardest storage design in the standard";
+    }else if(base === 4){
+      v.className = "verdict warn";
+      v.textContent = "CLASS IV — highest of the numbered classes";
+    }else{
+      v.className = "verdict ok";
+      v.textContent = className(base).toUpperCase() + " — design per Ch. 20 then pick your technology";
+    }
+
+    if(!coach && pal.inc > 0 && beforePallet !== base){
+      coach = "<b>The pallet moved your class.</b> Nothing about the product changed — the customer just switched to plastic pallets. This is a scope item worth catching before the bid, not after.";
+    }
+    if(!coach && note) coach = note;
+    var c = $("cmCoach");
+    if(coach){ c.innerHTML = coach; c.style.display="block"; } else { c.style.display="none"; }
+  }
+})();
+
+/* ============================================================
+   WORKBENCH 02 — RACK ELEVATION
+   ============================================================ */
+(function(){
+  var ids = ["rkStore","rkCeil","rkAisle","rkDepth","rkComm","rkSpk","rkLongFlue"];
+  ids.forEach(function(id){
+    $(id).addEventListener("input", run);
+    $(id).addEventListener("change", run);
+  });
+  REDRAW.push(run);
+  run();
+
+  function rackType(depth, aisle){
+    if(aisle < NFPA.rack.aisleMin) return { t:"Multiple-row (narrow aisle)", multi:true,
+      why:"aisles under "+NFPA.rack.aisleMin+" ft — §3.3.127" };
+    if(depth > NFPA.rack.doubleDepth) return { t:"Multiple-row", multi:true,
+      why:"depth over "+NFPA.rack.doubleDepth+" ft — §3.3.127" };
+    if(depth <= NFPA.rack.singleDepth) return { t:"Single-row", multi:false,
+      why:"depth "+NFPA.rack.singleDepth+" ft or less, no longitudinal flue — §3.3.191" };
+    return { t:"Double-row", multi:false, why:"depth "+NFPA.rack.doubleDepth+" ft or less — §3.3.56" };
+  }
+
+  function run(){
+    var st = parseFloat($("rkStore").value);
+    var ce = parseFloat($("rkCeil").value);
+    var ai = parseFloat($("rkAisle").value);
+    var dp = parseFloat($("rkDepth").value);
+    var comm = $("rkComm").value;
+    var spk  = $("rkSpk").value;
+    var lf   = $("rkLongFlue").checked;
+
+    $("rkStoreVal").textContent = f1(st)+" ft";
+    $("rkCeilVal").textContent  = f1(ce)+" ft";
+    $("rkAisleVal").textContent = f1(ai)+" ft";
+    $("rkDepthVal").textContent = f1(dp)+" ft";
+
+    var rt = rackType(dp, ai);
+    var clear = ce - st;
+
+    /* minimum deflector-to-storage by sprinkler type / commodity */
+    var defMin = NFPA.deflector.general, defCite = "§20.6.6.1";
+    if(comm === "tire"){ defMin = NFPA.deflector.tires; defCite = "§20.6.6.5"; }
+    if(spk === "cmsa"){ defMin = NFPA.deflector.cmsa; defCite = "§13.2.9"; }
+    if(spk === "esfr"){ defMin = NFPA.deflector.esfr; defCite = "§14.2.12"; }
+
+    var cat = st > NFPA.highPiledFt ? "High-piled (over 12 ft)" : "Low-piled (12 ft or less)";
+
+    /* max clearance to ceiling — CMDA only, Table 20.6.4.2 */
+    var maxClear = null, clearCite = "";
+    if(spk === "cmda"){
+      var isGA = (comm === "ga");
+      if(st > 25){ maxClear = NFPA.cmdaClearance.rackHi[isGA?"ga":"c14"]; clearCite = "Table 20.6.4.2, rack over 25 ft"; }
+      else       { maxClear = NFPA.cmdaClearance.rack25[isGA?"ga":"c14"]; clearCite = "Table 20.6.4.2, rack up to 25 ft"; }
+    }
+
+    var lines = [];
+    lines.push('<span class="lbl">Rack type</span>  = <span class="'+(rt.multi?"hi":"ok")+'">'+rt.t+'</span>   <span class="lbl">('+rt.why+')</span>');
+    lines.push('<span class="lbl">Clearance to ceiling</span>  = ceiling '+f1(ce)+' − storage '+f1(st)+' = <span class="'+((maxClear!==null&&clear>maxClear)?"hi":"ok")+'">'+f1(clear)+' ft</span>');
+    if(maxClear !== null){
+      lines.push('<span class="lbl">  CMDA maximum</span>  = <span class="lbl">'+maxClear+' ft ('+clearCite+')</span>');
+    }
+    lines.push('<span class="lbl">Deflector to top of storage</span>  ≥ <span class="ok">'+defMin+' in.</span>   <span class="lbl">'+defCite+'</span>');
+    lines.push('<span class="lbl">Transverse flue</span>  = nominal '+NFPA.flue.transverseIn+' in., all rack types   <span class="lbl">§20.5.3.3.2.1</span>');
+    if(st > 25 && !rt.multi){
+      lines.push('<span class="lbl">Longitudinal flue</span>  = <span class="hi">nominal 6 in. required</span> — storage over 25 ft   <span class="lbl">§20.5.3.3.1.2</span>');
+    }else{
+      lines.push('<span class="lbl">Longitudinal flue</span>  = <span class="ok">not required</span> up to 25 ft   <span class="lbl">§20.5.3.3.1.1</span>');
+    }
+
+    $("rkMath").innerHTML = lines.join("\n");
+    $("rkType").textContent  = rt.t;
+    $("rkClear").textContent = f1(clear)+" ft";
+    $("rkDefl").textContent  = defMin+" in.";
+    $("rkCat").textContent   = cat;
+
+    var fail = clear < 0;
+    var overClear = (maxClear !== null && clear > maxClear);
+    var v = $("rkVerdict");
+    if(fail){
+      v.className="verdict no"; v.textContent="STORAGE IS TALLER THAN THE CEILING";
+    }else if(overClear){
+      v.className="verdict no";
+      v.textContent="CLEARANCE "+f1(clear)+" FT EXCEEDS THE "+maxClear+" FT CMDA LIMIT";
+    }else if(st > 25 && !lf && !rt.multi){
+      v.className="verdict warn";
+      v.textContent="OVER 25 FT — LONGITUDINAL FLUE REQUIRED";
+    }else{
+      v.className="verdict ok";
+      v.textContent="CLEARANCE "+f1(clear)+" FT — WITHIN LIMITS SHOWN";
+    }
+
+    /* coaching */
+    var coach="";
+    if(ai < NFPA.rack.aisleMin){
+      coach = "<b>The aisle just changed your rack type.</b> At "+f1(ai)+" ft you are under the "
+        + NFPA.rack.aisleMin + " ft line, so single- and double-row racks are treated as "
+        + "<b>multiple-row</b> — §21.4.1.2.1(D) and §25.2.3.2.1.1(D). That moves you onto a far more "
+        + "restrictive table. On deep or narrow-aisle multiple-row racks it can remove ceiling-only "
+        + "protection entirely above 15 ft.";
+    }else if(overClear){
+      coach = "<b>Too much air above the pile.</b> Clearance of "+f1(clear)+" ft exceeds the "
+        + maxClear + " ft CMDA limit. Tables 20.6.4.3 and 20.6.4.4 give you two ways out: design to the "
+        + "storage height that <em>would</em> produce an acceptable clearance, or add one level of "
+        + "supplemental quick-response in-rack sprinklers below the top tier at every flue space "
+        + "intersection.";
+    }else if(spk === "esfr" && st > 25 && ce > 30){
+      coach = "<b>Watch your ESFR spacing.</b> Above a 30 ft ceiling the maximum distance between "
+        + "sprinklers drops from 12 ft to <b>10 ft</b> — Table 14.2.8.2.1. The 100 ft² coverage area "
+        + "does not change, so it is easy to miss on a layout that still “checks out” on area.";
+    }else if(comm === "tire"){
+      coach = "<b>Rubber tires carry their own clearance.</b> Not less than <b>36 in.</b> from the top "
+        + "of storage to the deflector, whatever the sprinkler type — §20.6.6.5.";
+    }
+    var c = $("rkCoach");
+    if(coach){ c.innerHTML = coach; c.style.display="block"; } else { c.style.display="none"; }
+
+    draw(st, ce, ai, dp, rt, clear, defMin, overClear);
+  }
+
+  function draw(st, ce, ai, dp, rt, clear, defMin, over){
+    var svg = $("rkSvg");
+    while(svg.firstChild) svg.removeChild(svg.firstChild);
+
+    var floorY = 285, topY = 40;
+    var px = (floorY - topY) / Math.max(ce, 12);   /* px per ft, vertical */
+    var ceilY = floorY - ce*px;
+    /* storage taller than the ceiling is an impossible input — the verdict
+       says so. Clamp the DRAWING so the dimension text stays on the sheet. */
+    var stDraw = Math.min(st, ce);
+    var storeTopY = floorY - stDraw*px;
+
+    /* plan widths: rack | aisle | rack, mapped into 400 px */
+    var totalW = dp + ai + dp;
+    var xs = 130, xe = 530, wpx = (xe - xs) / totalW;
+    var r1a = xs,               r1b = xs + dp*wpx;
+    var r2a = r1b + ai*wpx,     r2b = r2a + dp*wpx;
+
+    /* ---- ceiling / roof deck ---- */
+    svg.appendChild(svgEl("line",{x1:60,y1:ceilY,x2:600,y2:ceilY,class:"obj-line"}));
+    for(var hx=60; hx<600; hx+=14){
+      svg.appendChild(svgEl("line",{x1:hx,y1:ceilY,x2:hx+7,y2:ceilY-7,class:"thin-line"}));
+    }
+    svg.appendChild(txt(600, ceilY-7, "DECK", "note-txt", "end"));
+
+    /* ---- floor ---- */
+    svg.appendChild(svgEl("line",{x1:60,y1:floorY,x2:600,y2:floorY,class:"obj-line"}));
+    for(var fx=60; fx<600; fx+=14){
+      svg.appendChild(svgEl("line",{x1:fx,y1:floorY,x2:fx+7,y2:floorY+7,class:"thin-line"}));
+    }
+
+    /* ---- two rack bays with tiers ---- */
+    [[r1a,r1b],[r2a,r2b]].forEach(function(r){
+      var a=r[0], b=r[1];
+      /* uprights */
+      svg.appendChild(svgEl("line",{x1:a,y1:floorY,x2:a,y2:storeTopY,class:"obj-line"}));
+      svg.appendChild(svgEl("line",{x1:b,y1:floorY,x2:b,y2:storeTopY,class:"obj-line"}));
+      /* tiers roughly every 5 ft */
+      var tiers = Math.max(1, Math.round(stDraw/5));
+      for(var i=0;i<tiers;i++){
+        var y0 = floorY - (stDraw*(i+1)/tiers)*px;
+        var y1 = floorY - (stDraw*i/tiers)*px;
+        svg.appendChild(svgEl("line",{x1:a,y1:y0,x2:b,y2:y0,class:"thin-line"}));
+        /* load block, inset to leave a flue at each upright */
+        var inset = Math.min(7, (b-a)*0.12);
+        svg.appendChild(svgEl("rect",{x:a+inset,y:y0+2,width:Math.max(2,(b-a)-inset*2),
+          height:Math.max(2,(y1-y0)-4),fill:"#EBE5D8",stroke:"#4A443C","stroke-width":.75}));
+      }
+    });
+
+    /* ---- ceiling sprinklers ---- */
+    [ (r1a+r1b)/2, (r2a+r2b)/2 ].forEach(function(cx){
+      svg.appendChild(svgEl("line",{x1:cx,y1:ceilY,x2:cx,y2:ceilY+11,class:"thin-line"}));
+      svg.appendChild(sprinklerGlyph(cx, ceilY+15, 4.5, false));
+    });
+
+    /* ---- dimensions ---- */
+    svg.appendChild(svgEl("line",{x1:r2b,y1:storeTopY,x2:585,y2:storeTopY,class:"ext-line"}));
+    svg.appendChild(svgEl("line",{x1:r2b,y1:floorY,x2:585,y2:floorY,class:"ext-line"}));
+    svg.appendChild(dimLine(575, floorY, 575, storeTopY, f1(st)+" ft"));
+
+    if(clear > 0){
+      svg.appendChild(dimLine(545, storeTopY, 545, ceilY, f1(clear)+" ft"));
+      if(over){
+        svg.appendChild(svgEl("rect",{x:r1a,y:ceilY,width:r2b-r1a,height:Math.max(0,storeTopY-ceilY),
+          fill:"#B3341F",opacity:.07}));
+      }
+    }
+
+    /* aisle dimension along the floor */
+    svg.appendChild(dimLine(r1b, floorY+26, r2a, floorY+26, f1(ai)+" ft aisle"));
+    svg.appendChild(svgEl("line",{x1:r1b,y1:floorY,x2:r1b,y2:floorY+30,class:"ext-line"}));
+    svg.appendChild(svgEl("line",{x1:r2a,y1:floorY,x2:r2a,y2:floorY+30,class:"ext-line"}));
+
+    /* labels — the sub-label needs a wider gap on a phone, where the
+       SVG type is drawn at ~1.7x to survive being scaled down */
+    svg.appendChild(txt(65, topY-16, rt.t.toUpperCase(), "obj-txt"));
+    if(rt.multi){
+      svg.appendChild(txt(65, topY + (isNarrow()?10:2), "narrow aisle or deep rack", "note-txt"));
+    }
+  }
+})();
+
+/* ============================================================
+   WORKBENCH 03 — TECHNOLOGY GATE
+   ============================================================ */
+(function(){
+  var ids = ["rtStore","rtCeil","rtArr","rtSlope","rtDry","rtVent"];
+  ids.forEach(function(id){
+    $(id).addEventListener("input", run);
+    $(id).addEventListener("change", run);
+  });
+  run();
+
+  function run(){
+    var st = parseFloat($("rtStore").value);
+    var ce = parseFloat($("rtCeil").value);
+    var arr = $("rtArr").value;
+    var steep = $("rtSlope").value === "steep";
+    var dry = $("rtDry").checked;
+    var vent = $("rtVent").checked;
+
+    $("rtStoreVal").textContent = f1(st)+" ft";
+    $("rtCeilVal").textContent  = f1(ce)+" ft";
+
+    var gates = [];
+
+    /* ---------- CMDA ---------- */
+    var cmda = { name:"CMDA — Chapter 21", ok:true, notes:[] };
+    if(arr === "solid"){
+      cmda.notes.push(["warn","Solid shelves — in-rack sprinklers per Ch. 25 come with it (§25.6.3)"]);
+    }
+    if(arr === "rack" && st > 25){
+      cmda.notes.push(["warn","Rack over 25 ft with CMDA routes to Chapter 25 — §21.4.2.1"]);
+    }
+    if(dry){
+      cmda.notes.push(["warn","Dry or preaction: increase area of operation 30%, density unchanged — §20.13.3"]);
+    }
+    if(steep){
+      cmda.ok = false;
+      cmda.notes.push(["no","Ch. 20–25 criteria are intended for slopes not exceeding 2 in 12 — §20.6.1"]);
+    }
+    cmda.notes.push(["ok","Design density sets your minimum K-factor — §21.1.2 through §21.1.4"]);
+    gates.push(cmda);
+
+    /* ---------- CMSA ---------- */
+    var cmsa = { name:"CMSA — Chapter 22 (install: Ch. 13)", ok:true, notes:[] };
+    if(arr === "solid"){
+      cmsa.ok = false;
+      cmsa.notes.push(["no","Not permitted on solid shelf racks unless in-rack sprinklers are added per Ch. 25 — §22.1.7"]);
+    }
+    if(dry){
+      cmsa.notes.push(["ok","Permitted in wet, dry or preaction — §13.2.2"]);
+      cmsa.notes.push(["warn","Dry pipe requires high-temperature sprinklers — §13.2.3.4"]);
+      cmsa.notes.push(["warn","The dry penalty is a higher sprinkler count in the table, not a percentage"]);
+    }
+    if(arr === "rack" && st >= 25){
+      cmsa.notes.push(["warn","At 25 ft rack storage, K-11.2 and K-16.8 uprights trigger in-rack sprinklers. K-19.6 or K-25.2 pendent stays ceiling-only to 35 ft"]);
+    }
+    if(steep){
+      cmsa.ok = false;
+      cmsa.notes.push(["no","Ch. 20–25 criteria are intended for slopes not exceeding 2 in 12 — §20.6.1. Chapter 13 states no separate CMSA slope limit, so the general rule governs"]);
+    }
+    cmsa.notes.push(["ok","Clearance to storage 36 in. or greater — §13.2.9"]);
+    gates.push(cmsa);
+
+    /* ---------- ESFR ---------- */
+    var esfr = { name:"ESFR — Chapter 23 (install: Ch. 14)", ok:true, notes:[] };
+    if(steep){
+      esfr.ok = false;
+      esfr.notes.push(["no","Roof slope may not exceed 2 in 12 (16.7%) — §14.2.3"]);
+    }
+    if(vent){
+      esfr.ok = false;
+      esfr.notes.push(["no","Not permitted with automatic heat or smoke vents unless the vents use a high-temperature-rated, standard-response mechanism — §20.6.5.2"]);
+    }
+    if(arr === "solid"){
+      esfr.ok = false;
+      esfr.notes.push(["no","Not permitted on solid shelf racks unless protected with in-rack sprinklers per §25.6 — §23.1.4.1, §23.6.1.2"]);
+    }
+    if(dry){
+      esfr.notes.push(["warn","Wet pipe only UNLESS the sprinkler is specifically listed for dry or preaction — §14.2.2"]);
+    }
+    if(ce > 30){
+      esfr.notes.push(["warn","Ceiling over 30 ft: maximum spacing drops to 10 ft. Coverage area stays 100 ft² — Table 14.2.8.2.1"]);
+    }
+    if(ce >= 45 && arr === "rack"){
+      esfr.notes.push(["warn","At a 45 ft ceiling, K-14.0 and K-16.8 rack rows read “in-rack sprinklers required” — Table 23.5.1"]);
+    }
+    esfr.notes.push(["ok","Design area is 12 sprinklers — four on each of three branch lines — §23.6.3"]);
+    esfr.notes.push(["no","Open-top containers are never permitted with ESFR — §23.1.4.2"]);
+    gates.push(esfr);
+
+    /* ---------- render ---------- */
+    var h = "";
+    gates.forEach(function(g){
+      var col = g.ok ? "var(--pass)" : "var(--fail)";
+      h += '<div style="border:1.5px solid '+col+';margin-bottom:12px;background:'+(g.ok?"#F1FAF6":"#FDF3F1")+'">'
+        +  '<div style="padding:8px 12px;border-bottom:1px solid '+col+';font-family:var(--mono);'
+        +  'font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;font-weight:800;color:'+col+'">'
+        +  esc(g.name) + ' — ' + (g.ok ? "PERMITTED" : "RULED OUT") + '</div>'
+        +  '<div style="padding:9px 12px">';
+      g.notes.forEach(function(n){
+        var mark = n[0]==="no" ? "✕" : (n[0]==="warn" ? "!" : "✓");
+        var mc   = n[0]==="no" ? "var(--fail)" : (n[0]==="warn" ? "#B98A2E" : "var(--pass)");
+        h += '<div style="display:flex;gap:9px;font-size:.85rem;margin-bottom:5px;align-items:flex-start">'
+          +  '<span style="font-family:var(--mono);font-weight:800;color:'+mc+';flex-shrink:0">'+mark+'</span>'
+          +  '<span style="color:var(--ink-2)">'+n[1]+'</span></div>';
+      });
+      h += '</div></div>';
+    });
+
+    /* ESFR pressure lookup, when the geometry matches a table row */
+    var rows = NFPA.esfrRack.filter(function(r){ return r[0] >= st && r[1] >= ce; });
+    if(arr !== "solid" && rows.length){
+      var best = rows.sort(function(a,b){ return (a[0]-b[0]) || (a[1]-b[1]) || (a[2]-b[2]); });
+      var seen = {}, pick = [];
+      best.forEach(function(r){
+        var key = r[2];
+        if(seen[key]) return;
+        seen[key] = 1; pick.push(r);
+      });
+      h += '<div style="border:1.5px solid var(--line-hard);margin-top:14px">'
+        +  '<div style="padding:8px 12px;border-bottom:1px solid var(--line-hard);background:var(--paper-tint);'
+        +  'font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;font-weight:800">'
+        +  'ESFR rack options at or above ' + f1(st) + ' ft storage / ' + f1(ce) + ' ft ceiling</div>'
+        +  '<div style="padding:4px 12px 10px"><table class="ref"><tr><th>K</th><th>Orient.</th>'
+        +  '<th>Storage / Ceiling</th><th>Min pressure</th></tr>';
+      pick.slice(0,5).forEach(function(r){
+        h += '<tr><td class="n">K-'+r[2].toFixed(1)+'</td><td>'+(r[3]==="P"?"Pendent":"Upright/pendent")+'</td>'
+          +  '<td class="n">'+r[0]+' / '+r[1]+' ft</td>'
+          +  '<td class="n">'+(r[5] ? '<span style="color:var(--fail)">in-rack required</span>' : r[4]+' psi')+'</td></tr>';
+      });
+      h += '</table><div style="font-size:.74rem;color:var(--ink-3);font-family:var(--mono);padding-top:4px">'
+        +  'Table 23.5.1 — Class I–IV, single/double/multiple-row racks, no open-top containers</div></div></div>';
+    }
+
+    /* hose stream for a 12-sprinkler ESFR design */
+    var hose = NFPA.esfrHose[0];
+    h += '<div class="plain" style="margin-top:14px"><span class="pl-tag">ESFR hose stream</span>'
+      +  '<p style="margin:0">A 12-sprinkler ESFR design takes <strong>'+hose.gpm+' gpm</strong> for '
+      +  '<strong>'+hose.min+' minutes</strong> — Table 20.12.2.6. Push past 12 sprinklers and it jumps '
+      +  'to 500 gpm and 90 minutes. Sprinklers added to the design area for <em>obstructions</em> do not '
+      +  'count toward that number — Table 20.12.2.6 footnote a.</p></div>';
+
+    $("rtGates").innerHTML = h;
+  }
+})();
+
+/* ============================================================
+   WORKBENCH 04 — IN-RACK LEVEL PLACEMENT
+   ============================================================ */
+(function(){
+  var ids = ["irStore","irTier","irLevels","irCeil","irComm"];
+  ids.forEach(function(id){
+    $(id).addEventListener("input", run);
+    $(id).addEventListener("change", run);
+  });
+  REDRAW.push(run);
+  run();
+
+  function countKey(comm, ceil){
+    if(comm === "misc") return "misc";
+    if(comm === "tire") return "tire";
+    if(ceil === "esfr") return "esfr";
+    if(comm === "c13solid") return "c13solid";
+    if(comm === "c4solid")  return "c4solid";
+    if(ceil === "cmsa")     return "c14open_cmsa";
+    if(comm === "c4open")   return "c4open_cmda";
+    return "c13open_cmda";
+  }
+
+  function flowFor(comm, ceil, st){
+    if(comm === "misc")  return { v:"15 psi", cite:"Table 25.12.3.1" };
+    if(comm === "tire")  return { v:"30 psi", cite:"Table 25.12.3.1" };
+    if(ceil === "esfr")  return { v:"60 gpm", cite:"Table 25.12.3.1" };
+    if(comm === "c13solid" || comm === "c4solid") return { v:"30 gpm", cite:"Table 25.12.3.1" };
+    if(ceil === "cmsa")  return { v:"15 psi", cite:"Table 25.12.3.1" };
+    if(st > 25)          return { v:"30 gpm", cite:"Table 25.12.3.1" };
+    return { v:"15 psi", cite:"Table 25.12.3.1" };
+  }
+
+  function spacingFor(comm, ceil){
+    if(ceil === "esfr") return { v:"5 ft", cite:"§25.5.2.4" };
+    if(comm === "c13solid") return { v:"10 ft", cite:"§25.6.4.1" };
+    if(comm === "c4solid")  return { v:"5 ft",  cite:"§25.6.4.2" };
+    if(ceil === "cmsa"){
+      if(comm === "c4open") return { v:"5 ft", cite:"§25.5.2.3.2" };
+      return { v:"8 ft", cite:"§25.5.2.3.1" };
+    }
+    if(comm === "tire") return { v:"8 ft", cite:"§25.5.2.1.3" };
+    if(comm === "c4open") return { v:"10 ft", cite:"§25.5.2.1.4" };
+    return { v:"see Table 25.5.2.2.1", cite:"§25.5.2.2" };
+  }
+
+  function run(){
+    var st = parseFloat($("irStore").value);
+    var tier = parseFloat($("irTier").value);
+    var lv = parseInt($("irLevels").value,10);
+    var ceil = $("irCeil").value;
+    var comm = $("irComm").value;
+
+    $("irStoreVal").textContent = f1(st)+" ft";
+    $("irTierVal").textContent  = f1(tier)+" ft";
+
+    var fr = NFPA.levelFractions[lv];
+    /* a tier taller than the whole pile is not a real arrangement — cap it
+       so a level can never be placed above the top of storage */
+    var effTier = Math.min(tier, st);
+    var nTiers = Math.max(1, Math.floor(st / effTier));
+
+    /* §25.4.4 / §25.4.5 — the FIRST TIER LEVEL AT OR ABOVE the fraction */
+    var placed = fr.map(function(f){
+      var target = st * f;
+      var t = Math.ceil(target / effTier);    /* tier index whose top is at/above target */
+      if(t < 1) t = 1;
+      if(t > nTiers) t = nTiers;
+      return { target:target, tier:t, ht:Math.min(t*effTier, st) };
+    });
+    /* If both fractions resolve to the same tier the rack simply does not
+       have enough tiers to carry the required levels. That is a real design
+       signal, not a drawing glitch — collapse the marker and say so. */
+    var tierClash = false;
+    if(placed.length === 2 && placed[0].tier === placed[1].tier){
+      tierClash = true;
+      placed = [placed[0]];
+    }
+
+    var key = countKey(comm, ceil);
+    var cnt = NFPA.inRackCount[key];
+    var n = lv === 1 ? cnt.one : cnt.many;
+    var flow = flowFor(comm, ceil, st);
+    var sp = spacingFor(comm, ceil);
+
+    var lines = [];
+    lines.push('<span class="lbl">Storage height</span>  = '+f1(st)+' ft,  tier height '+f1(tier)+' ft  →  '+nTiers+' tiers');
+    if(lv === 1){
+      lines.push('<span class="lbl">One level</span>  → first tier at or above <span class="hi">½ × '+f1(st)+' = '+f1(st/2)+' ft</span>   <span class="lbl">§25.4.4</span>');
+    }else{
+      lines.push('<span class="lbl">Two levels</span>  → first tiers at or above <span class="hi">⅓ = '+f1(st/3)+' ft</span> and <span class="hi">⅔ = '+f1(2*st/3)+' ft</span>   <span class="lbl">§25.4.5</span>');
+    }
+    placed.forEach(function(p,i){
+      lines.push('<span class="lbl">  level '+(i+1)+'</span>  → tier '+p.tier+', top at <span class="ok">'+f1(p.ht)+' ft</span>');
+    });
+    lines.push('<span class="lbl">Sprinklers in the design</span>  = <span class="ok">'+n+'</span>'
+      + (lv===2 && n>=10 ? '  <span class="lbl">(split evenly across the top two levels)</span>' : '')
+      + '   <span class="lbl">Table 25.12.2.1</span>');
+    lines.push('<span class="lbl">Minimum clear below deflector</span>  = 6 in. above the storage beneath   <span class="lbl">§25.4.2</span>');
+
+    $("irMath").innerHTML = lines.join("\n");
+    $("irAt").textContent = placed.map(function(p){ return f1(p.ht)+" ft"; }).join("  ·  ");
+    $("irCount").textContent = n + " sprinklers";
+    $("irFlow").textContent = flow.v;
+    $("irSpace").textContent = sp.v;
+
+    var v = $("irVerdict");
+    if(comm === "c13solid" || comm === "c4solid"){
+      v.className = "verdict warn";
+      v.textContent = "SOLID SHELF — VERTICAL SPACING SET BY SHELF AREA, §25.6.3";
+    }else if(ceil === "esfr"){
+      v.className = "verdict ok";
+      v.textContent = "ESFR CEILING — IN-RACKS MUST BE QR, ORDINARY TEMP, K-8.0 OR K-11.2";
+    }else{
+      v.className = "verdict ok";
+      v.textContent = n + " SPRINKLERS AT " + flow.v + " FROM THE MOST REMOTE";
+    }
+
+    var coach = "";
+    if(tierClash){
+      coach = "<b>This rack has too few tiers to carry two levels.</b> At "+f1(st)+" ft of storage "
+        + "in "+f1(tier)+" ft tiers there are only "+nTiers+" tier"+(nTiers===1?"":"s")+", so the ⅓ and "
+        + "⅔ points land on the same one. Either the tier arrangement is wrong for the design, or the "
+        + "commodity and height do not actually call for two levels — go back to the routing table "
+        + "before you place anything.";
+    }else if(lv === 2 && n >= 10){
+      coach = "<b>Two levels does not mean two sprinklers.</b> Table 25.12.2.1 puts "+n+" in the "
+        + "calculation, split evenly across the <em>top two</em> levels. People routinely size this as "
+        + "if only one level counted.";
+    }else if(ceil === "esfr"){
+      coach = "<b>ESFR changes the in-rack sprinkler itself.</b> §25.3.2 — where ESFR protects open "
+        + "racks at the ceiling, the in-racks must be quick-response, ordinary-temperature, K-8.0 or "
+        + "K-11.2. And the horizontal spacing tightens to <b>5 ft</b> — §25.5.2.4.";
+    }else if(comm === "c13solid" || comm === "c4solid"){
+      coach = "<b>Check the shelf area before you place anything.</b> A solid shelf of 20 ft² or less "
+        + "is an <em>open rack</em> (§3.3.199). Between 20 and 64 ft² you need in-racks at intermediate "
+        + "levels no more than 6 ft apart vertically (§25.6.3.1). Only above 64 ft² — or where storage "
+        + "levels exceed 6 ft — do you go below every level (§25.6.3.2).";
+    }else if(st > 25){
+      coach = "<b>Over 25 ft the demand changes units.</b> The minimum becomes a <b>flow</b> "
+        + "(30 gpm from the most remote) rather than a pressure — Table 25.12.3.1. Below 25 ft it is "
+        + "15 psi. Different quantity, different calculation.";
+    }
+    var c = $("irCoach");
+    if(coach){ c.innerHTML = coach; c.style.display="block"; } else { c.style.display="none"; }
+
+    draw(st, tier, nTiers, placed);
+  }
+
+  function draw(st, tier, nTiers, placed){
+    var svg = $("irSvg");
+    while(svg.firstChild) svg.removeChild(svg.firstChild);
+
+    var floorY = 292, topY = 44;
+    var px = (floorY - topY) / Math.max(st, 10);
+    var a = 180, b = 400;
+
+    /* floor */
+    svg.appendChild(svgEl("line",{x1:70,y1:floorY,x2:600,y2:floorY,class:"obj-line"}));
+    for(var fx=70; fx<600; fx+=14){
+      svg.appendChild(svgEl("line",{x1:fx,y1:floorY,x2:fx+7,y2:floorY+7,class:"thin-line"}));
+    }
+
+    /* uprights */
+    var stTopY = floorY - st*px;
+    svg.appendChild(svgEl("line",{x1:a,y1:floorY,x2:a,y2:stTopY,class:"obj-line"}));
+    svg.appendChild(svgEl("line",{x1:b,y1:floorY,x2:b,y2:stTopY,class:"obj-line"}));
+
+    /* tiers */
+    var lvTiers = placed.map(function(p){ return p.tier; });
+    for(var i=0;i<nTiers;i++){
+      var yTop = floorY - (i+1)*tier*px;
+      var yBot = floorY - i*tier*px;
+      svg.appendChild(svgEl("line",{x1:a,y1:yTop,x2:b,y2:yTop,class:"thin-line"}));
+      var isLv = lvTiers.indexOf(i+1) !== -1;
+      svg.appendChild(svgEl("rect",{x:a+10,y:yTop+3,width:(b-a)-20,height:Math.max(2,(yBot-yTop)-6),
+        fill: isLv ? "#FFF0E8" : "#EBE5D8", stroke:"#4A443C","stroke-width":.75}));
+      /* transverse flue at mid-bay */
+      var mid = (a+b)/2;
+      svg.appendChild(svgEl("line",{x1:mid,y1:yTop+3,x2:mid,y2:yBot-3,class:"ext-line"}));
+    }
+
+    /* Horizontal budget across the 640-unit viewBox, chosen so nothing
+       collides once the phone breakpoint scales SVG type up ~1.7x:
+         storage dimension   ~   5 – 83
+         fraction labels     ~ 102 – 168   (anchored end at a-12)
+         rack                  180 – 400
+         level labels          414 – ~605  (anchored start at b+14)  */
+
+    /* fraction reference lines — drawn first so the level line sits on top */
+    placed.forEach(function(p, i){
+      var yT = floorY - p.target*px;
+      svg.appendChild(svgEl("line",{x1:a-10,y1:yT,x2:b,y2:yT,class:"ctr-line"}));
+      /* just the fraction — the ft value is spelled out in the worked
+         reasoning below, and a longer string collides with the
+         storage dimension once phone type scaling kicks in */
+      var lbl = (placed.length === 1) ? "1/2" : (i === 0 ? "1/3" : "2/3");
+      svg.appendChild(txt(a-14, yT+4, lbl, "note-txt", "end"));
+    });
+
+    /* in-rack sprinklers at each placed level, in the flue */
+    placed.forEach(function(p,i){
+      var y = floorY - p.ht*px;
+      var mid = (a+b)/2;
+      svg.appendChild(svgEl("line",{x1:a,y1:y,x2:b,y2:y,class:"dim-line"}));
+      [[a,y],[b,y]].forEach(function(pt){
+        svg.appendChild(svgEl("line",{x1:pt[0]-4,y1:pt[1]+4,x2:pt[0]+4,y2:pt[1]-4,class:"dim-line"}));
+      });
+      [mid-58, mid, mid+58].forEach(function(cx){
+        svg.appendChild(sprinklerGlyph(cx, y+7, 4.5, true));
+      });
+      svg.appendChild(txt(b+14, y+4, "LEVEL "+(i+1)+" @ "+f1(p.ht)+" FT", "dim-txt"));
+    });
+
+    /* storage height dimension, far left and clear of everything */
+    svg.appendChild(svgEl("line",{x1:a,y1:stTopY,x2:36,y2:stTopY,class:"ext-line"}));
+    svg.appendChild(svgEl("line",{x1:a,y1:floorY,x2:36,y2:floorY,class:"ext-line"}));
+    svg.appendChild(dimLine(44, floorY, 44, stTopY, f1(st)+" ft"));
+
+    svg.appendChild(txt(36, topY-18, "IN-RACK LEVEL PLACEMENT", "obj-txt"));
+    svg.appendChild(txt(36, topY + (isNarrow()?8:0), "dashed = fraction · solid = tier", "note-txt"));
+  }
+})();
+
+/* ============================================================
+   DRILL — every explanation carries its section
+   ============================================================ */
+var QUESTIONS = [
+  { topic:"commodity",
+    q:"A run of stainless steel fittings arrives in single-layer corrugated cartons on wood pallets. What is the commodity class?",
+    opts:["Class I","Class II","Class III","Class IV"], a:0,
+    why:"A noncombustible product in single-layer corrugated cartons, with or without pallets, is Class I. The wood pallet is already assumed in the classification.",
+    cite:"NFPA 13 (2019) §20.4.1, §20.3.2.1" },
+
+  { topic:"commodity",
+    q:"Same stainless fittings, same cartons — but the customer switches to unreinforced polypropylene pallets. What happens?",
+    opts:["Nothing — the pallet is not part of the commodity","Increase one class, to Class II","Increase two classes, to Class III","It becomes a Group A plastic commodity"], a:1,
+    why:"Unreinforced polypropylene or HDPE pallets increase the commodity one class for Class I through IV. Reinforced versions increase two classes. Nothing about the product changed — the pallet did.",
+    cite:"NFPA 13 (2019) §20.3.2.2.1.1" },
+
+  { topic:"commodity",
+    q:"A cartoned Class IV load is reworked and now contains 20 percent Group A nonexpanded plastic by weight. What is it?",
+    opts:["Still Class IV","A Group A nonexpanded plastic commodity","Class III, because it is cartoned","Group B plastic"], a:1,
+    why:"Cartoned Class IV runs from over 5 percent up to 15 percent by weight of Group A nonexpanded plastic. Above 15 percent it becomes a Group A nonexpanded commodity. Class IV has a ceiling, not just a floor.",
+    cite:"NFPA 13 (2019) §20.4.4.1(3), §20.4.5.4(1)" },
+
+  { topic:"commodity",
+    q:"The 5 percent limit that keeps a commodity in Class III is measured how?",
+    opts:["5 percent by weight, always","5 percent by volume, always","5 percent by weight for nonexpanded, 5 percent by volume for expanded","5 percent of the pallet footprint"], a:2,
+    why:"Two separate tests. Nonexpanded plastic is limited by weight; expanded plastic is limited by volume. The allowance covers Group A or Group B plastics.",
+    cite:"NFPA 13 (2019) §20.4.3.2" },
+
+  { topic:"commodity",
+    q:"Where does natural rubber sit in the plastics classification?",
+    opts:["It is its own separate rubber commodity category","Group A","Group B, with chloroprene and silicone","Group C"], a:1,
+    why:"Natural rubber is named in the Group A list alongside ABS, polyethylene, polypropylene and polystyrene. Group B is a short list: chloroprene rubber, the fluoroplastics ECTFE/ETFE/FEP, and silicone rubber. Rubber TIRE storage is separate, but that is an arrangement, not a plastics group.",
+    cite:"NFPA 13 (2019) §20.4.5.1, §20.4.6, §20.4.9" },
+
+  { topic:"commodity",
+    q:"How are Group C plastics protected?",
+    opts:["The same as Class III commodities","The same as Class IV commodities","Using the Group A criteria","They are outside the scope of NFPA 13"], a:0,
+    why:"Group C plastics are protected the same as Class III. Group B plastics and free-flowing Group A are protected the same as Class IV. Note the wording — the standard says protected AS, not that they ARE that class.",
+    cite:"NFPA 13 (2019) §20.4.8.1, §20.4.8.2" },
+
+  { topic:"commodity",
+    q:"A pallet load is stretch-wrapped tightly around the sides only, with nothing over the top. Is it encapsulated?",
+    opts:["Yes — any plastic wrap is encapsulation","No — encapsulation needs the sides and the top","Only if the load is over 15 ft high","Only if the commodity is Group A plastic"], a:1,
+    why:"Encapsulation is a plastic sheet completely enclosing the sides AND top of a pallet load, or commodities individually wrapped and stored exposed. Banding the sides only is expressly not encapsulation, and a top cover with holes over more than half its area also defeats it.",
+    cite:"NFPA 13 (2019) §3.3.64 and Annex A.3.3.64" },
+
+  { topic:"arrange",
+    q:"Racks are 10 ft deep with 3 ft aisles between them. What rack type applies?",
+    opts:["Single-row","Double-row, because the depth is under 12 ft","Multiple-row","Back-to-back shelf storage"], a:2,
+    why:"Depth alone would make these double-row, but aisles under 3.5 ft push single- and double-row racks into multiple-row once overall width exceeds 12 ft. The aisle is the second half of the test and it is the half people forget.",
+    cite:"NFPA 13 (2019) §3.3.127, §3.3.56" },
+
+  { topic:"arrange",
+    q:"Aisle width is measured between which two points?",
+    opts:["The rack uprights on either side","The face of the loads on either side","The centerlines of the racks","The outer edge of the rack beams"], a:1,
+    why:"Face of load to face of load. If the pallets overhang the rack steel, the real aisle is narrower than the rack layout suggests — which can quietly reclassify the rack.",
+    cite:"NFPA 13 (2019) §3.3.4" },
+
+  { topic:"arrange",
+    q:"A fixed rack shelf has a solid surface of 18 ft². How is it treated?",
+    opts:["Solid shelf rack — in-racks below every level","Open rack","Slatted shelf rack","Bin box storage"], a:1,
+    why:"Solid shelves of 20 ft² or less are defined as open racks. The solid-shelf machinery does not start until you exceed that area.",
+    cite:"NFPA 13 (2019) §3.3.199, §3.3.140" },
+
+  { topic:"arrange",
+    q:"For a CMDA ceiling design, a solid shelf measures 40 ft². What does Chapter 25 require?",
+    opts:["In-rack sprinklers below every shelf","In-racks below shelves at intermediate levels not more than 6 ft apart vertically","No in-racks — 40 ft² is still an open rack","In-racks only at the top tier"], a:1,
+    why:"Between 20 ft² and 64 ft², in-racks go below shelves at intermediate levels no more than 6 ft apart vertically. Only above 64 ft², or where storage levels exceed 6 ft, do you go below each level.",
+    cite:"NFPA 13 (2019) §25.6.3.1, §25.6.3.2" },
+
+  { topic:"arrange",
+    q:"Transverse flue spaces in single-, double- and multiple-row racks must be maintained at what nominal width?",
+    opts:["3 in.","6 in.","12 in.","24 in."], a:1,
+    why:"Nominal 6 in. transverse flue spaces between loads and at rack uprights, in all three rack types. Random variation in width or vertical alignment is permitted.",
+    cite:"NFPA 13 (2019) §20.5.3.3.2.1, §20.5.3.3.2.2" },
+
+  { topic:"arrange",
+    q:"Is a longitudinal flue space required in a double-row open rack storing Class I–IV at 22 ft?",
+    opts:["Yes, nominal 6 in.","Yes, nominal 24 in.","No — not required up to and including 25 ft","Only where in-rack sprinklers are installed"], a:2,
+    why:"For Class I–IV and Group A plastic in double- and multiple-row open racks, a longitudinal flue is not required up to and including 25 ft. Over 25 ft, double-row racks need a nominal 6 in. longitudinal flue.",
+    cite:"NFPA 13 (2019) §20.5.3.3.1.1, §20.5.3.3.1.2" },
+
+  { topic:"heights",
+    q:"At what storage height does NFPA 13 define storage as high-piled?",
+    opts:["Over 5 ft for Group A plastics, over 12 ft for everything else","Over 12 ft, for every commodity","Over 15 ft","Over 25 ft"], a:1,
+    why:"The definition sets one line — over 12 ft — with no commodity qualifier. The 5 ft figure that circulates comes from a different provision: §4.3.1.5.2 addresses Group A plastics 5 ft or less on SOLID SHELF racks under low-piled storage, which is a protection trigger, not a high-piled threshold.",
+    cite:"NFPA 13 (2019) §3.3.95, §3.3.118, §4.3.1.5.2" },
+
+  { topic:"heights",
+    q:"Which of these is NOT one of the five conditions for miscellaneous storage?",
+    opts:["Height not exceeding 12 ft","Incidental to another occupancy use group","Not more than 1000 ft² in one pile or area","Protected by quick-response sprinklers"], a:3,
+    why:"The five conditions are height not over 12 ft; incidental to another occupancy; not more than 10 percent of the building area or 4000 ft² of sprinklered area, whichever is greater; not over 1000 ft² in one pile; and separated from other storage by at least 25 ft. Sprinkler response type is not one of them.",
+    cite:"NFPA 13 (2019) §3.3.123, §4.3.1.4" },
+
+  { topic:"heights",
+    q:"Miscellaneous storage may occupy no more than which of the following?",
+    opts:["10 percent of the building area","4000 ft² of the sprinklered area","10 percent of the building area or 4000 ft², whichever is greater","10 percent of the building area or 4000 ft², whichever is smaller"], a:2,
+    why:"Whichever is GREATER. Reading it as the smaller of the two needlessly disqualifies storage that the standard allows.",
+    cite:"NFPA 13 (2019) §3.3.123, §4.3.1.4.1" },
+
+  { topic:"heights",
+    q:"What is the general minimum clearance from a ceiling sprinkler deflector to the top of storage?",
+    opts:["12 in.","18 in.","36 in.","3 ft for all sprinkler types"], a:1,
+    why:"The general rule is 18 in. or greater. 36 in. applies to special sprinklers, to rubber tire storage, and — from their own chapters — to CMSA and ESFR sprinklers.",
+    cite:"NFPA 13 (2019) §20.6.6.1, §20.6.6.3, §20.6.6.5" },
+
+  { topic:"heights",
+    q:"Clearance to ceiling is measured from the top of storage to what?",
+    opts:["The sprinkler deflector","The ceiling above","The bottom of the roof structure only","The top of the highest rack beam"], a:1,
+    why:"Clearance to ceiling is top of storage to the ceiling. Clearance from deflector to storage is a different dimension with a different rule. Mixing them up is a classic error.",
+    cite:"NFPA 13 (2019) §3.3.29, §20.6.4, §20.6.6" },
+
+  { topic:"heights",
+    q:"Rack storage of Group A plastics up to 25 ft, protected by CMDA. What is the maximum clearance to ceiling before Table 20.6.4.4 kicks in?",
+    opts:["10 ft","15 ft","20 ft","25 ft"], a:0,
+    why:"For rack storage up to 25 ft, Class I–IV gets 20 ft of clearance but Group A plastic is held to 10 ft. Over 25 ft of rack storage, both are 10 ft.",
+    cite:"NFPA 13 (2019) Table 20.6.4.2" },
+
+  { topic:"heights",
+    q:"A corrugated metal roof deck is 5 in. deep. Where do you measure building height to?",
+    opts:["The bottom of the deck","The highest point on the deck","The average of the flutes","The underside of the roof insulation, always"], a:1,
+    why:"Decks up to 3 in. deep are measured to the bottom of the deck. Decks deeper than 3 in. are measured to the highest point on the deck.",
+    cite:"NFPA 13 (2019) §20.6.2.2, §20.6.2.3" },
+
+  { topic:"route",
+    q:"Which chapter tells you whether to use CMDA, CMSA or ESFR?",
+    opts:["Chapter 20 has a routing table","Chapter 19","None — Ch. 20 sets the inputs and each design chapter states its own limits","Chapter 24"], a:2,
+    why:"§20.2 lays out six steps, and step 5 is 'select the appropriate system/sprinkler technology.' It is a designer selection constrained by each chapter's own applicability limits — there is no lookup table that picks for you.",
+    cite:"NFPA 13 (2019) §20.2" },
+
+  { topic:"route",
+    q:"A CMDA calculation lands on a required density of 0.40 gpm/ft². What sprinkler must you use?",
+    opts:["Any K-5.6 or larger","K-8.0 or larger, standard response","K-11.2 or larger, listed for storage","K-25.2 extended coverage"], a:2,
+    why:"Density drives the minimum K-factor. At or below 0.2 gpm/ft², K-5.6 is permitted. Over 0.2 up to 0.34 requires K-8.0 or larger. Over 0.34 requires K-11.2 or larger listed for storage applications.",
+    cite:"NFPA 13 (2019) §21.1.2, §21.1.3, §21.1.4" },
+
+  { topic:"route",
+    q:"A CMDA design on a dry pipe system — what changes?",
+    opts:["Increase the density 30 percent","Increase the area of operation 30 percent, density unchanged","Increase both density and area 30 percent","Nothing, if high-temperature sprinklers are used"], a:1,
+    why:"For dry pipe and preaction using CMDA criteria, the area of sprinkler operation increases by 30 percent without revising the density.",
+    cite:"NFPA 13 (2019) §20.13.3" },
+
+  { topic:"route",
+    q:"Is ESFR permitted on a dry pipe system under NFPA 13 (2019)?",
+    opts:["Never, under any circumstances","Yes, always","Only where the sprinkler is specifically listed for dry pipe or preaction","Only where the building is heated"], a:2,
+    why:"§14.2.2 reads as a conditional prohibition: wet pipe only UNLESS the sprinkler is specifically listed for use in dry or preaction systems. The permission is delegated to the listing. Compare CMSA, which is permitted in wet, dry or preaction outright.",
+    cite:"NFPA 13 (2019) §14.2.2, §13.2.2" },
+
+  { topic:"route",
+    q:"CMSA sprinklers on a dry pipe system carry one extra requirement. What is it?",
+    opts:["Quick-response sprinklers","High-temperature-rated sprinklers","Pendent orientation only","A 30 percent density increase"], a:1,
+    why:"In storage occupancies, high-temperature-rated sprinklers shall be used for dry pipe CMSA systems. Wet pipe systems may use ordinary, intermediate or high.",
+    cite:"NFPA 13 (2019) §13.2.3.4, §13.2.3.3" },
+
+  { topic:"route",
+    q:"May ESFR be used in a building with automatic heat and smoke vents?",
+    opts:["Yes, without restriction","No, never","Only if the vents use a high-temperature-rated, standard-response operating mechanism","Only if draft curtains are added"], a:2,
+    why:"ESFR shall not be used with automatic heat or smoke vents unless the vents use a high-temperature-rated, standard-response operating mechanism. Separately, draft curtains shall not be used within ESFR systems.",
+    cite:"NFPA 13 (2019) §20.6.5.2, §20.6.5.3" },
+
+  { topic:"route",
+    q:"What is the maximum roof slope for ESFR sprinklers?",
+    opts:["1 in 12","2 in 12 (16.7 percent)","4 in 12","No limit if the sprinklers are listed"], a:1,
+    why:"ESFR shall be installed only where the roof or ceiling slope above the sprinklers does not exceed a pitch of 2 in 12 — a 16.7 percent slope. Chapters 20 through 25 generally assume the same limit.",
+    cite:"NFPA 13 (2019) §14.2.3, §20.6.1" },
+
+  { topic:"route",
+    q:"CMSA sprinklers protecting storage on solid shelf racks — permitted?",
+    opts:["Yes, without qualification","Only where the solid shelf racks are also protected by in-rack sprinklers per Ch. 25","Only for Class I and II","Never, under any condition"], a:1,
+    why:"§22.1.7 prohibits CMSA over solid shelf racks unless those racks are protected with in-rack sprinklers per Chapter 25. ESFR carries the same restriction at §23.1.4.1 and §23.6.1.2.",
+    cite:"NFPA 13 (2019) §22.1.7, §23.1.4.1" },
+
+  { topic:"route",
+    q:"Rack storage at 25 ft with CMSA. Which choice keeps the design ceiling-only?",
+    opts:["K-11.2 upright","K-16.8 upright","K-19.6 or K-25.2 pendent","Any K-factor, as long as the system is wet"], a:2,
+    why:"In Chapter 22's rack tables, K-11.2 and K-16.8 uprights hit cells marked 'in-rack sprinklers required' at 25 ft. K-19.6 and K-25.2 pendent stay ceiling-only up to 35 ft storage under a 40 ft ceiling. Across the whole chapter, K-11.2 and K-16.8 are always upright and K-19.6 and K-25.2 are always pendent.",
+    cite:"NFPA 13 (2019) Table 22.4, Table 22.5" },
+
+  { topic:"route",
+    q:"What is the ESFR design area?",
+    opts:["The most demanding 12 sprinklers, four on each of three branch lines","The most demanding 15 sprinklers, five on each of three branch lines","2000 ft² wet, 2600 ft² dry","1500 ft² for all arrangements"], a:0,
+    why:"The ESFR design area is the most hydraulically demanding area of 12 sprinklers — four sprinklers on each of three branch lines. Certain rubber tire rows use 20 sprinklers, five on each of four lines, with a 1600 ft² minimum operating area.",
+    cite:"NFPA 13 (2019) §23.6.3, Table 23.8 footnote c" },
+
+  { topic:"route",
+    q:"An ESFR design uses 12 ceiling sprinklers. What hose stream allowance and duration apply?",
+    opts:["250 gpm for 60 minutes","500 gpm for 90 minutes","500 gpm for 120 minutes","250 gpm for 120 minutes"], a:0,
+    why:"Up to 12 sprinklers: 250 gpm for 60 minutes. Over 12 to 15 it becomes 500 gpm for 90 minutes. Sprinklers added to the design area for obstructions do not count toward that sprinkler total.",
+    cite:"NFPA 13 (2019) Table 20.12.2.6" },
+
+  { topic:"route",
+    q:"Encapsulated Class IV in multiple-row racks. What happens to the CMDA ceiling density?",
+    opts:["No change","25 percent greater than nonencapsulated","50 percent greater than nonencapsulated","The design moves to Chapter 22"], a:2,
+    why:"For multiple-row racks, encapsulation increases the ceiling density 25 percent for Class I, II and III, and 50 percent for Class IV. For single- and double-row racks encapsulation is not a percentage at all — you switch to Figure 21.4.1.2(e).",
+    cite:"NFPA 13 (2019) §21.4.1.3.3, §21.4.1.3.4" },
+
+  { topic:"route",
+    q:"Encapsulated Class I palletized storage at 18 ft. What does Chapter 21 require?",
+    opts:["A 25 percent density increase","A 50 percent density increase","At least 0.46 gpm/ft² over 2000 ft², with K-11.2 or larger","It is not permitted at any height"], a:2,
+    why:"Encapsulated solid-piled and palletized storage over 15 ft up to 20 ft has explicit densities — 0.46 for Class I, 0.53 for Class II, 0.6 for Class III and IV, all over 2000 ft² — and requires K-11.2 or larger. The percentage penalties belong to multiple-row racks, not to palletized storage.",
+    cite:"NFPA 13 (2019) §21.2.3.2, §21.2.3.3" },
+
+  { topic:"route",
+    q:"Multiple adjustments to the area of operation apply to one design. How are they combined?",
+    opts:["Applied one after another, each on the running result","Compounded based on the area of operation originally selected","Only the largest one is applied","They are averaged"], a:1,
+    why:"Adjustments compound based on the area of operation ORIGINALLY selected — not cascaded onto each other. And the unsprinklered combustible concealed space rules of §20.7 are applied last, after all other modifications.",
+    cite:"NFPA 13 (2019) §20.13.1.1, §20.13.1.2" },
+
+  { topic:"inrack",
+    q:"One level of in-rack sprinklers is required and no figure shows the location. Where does it go?",
+    opts:["At the first tier level at or above half the highest expected storage height","At exactly half the storage height, regardless of tier","At the top tier","At the first tier above 12 ft"], a:0,
+    why:"One level goes at the first tier level at or above one-half the highest expected storage height. Two levels go at the first tier levels at or above one-third and two-thirds.",
+    cite:"NFPA 13 (2019) §25.4.4, §25.4.5" },
+
+  { topic:"inrack",
+    q:"Minimum vertical clear space between an in-rack sprinkler deflector and the top of the storage below it?",
+    opts:["3 in.","6 in.","12 in.","18 in."], a:1,
+    why:"6 in. minimum. There is one exception: single- and double-row racks storing Class I–IV up to and including 20 ft are permitted less than 6 in.",
+    cite:"NFPA 13 (2019) §25.4.2, §25.4.2.1" },
+
+  { topic:"inrack",
+    q:"Do in-rack sprinklers have to meet the Section 9.5 obstruction and clearance rules?",
+    opts:["Yes, in full","Yes, except for rack uprights","No — they are expressly exempted","Only where more than one level is installed"], a:2,
+    why:"§25.4.1 states in-rack sprinklers are not required to meet the obstruction criteria and clearance-from-storage requirements of Section 9.5. They live inside the rack; the ordinary obstruction geometry does not apply.",
+    cite:"NFPA 13 (2019) §25.4.1, §25.5.1.1" },
+
+  { topic:"inrack",
+    q:"Class I–III on open racks with a CMDA ceiling and more than one in-rack level. How many in-rack sprinklers go into the calculation?",
+    opts:["6","8","10, five on each of the top two levels","14, seven on each of the top two levels"], a:2,
+    why:"One level takes 6. More than one level takes 10, split five on each of the top two levels. Class IV and Group A plastics go to 8 and 14 respectively.",
+    cite:"NFPA 13 (2019) Table 25.12.2.1" },
+
+  { topic:"inrack",
+    q:"ESFR at the ceiling with in-rack sprinklers below. What must the in-rack sprinklers be?",
+    opts:["Standard response, high temperature, any K-factor","Quick response, ordinary temperature, K-8.0 or K-11.2","Quick response, intermediate temperature, K-5.6","Whatever the ESFR listing specifies"], a:1,
+    why:"Where ESFR protects open rack storage at ceiling level, in-racks must be quick-response, ordinary-temperature, K-8.0 or K-11.2. The general in-rack allowance is K-5.6, K-8.0 or K-11.2 — ESFR removes K-5.6.",
+    cite:"NFPA 13 (2019) §25.3.1, §25.3.2" },
+
+  { topic:"inrack",
+    q:"Maximum horizontal spacing of in-rack sprinklers where ESFR protects the ceiling?",
+    opts:["5 ft","8 ft","10 ft","12 ft"], a:0,
+    why:"5 ft with an ESFR ceiling. With CMSA it is 8 ft for Class I–IV up to 25 ft and 5 ft for plastics. Class IV and Group A plastics carry a 10 ft cap generally, rubber tires 8 ft.",
+    cite:"NFPA 13 (2019) §25.5.2.4, §25.5.2.3.1, §25.5.2.1.4" },
+
+  { topic:"inrack",
+    q:"How does in-rack demand combine with ceiling demand in the normal case?",
+    opts:["Added arithmetically","Hydraulically balanced together at the higher pressure at the point of connection","Only the larger of the two is used","The in-rack system is always calculated separately"], a:1,
+    why:"Ceiling and in-rack demands over the same protected area are hydraulically balanced together at the higher pressure requirement at their point of connection. Hose stream is then ADDED. The Section 25.8 independent options are the exception — those are not required to be balanced.",
+    cite:"NFPA 13 (2019) §25.12.1.4, §25.12.1.5, §25.8.1.1" },
+
+  { topic:"inrack",
+    q:"In-rack sprinklers are installed at every tier level, more than the minimum required. What credit does the ceiling design get?",
+    opts:["None","A 20 percent density reduction","A 40 percent density reduction","The ceiling system may be omitted"], a:2,
+    why:"More than one level but not every tier earns 20 percent. In-racks at each tier level earn 40 percent. But the floor still applies — never below 0.15 gpm/ft² after all adjustments.",
+    cite:"NFPA 13 (2019) §25.2.3.2.4.2, §25.2.3.2.4.3, §25.2.3.1.10.4" },
+
+  { topic:"inrack",
+    q:"Clearance to ceiling exceeds 20 ft on Class I–IV rack storage up to 25 ft with a CMDA ceiling. What is the supplemental remedy?",
+    opts:["Add one level of quick-response in-racks below the top tier at every flue space intersection","Increase the ceiling density 25 percent","Switch to ESFR","Reduce the aisle width"], a:0,
+    why:"Install one level of supplemental quick-response in-rack sprinklers directly below the top tier of storage and at every flue space intersection. The ceiling design is then based on the storage height that produces an acceptable clearance.",
+    cite:"NFPA 13 (2019) §25.9.5.1, §25.9.5.4" },
+
+  { topic:"inrack",
+    q:"What is the maximum floor area a single in-rack sprinkler system may protect?",
+    opts:["25,000 ft²","40,000 ft² of rack floor area including aisles","52,000 ft²","There is no limit for in-rack systems"], a:1,
+    why:"40,000 ft² of floor area occupied by racks, including aisles, regardless of the number of levels. Where in-racks are installed per Chapter 25, building steel needs no special protection.",
+    cite:"NFPA 13 (2019) §25.1.3.1, §25.1.4" },
+
+  { topic:"install",
+    q:"Maximum coverage area for a single ESFR sprinkler?",
+    opts:["64 ft²","100 ft²","130 ft²","144 ft²"], a:1,
+    why:"100 ft² maximum, 64 ft² minimum. A sprinkler moved up to 1 ft along a branch line to clear structure may reach 110 ft², provided the average of it and its neighbours stays at or below 100 ft².",
+    cite:"NFPA 13 (2019) §14.2.8.2.2, §14.2.8.3, §14.2.8.2.3" },
+
+  { topic:"install",
+    q:"An ESFR system under a 34 ft ceiling. What is the maximum spacing between sprinklers?",
+    opts:["12 ft — spacing does not change with ceiling height","10 ft","8 ft","14 ft"], a:1,
+    why:"Above a 30 ft ceiling the maximum spacing drops from 12 ft to 10 ft. The protection area stays 100 ft² in every row of the table, which is exactly why this gets missed — an area check alone will not catch it.",
+    cite:"NFPA 13 (2019) Table 14.2.8.2.1" },
+
+  { topic:"install",
+    q:"Minimum spacing between ESFR sprinklers?",
+    opts:["6 ft on center","8 ft on center","10 ft on center","4 in. from a wall is the only minimum"], a:1,
+    why:"8 ft on center minimum, the same as CMSA. Separately, sprinklers must be at least 4 in. from a wall, and no more than half the allowable spacing away from it.",
+    cite:"NFPA 13 (2019) §14.2.9.4, §14.2.9.2, §14.2.9.3" },
+
+  { topic:"install",
+    q:"Maximum coverage area for a CMSA sprinkler under combustible obstructed construction?",
+    opts:["80 ft²","100 ft²","130 ft²","150 ft²"], a:1,
+    why:"100 ft² with a 10 ft maximum spacing under combustible obstructed construction and for rack storage. The other construction types allow 130 ft² at 12 ft spacing. In no case may a CMSA sprinkler exceed 130 ft², and the minimum is 80 ft².",
+    cite:"NFPA 13 (2019) Table 13.2.5.2.1, §13.2.5.2.2, §13.2.5.3" },
+
+  { topic:"install",
+    q:"A round column 6 in. wide sits near a CMSA sprinkler. Under the pattern-development rule, how far away must the sprinkler be?",
+    opts:["At least 12 in.","At least three times the maximum obstruction dimension","At least 24 in.","Distance does not matter for columns"], a:1,
+    why:"For obstructions 8 in. or less in width — webs, chord members, pipe, columns, fixtures — the sprinkler must be at least three times the maximum obstruction dimension away, unless the positioning tables are met instead.",
+    cite:"NFPA 13 (2019) §13.2.8.2.1.3" },
+
+  { topic:"install",
+    q:"ESFR sprinklers near the bottom chord of a bar joist 10 in. wide. What is required?",
+    opts:["No requirement — bar joists are exempt","Position at least 1 ft horizontally from the nearest edge","Position at least 3 ft horizontally","Install a sprinkler in every joist channel"], a:1,
+    why:"ESFR sprinklers must be a minimum of 1 ft horizontally from the nearest edge of a bottom chord not exceeding 1 ft in width. That does not apply to upright sprinklers located over bottom chords 4 in. or less wide.",
+    cite:"NFPA 13 (2019) §14.2.11.3.2, §14.2.11.3.2.1" },
+
+  { topic:"install",
+    q:"Solid structural members 15 in. deep run across an ESFR-protected ceiling. What is required?",
+    opts:["Nothing — ESFR is permitted in obstructed construction without modification","ESFR sprinklers in each channel formed by the members","A 30 percent increase in design pressure","ESFR is prohibited"], a:1,
+    why:"ESFR is permitted in obstructed construction, but where the depth of the solid structural members exceeds 12 in., sprinklers must be installed in each channel formed by them. Branch lines may run across the beams, but sprinklers go in the bays, not under the beams.",
+    cite:"NFPA 13 (2019) §14.2.4, §14.2.4.1, §14.2.10.1.6" },
+
+  { topic:"install",
+    q:"Maximum deflector distance below the ceiling for a pendent K-25.2 ESFR sprinkler?",
+    opts:["8 in.","12 in.","14 in.","18 in."], a:3,
+    why:"K-22.4 and K-25.2 pendent get 18 in. maximum, 6 in. minimum. K-14.0 and K-16.8 pendent get 14 in. maximum. Uprights of K-14.0 and K-16.8 run 3 in. to 12 in. below the ceiling.",
+    cite:"NFPA 13 (2019) §14.2.10.1.3, §14.2.10.1.1, §14.2.10.1.4" },
+
+  { topic:"install",
+    q:"Where ESFR is installed adjacent to standard-response sprinklers, what separates them?",
+    opts:["Nothing is required","A noncombustible draft curtain at least 2 ft deep, with a 4 ft clear aisle centered below it","A solid fire barrier","A 10 ft clear space"], a:1,
+    why:"A noncombustible draft curtain at least 2 ft deep is required to separate the two areas, with a clear aisle of at least 4 ft centered below it. This is the exception to the general rule that draft curtains shall not be used within ESFR systems.",
+    cite:"NFPA 13 (2019) §14.2.5.1, §14.2.5.2, §20.6.5.3" }
+];
+
+var currentQ = null, answered = false, queue = [];
+
+function pickQuestion(){
+  /* spaced repetition, lightly: previously missed questions come back first */
+  if(store.missed && store.missed.length && Math.random() < 0.45){
+    var idx = store.missed[Math.floor(Math.random()*store.missed.length)];
+    if(QUESTIONS[idx]) return idx;
+  }
+  if(!queue.length){
+    queue = QUESTIONS.map(function(_,i){ return i; });
+    for(var i=queue.length-1;i>0;i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var t = queue[i]; queue[i]=queue[j]; queue[j]=t;
+    }
+  }
+  return queue.pop();
+}
+
+function nextQuestion(){
+  var idx = pickQuestion();
+  currentQ = idx;
+  answered = false;
+  var q = QUESTIONS[idx];
+  var wasMissed = store.missed.indexOf(idx) !== -1;
+
+  var h = '<div class="scenario">'
+    + '<div class="q-meta">' + esc(TOPIC_NAMES[q.topic] || q.topic).toUpperCase()
+    + (wasMissed ? ' &nbsp;·&nbsp; <span style="color:var(--redline)">RETURNING — you missed this before</span>' : '')
+    + '</div>'
+    + '<div class="q-text">' + esc(q.q) + '</div>'
+    + '<div class="opts">';
+  q.opts.forEach(function(o,i){
+    h += '<button class="opt" data-i="'+i+'"><span class="k">'+"ABCD"[i]+'</span><span>'+esc(o)+'</span></button>';
+  });
+  h += '</div><div id="qExplain"></div></div>';
+  $("drillHost").innerHTML = h;
+
+  Array.prototype.forEach.call(document.querySelectorAll("#drillHost .opt"), function(b){
+    b.addEventListener("click", function(){ answer(parseInt(b.getAttribute("data-i"),10)); });
+  });
+  $("dNext").textContent = "Skip";
+  renderScore();
+}
+
+function answer(i){
+  if(answered) return;
+  answered = true;
+  var q = QUESTIONS[currentQ];
+  var right = (i === q.a);
+
+  Array.prototype.forEach.call(document.querySelectorAll("#drillHost .opt"), function(b){
+    var bi = parseInt(b.getAttribute("data-i"),10);
+    b.disabled = true;
+    if(bi === q.a) b.classList.add("right");
+    else if(bi === i) b.classList.add("wrong");
+  });
+
+  store.seen++;
+  if(!store.topics[q.topic]) store.topics[q.topic] = {r:0,s:0};
+  store.topics[q.topic].s++;
+  if(right){
+    store.right++;
+    store.streak++;
+    store.topics[q.topic].r++;
+    if(store.streak > store.best) store.best = store.streak;
+    var mi = store.missed.indexOf(currentQ);
+    if(mi !== -1) store.missed.splice(mi,1);
+  }else{
+    store.streak = 0;
+    if(store.missed.indexOf(currentQ) === -1) store.missed.push(currentQ);
+  }
+  checkBadges();
+  logToday();
+  save();
+  renderScore();
+
+  $("qExplain").innerHTML =
+    '<div class="explain"><div class="ex-h">' + (right ? "Correct" : "Not quite") + '</div>'
+    + '<p style="margin-bottom:7px">' + esc(q.why) + '</p>'
+    + '<div style="font-size:.8rem"><span class="cite">' + esc(q.cite) + '</span></div></div>';
+  $("dNext").textContent = "Next question";
+}
+
+$("dNext").addEventListener("click", nextQuestion);
+$("dReset").addEventListener("click", function(){
+  if(!confirm("Reset your drill statistics? Mastery bars and badges will be cleared.")) return;
+  var log = store.log;
+  store = blank();
+  store.log = log;
+  save(); renderScore(); renderProgress(); nextQuestion();
+});
+
+function renderScore(){
+  $("dStreak").textContent = store.streak;
+  $("dBest").textContent   = store.best;
+  $("dRight").textContent  = store.right;
+  $("dSeen").textContent   = store.seen;
+}
+
+/* ============================================================
+   BADGES + PROGRESS
+   ============================================================ */
+var BADGES = [
+  {id:"first",   ico:"◉", name:"First Answer", test:function(){ return store.seen >= 1; }},
+  {id:"ten",     ico:"◈", name:"Ten Down",     test:function(){ return store.right >= 10; }},
+  {id:"streak5", ico:"▲", name:"Streak 5",     test:function(){ return store.best >= 5; }},
+  {id:"streak10",ico:"★", name:"Streak 10",    test:function(){ return store.best >= 10; }},
+  {id:"allTopics",ico:"◆",name:"All Topics",   test:function(){
+      var ok = true;
+      for(var t in store.topics){ if(store.topics.hasOwnProperty(t) && store.topics[t].r < 1) ok = false; }
+      return ok; }},
+  {id:"clean",   ico:"✦", name:"Nothing Missed",test:function(){ return store.seen >= 10 && store.missed.length === 0; }},
+  {id:"half",    ico:"◑", name:"Half the Bank", test:function(){ return store.right >= Math.floor(QUESTIONS.length/2); }},
+  {id:"return",  ico:"◐", name:"Came Back",    test:function(){ return (store.log||[]).length >= 2; }},
+  {id:"week",    ico:"⬢", name:"Five Days",    test:function(){ return (store.log||[]).length >= 5; }}
+];
+
+function checkBadges(){
+  BADGES.forEach(function(b){
+    if(store.badges.indexOf(b.id) === -1 && b.test()){
+      store.badges.push(b.id);
+      toast("Badge earned — " + b.name);
+    }
+  });
+}
+
+function toast(msg){
+  var t = document.createElement("div");
+  t.textContent = msg;
+  t.style.cssText = "position:fixed;left:50%;bottom:26px;transform:translateX(-50%);"
+    + "background:#16130F;color:#FCFAF6;font-family:var(--mono);font-size:.72rem;"
+    + "letter-spacing:.08em;text-transform:uppercase;padding:11px 18px;border:1.5px solid #D85A30;"
+    + "z-index:99;font-weight:700;box-shadow:0 3px 0 rgba(0,0,0,.18)";
+  document.body.appendChild(t);
+  setTimeout(function(){ t.style.transition="opacity .5s"; t.style.opacity="0"; }, 1900);
+  setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); }, 2500);
+}
+
+function logToday(){
+  var d = todayISO();
+  if(store.log.indexOf(d) === -1) store.log.push(d);
+  store.lastVisit = d;
+}
+
+var TOPIC_NAMES = {
+  commodity:"Commodity class", arrange:"Arrangement", heights:"Heights & clearance",
+  route:"Choosing a chapter", inrack:"In-rack", install:"Spacing & obstruction"
+};
+
+function renderProgress(){
+  var h = "";
+  for(var t in store.topics){
+    if(!store.topics.hasOwnProperty(t)) continue;
+    var o = store.topics[t];
+    var pct = o.s ? Math.round((o.r/o.s)*100) : 0;
+    var gold = o.s >= 3 && pct >= 80;
+    h += '<div class="m-row"><div class="m-name">'+esc(TOPIC_NAMES[t]||t)+'</div>'
+      +  '<div class="m-track"><div class="m-fill'+(gold?" gold":"")+'" style="width:'+pct+'%"></div></div>'
+      +  '<div class="m-pct">'+(o.s? pct+"%" : "—")+'</div></div>';
+  }
+  $("masteryHost").innerHTML = h;
+
+  $("badgeHost").innerHTML = BADGES.map(function(b){
+    var got = store.badges.indexOf(b.id) !== -1;
+    return '<div class="badge'+(got?" got":"")+'"><div class="b-ico">'+b.ico+'</div>'
+      + '<div class="b-n">'+esc(b.name)+'</div></div>';
+  }).join("");
+
+  var log = (store.log||[]).slice().sort();
+  var lh = "";
+  if(!log.length){
+    lh = '<p style="margin:0;font-size:.88rem">No sessions logged yet. Answer a drill question to start the log.</p>';
+  }else{
+    lh = '<div style="font-family:var(--mono);font-size:.76rem;line-height:2">';
+    log.slice(-14).forEach(function(d){
+      lh += '<div style="display:flex;justify-content:space-between;border-bottom:1px dotted var(--line)">'
+        +  '<span>'+esc(d)+'</span><span style="color:var(--ink-3)">studied</span></div>';
+    });
+    lh += '</div><p style="margin-top:9px;font-size:.85rem">'+log.length+' session'
+       +  (log.length===1?"":"s")+' logged.</p>';
+  }
+  $("logHost").innerHTML = lh;
+
+  var mh = "";
+  if(!store.missed.length){
+    mh = '<p style="margin:0;font-size:.88rem">Nothing outstanding. Every question you have missed has since been answered correctly.</p>';
+  }else{
+    mh = '<p style="font-size:.88rem">These come back at higher odds until you get them right:</p><ul class="tight">';
+    store.missed.slice(0,12).forEach(function(i){
+      if(QUESTIONS[i]) mh += '<li>'+esc(QUESTIONS[i].q)+'</li>';
+    });
+    mh += '</ul>';
+  }
+  $("missHost").innerHTML = mh;
+}
+
+/* boot */
+renderScore();
+renderProgress();
+</script>
+</body>
+</html>
