@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hazard Trainer — Classification &amp; System Limits | Fire System Mastery</title>
+<style>
+/* ============================================================
+   FSM HAZARD TRAINER  —  NFPA 13 (2019) Chapter 4
+   Design language matches NFPA13_Storage_Trainer.html and
+   NFPA13_Hydraulic_Trainer.html exactly: apprentice training
+   manual, drafted by hand. Colour used like a red pencil —
+   sparingly, and only to mean something.
+   ============================================================ */
+
+:root{
+  --paper:#FCFAF6; --paper-tint:#F4F0E7; --paper-deep:#EBE5D8;
+  --ink:#16130F; --ink-2:#4A443C; --ink-3:#8B8275;
+  --line:#D6CEC0; --line-hard:#16130F;
+  --redline:#D85A30; --blueprint:#185FA5; --pass:#1D9E75; --fail:#B3341F;
+  --mono: ui-monospace,"SFMono-Regular","Cascadia Mono","Consolas",monospace;
+  --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--sans);color:var(--ink);background:var(--paper);
+  background-image:linear-gradient(var(--paper-tint) 1px,transparent 1px),
+                   linear-gradient(90deg,var(--paper-tint) 1px,transparent 1px);
+  background-size:24px 24px;line-height:1.55;-webkit-font-smoothing:antialiased;
+}
+.sheet{max-width:940px;margin:0 auto;background:var(--paper);
+  border-left:1px solid var(--line);border-right:1px solid var(--line);min-height:100vh}
+@media(max-width:960px){.sheet{border:none}}
+
+.masthead{border-bottom:2px solid var(--line-hard);padding:20px 22px 0}
+.mast-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.mast-title{font-size:1.45rem;font-weight:800;letter-spacing:-.02em;line-height:1.1;text-transform:uppercase}
+.mast-sub{font-family:var(--mono);font-size:.7rem;color:var(--ink-3);
+  letter-spacing:.09em;text-transform:uppercase;margin-top:5px}
+.mast-stamp{border:1.5px solid var(--ink);padding:5px 9px;text-align:center;flex-shrink:0;transform:rotate(-1.5deg)}
+.mast-stamp b{display:block;font-size:.66rem;letter-spacing:.13em;font-weight:800}
+.mast-stamp span{font-family:var(--mono);font-size:.6rem;color:var(--ink-2)}
+
+.tabs{display:flex;gap:2px;margin-top:16px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
+  padding:9px 13px;border:1px solid var(--line);border-bottom:none;background:var(--paper-tint);
+  color:var(--ink-2);cursor:pointer;white-space:nowrap;position:relative;top:1px;font-weight:700}
+.tab:hover{background:var(--paper-deep);color:var(--ink)}
+.tab.on{background:var(--paper);color:var(--ink);border-color:var(--line-hard);
+  border-bottom:2px solid var(--paper);box-shadow:0 -2px 0 var(--redline) inset}
+.tab .tnum{color:var(--ink-3);margin-right:5px}
+.tab.on .tnum{color:var(--redline)}
+
+.panel{display:none;padding:24px 22px 60px}
+.panel.on{display:block}
+@media(max-width:600px){.panel{padding:18px 14px 60px}}
+
+.eyebrow{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--redline);font-weight:700;margin-bottom:5px}
+h2.head{font-size:1.3rem;font-weight:800;letter-spacing:-.015em;margin-bottom:8px;line-height:1.2}
+h3.sub{font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;
+  margin:26px 0 9px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+p{margin-bottom:11px;font-size:.93rem;color:var(--ink-2)}
+p strong{color:var(--ink);font-weight:700}
+.lead{font-size:1rem;color:var(--ink);max-width:62ch}
+ul.tight{margin:0 0 12px 18px;font-size:.92rem;color:var(--ink-2)}
+ul.tight li{margin-bottom:5px}
+
+.plain{border-left:3px solid var(--ink);background:var(--paper-tint);padding:12px 15px;margin:14px 0;font-size:.93rem}
+.plain .pl-tag{font-family:var(--mono);font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:700;display:block;margin-bottom:4px}
+.plain p:last-child{margin-bottom:0}
+.cite{font-family:var(--mono);font-size:.74rem;color:var(--blueprint);
+  border-bottom:1px dotted var(--blueprint);white-space:nowrap;font-weight:600}
+.redline{border:1px solid var(--redline);border-left-width:3px;padding:11px 14px;margin:14px 0;
+  background:#FFF8F4;font-size:.9rem;color:#7A2E12}
+.redline b{color:var(--redline)}
+.verify{border:1px dashed var(--ink-3);padding:11px 14px;margin:14px 0;
+  background:var(--paper-tint);font-size:.88rem;color:var(--ink-2)}
+.verify b{color:var(--ink);font-weight:800}
+
+.bench{border:1.5px solid var(--line-hard);background:var(--paper);margin:18px 0 22px}
+.bench-head{display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:9px 13px;border-bottom:1px solid var(--line-hard);background:var(--paper-tint)}
+.bench-head h4{font-family:var(--mono);font-size:.68rem;letter-spacing:.11em;text-transform:uppercase;font-weight:800}
+.bench-head .hint{font-family:var(--mono);font-size:.62rem;color:var(--ink-3);letter-spacing:.05em}
+.bench-body{padding:14px 13px}
+.bench-figure{background:#fff;border-bottom:1px solid var(--line);padding:6px}
+svg{display:block;width:100%;height:auto;touch-action:manipulation}
+
+.ctrl{margin-bottom:13px}
+.ctrl-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;gap:8px}
+.ctrl label{font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-2);font-weight:700}
+.ctrl .val{font-family:var(--mono);font-size:.9rem;font-weight:700;color:var(--ink)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:26px;background:transparent;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--ink)}
+input[type=range]::-moz-range-track{height:2px;background:var(--ink)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;
+  margin-top:-9px;background:var(--paper);border:2px solid var(--ink);border-radius:50%}
+input[type=range]::-webkit-slider-thumb:active{background:var(--redline);border-color:var(--redline)}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;background:var(--paper);border:2px solid var(--ink);border-radius:50%}
+input[type=checkbox]{width:20px;height:20px;accent-color:#D85A30;flex-shrink:0}
+select,input[type=number],input[type=text],input[type=date]{width:100%;padding:8px 10px;border:1px solid var(--ink);
+  background:#fff;font-family:var(--mono);font-size:.88rem;color:var(--ink);border-radius:0}
+select:focus,input:focus{outline:2px solid var(--redline);outline-offset:-2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.grid2{grid-template-columns:1fr}}
+.chk-row{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.chk-row label{font-family:var(--mono);font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--ink-2);font-weight:700;cursor:pointer}
+
+.readout{border-top:1px solid var(--line-hard);background:var(--paper-tint);padding:12px 13px}
+.ro-row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;gap:10px}
+.ro-row + .ro-row{border-top:1px dotted var(--line)}
+.ro-k{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.ro-v{font-family:var(--mono);font-size:.95rem;font-weight:700;text-align:right}
+.ro-v.big{font-size:1.15rem}
+.verdict{margin-top:10px;padding:9px 12px;font-family:var(--mono);font-size:.76rem;
+  font-weight:700;letter-spacing:.05em;text-transform:uppercase;border:1.5px solid}
+.verdict.ok{color:var(--pass);border-color:var(--pass);background:#F1FAF6}
+.verdict.no{color:var(--fail);border-color:var(--fail);background:#FDF3F1}
+.verdict.warn{color:#8A5A00;border-color:#B98A2E;background:#FFFBF0}
+
+.math{font-family:var(--mono);font-size:.8rem;line-height:1.85;background:#fff;
+  border:1px solid var(--line);padding:11px 13px;margin:10px 0;overflow-x:auto;white-space:pre-wrap}
+.math .lbl{color:var(--ink-3)}
+.math .hi{color:var(--redline);font-weight:700}
+.math .ok{color:var(--pass);font-weight:700}
+.coach{border-left:3px solid var(--redline);background:#FFF8F4;padding:11px 14px;
+  margin-top:11px;font-size:.89rem;color:#7A2E12}
+.coach b{color:var(--redline)}
+
+.btn{font-family:var(--mono);font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;font-weight:800;
+  padding:11px 16px;border:1.5px solid var(--ink);background:var(--paper);color:var(--ink);cursor:pointer;border-radius:0}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn.primary:hover{background:var(--redline);border-color:var(--redline)}
+.btn-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+
+.scenario{border:1.5px solid var(--line-hard);background:#fff;padding:16px 15px;margin-bottom:13px}
+.scenario .q-meta{font-family:var(--mono);font-size:.62rem;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:8px}
+.scenario .q-text{font-size:1rem;color:var(--ink);line-height:1.5}
+.opts{display:flex;flex-direction:column;gap:7px;margin-top:13px}
+.opt{text-align:left;padding:12px 14px;border:1.5px solid var(--line);background:#fff;cursor:pointer;
+  font-size:.92rem;color:var(--ink);display:flex;gap:10px;align-items:flex-start}
+.opt:hover:not(:disabled){border-color:var(--ink);background:var(--paper-tint)}
+.opt .k{font-family:var(--mono);font-weight:800;font-size:.78rem;color:var(--ink-3);flex-shrink:0;
+  border:1px solid var(--line);width:22px;height:22px;display:flex;align-items:center;justify-content:center;line-height:1}
+.opt.right{border-color:var(--pass);background:#F1FAF6}
+.opt.right .k{border-color:var(--pass);color:var(--pass)}
+.opt.wrong{border-color:var(--fail);background:#FDF3F1}
+.opt.wrong .k{border-color:var(--fail);color:var(--fail)}
+.opt:disabled{cursor:default}
+.explain{margin-top:13px;padding:13px 15px;border-left:3px solid var(--ink);background:var(--paper-tint);font-size:.9rem}
+.explain .ex-h{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;
+  font-weight:800;margin-bottom:6px}
+
+.scorebar{display:flex;border:1.5px solid var(--line-hard);margin-bottom:16px;background:#fff}
+.score-cell{flex:1;padding:10px 8px;text-align:center;border-right:1px solid var(--line)}
+.score-cell:last-child{border-right:none}
+.score-cell .sc-k{font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.score-cell .sc-v{font-family:var(--mono);font-size:1.25rem;font-weight:800;line-height:1.3}
+.score-cell .sc-v.flame{color:var(--redline)}
+.mastery{margin-top:8px}
+.m-row{display:flex;align-items:center;gap:10px;padding:6px 0}
+.m-name{font-family:var(--mono);font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--ink-2);width:132px;flex-shrink:0}
+@media(max-width:520px){.m-name{width:96px;font-size:.6rem}}
+.m-track{flex:1;height:9px;background:var(--paper-deep);border:1px solid var(--line)}
+.m-fill{height:100%;background:var(--ink);transition:width .45s cubic-bezier(.2,.8,.3,1)}
+.m-fill.gold{background:var(--redline)}
+.m-pct{font-family:var(--mono);font-size:.72rem;font-weight:700;width:38px;text-align:right}
+.badges{display:flex;flex-wrap:wrap;gap:9px;margin-top:10px}
+.badge{border:1.5px solid var(--line);padding:8px 11px;text-align:center;min-width:84px;opacity:.32;filter:grayscale(1)}
+.badge.got{opacity:1;filter:none;border-color:var(--ink);transform:rotate(-1deg)}
+.badge .b-ico{font-size:1.1rem;line-height:1}
+.badge .b-n{font-family:var(--mono);font-size:.55rem;letter-spacing:.08em;text-transform:uppercase;font-weight:800;margin-top:4px}
+
+table.ref{width:100%;border-collapse:collapse;font-size:.84rem;margin:12px 0}
+table.ref th{font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;
+  text-align:left;padding:7px 8px;border-bottom:1.5px solid var(--line-hard);color:var(--ink-2)}
+table.ref td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+table.ref tr:last-child td{border-bottom:none}
+table.ref td.n{font-family:var(--mono);font-weight:700;white-space:nowrap}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);background:#fff;padding:0 10px}
+
+.gloss dt{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;
+  font-weight:800;color:var(--ink);margin-top:12px}
+.gloss dd{font-size:.92rem;color:var(--ink-2);margin-top:2px}
+
+.foot{border-top:1px solid var(--line);margin-top:30px;padding:14px 22px 30px;
+  font-family:var(--mono);font-size:.62rem;color:var(--ink-3);letter-spacing:.05em;
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.foot a{color:var(--blueprint);text-decoration:none;border-bottom:1px dotted var(--blueprint)}
+
+/* SVG drafting conventions */
+.obj-line{stroke:var(--ink);stroke-width:2;fill:none}
+.thin-line{stroke:var(--ink);stroke-width:1;fill:none}
+.dim-line{stroke:var(--redline);stroke-width:1;fill:none}
+.ext-line{stroke:var(--ink-3);stroke-width:.75;fill:none;stroke-dasharray:3 2}
+.dim-txt{font-family:var(--mono);font-size:11px;fill:var(--redline);font-weight:700}
+.obj-txt{font-family:var(--sans);font-size:11px;fill:var(--ink);font-weight:700}
+.note-txt{font-family:var(--mono);font-size:10px;fill:var(--ink-3)}
+@media(max-width:600px){
+  .dim-txt{font-size:19px}
+  .obj-txt{font-size:18px}
+  .note-txt{font-size:16px}
+}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header class="masthead">
+    <div class="mast-row">
+      <div>
+        <div class="mast-title">Hazard Trainer</div>
+        <div class="mast-sub">NFPA 13 · 2019 Edition · Chapter 4 · Fire System Mastery</div>
+      </div>
+      <div class="mast-stamp"><b>VERIFIED</b><span>vs 13-19</span></div>
+    </div>
+    <nav class="tabs" id="tabs">
+      <div class="tab on" data-p="learn"><span class="tnum">00</span>Start Here</div>
+      <div class="tab" data-p="hazard"><span class="tnum">01</span>Classify</div>
+      <div class="tab" data-p="limits"><span class="tnum">02</span>Area Limits</div>
+      <div class="tab" data-p="supply"><span class="tnum">03</span>Water Supply</div>
+      <div class="tab" data-p="drill"><span class="tnum">04</span>Drill</div>
+      <div class="tab" data-p="progress"><span class="tnum">05</span>Progress</div>
+    </nav>
+  </header>
+
+  <!-- ============ 00 START HERE ============ -->
+  <section class="panel on" id="p-learn">
+    <div class="eyebrow">Start Here</div>
+    <h2 class="head">Chapter 4 decides what everything else costs</h2>
+    <p class="lead">Before a single pipe is sized, Chapter 4 answers three questions: how
+    hazardous is this space, how much of the building can one riser cover, and is the water
+    supply data good enough to design against. Get the first one wrong and every calculation
+    downstream is wrong with it.</p>
+
+    <div class="plain">
+      <span class="pl-tag">Explain it like I'm ten</span>
+      <p>Think of it as sorting rooms into five buckets, from "not much here that burns" to
+      "this room is full of things that burn fast and hide from water." The bucket you pick
+      decides how hard it has to rain and over how big an area. Pick the wrong bucket and you
+      either waste the customer's money or you under-protect the building.</p>
+    </div>
+
+    <div class="redline">
+      <b>The biggest thing most study guides get wrong.</b> Everybody memorises "Light Hazard =
+      churches, schools, offices; Ordinary 2 = machine shops, woodworking." Those occupancy
+      lists are <b>not in the mandatory text</b> of the 2019 edition. §4.3.2 through §4.3.6 are
+      short <em>criteria</em> — quantity, combustibility, stockpile height, and a few specific
+      triggers. The familiar lists live in the <b>annex</b> at A.4.3.2–A.4.3.6, which is
+      explanatory, not enforceable. Learn the criteria; use the lists as examples only.
+    </div>
+
+    <h3 class="sub">The five classifications, as the standard actually writes them</h3>
+    <div class="tbl-wrap">
+    <table class="ref">
+      <tr><th>Class</th><th>Mandatory criteria</th><th>Section</th></tr>
+      <tr><td class="n">Light</td><td><strong>Low</strong> quantity <em>and</em> <strong>low</strong> combustibility</td><td class="n">§4.3.2</td></tr>
+      <tr><td class="n">OH1</td><td><strong>Moderate</strong> quantity, <strong>low</strong> combustibility · stockpiles not over <strong>8 ft</strong></td><td class="n">§4.3.3</td></tr>
+      <tr><td class="n">OH2</td><td><strong>Moderate to high</strong> quantity <em>and</em> combustibility · stockpiles not over <strong>12 ft</strong></td><td class="n">§4.3.4</td></tr>
+      <tr><td class="n">EH1</td><td><strong>Very high</strong> quantity and combustibility · <em>or</em> dust, lint or similar creating rapidly developing fires</td><td class="n">§4.3.5</td></tr>
+      <tr><td class="n">EH2</td><td>Very high quantity and combustibility · <em>or</em> substantial combustible/flammable <strong>liquids</strong> · <em>or</em> extensive <strong>shielding</strong></td><td class="n">§4.3.6</td></tr>
+    </table>
+    </div>
+
+    <div class="plain">
+      <span class="pl-tag">The pattern worth seeing</span>
+      <p>Light → OH1 → OH2 is a <strong>quantity and combustibility ramp</strong> with two
+      height anchors, 8 ft and 12 ft. But EH1 and EH2 describe quantity and combustibility in
+      <em>identical</em> words. What separates them is the extra trigger:
+      <strong>EH1 is about fire that spreads fast</strong> (dust, lint), and
+      <strong>EH2 is about fire you cannot reach</strong> — flammable liquids, or shielding
+      that keeps water off the burning material.</p>
+    </div>
+
+    <h3 class="sub">What Chapter 4 covers, section by section</h3>
+    <div class="tbl-wrap">
+    <table class="ref">
+      <tr><th>§</th><th>Title</th><th>The one thing to remember</th></tr>
+      <tr><td class="n">4.1</td><td>Level of Protection</td><td>Sprinkler <strong>all</strong> areas unless a specific section permits omission</td></tr>
+      <tr><td class="n">4.2</td><td>Owner's Certificate</td><td>Owner gives it to the installer <strong>before</strong> layout begins — 4 required items</td></tr>
+      <tr><td class="n">4.3</td><td>Classification of Hazard</td><td>Five criteria-based classes; lists are annex material</td></tr>
+      <tr><td class="n">4.4</td><td><strong>Hose Connections</strong></td><td>One sentence: not required for miscellaneous storage</td></tr>
+      <tr><td class="n">4.5</td><td>System Protection Area Limitations</td><td>52,000 ft² LH/OH · 40,000 ft² EH and storage — <strong>per floor, per riser</strong></td></tr>
+      <tr><td class="n">4.6</td><td>Water Supply Information</td><td>Flow test <strong>within 12 months</strong> of working plan submittal</td></tr>
+      <tr><td class="n">4.7</td><td>Additives</td><td>Leak-stopping chemicals are <strong>prohibited</strong></td></tr>
+      <tr><td class="n">4.8</td><td>Air, Nitrogen or Other Gas</td><td>Wherever air is allowed, nitrogen or approved gas is too</td></tr>
+      <tr><td class="n">4.9</td><td>Support of Nonsprinkler Components</td><td>Don't hang other trades off your pipe unless expressly permitted</td></tr>
+      <tr><td class="n">4.10</td><td>Noncombustible / Limited-Combustible</td><td>Limited-combustible ≤ <strong>3500 Btu/lb</strong></td></tr>
+    </table>
+    </div>
+
+    <div class="verify">
+      <b>A correction carried over from the old course deck.</b> The 61-slide mastery course
+      labels §4.4 as "Working Plans." In the 2019 edition <b>§4.4 is Hose Connections</b>, and
+      it contains a single sentence. Working plans are Chapter 27. If you learned that slide,
+      unlearn the section number.
+    </div>
+
+    <h3 class="sub">Words that mean something specific</h3>
+    <dl class="gloss" id="glossHost"></dl>
+  </section>
+
+  <!-- ============ 01 CLASSIFY ============ -->
+  <section class="panel" id="p-hazard">
+    <div class="eyebrow">Workbench 01</div>
+    <h2 class="head">Hazard classifier</h2>
+    <p class="lead">Set what is actually in the space. The classifier applies only the
+    mandatory criteria from §4.3.2–§4.3.6 and tells you <em>which</em> criterion decided it —
+    because on a real job that is the sentence you have to defend.</p>
+
+    <div class="bench">
+      <div class="bench-head">
+        <h4>Occupancy Hazard Classifier</h4>
+        <span class="hint">§4.3.2 – §4.3.6</span>
+      </div>
+      <div class="bench-body">
+        <div class="grid2">
+          <div class="ctrl">
+            <div class="ctrl-top"><label for="hzQty">Quantity of contents</label></div>
+            <select id="hzQty">
+              <option value="1">Low</option>
+              <option value="2" selected>Moderate</option>
+              <option value="3">Moderate to high</option>
+              <option value="4">Very high</option>
+            </select>
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-top"><label for="hzComb">Combustibility of contents</label></div>
+            <select id="hzComb">
+              <option value="1">Low</option>
+              <option value="2" selected>Moderate</option>
+              <option value="3">High</option>
+              <option value="4">Very high</option>
+            </select>
+          </div>
+        </div>
+        <div class="ctrl">
+          <div class="ctrl-top"><label for="hzPile">Stockpile height</label><span class="val" id="hzPileVal">6.0 ft</span></div>
+          <input type="range" id="hzPile" min="0" max="20" step="0.5" value="6">
+        </div>
+        <div class="chk-row">
+          <input type="checkbox" id="hzDust">
+          <label for="hzDust">Dust, lint or similar — rapidly developing fire</label>
+        </div>
+        <div class="chk-row">
+          <input type="checkbox" id="hzLiquid">
+          <label for="hzLiquid">Substantial combustible or flammable liquids</label>
+        </div>
+        <div class="chk-row">
+          <input type="checkbox" id="hzShield">
+          <label for="hzShield">Extensive shielding of combustibles</label>
+        </div>
+        <div class="math" id="hzMath"></div>
+        <div class="coach" id="hzCoach" style="display:none"></div>
+      </div>
+      <div class="readout">
+        <div class="ro-row"><span class="ro-k">Deciding criterion</span><span class="ro-v" id="hzWhy">—</span></div>
+        <div class="ro-row"><span class="ro-k">Section</span><span class="ro-v" id="hzCite">—</span></div>
+        <div class="ro-row"><span class="ro-k">Classification</span><span class="ro-v big" id="hzOut">—</span></div>
+        <div class="verdict ok" id="hzVerdict">—</div>
+      </div>
+    </div>
+
+    <div class="redline">
+      <b>Storage is a different road.</b> If the arrangement falls outside the miscellaneous
+      and low-piled envelope of §4.3.1.5–§4.3.1.8, <span class="cite">§4.3.7</span> sends you
+      out of Chapter 4 entirely and into <b>Chapters 20–25</b>. Note how it is written — as an
+      <em>exclusion</em>, not a height. There is no height number in §4.3.7 itself.
+    </div>
+
+    <h3 class="sub">Miscellaneous and low-piled storage — the numbers</h3>
+    <div class="tbl-wrap">
+    <table class="ref">
+      <tr><th>Rule</th><th>Value</th><th>Section</th></tr>
+      <tr><td>Share of building</td><td class="n">≤ 10% <em>or</em> 4000 ft² — <strong>whichever is greater</strong></td><td class="n">§4.3.1.4.1</td></tr>
+      <tr><td>Any one pile or area</td><td class="n">≤ 1000 ft²</td><td class="n">§4.3.1.4.2</td></tr>
+      <tr><td>Separation from other storage</td><td class="n">≥ 25 ft</td><td class="n">§4.3.1.4.3</td></tr>
+      <tr><td>Low-piled, Class I–IV on solid shelf racks</td><td class="n">≤ 12 ft → in-racks per §25.6.1</td><td class="n">§4.3.1.5.1</td></tr>
+      <tr><td>Low-piled, Group A plastics on solid shelf racks</td><td class="n">≤ 5 ft → in-racks per §25.6.1</td><td class="n">§4.3.1.5.2</td></tr>
+      <tr><td>Miscellaneous tire storage</td><td class="n">≤ 2000 ft²; on-tread piles ≤ 25 ft in the direction of the wheel holes</td><td class="n">§4.3.1.6</td></tr>
+      <tr><td>Maximum design area</td><td class="n">≤ 3000 ft²</td><td class="n">§4.3.1.7.2</td></tr>
+    </table>
+    </div>
+    <div class="plain">
+      <span class="pl-tag">Two different 25 fts</span>
+      <p>§4.3.1.4.3's 25 ft is a <strong>separation between piles</strong>. §4.3.1.6.2's 25 ft
+      is a <strong>pile dimension measured along the axis of the wheel holes</strong> for
+      on-tread tires. Same number, unrelated rules — a favourite distractor.</p>
+    </div>
+
+    <div class="verify">
+      <b>Worth knowing, easy to miss.</b> <span class="cite">§4.3.9</span> — where K-11.2 or
+      larger sprinklers are used with the EH1 or EH2 curves, the design area may be reduced by
+      <b>25 percent, but not below 2000 ft²</b>, and explicitly <b>regardless of temperature
+      rating</b>. That last clause matters: this is not the old high-temperature reduction.
+    </div>
+  </section>
+
+  <!-- ============ 02 AREA LIMITS ============ -->
+  <section class="panel" id="p-limits">
+    <div class="eyebrow">Workbench 02</div>
+    <h2 class="head">How much can one riser cover</h2>
+    <p class="lead">§4.5 is a <strong>per floor, per riser</strong> limit — not a whole-building
+    limit. Getting this wrong is how a job ends up needing a second riser after the pipe is
+    already routed.</p>
+
+    <div class="bench">
+      <div class="bench-head">
+        <h4>System Protection Area</h4>
+        <span class="hint">§4.5.1 – §4.5.3</span>
+      </div>
+      <div class="bench-figure">
+        <svg id="limSvg" viewBox="0 0 640 250" role="img" aria-label="Floor area against the system protection area limit"></svg>
+      </div>
+      <div class="bench-body">
+        <div class="grid2">
+          <div class="ctrl">
+            <div class="ctrl-top"><label for="limHaz">Hazard on this system</label></div>
+            <select id="limHaz">
+              <option value="lh">Light hazard</option>
+              <option value="oh" selected>Ordinary hazard</option>
+              <option value="eh">Extra hazard (hydraulically calculated)</option>
+              <option value="hp">High-piled storage</option>
+              <option value="ir">In-rack storage</option>
+            </select>
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-top"><label for="limArea">Floor area on this riser</label><span class="val" id="limAreaVal">40,000 ft²</span></div>
+            <input type="range" id="limArea" min="5000" max="70000" step="1000" value="40000">
+          </div>
+        </div>
+        <div class="chk-row">
+          <input type="checkbox" id="limMixed">
+          <label for="limMixed">System also covers light or ordinary hazard areas</label>
+        </div>
+        <div class="ctrl" id="limMixWrap" style="display:none">
+          <div class="ctrl-top"><label for="limMixArea">Of that, the extra-hazard / storage portion</label><span class="val" id="limMixVal">20,000 ft²</span></div>
+          <input type="range" id="limMixArea" min="1000" max="60000" step="1000" value="20000">
+        </div>
+        <div class="chk-row">
+          <input type="checkbox" id="limMezz">
+          <label for="limMezz">Building has a mezzanine</label>
+        </div>
+        <div class="ctrl" id="limMezzWrap" style="display:none">
+          <div class="ctrl-top"><label for="limMezzCase">Mezzanine situation</label></div>
+          <select id="limMezzCase">
+            <option value="one">Only one sprinkler system in the building</option>
+            <option value="inside">More than one system — mezzanine entirely inside the same system boundary</option>
+            <option value="outside">More than one system — part of the mezzanine is outside that boundary</option>
+          </select>
+        </div>
+        <div class="ctrl" id="limMezzAreaWrap" style="display:none">
+          <div class="ctrl-top"><label for="limMezzArea">Mezzanine area outside the boundary</label><span class="val" id="limMezzAreaVal">3,000 ft²</span></div>
+          <input type="range" id="limMezzArea" min="0" max="15000" step="500" value="3000">
+        </div>
+        <div class="math" id="limMath"></div>
+        <div class="coach" id="limCoach" style="display:none"></div>
+      </div>
+      <div class="readout">
+        <div class="ro-row"><span class="ro-k">Limit for this hazard</span><span class="ro-v" id="limMax">—</span></div>
+        <div class="ro-row"><span class="ro-k">Area counted</span><span class="ro-v" id="limCounted">—</span></div>
+        <div class="ro-row"><span class="ro-k">Headroom</span><span class="ro-v big" id="limHead">—</span></div>
+        <div class="verdict ok" id="limVerdict">—</div>
+      </div>
+    </div>
+
+    <div class="tbl-wrap">
+    <table class="ref">
+      <tr><th>Hazard</th><th>Max floor area, one floor, one riser</th><th>Section</th></tr>
+      <tr><td>Light hazard</td><td class="n">52,000 ft²</td><td class="n">§4.5.1(1)</td></tr>
+      <tr><td>Ordinary hazard</td><td class="n">52,000 ft²</td><td class="n">§4.5.1(2)</td></tr>
+      <tr><td>Extra hazard — hydraulically calculated</td><td class="n">40,000 ft²</td><td class="n">§4.5.1(3)</td></tr>
+      <tr><td>High-piled storage (per §3.3.95)</td><td class="n">40,000 ft²</td><td class="n">§4.5.1(4)</td></tr>
+      <tr><td>In-rack storage</td><td class="n">40,000 ft²</td><td class="n">§4.5.1(5)</td></tr>
+    </table>
+    </div>
+
+    <div class="verify">
+      <b>Do not answer 25,000 ft² from memory.</b> §4.5.1(3) gives only the
+      <em>hydraulically calculated</em> extra-hazard figure. There is no pipe-schedule
+      extra-hazard entry anywhere in §4.5.1 as printed. If a question offers 25,000 ft², it is
+      not supported by this section — check the pipe schedule provisions before relying on it.
+    </div>
+
+    <h3 class="sub">Mezzanines — §4.5.2</h3>
+    <ul class="tight">
+      <li><strong>One system in the building</strong> → mezzanine area is <strong>not counted</strong> <span class="cite">§4.5.2.1</span></li>
+      <li><strong>Several systems, mezzanine entirely inside the same boundary</strong> as the sprinklers above it → <strong>not counted</strong> <span class="cite">§4.5.2.2</span></li>
+      <li><strong>Any part outside that boundary</strong> → that part is <strong>added</strong> to the system supplying it, and the total must still meet §4.5.1 <span class="cite">§4.5.2.3</span></li>
+    </ul>
+
+    <h3 class="sub">Two more that catch people</h3>
+    <ul class="tight">
+      <li>An in-rack system's area includes <strong>all the floor occupied by racks, aisles included</strong>, whatever the number of levels <span class="cite">§4.5.4</span></li>
+      <li>Detached buildings need <strong>separate systems regardless of separation distance</strong>, unless the AHJ accepts supply from an adjacent building <span class="cite">§4.5.6.1, §4.5.6.2</span></li>
+    </ul>
+  </section>
+
+  <!-- ============ 03 WATER SUPPLY ============ -->
+  <section class="panel" id="p-supply">
+    <div class="eyebrow">Workbench 03</div>
+    <h2 class="head">Is your flow test still good?</h2>
+    <p class="lead">One rule ends more designs than any other in Chapter 4: the test has to be
+    recent, and recent is measured to <em>working plan submittal</em> — not to bid day, not to
+    the day you started drawing.</p>
+
+    <div class="bench">
+      <div class="bench-head">
+        <h4>Flow Test Currency</h4>
+        <span class="hint">§4.6.1.1</span>
+      </div>
+      <div class="bench-body">
+        <div class="grid2">
+          <div class="ctrl">
+            <div class="ctrl-top"><label for="wsTest">Flow test date</label></div>
+            <input type="date" id="wsTest">
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-top"><label for="wsPlan">Working plan submittal</label></div>
+            <input type="date" id="wsPlan">
+          </div>
+        </div>
+        <div class="math" id="wsMath"></div>
+        <div class="coach" id="wsCoach" style="display:none"></div>
+      </div>
+      <div class="readout">
+        <div class="ro-row"><span class="ro-k">Age at submittal</span><span class="ro-v" id="wsAge">—</span></div>
+        <div class="ro-row"><span class="ro-k">Expires</span><span class="ro-v" id="wsExp">—</span></div>
+        <div class="verdict ok" id="wsVerdict">—</div>
+      </div>
+    </div>
+
+    <h3 class="sub">The nine items §4.6.1 requires</h3>
+    <p>Tick them off against what the test report actually gives you. Missing any one of these
+    is a hole in the design basis.</p>
+    <div class="bench">
+      <div class="bench-head"><h4>Water Supply Capacity Information</h4><span class="hint">§4.6.1</span></div>
+      <div class="bench-body"><div id="wsList"></div>
+        <div class="verdict ok" id="wsListVerdict">0 OF 9 CONFIRMED</div>
+      </div>
+    </div>
+
+    <h3 class="sub">The Owner's Certificate — §4.2</h3>
+    <p>This is the document that should exist <strong>before</strong> you lay out anything. The
+    owner or their agent gives it to the installer, and it carries four things:</p>
+    <ul class="tight">
+      <li>Intended use of the building, the materials in it, and the <strong>maximum height of any storage</strong></li>
+      <li>A preliminary plan plus the design concepts needed to lay out the system</li>
+      <li>Water supply information as identified in <span class="cite">§5.2.2</span></li>
+      <li>Any special knowledge of the water supply, including conditions that might cause corrosion — <strong>including MIC</strong></li>
+    </ul>
+    <div class="plain">
+      <span class="pl-tag">Why it matters commercially</span>
+      <p>Items 1 and 2 fix your hazard classification and design basis. Item 3 fixes the supply
+      your calculations run against. Without the certificate you are <em>assuming</em> the
+      occupancy and the storage height — and if the owner later stores higher than you assumed,
+      the exposure is yours, not theirs. Get it in writing before layout.</p>
+    </div>
+
+    <h3 class="sub">§4.7 – §4.10, briefly</h3>
+    <div class="tbl-wrap">
+    <table class="ref">
+      <tr><th>§</th><th>Requirement</th></tr>
+      <tr><td class="n">4.7</td><td>Leak-stopping additives — sodium silicate, its derivatives, brine and similar — <strong>shall not be used</strong></td></tr>
+      <tr><td class="n">4.8</td><td>Where air may be used to charge, maintain or supervise a system, <strong>nitrogen or other approved gas</strong> is also permitted</td></tr>
+      <tr><td class="n">4.9</td><td>Sprinkler system components <strong>shall not support</strong> nonsprinkler components unless expressly permitted</td></tr>
+      <tr><td class="n">4.10.1</td><td>Noncombustible — meets any one of three tests, including ASTM E136 at 750 °C</td></tr>
+      <tr><td class="n">4.10.2</td><td>Limited-combustible — potential heat <strong>≤ 3500 Btu/lb</strong>, plus a surfacing or flame-spread condition</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <!-- ============ 04 DRILL ============ -->
+  <section class="panel" id="p-drill">
+    <div class="eyebrow">Drill</div>
+    <h2 class="head">Scenario drill</h2>
+    <p class="lead">Miss one and it comes back. Every explanation carries its section.</p>
+    <div class="scorebar">
+      <div class="score-cell"><div class="sc-k">Streak</div><div class="sc-v flame" id="dStreak">0</div></div>
+      <div class="score-cell"><div class="sc-k">Best</div><div class="sc-v" id="dBest">0</div></div>
+      <div class="score-cell"><div class="sc-k">Right</div><div class="sc-v" id="dRight">0</div></div>
+      <div class="score-cell"><div class="sc-k">Seen</div><div class="sc-v" id="dSeen">0</div></div>
+    </div>
+    <div id="drillHost"></div>
+    <div class="btn-row">
+      <button class="btn primary" id="dNext">Skip</button>
+      <button class="btn" id="dReset">Reset stats</button>
+    </div>
+  </section>
+
+  <!-- ============ 05 PROGRESS ============ -->
+  <section class="panel" id="p-progress">
+    <div class="eyebrow">Progress</div>
+    <h2 class="head">Where you are strong, where you are not</h2>
+    <h3 class="sub">Mastery by topic</h3>
+    <div class="mastery" id="masteryHost"></div>
+    <h3 class="sub">Badges</h3>
+    <div class="badges" id="badgeHost"></div>
+    <h3 class="sub">Session log</h3>
+    <div id="logHost"></div>
+    <h3 class="sub">Still to review</h3>
+    <div id="missHost"></div>
+  </section>
+
+  <footer class="foot">
+    <span>FSM Hazard Trainer · NFPA 13 (2019) Ch. 4</span>
+    <span><a href="NFPA13-Storage-Trainer.html">Storage Trainer →</a> · <a href="NFPA13-Hydraulic-Trainer.html">Hydraulic Trainer →</a> · <a href="index.html">← Quiz Hub</a></span>
+  </footer>
+</div>
+<script>
+/* ============================================================
+   NFPA 13 (2019) CHAPTER 4 — VERIFIED DATA
+   Every value read off the standard, cited to its section.
+   ============================================================ */
+var NFPA = {
+  pileOH1: 8,          /* §4.3.3(2) */
+  pileOH2: 12,         /* §4.3.4(2) */
+  areaLimits: {        /* §4.5.1 — per floor, per riser */
+    lh:{ft2:52000, name:"Light hazard",  cite:"§4.5.1(1)"},
+    oh:{ft2:52000, name:"Ordinary hazard", cite:"§4.5.1(2)"},
+    eh:{ft2:40000, name:"Extra hazard, hydraulically calculated", cite:"§4.5.1(3)"},
+    hp:{ft2:40000, name:"High-piled storage", cite:"§4.5.1(4)"},
+    ir:{ft2:40000, name:"In-rack storage", cite:"§4.5.1(5)"}
+  },
+  mixedTotalCap: 52000,      /* §4.5.3 */
+  flowTestMonths: 12,        /* §4.6.1.1 — to WORKING PLAN SUBMITTAL */
+  misc:{ pct:10, ft2:4000, pile:1000, sep:25, tire:2000, designArea:3000 },
+  ehAreaReduction:{ pct:25, floor:2000, cite:"§4.3.9" },
+  limitedCombustibleBtu:3500 /* §4.10.2(2) */
+};
+
+var SUPPLY_ITEMS = [
+  "Location and elevation of the static and residual test gauge, relative to the riser reference point",
+  "Flow location",
+  "Static pressure, psi",
+  "Residual pressure, psi",
+  "Flow, gpm",
+  "Date",
+  "Time",
+  "Name of the person who conducted the test or supplied the information",
+  "Other sources of water supply, with pressure or elevation"
+];
+
+/* ============================================================
+   STORAGE
+   ============================================================ */
+var KEY = "fsm_hazard_trainer_v1";
+var store = load();
+function load(){
+  try{
+    var raw = localStorage.getItem(KEY);
+    if(!raw) return blank();
+    var o = JSON.parse(raw);
+    if(!o || typeof o !== "object") return blank();
+    o.topics = o.topics || blank().topics;
+    o.log = o.log || []; o.missed = o.missed || []; o.badges = o.badges || [];
+    return o;
+  }catch(e){ return blank(); }
+}
+function blank(){
+  return { streak:0,best:0,right:0,seen:0,
+    topics:{ hazard:{r:0,s:0}, storage:{r:0,s:0}, limits:{r:0,s:0},
+             supply:{r:0,s:0}, general:{r:0,s:0} },
+    missed:[], badges:[], log:[], lastVisit:null };
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(store)); }catch(e){} }
+
+/* ---------- helpers ---------- */
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s).replace(/[&<>"]/g,function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+function f1(n){ return (Math.round(n*10)/10).toFixed(1); }
+function commas(n){ return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+function todayISO(){ var d=new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function svgEl(t,a){ var e=document.createElementNS("http://www.w3.org/2000/svg",t);
+  for(var k in a){ if(a.hasOwnProperty(k)) e.setAttribute(k,a[k]); } return e; }
+function isNarrow(){ return window.innerWidth <= 600; }
+function txt(x,y,s,cls,anchor){ var t=svgEl("text",{x:x,y:y,class:cls||"obj-txt","text-anchor":anchor||"start"});
+  t.textContent=s; return t; }
+var REDRAW=[], wasNarrow=isNarrow();
+window.addEventListener("resize", function(){
+  var n=isNarrow(); if(n===wasNarrow) return; wasNarrow=n;
+  REDRAW.forEach(function(fn){ try{ fn(); }catch(e){} });
+});
+
+/* ---------- tabs + deep links ---------- */
+var panels=["learn","hazard","limits","supply","drill","progress"];
+$("tabs").addEventListener("click", function(e){
+  var b=e.target.closest(".tab"); if(!b) return; showPanel(b.getAttribute("data-p"));
+});
+function showPanel(p, keepHash){
+  if(panels.indexOf(p)===-1) p="learn";
+  panels.forEach(function(x){ $("p-"+x).classList.toggle("on", x===p); });
+  Array.prototype.forEach.call(document.querySelectorAll(".tab"),function(t){
+    t.classList.toggle("on", t.getAttribute("data-p")===p); });
+  if(p==="progress") renderProgress();
+  if(p==="drill" && currentQ===null) nextQuestion();
+  if(!keepHash){ try{ history.replaceState(null,"","#"+p); }catch(e){} }
+  window.scrollTo(0,0);
+}
+function openFromHash(){ var p=(location.hash||"").replace("#",""); if(p) showPanel(p,true); }
+window.addEventListener("hashchange", openFromHash);
+
+/* ---------- glossary ---------- */
+var GLOSSARY = [
+  ["Occupancy hazard classification","A sprinkler-design label only. §4.3.1.1 and §4.3.1.2 say plainly it is not a general classification of occupancy hazards — do not carry it into a building-code discussion."],
+  ["Quantity of contents","How much combustible material is present. Runs low → moderate → moderate/high → very high across the five classes."],
+  ["Combustibility","How readily the contents burn, and how much heat they give off. Note OH1 keeps combustibility LOW while quantity rises."],
+  ["Stockpile height","The only dimensional anchor in the classification criteria: 8 ft at OH1, 12 ft at OH2. No height is stated for Light, EH1 or EH2."],
+  ["Shielding","Material arranged so sprinkler water cannot reach the burning surface. It is an EH2 trigger on its own — §4.3.6(3)."],
+  ["Owner's Certificate","What the owner gives the installer before layout begins, fixing use, materials, maximum storage height, preliminary plan, supply data and corrosion knowledge — §4.2."],
+  ["Working plan submittal","The date the flow test age is measured against — §4.6.1.1. Not bid date, not the day you started drawing."],
+  ["Mezzanine","An intermediate floor level. Whether its area counts against the system limit depends entirely on system boundaries — §4.5.2."],
+  ["Limited-combustible","Not noncombustible, but potential heat not exceeding 3500 Btu/lb per NFPA 259, plus a surfacing or flame-spread condition — §4.10.2."],
+  ["MIC","Microbiologically influenced corrosion. Called out by name in the Owner's Certificate requirements — §4.2(4)."]
+];
+(function(){ var h=""; GLOSSARY.forEach(function(g){ h+="<dt>"+esc(g[0])+"</dt><dd>"+esc(g[1])+"</dd>"; });
+  $("glossHost").innerHTML=h; })();
+
+/* ============================================================
+   WORKBENCH 01 — HAZARD CLASSIFIER
+   ============================================================ */
+(function(){
+  var ids=["hzQty","hzComb","hzPile","hzDust","hzLiquid","hzShield"];
+  ids.forEach(function(id){ $(id).addEventListener("input",run); $(id).addEventListener("change",run); });
+  run();
+
+  function run(){
+    var qty=parseInt($("hzQty").value,10);
+    var comb=parseInt($("hzComb").value,10);
+    var pile=parseFloat($("hzPile").value);
+    var dust=$("hzDust").checked, liq=$("hzLiquid").checked, shield=$("hzShield").checked;
+    $("hzPileVal").textContent=f1(pile)+" ft";
+
+    var cls, why, cite, lines=[], coach="";
+
+    /* The EH2-specific triggers stand on their own — §4.3.6(2) and (3) */
+    if(liq || shield){
+      cls="EXTRA HAZARD GROUP 2";
+      why = liq && shield ? "flammable liquids and extensive shielding"
+          : (liq ? "substantial combustible or flammable liquids" : "extensive shielding of combustibles");
+      cite="§4.3.6(" + (liq?"2":"3") + ")";
+      lines.push('<span class="lbl">Trigger present</span>  →  <span class="hi">'+why+'</span>   <span class="lbl">'+cite+'</span>');
+      lines.push('<span class="lbl">This alone lands EH2 — quantity and combustibility do not have to be very high.</span>');
+      coach = "<b>EH2 is not just \"more than EH1\".</b> Its quantity and combustibility wording is "
+        + "identical to EH1. What makes it EH2 is one of two specific conditions: substantial "
+        + "combustible or flammable liquids, or extensive shielding. Shielding is the one people "
+        + "miss — it is about water not reaching the fire, not about how much is burning.";
+    }
+    else if(dust){
+      cls="EXTRA HAZARD GROUP 1";
+      why="dust, lint or similar — rapidly developing fire";
+      cite="§4.3.5(2)";
+      lines.push('<span class="lbl">Trigger present</span>  →  <span class="hi">'+why+'</span>   <span class="lbl">'+cite+'</span>');
+      lines.push('<span class="lbl">A second, independent route into EH1 that has nothing to do with quantity.</span>');
+      coach = "<b>This is the trigger with no numbers attached.</b> §4.3.5(2) puts a space in EH1 "
+        + "purely because dust or lint introduces the probability of a rapidly developing fire. A "
+        + "quiet room with very little in it can still be Extra Hazard Group 1.";
+    }
+    else if(qty>=4 && comb>=4){
+      cls="EXTRA HAZARD GROUP 1";
+      why="very high quantity and combustibility";
+      cite="§4.3.5(1)";
+      lines.push('<span class="lbl">Quantity</span> very high  <span class="lbl">and</span>  <span class="lbl">combustibility</span> very high  →  <span class="hi">EH1</span>   <span class="lbl">'+cite+'</span>');
+    }
+    else if(qty>=3 || comb>=3){
+      cls="ORDINARY HAZARD GROUP 2";
+      why="moderate to high quantity and combustibility";
+      cite="§4.3.4(1)";
+      lines.push('<span class="lbl">Quantity/combustibility reach moderate-to-high</span>  →  <span class="ok">OH2</span>   <span class="lbl">'+cite+'</span>');
+      if(pile>NFPA.pileOH2){
+        why="stockpile exceeds "+NFPA.pileOH2+" ft";
+        cite="§4.3.4(2)";
+        lines.push('<span class="lbl">Stockpile</span> '+f1(pile)+' ft  <span class="hi">exceeds the '+NFPA.pileOH2+' ft OH2 anchor</span>   <span class="lbl">'+cite+'</span>');
+        coach = "<b>Past 12 ft you are off the end of the occupancy criteria.</b> OH2's stockpile "
+          + "anchor is 12 ft. Above that, §4.3.7 routes storage arrangements out of Chapter 4 and "
+          + "into Chapters 20 through 25 — a different design method entirely. Check the Storage "
+          + "Trainer rather than stretching an occupancy class.";
+      }
+    }
+    else if(qty>=2 && comb<=1){
+      cls="ORDINARY HAZARD GROUP 1";
+      why="moderate quantity with low combustibility";
+      cite="§4.3.3(1)";
+      lines.push('<span class="lbl">Quantity</span> moderate  <span class="lbl">but combustibility</span> low  →  <span class="ok">OH1</span>   <span class="lbl">'+cite+'</span>');
+      if(pile>NFPA.pileOH1){
+        cls="ORDINARY HAZARD GROUP 2";
+        why="stockpile exceeds the "+NFPA.pileOH1+" ft OH1 anchor";
+        cite="§4.3.3(2)";
+        lines.push('<span class="lbl">Stockpile</span> '+f1(pile)+' ft  <span class="hi">exceeds '+NFPA.pileOH1+' ft</span>  → beyond OH1   <span class="lbl">'+cite+'</span>');
+        coach = "<b>The stockpile did that, not the contents.</b> OH1 caps low-combustibility "
+          + "stockpiles at 8 ft. Stack the same goods higher and OH1 no longer describes the space.";
+      }
+    }
+    else if(qty>=2){
+      cls="ORDINARY HAZARD GROUP 2";
+      why="moderate quantity with moderate combustibility";
+      cite="§4.3.4(1)";
+      lines.push('<span class="lbl">Moderate quantity + moderate combustibility</span>  →  <span class="ok">OH2</span>   <span class="lbl">'+cite+'</span>');
+    }
+    else{
+      cls="LIGHT HAZARD";
+      why="low quantity and low combustibility";
+      cite="§4.3.2(1)";
+      lines.push('<span class="lbl">Quantity</span> low  <span class="lbl">and</span>  <span class="lbl">combustibility</span> low  →  <span class="ok">Light hazard</span>   <span class="lbl">'+cite+'</span>');
+    }
+
+    lines.push('<span class="lbl">Stockpile anchors — OH1 '+NFPA.pileOH1+' ft (§4.3.3), OH2 '+NFPA.pileOH2+' ft (§4.3.4). No height stated for Light, EH1 or EH2.</span>');
+
+    $("hzMath").innerHTML=lines.join("\n");
+    $("hzWhy").textContent=why;
+    $("hzCite").textContent=cite;
+    $("hzOut").textContent=cls;
+
+    var v=$("hzVerdict");
+    if(/GROUP 2/.test(cls) && /EXTRA/.test(cls)){ v.className="verdict no"; }
+    else if(/EXTRA/.test(cls)){ v.className="verdict warn"; }
+    else{ v.className="verdict ok"; }
+    v.textContent = cls + " — " + why.toUpperCase();
+
+    if(!coach && cls==="LIGHT HAZARD"){
+      coach = "<b>Remember what Light Hazard actually says.</b> §4.3.2 is one line: spaces with "
+        + "low quantity AND low combustibility. It does not say \"offices and churches\" — that "
+        + "list is annex material at A.4.3.2, not mandatory text.";
+    }
+    var c=$("hzCoach");
+    if(coach){ c.innerHTML=coach; c.style.display="block"; } else { c.style.display="none"; }
+  }
+})();
+
+/* ============================================================
+   WORKBENCH 02 — SYSTEM PROTECTION AREA
+   ============================================================ */
+(function(){
+  var ids=["limHaz","limArea","limMixed","limMixArea","limMezz","limMezzCase","limMezzArea"];
+  ids.forEach(function(id){ $(id).addEventListener("input",run); $(id).addEventListener("change",run); });
+  REDRAW.push(run); run();
+
+  function run(){
+    var haz=$("limHaz").value;
+    var area=parseFloat($("limArea").value);
+    var mixed=$("limMixed").checked;
+    var mixArea=parseFloat($("limMixArea").value);
+    var mezz=$("limMezz").checked;
+    var mezzCase=$("limMezzCase").value;
+    var mezzArea=parseFloat($("limMezzArea").value);
+
+    $("limAreaVal").textContent=commas(area)+" ft²";
+    $("limMixVal").textContent=commas(mixArea)+" ft²";
+    $("limMezzAreaVal").textContent=commas(mezzArea)+" ft²";
+    $("limMixWrap").style.display = mixed ? "block" : "none";
+    $("limMezzWrap").style.display = mezz ? "block" : "none";
+    $("limMezzAreaWrap").style.display = (mezz && mezzCase==="outside") ? "block" : "none";
+
+    var L=NFPA.areaLimits[haz];
+    var lines=[], counted=area, coach="";
+
+    lines.push('<span class="lbl">'+L.name+'</span>  limit = <span class="ok">'+commas(L.ft2)+' ft²</span>  per floor, per riser   <span class="lbl">'+L.cite+'</span>');
+
+    /* mezzanine handling — §4.5.2 */
+    if(mezz){
+      if(mezzCase==="one"){
+        lines.push('<span class="lbl">Mezzanine, single system in the building</span>  →  <span class="ok">not counted</span>   <span class="lbl">§4.5.2.1</span>');
+      }else if(mezzCase==="inside"){
+        lines.push('<span class="lbl">Mezzanine entirely inside the same system boundary</span>  →  <span class="ok">not counted</span>   <span class="lbl">§4.5.2.2</span>');
+      }else{
+        counted += mezzArea;
+        lines.push('<span class="lbl">Mezzanine area outside the boundary</span>  →  <span class="hi">add '+commas(mezzArea)+' ft²</span>   <span class="lbl">§4.5.2.3</span>');
+        lines.push('<span class="lbl">Counted</span> = '+commas(area)+' + '+commas(mezzArea)+' = <span class="hi">'+commas(counted)+' ft²</span>');
+        coach = "<b>This is the mezzanine case that bites.</b> §4.5.2.3 — once any part of the "
+          + "mezzanine sits outside the boundary of the riser feeding the sprinklers beneath it, "
+          + "that part is added to the system it is supplied from, and the total still has to "
+          + "satisfy §4.5.1. The other two mezzanine cases cost you nothing; this one does.";
+      }
+    }
+
+    var over = counted > L.ft2;
+    var mixedFail = false;
+
+    /* mixed hazard — §4.5.3 */
+    if(mixed && (haz==="eh"||haz==="hp"||haz==="ir")){
+      lines.push('<span class="lbl">Mixed system</span> — the '+L.name.toLowerCase()+' portion may not exceed <span class="ok">'+commas(L.ft2)+' ft²</span>,');
+      lines.push('<span class="lbl">  and the TOTAL may not exceed</span> <span class="ok">'+commas(NFPA.mixedTotalCap)+' ft²</span>   <span class="lbl">§4.5.3</span>');
+      lines.push('<span class="lbl">  '+L.name.toLowerCase()+' portion</span> = '+commas(mixArea)+' ft²  '
+        + (mixArea>L.ft2 ? '<span class="hi">over</span>' : '<span class="ok">ok</span>'));
+      lines.push('<span class="lbl">  total</span> = '+commas(counted)+' ft²  '
+        + (counted>NFPA.mixedTotalCap ? '<span class="hi">over</span>' : '<span class="ok">ok</span>'));
+      mixedFail = (mixArea>L.ft2) || (counted>NFPA.mixedTotalCap);
+      over = mixedFail;
+      if(!coach && !mixedFail){
+        coach = "<b>This is the useful half of §4.5.3.</b> The smaller 40,000 ft² cap governs only "
+          + "the extra-hazard or storage portion. The system as a whole may still reach 52,000 ft² "
+          + "using the light or ordinary hazard balance — so one riser can cover more than the "
+          + "40,000 headline suggests.";
+      }
+    }
+
+    var limitUsed = (mixed && (haz==="eh"||haz==="hp"||haz==="ir")) ? NFPA.mixedTotalCap : L.ft2;
+    var head = limitUsed - counted;
+
+    $("limMath").innerHTML=lines.join("\n");
+    $("limMax").textContent=commas(limitUsed)+" ft²";
+    $("limCounted").textContent=commas(counted)+" ft²";
+    $("limHead").textContent=(head>=0?"":"−")+commas(Math.abs(head))+" ft²";
+    $("limHead").style.color = head<0 ? "var(--fail)" : "var(--pass)";
+
+    var v=$("limVerdict");
+    if(over){ v.className="verdict no";
+      v.textContent = mixedFail ? "OVER — §4.5.3 MIXED-HAZARD LIMIT EXCEEDED"
+                                : "OVER LIMIT BY "+commas(Math.abs(head))+" FT² — SECOND RISER NEEDED"; }
+    else{ v.className="verdict ok";
+      v.textContent = commas(counted)+" FT² OF "+commas(limitUsed)+" FT² ALLOWED"; }
+
+    if(!coach && over){
+      coach = "<b>One riser will not cover this.</b> §4.5.1 is a per-floor, per-riser limit, so "
+        + "the fix is another system — not a bigger main. Catch it before the pipe is routed; "
+        + "adding a riser after layout means a new lead-in, a new valve set and new plans.";
+    }
+    var c=$("limCoach");
+    if(coach){ c.innerHTML=coach; c.style.display="block"; } else { c.style.display="none"; }
+
+    draw(counted, limitUsed, L);
+  }
+
+  function draw(counted, limit, L){
+    var svg=$("limSvg"); while(svg.firstChild) svg.removeChild(svg.firstChild);
+    var x0=60, x1=580, y=120, h=54;
+    var frac=Math.min(counted/limit, 1.35);
+
+    /* the allowed bar */
+    svg.appendChild(svgEl("rect",{x:x0,y:y,width:x1-x0,height:h,fill:"#fff",stroke:"#16130F","stroke-width":1.5}));
+    /* hatch the allowance */
+    var defs=svgEl("defs",{});
+    var pat=svgEl("pattern",{id:"lh",width:8,height:8,patternTransform:"rotate(45)",patternUnits:"userSpaceOnUse"});
+    pat.appendChild(svgEl("line",{x1:0,y1:0,x2:0,y2:8,stroke:"#D6CEC0","stroke-width":2}));
+    defs.appendChild(pat); svg.appendChild(defs);
+    svg.appendChild(svgEl("rect",{x:x0,y:y,width:x1-x0,height:h,fill:"url(#lh)"}));
+
+    /* the used portion */
+    var w=Math.min((x1-x0)*frac, x1-x0);
+    var over = counted>limit;
+    svg.appendChild(svgEl("rect",{x:x0,y:y,width:w,height:h,
+      fill: over ? "#FDF3F1" : "#F1FAF6", stroke: over ? "#B3341F" : "#1D9E75","stroke-width":2}));
+
+    /* overflow tail beyond the limit */
+    if(over){
+      var tail=Math.min((x1-x0)*(frac-1), 120);
+      svg.appendChild(svgEl("rect",{x:x1,y:y+8,width:tail,height:h-16,
+        fill:"#B3341F",opacity:.18,stroke:"#B3341F","stroke-width":1,"stroke-dasharray":"4 3"}));
+      svg.appendChild(txt(x1+tail+6, y+h/2+4, "OVER", "dim-txt"));
+    }
+
+    /* limit marker */
+    svg.appendChild(svgEl("line",{x1:x1,y1:y-16,x2:x1,y2:y+h+16,class:"dim-line"}));
+    svg.appendChild(txt(x1, y-22, commas(limit)+" ft² allowed", "dim-txt","middle"));
+
+    svg.appendChild(txt(x0, y-22, commas(counted)+" ft² counted", "obj-txt"));
+    /* the two caption lines sit 18px apart on desktop; phone type is drawn
+       ~1.6x larger in user units, so the gap has to open with it */
+    svg.appendChild(txt(x0, y+h+30, L.name+"  ·  "+L.cite, "note-txt"));
+    svg.appendChild(txt(x0, y+h+(isNarrow()?58:48), "one floor, one riser", "note-txt"));
+  }
+})();
+
+/* ============================================================
+   WORKBENCH 03 — FLOW TEST CURRENCY + SUPPLY CHECKLIST
+   ============================================================ */
+(function(){
+  var d=new Date();
+  var plan=new Date(d.getTime());
+  var test=new Date(d.getTime()); test.setMonth(test.getMonth()-8);
+  function iso(x){ return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0"); }
+  $("wsTest").value=iso(test); $("wsPlan").value=iso(plan);
+  $("wsTest").addEventListener("change",run); $("wsPlan").addEventListener("change",run);
+  $("wsTest").addEventListener("input",run);  $("wsPlan").addEventListener("input",run);
+  run();
+
+  function run(){
+    var t=$("wsTest").value, p=$("wsPlan").value;
+    if(!t||!p){ $("wsMath").innerHTML='<span class="lbl">Enter both dates.</span>'; return; }
+    var td=new Date(t+"T00:00:00"), pd=new Date(p+"T00:00:00");
+    var months=(pd.getFullYear()-td.getFullYear())*12 + (pd.getMonth()-td.getMonth());
+    if(pd.getDate() < td.getDate()) months--;
+    var days=Math.round((pd-td)/86400000);
+    var exp=new Date(td.getTime()); exp.setMonth(exp.getMonth()+NFPA.flowTestMonths);
+    var ok = pd <= exp;
+
+    var lines=[];
+    lines.push('<span class="lbl">Test</span>      '+t);
+    lines.push('<span class="lbl">Submittal</span> '+p);
+    lines.push('<span class="lbl">Age at submittal</span> = '+months+' month'+(months===1?"":"s")+'  ('+days+' days)');
+    lines.push('<span class="lbl">Limit</span> = <span class="'+(ok?"ok":"hi")+'">'+NFPA.flowTestMonths+' months</span> prior to WORKING PLAN SUBMITTAL   <span class="lbl">§4.6.1.1</span>');
+    lines.push('<span class="lbl">Expires</span> '+iso(exp)+'  '+(ok?'<span class="ok">still current</span>':'<span class="hi">expired</span>'));
+    $("wsMath").innerHTML=lines.join("\n");
+
+    $("wsAge").textContent=months+" months";
+    $("wsExp").textContent=iso(exp);
+    var v=$("wsVerdict");
+    v.className="verdict "+(ok?"ok":"no");
+    v.textContent = ok ? "CURRENT — "+months+" MONTHS AT SUBMITTAL"
+                       : "TOO OLD — "+months+" MONTHS, LIMIT IS "+NFPA.flowTestMonths;
+
+    var coach="";
+    if(!ok){
+      coach = "<b>Re-test, or get it approved.</b> §4.6.1.1 allows the AHJ to approve otherwise, "
+        + "but that is a permission you have to actually obtain — not an assumption. Budget the "
+        + "re-test early; a flow test that expires between bid and submittal is a schedule problem, "
+        + "not just a paperwork one.";
+    }else if(months>=10){
+      coach = "<b>Watch the clock.</b> At "+months+" months you have roughly "+(NFPA.flowTestMonths-months)
+        + " month"+((NFPA.flowTestMonths-months)===1?"":"s")+" of validity left. The measuring point is "
+        + "<em>working plan submittal</em>, so a design that slips a month can push this test out of "
+        + "range without anything else changing.";
+    }
+    var c=$("wsCoach");
+    if(coach){ c.innerHTML=coach; c.style.display="block"; } else { c.style.display="none"; }
+  }
+})();
+
+/* supply checklist */
+(function(){
+  var h="";
+  SUPPLY_ITEMS.forEach(function(s,i){
+    h += '<div class="chk-row"><input type="checkbox" id="ws'+i+'" data-ws="1">'
+      +  '<label for="ws'+i+'" style="text-transform:none;letter-spacing:0;font-family:var(--sans);'
+      +  'font-size:.88rem;font-weight:400;color:var(--ink-2)">'
+      +  '<b style="font-family:var(--mono);color:var(--ink)">('+(i+1)+')</b> '+esc(s)+'</label></div>';
+  });
+  $("wsList").innerHTML=h;
+  Array.prototype.forEach.call(document.querySelectorAll('[data-ws]'),function(cb){
+    cb.addEventListener("change",tally);
+  });
+  function tally(){
+    var n=document.querySelectorAll('[data-ws]:checked').length;
+    var v=$("wsListVerdict");
+    v.className="verdict "+(n===SUPPLY_ITEMS.length?"ok":(n===0?"no":"warn"));
+    v.textContent=n+" OF "+SUPPLY_ITEMS.length+" CONFIRMED"
+      + (n===SUPPLY_ITEMS.length ? " — DESIGN BASIS COMPLETE" : "");
+  }
+  tally();
+})();
+
+/* ============================================================
+   DRILL
+   ============================================================ */
+var QUESTIONS = [
+  {topic:"hazard", q:"In the 2019 edition, where do the familiar occupancy lists — offices, churches, machine shops, woodworking — actually appear?",
+   opts:["In the mandatory text of §4.3.2 through §4.3.6","In the annex, A.4.3.2 through A.4.3.6","In Chapter 3 definitions","In Table 4.3.1.7.1"], a:1,
+   why:"The mandatory sections §4.3.2–§4.3.6 contain only short criteria — quantity, combustibility, stockpile height and a few specific triggers. The occupancy lists are annex material, which is explanatory and not enforceable. Learn the criteria; treat the lists as examples.",
+   cite:"NFPA 13 (2019) §4.3.2–§4.3.6"},
+
+  {topic:"hazard", q:"What single pair of conditions defines Light Hazard?",
+   opts:["Low quantity and low combustibility","Low quantity, any combustibility","Moderate quantity and low combustibility","Any quantity below an 8 ft stockpile"], a:0,
+   why:"§4.3.2 is one criterion: spaces with low quantity AND low combustibility of contents. Both must hold.",
+   cite:"NFPA 13 (2019) §4.3.2(1)"},
+
+  {topic:"hazard", q:"What distinguishes Ordinary Hazard Group 1 from Group 2?",
+   opts:["OH1 has a higher stockpile allowance","OH1 keeps combustibility LOW while quantity rises; OH2 raises both","OH1 applies only to storage","OH1 is for hydraulically calculated systems only"], a:1,
+   why:"OH1 is moderate quantity with LOW combustibility, stockpiles not over 8 ft. OH2 is moderate-to-high quantity AND combustibility, stockpiles not over 12 ft. The combustibility is the real divider.",
+   cite:"NFPA 13 (2019) §4.3.3, §4.3.4"},
+
+  {topic:"hazard", q:"Stockpile height limits appear in which hazard classifications?",
+   opts:["All five","Light and Ordinary only","Ordinary Hazard Group 1 (8 ft) and Group 2 (12 ft) only","Extra Hazard Group 1 and 2 only"], a:2,
+   why:"The only dimensional anchors in the classification criteria are 8 ft at OH1 and 12 ft at OH2. No stockpile height is stated for Light, EH1 or EH2.",
+   cite:"NFPA 13 (2019) §4.3.3(2), §4.3.4(2)"},
+
+  {topic:"hazard", q:"A room holds very little material, but a process there generates significant airborne lint. What is it?",
+   opts:["Light hazard — the quantity is low","Ordinary Hazard Group 1","Extra Hazard Group 1","Extra Hazard Group 2"], a:2,
+   why:"§4.3.5(2) is an independent trigger: spaces where dust, lint or other materials introduce the probability of rapidly developing fires are EH1, regardless of how little is stored there.",
+   cite:"NFPA 13 (2019) §4.3.5(2)"},
+
+  {topic:"hazard", q:"What separates Extra Hazard Group 2 from Group 1?",
+   opts:["EH2 has higher quantity and combustibility","EH2 adds substantial flammable/combustible liquids, or extensive shielding","EH2 applies only above a 12 ft stockpile","EH2 requires a dry pipe system"], a:1,
+   why:"The quantity and combustibility wording is identical for both. EH2 is reached by two extra triggers — substantial combustible or flammable liquids, or extensive shielding of combustibles. EH1 is about fire that spreads fast; EH2 is about fire you cannot reach.",
+   cite:"NFPA 13 (2019) §4.3.5, §4.3.6"},
+
+  {topic:"hazard", q:"Extensive shielding of combustibles, on its own, puts a space in which class?",
+   opts:["Ordinary Hazard Group 2","Extra Hazard Group 1","Extra Hazard Group 2","It is not a classification criterion"], a:2,
+   why:"§4.3.6(3) lists extensive shielding as a stand-alone EH2 criterion. Shielding matters because it keeps sprinkler water off the burning material.",
+   cite:"NFPA 13 (2019) §4.3.6(3)"},
+
+  {topic:"hazard", q:"K-11.2 sprinklers are used with the EH2 design curve. What does §4.3.9 permit?",
+   opts:["No reduction — that applies only to high-temperature sprinklers","Reduce the design area 25%, but not below 2000 ft², regardless of temperature rating","Reduce the density 25%","Reduce the area 40% with quick-response heads"], a:1,
+   why:"§4.3.9 permits a 25 percent design-area reduction, floored at 2000 ft², where K-11.2 or larger sprinklers are used with the EH1 or EH2 curves — and it says explicitly that this applies regardless of temperature rating.",
+   cite:"NFPA 13 (2019) §4.3.9"},
+
+  {topic:"general", q:"What does §4.1.1 require as the default level of protection?",
+   opts:["Only areas the AHJ designates","All areas, except where a specific section permits omission","All areas above 12 ft ceiling height","Only areas containing combustibles"], a:1,
+   why:"A sprinklered building must have sprinklers throughout, and any omission has to be affirmatively permitted by a specific section elsewhere in the standard. The default is total coverage.",
+   cite:"NFPA 13 (2019) §4.1.1"},
+
+  {topic:"general", q:"Who provides the Owner's Certificate, and when?",
+   opts:["The AHJ, at plan review","The installer, at closeout","The owner or their agent, to the installer, before layout and detailing","The engineer of record, with the hydraulic calculations"], a:2,
+   why:"The owner or an authorized agent gives it to the sprinkler system installer PRIOR to layout and detailing. It is the gate on starting design.",
+   cite:"NFPA 13 (2019) §4.2"},
+
+  {topic:"general", q:"Which of these is NOT one of the four items the Owner's Certificate must contain?",
+   opts:["Intended use of the building, materials, and maximum storage height","A preliminary plan and the design concepts needed for layout","Water supply information per §5.2.2","The hydraulic calculation summary sheet"], a:3,
+   why:"The four items are intended use with materials and maximum storage height; a preliminary plan with design concepts; water supply information per §5.2.2; and any special knowledge of the supply including conditions causing corrosion, MIC named specifically. Calculations are the designer's output, not the owner's input.",
+   cite:"NFPA 13 (2019) §4.2"},
+
+  {topic:"general", q:"What corrosion mechanism does the Owner's Certificate name explicitly?",
+   opts:["Galvanic corrosion","Microbiologically influenced corrosion (MIC)","Crevice corrosion","Stress corrosion cracking"], a:1,
+   why:"Item (4) asks for any special knowledge of the water supply, including known environmental conditions responsible for corrosion — and calls out microbiologically influenced corrosion by name.",
+   cite:"NFPA 13 (2019) §4.2(4)"},
+
+  {topic:"general", q:"What is §4.4 in the 2019 edition?",
+   opts:["Working Plans","Hose Connections","Classification of Hazard","System Protection Area Limitations"], a:1,
+   why:"§4.4 is Hose Connections and contains a single sentence: hose connections are not required for the protection of miscellaneous storage. Working plans are in Chapter 27. Older course material that labels §4.4 as Working Plans is using a stale section number.",
+   cite:"NFPA 13 (2019) §4.4"},
+
+  {topic:"limits", q:"Maximum floor area on one floor protected by one riser, ordinary hazard?",
+   opts:["40,000 ft²","52,000 ft²","25,000 ft²","There is no limit for ordinary hazard"], a:1,
+   why:"Light and ordinary hazard both get 52,000 ft². Extra hazard hydraulically calculated, high-piled storage and in-rack storage all get 40,000 ft². And note it is per floor, per riser — not a whole-building figure.",
+   cite:"NFPA 13 (2019) §4.5.1"},
+
+  {topic:"limits", q:"A system covers a 30,000 ft² extra-hazard area plus 20,000 ft² of ordinary hazard. Is that acceptable under §4.5.3?",
+   opts:["No — the total exceeds 40,000 ft²","Yes — the EH portion is under 40,000 ft² and the total is under 52,000 ft²","No — mixed hazards require separate systems","Yes — but only with AHJ approval"], a:1,
+   why:"§4.5.3 caps the extra-hazard or storage portion at its own limit and caps the TOTAL at 52,000 ft². Here the EH portion is 30,000 (under 40,000) and the total is 50,000 (under 52,000), so it works. The 40,000 headline does not cap the whole system.",
+   cite:"NFPA 13 (2019) §4.5.3"},
+
+  {topic:"limits", q:"A building has more than one sprinkler system. Part of a mezzanine sits outside the boundary of the riser feeding the sprinklers beneath it. What happens?",
+   opts:["Nothing — mezzanine area never counts","That portion is added to the system supplying it, and §4.5.1 must still be met","The whole mezzanine is added to both systems","A separate riser is required for the mezzanine"], a:1,
+   why:"§4.5.2.3. The other two mezzanine cases — a single system in the building, or a mezzanine entirely inside the same boundary — cost you nothing. This one adds area.",
+   cite:"NFPA 13 (2019) §4.5.2.3"},
+
+  {topic:"limits", q:"How is the area of a single in-rack sprinkler system measured?",
+   opts:["The rack footprint only","All floor area occupied by racks including aisles, regardless of the number of levels","The rack footprint multiplied by the number of in-rack levels","Only the aisles"], a:1,
+   why:"§4.5.4 — all of the floor area occupied by the racks, aisles included, and the number of in-rack levels does not change it.",
+   cite:"NFPA 13 (2019) §4.5.4"},
+
+  {topic:"limits", q:"Two detached buildings sit 15 ft apart. What does §4.5.6 require?",
+   opts:["One system may serve both if they are within 20 ft","Separate systems regardless of separation distance, unless the AHJ accepts otherwise","One system, provided the total area is under 52,000 ft²","Separate systems only if the hazards differ"], a:1,
+   why:"§4.5.6.1 requires separate systems for detached buildings regardless of separation distance. §4.5.6.2 is the only relief, and it needs the AHJ to accept supply from an adjacent building.",
+   cite:"NFPA 13 (2019) §4.5.6.1, §4.5.6.2"},
+
+  {topic:"supply", q:"A flow test was performed 14 months before working plan submittal. Acceptable?",
+   opts:["Yes — the limit is 24 months","Yes — there is no age limit in NFPA 13","No — the limit is 12 months unless the AHJ approves otherwise","No — flow tests must be performed on the day of submittal"], a:2,
+   why:"§4.6.1.1 requires the test to be conducted no more than 12 months prior to working plan submittal, unless otherwise approved by the AHJ. Note the measuring point is submittal — not bid date and not the start of design.",
+   cite:"NFPA 13 (2019) §4.6.1.1"},
+
+  {topic:"supply", q:"The 12-month flow test limit is measured to which date?",
+   opts:["The bid date","The date the design was started","Working plan submittal","System acceptance testing"], a:2,
+   why:"Working plan submittal. A design that slips can push an otherwise-good test out of range without anything else changing.",
+   cite:"NFPA 13 (2019) §4.6.1.1"},
+
+  {topic:"supply", q:"Which of these is NOT among the nine required water supply capacity items?",
+   opts:["Static pressure and residual pressure","Name of the person who conducted the test","Time of the test","Pipe material of the supply main"], a:3,
+   why:"The nine items are gauge location and elevation; flow location; static pressure; residual pressure; flow; date; time; name of the person who conducted or supplied it; and other sources of supply with pressure or elevation. Pipe material is not one of them.",
+   cite:"NFPA 13 (2019) §4.6.1"},
+
+  {topic:"storage", q:"Miscellaneous storage may occupy no more than which of the following?",
+   opts:["10% of the building area","4000 ft² of the sprinklered area","10% of the building area or 4000 ft², whichever is GREATER","10% of the building area or 4000 ft², whichever is SMALLER"], a:2,
+   why:"Whichever is greater. Reading it as the smaller of the two needlessly disqualifies storage the standard actually allows.",
+   cite:"NFPA 13 (2019) §4.3.1.4.1"},
+
+  {topic:"storage", q:"What are the other two miscellaneous storage limits?",
+   opts:["1000 ft² per pile and 25 ft separation","2000 ft² per pile and 20 ft separation","1000 ft² per pile and 10 ft separation","500 ft² per pile and 25 ft separation"], a:0,
+   why:"Not more than 1000 ft² in any one pile or area, and separated from other storage piles or areas by at least 25 ft.",
+   cite:"NFPA 13 (2019) §4.3.1.4.2, §4.3.1.4.3"},
+
+  {topic:"storage", q:"Under §4.3.1.5, low-piled storage on SOLID SHELF racks triggers in-rack sprinklers at what heights?",
+   opts:["12 ft for everything","12 ft for Class I–IV, 5 ft for Group A plastics","8 ft for Class I–IV, 5 ft for Group A plastics","5 ft for everything"], a:1,
+   why:"§4.3.1.5.1 covers Class I–IV at 12 ft or less; §4.3.1.5.2 covers Group A plastics at 5 ft or less. Both are conditioned on SOLID SHELF racks and both route to in-rack sprinklers per §25.6.1 plus ceiling protection per Chapter 4.",
+   cite:"NFPA 13 (2019) §4.3.1.5.1, §4.3.1.5.2"},
+
+  {topic:"storage", q:"Miscellaneous tire storage: what does the 25 ft figure in §4.3.1.6.2 measure?",
+   opts:["The separation between tire piles","The maximum pile height","The pile dimension in the direction of the wheel holes, for on-tread storage","The distance to the nearest sprinkler"], a:2,
+   why:"It is a pile dimension measured along the axis of the wheel holes for on-tread storage. It is NOT a height, and it is not the same 25 ft as the pile separation in §4.3.1.4.3 — same number, unrelated rules.",
+   cite:"NFPA 13 (2019) §4.3.1.6.2"},
+
+  {topic:"storage", q:"Maximum design area for miscellaneous and low-piled storage?",
+   opts:["2000 ft²","3000 ft²","4000 ft²","5000 ft²"], a:1,
+   why:"§4.3.1.7.2 caps the design area at 3000 ft². Do not confuse it with the 4000 ft² building-share figure in §4.3.1.4.1 or the 2000 ft² tire-area limit in §4.3.1.6.1.",
+   cite:"NFPA 13 (2019) §4.3.1.7.2"},
+
+  {topic:"storage", q:"How does §4.3.7 define when you leave Chapter 4 for the storage chapters?",
+   opts:["Storage over 12 ft in height","Storage over 20 ft in height","Arrangements that do not meet §4.3.1.5 through §4.3.1.8","Any rack storage of any height"], a:2,
+   why:"§4.3.7 is written as an exclusion, not a height: arrangements falling outside the miscellaneous and low-piled envelope go to Chapters 20 through 25. No height number appears in §4.3.7 itself — the 12 ft definition of high-piled storage is §3.3.95, in Chapter 3.",
+   cite:"NFPA 13 (2019) §4.3.7, §3.3.95"},
+
+  {topic:"storage", q:"Are hose connections required for the protection of miscellaneous storage?",
+   opts:["Yes, always","Yes, above 1000 ft²","No","Only where the AHJ requires them"], a:2,
+   why:"§4.4 in full is one sentence: hose connections shall not be required for the protection of miscellaneous storage. That is the entire content of the section.",
+   cite:"NFPA 13 (2019) §4.4"},
+
+  {topic:"general", q:"Sodium silicate is proposed to stop a persistent leak. Permitted?",
+   opts:["Yes, if the AHJ approves","Yes, in dry pipe systems only","No — leak-stopping additives are prohibited","Yes, at concentrations below 5%"], a:2,
+   why:"§4.7 prohibits additives or chemicals intended to stop leaks — sodium silicate, its derivatives, brine or similar acting chemicals — outright. There is no approval path in the section.",
+   cite:"NFPA 13 (2019) §4.7"},
+
+  {topic:"general", q:"A contractor wants to hang a small conduit run from your sprinkler branch line. What does Chapter 4 say?",
+   opts:["Permitted if the load is under 25 lb","Permitted with listed clamps","Not permitted unless expressly permitted by the standard","Permitted on branch lines but not mains"], a:2,
+   why:"§4.9 — sprinkler system components shall not be used to support nonsprinkler system components unless expressly permitted. The default is a prohibition with a narrow express-permission exception.",
+   cite:"NFPA 13 (2019) §4.9"},
+
+  {topic:"general", q:"Where the standard permits air to charge, maintain or supervise a system, what else is allowed?",
+   opts:["Nothing else","Nitrogen or other approved gas","Nitrogen only, and only in dry systems","Any inert gas, with AHJ approval"], a:1,
+   why:"§4.8 permits nitrogen or other approved gas anywhere air is permitted for charging, maintaining or supervising sprinkler systems.",
+   cite:"NFPA 13 (2019) §4.8"},
+
+  {topic:"general", q:"For a material to be limited-combustible, what is the potential heat limit?",
+   opts:["1500 Btu/lb","2500 Btu/lb","3500 Btu/lb","8100 Btu/lb"], a:2,
+   why:"Not exceeding 3500 Btu/lb (8141 kJ/kg) when tested per NFPA 259, plus it must not qualify as noncombustible, and it must meet either the surfacing condition of §4.10.2.1 or the flame-spread condition of §4.10.2.2.",
+   cite:"NFPA 13 (2019) §4.10.2"},
+
+  {topic:"general", q:"Where the standard uses the term 'limited-combustible', what else does it include?",
+   opts:["Nothing else","Noncombustible materials","Fire-retardant treated wood","Any material with a flame spread index under 75"], a:1,
+   why:"Both §4.10.1.2 and §4.10.2.4 state it — where 'limited-combustible' is used, it also includes 'noncombustible'. The rule is printed twice, which is redundant but not an error.",
+   cite:"NFPA 13 (2019) §4.10.1.2, §4.10.2.4"},
+
+  {topic:"hazard", q:"Do NFPA 13 occupancy hazard classifications carry over to a building-code use group discussion?",
+   opts:["Yes, they are equivalent","No — they relate only to sprinkler design, installation and water supply","Only for extra hazard classifications","Only where the AHJ adopts NFPA 5000"], a:1,
+   why:"§4.3.1.1 limits the classifications to sprinkler design, installation and water supply requirements, and §4.3.1.2 states they are not intended as a general classification of occupancy hazards.",
+   cite:"NFPA 13 (2019) §4.3.1.1, §4.3.1.2"},
+
+  {topic:"limits", q:"A single system protects a 45,000 ft² light hazard floor. Acceptable?",
+   opts:["Yes — under the 52,000 ft² light hazard limit","No — the limit is 40,000 ft²","No — the limit is 25,000 ft²","Only with a second riser"], a:0,
+   why:"Light hazard and ordinary hazard both allow 52,000 ft² on one floor from one riser, so 45,000 ft² is within the limit.",
+   cite:"NFPA 13 (2019) §4.5.1(1)"},
+
+  {topic:"limits", q:"What extra-hazard system area does §4.5.1 actually give?",
+   opts:["25,000 ft², pipe schedule","40,000 ft², hydraulically calculated","52,000 ft²","Both 25,000 and 40,000, depending on method"], a:1,
+   why:"§4.5.1(3) lists only the hydraulically calculated value, 40,000 ft². No pipe-schedule extra-hazard entry appears in §4.5.1 as printed — so a 25,000 ft² answer is not supported by this section.",
+   cite:"NFPA 13 (2019) §4.5.1(3)"}
+];
+
+var currentQ=null, answered=false, queue=[];
+function pickQuestion(){
+  if(store.missed && store.missed.length && Math.random()<0.45){
+    var idx=store.missed[Math.floor(Math.random()*store.missed.length)];
+    if(QUESTIONS[idx]) return idx;
+  }
+  if(!queue.length){
+    queue=QUESTIONS.map(function(_,i){ return i; });
+    for(var i=queue.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1));
+      var t=queue[i]; queue[i]=queue[j]; queue[j]=t; }
+  }
+  return queue.pop();
+}
+function nextQuestion(){
+  var idx=pickQuestion(); currentQ=idx; answered=false;
+  var q=QUESTIONS[idx];
+  var wasMissed=store.missed.indexOf(idx)!==-1;
+  var h='<div class="scenario"><div class="q-meta">'+esc(TOPIC_NAMES[q.topic]||q.topic).toUpperCase()
+    + (wasMissed?' &nbsp;·&nbsp; <span style="color:var(--redline)">RETURNING — you missed this before</span>':'')
+    + '</div><div class="q-text">'+esc(q.q)+'</div><div class="opts">';
+  q.opts.forEach(function(o,i){
+    h+='<button class="opt" data-i="'+i+'"><span class="k">'+"ABCD"[i]+'</span><span>'+esc(o)+'</span></button>'; });
+  h+='</div><div id="qExplain"></div></div>';
+  $("drillHost").innerHTML=h;
+  Array.prototype.forEach.call(document.querySelectorAll("#drillHost .opt"),function(b){
+    b.addEventListener("click",function(){ answer(parseInt(b.getAttribute("data-i"),10)); }); });
+  $("dNext").textContent="Skip"; renderScore();
+}
+function answer(i){
+  if(answered) return; answered=true;
+  var q=QUESTIONS[currentQ], right=(i===q.a);
+  Array.prototype.forEach.call(document.querySelectorAll("#drillHost .opt"),function(b){
+    var bi=parseInt(b.getAttribute("data-i"),10); b.disabled=true;
+    if(bi===q.a) b.classList.add("right"); else if(bi===i) b.classList.add("wrong"); });
+  store.seen++;
+  if(!store.topics[q.topic]) store.topics[q.topic]={r:0,s:0};
+  store.topics[q.topic].s++;
+  if(right){ store.right++; store.streak++; store.topics[q.topic].r++;
+    if(store.streak>store.best) store.best=store.streak;
+    var mi=store.missed.indexOf(currentQ); if(mi!==-1) store.missed.splice(mi,1);
+  }else{ store.streak=0; if(store.missed.indexOf(currentQ)===-1) store.missed.push(currentQ); }
+  checkBadges(); logToday(); save(); renderScore();
+  $("qExplain").innerHTML='<div class="explain"><div class="ex-h">'+(right?"Correct":"Not quite")+'</div>'
+    + '<p style="margin-bottom:7px">'+esc(q.why)+'</p>'
+    + '<div style="font-size:.8rem"><span class="cite">'+esc(q.cite)+'</span></div></div>';
+  $("dNext").textContent="Next question";
+}
+$("dNext").addEventListener("click", nextQuestion);
+$("dReset").addEventListener("click", function(){
+  if(!confirm("Reset your drill statistics? Mastery bars and badges will be cleared.")) return;
+  var log=store.log; store=blank(); store.log=log;
+  save(); renderScore(); renderProgress(); nextQuestion();
+});
+function renderScore(){
+  $("dStreak").textContent=store.streak; $("dBest").textContent=store.best;
+  $("dRight").textContent=store.right;   $("dSeen").textContent=store.seen;
+}
+
+/* ---------- badges + progress ---------- */
+var BADGES=[
+  {id:"first",ico:"◉",name:"First Answer",test:function(){return store.seen>=1;}},
+  {id:"ten",ico:"◈",name:"Ten Down",test:function(){return store.right>=10;}},
+  {id:"streak5",ico:"▲",name:"Streak 5",test:function(){return store.best>=5;}},
+  {id:"streak10",ico:"★",name:"Streak 10",test:function(){return store.best>=10;}},
+  {id:"allTopics",ico:"◆",name:"All Topics",test:function(){
+    var ok=true; for(var t in store.topics){ if(store.topics.hasOwnProperty(t)&&store.topics[t].r<1) ok=false; } return ok;}},
+  {id:"clean",ico:"✦",name:"Nothing Missed",test:function(){return store.seen>=10&&store.missed.length===0;}},
+  {id:"half",ico:"◑",name:"Half the Bank",test:function(){return store.right>=Math.floor(QUESTIONS.length/2);}},
+  {id:"return",ico:"◐",name:"Came Back",test:function(){return (store.log||[]).length>=2;}},
+  {id:"week",ico:"⬢",name:"Five Days",test:function(){return (store.log||[]).length>=5;}}
+];
+function checkBadges(){
+  BADGES.forEach(function(b){
+    if(store.badges.indexOf(b.id)===-1 && b.test()){ store.badges.push(b.id); toast("Badge earned — "+b.name); }});
+}
+function toast(msg){
+  var t=document.createElement("div"); t.textContent=msg;
+  t.style.cssText="position:fixed;left:50%;bottom:26px;transform:translateX(-50%);"
+    +"background:#16130F;color:#FCFAF6;font-family:var(--mono);font-size:.72rem;"
+    +"letter-spacing:.08em;text-transform:uppercase;padding:11px 18px;border:1.5px solid #D85A30;"
+    +"z-index:99;font-weight:700;box-shadow:0 3px 0 rgba(0,0,0,.18)";
+  document.body.appendChild(t);
+  setTimeout(function(){ t.style.transition="opacity .5s"; t.style.opacity="0"; },1900);
+  setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); },2500);
+}
+function logToday(){ var d=todayISO(); if(store.log.indexOf(d)===-1) store.log.push(d); store.lastVisit=d; }
+var TOPIC_NAMES={ hazard:"Hazard classes", storage:"Misc & low-piled", limits:"System area limits",
+                  supply:"Water supply", general:"General requirements" };
+function renderProgress(){
+  var h="";
+  for(var t in store.topics){
+    if(!store.topics.hasOwnProperty(t)) continue;
+    var o=store.topics[t], pct=o.s?Math.round((o.r/o.s)*100):0, gold=o.s>=3&&pct>=80;
+    h+='<div class="m-row"><div class="m-name">'+esc(TOPIC_NAMES[t]||t)+'</div>'
+      +'<div class="m-track"><div class="m-fill'+(gold?" gold":"")+'" style="width:'+pct+'%"></div></div>'
+      +'<div class="m-pct">'+(o.s?pct+"%":"—")+'</div></div>';
+  }
+  $("masteryHost").innerHTML=h;
+  $("badgeHost").innerHTML=BADGES.map(function(b){
+    var got=store.badges.indexOf(b.id)!==-1;
+    return '<div class="badge'+(got?" got":"")+'"><div class="b-ico">'+b.ico+'</div>'
+      +'<div class="b-n">'+esc(b.name)+'</div></div>'; }).join("");
+  var log=(store.log||[]).slice().sort(), lh="";
+  if(!log.length){ lh='<p style="margin:0;font-size:.88rem">No sessions logged yet. Answer a drill question to start the log.</p>'; }
+  else{
+    lh='<div style="font-family:var(--mono);font-size:.76rem;line-height:2">';
+    log.slice(-14).forEach(function(d){
+      lh+='<div style="display:flex;justify-content:space-between;border-bottom:1px dotted var(--line)">'
+        +'<span>'+esc(d)+'</span><span style="color:var(--ink-3)">studied</span></div>'; });
+    lh+='</div><p style="margin-top:9px;font-size:.85rem">'+log.length+' session'+(log.length===1?"":"s")+' logged.</p>';
+  }
+  $("logHost").innerHTML=lh;
+  var mh="";
+  if(!store.missed.length){ mh='<p style="margin:0;font-size:.88rem">Nothing outstanding. Every question you have missed has since been answered correctly.</p>'; }
+  else{
+    mh='<p style="font-size:.88rem">These come back at higher odds until you get them right:</p><ul class="tight">';
+    store.missed.slice(0,12).forEach(function(i){ if(QUESTIONS[i]) mh+='<li>'+esc(QUESTIONS[i].q)+'</li>'; });
+    mh+='</ul>';
+  }
+  $("missHost").innerHTML=mh;
+}
+
+/* boot */
+renderScore();
+renderProgress();
+openFromHash();
+</script>
+</body>
+</html>
