@@ -1,0 +1,1950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FSM Isometric Trainer — Pipe Isometrics for Sprinkler Fitters</title>
+<style>
+:root{
+  --bg:#0e1116; --panel:#161b22; --panel2:#1c232c; --line:#2a3340;
+  --orange:#D85A30; --orange-lt:#f07a4e;
+  --blue:#185FA5; --blue-lt:#3B93F7;
+  --green:#1D9E75; --green-lt:#2fd39c;
+  --red:#E5484D;
+  --txt:#e6edf3; --muted:#8b949e; --dim:#5c6a7a;
+  --pipe:#e6edf3; --ghost:#f0a37e;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--txt);
+  font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  padding-bottom:60px;
+}
+h1,h2,h3,h4{line-height:1.25;margin:0 0 .5em}
+p{margin:0 0 1em}
+a{color:var(--blue-lt)}
+
+/* ---------- header ---------- */
+header{
+  background:linear-gradient(135deg,#1a120c 0%,#111820 60%,#0e1116 100%);
+  border-bottom:2px solid var(--orange);
+  padding:22px 16px 18px; text-align:center;
+}
+.logo{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--orange);font-weight:800}
+header h1{font-size:26px;margin:8px 0 6px;letter-spacing:-.5px}
+header .sub{color:var(--muted);font-size:14px;max-width:640px;margin:0 auto}
+.srcnote{margin-top:12px;font-size:11.5px;color:var(--dim);max-width:660px;margin-left:auto;margin-right:auto;line-height:1.5}
+
+/* ---------- nav ---------- */
+nav{
+  position:sticky; top:0; z-index:40;
+  background:rgba(14,17,22,.96); backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+  overflow-x:auto; -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+nav::-webkit-scrollbar{display:none}
+.navrow{display:flex;gap:6px;padding:10px 12px;min-width:max-content}
+.navbtn{
+  flex:0 0 auto; background:var(--panel); border:1px solid var(--line);
+  color:var(--muted); font-size:12.5px; font-weight:700;
+  padding:11px 14px; border-radius:999px; cursor:pointer; white-space:nowrap;
+  display:flex; align-items:center; gap:6px; min-height:42px;
+}
+.navbtn b{background:var(--panel2);color:var(--dim);border-radius:999px;font-size:10px;padding:1px 6px}
+.navbtn.on{background:var(--orange);border-color:var(--orange);color:#fff}
+.navbtn.on b{background:rgba(0,0,0,.28);color:#fff}
+.navbtn.done{border-color:var(--green)}
+.navbtn.done b{background:var(--green);color:#04150f}
+
+/* ---------- layout ---------- */
+main{max-width:900px;margin:0 auto;padding:18px 14px 40px}
+section{display:none}
+section.on{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.modhead{border-left:4px solid var(--orange);padding-left:12px;margin-bottom:18px}
+.modhead .kick{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--orange);font-weight:800}
+.modhead h2{font-size:22px;margin:4px 0 6px}
+.modhead p{color:var(--muted);font-size:14.5px;margin:0}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin:0 0 16px}
+.card h3{font-size:16.5px;color:var(--orange-lt);margin-bottom:8px}
+.card h4{font-size:14px;color:var(--blue-lt);margin:16px 0 6px;text-transform:uppercase;letter-spacing:1px}
+.card p,.card li{font-size:14.5px;color:#cbd5e1}
+.card ul,.card ol{margin:0 0 1em;padding-left:20px}
+.card li{margin-bottom:7px}
+.card li strong{color:var(--txt)}
+
+.rule{background:linear-gradient(135deg,#1b2620,#141d1a);border:1px solid #22503d;border-left:4px solid var(--green);border-radius:8px;padding:12px 14px;margin:14px 0}
+.rule .lbl{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--green-lt);font-weight:800;display:block;margin-bottom:4px}
+.rule p{margin:0;font-size:14.5px}
+.warn{background:linear-gradient(135deg,#2a1a12,#1d1512);border:1px solid #5c3320;border-left:4px solid var(--orange);border-radius:8px;padding:12px 14px;margin:14px 0}
+.warn .lbl{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--orange-lt);font-weight:800;display:block;margin-bottom:4px}
+.warn p{margin:0;font-size:14.5px}
+
+/* ---------- controls ---------- */
+.btn{
+  background:var(--panel2);border:1px solid var(--line);color:var(--txt);
+  font-size:14px;font-weight:700;padding:11px 16px;border-radius:9px;cursor:pointer;
+  min-height:44px;
+}
+.btn:active{transform:translateY(1px)}
+.btn.pri{background:var(--orange);border-color:var(--orange);color:#fff}
+.btn.blue{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.gr{background:var(--green);border-color:var(--green);color:#04150f}
+.btn.gh{background:transparent;color:var(--muted)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.btnrow .btn{flex:1 1 auto}
+
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.seg button{
+  flex:1 1 auto;background:var(--panel2);border:1px solid var(--line);color:var(--muted);
+  font-size:13px;font-weight:700;padding:10px 8px;border-radius:8px;cursor:pointer;min-height:42px;
+}
+.seg button.on{background:var(--blue);border-color:var(--blue-lt);color:#fff}
+
+/* ---------- svg frames ---------- */
+.frame{background:#0a0d12;border:1px solid var(--line);border-radius:10px;padding:8px;margin:12px 0}
+.frame svg{display:block;width:100%;height:auto}
+.frame .cap{font-size:11.5px;color:var(--dim);text-align:center;padding:6px 4px 2px;letter-spacing:.5px}
+.twoup{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:640px){ .twoup{grid-template-columns:1fr 1fr} }
+
+/* ---------- compass builder ---------- */
+.compass-wrap{display:flex;flex-direction:column;align-items:center;gap:4px}
+.compass{width:220px;height:220px;position:relative;margin:6px auto}
+.compass svg{position:absolute;inset:0;width:100%;height:100%}
+.cbtn{
+  position:absolute;width:48px;height:48px;margin:-24px 0 0 -24px;
+  border-radius:50%;background:var(--panel2);border:2px solid var(--line);
+  color:var(--txt);font-weight:800;font-size:15px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
+.cbtn.on{background:var(--orange);border-color:var(--orange-lt);color:#fff;box-shadow:0 0 0 4px rgba(216,90,48,.22)}
+.cbtn.hl{border-color:var(--green);box-shadow:0 0 0 4px rgba(29,158,117,.25)}
+
+.lenrow{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.step{display:flex;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.step button{background:none;border:none;color:var(--txt);font-size:20px;font-weight:800;width:44px;height:44px;cursor:pointer}
+.step .val{min-width:56px;text-align:center;font-weight:800;font-size:16px;font-variant-numeric:tabular-nums}
+.lenlbl{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);font-weight:800;width:100%;text-align:center;margin-bottom:-4px}
+
+.legs{margin:12px 0;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.legs .lg{display:flex;align-items:center;gap:10px;padding:9px 12px;font-size:13.5px;border-bottom:1px solid var(--line);background:var(--panel2)}
+.legs .lg:last-child{border-bottom:none}
+.legs .lg .n{background:var(--blue);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex:0 0 auto}
+.legs .lg.bad .n{background:var(--red)}
+.legs .lg.ok .n{background:var(--green);color:#04150f}
+.legs .empty{padding:14px;color:var(--dim);font-size:13px;text-align:center;background:var(--panel2)}
+
+.fb{border-radius:9px;padding:12px 14px;margin:12px 0;font-size:14px;display:none}
+.fb.show{display:block}
+.fb.good{background:#0f2a20;border:1px solid var(--green);color:#b6f0d8}
+.fb.bad{background:#2a1315;border:1px solid var(--red);color:#f6c6c8}
+.fb.info{background:#122336;border:1px solid var(--blue);color:#bcd9f6}
+.fb b{color:#fff}
+
+/* ---------- quiz ---------- */
+.q{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin:0 0 14px}
+.q .qn{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--orange);font-weight:800;margin-bottom:6px}
+.q .qt{font-size:15.5px;font-weight:600;margin-bottom:12px}
+.opt{
+  display:block;width:100%;text-align:left;background:var(--panel2);border:1px solid var(--line);
+  color:var(--txt);font-size:14.5px;padding:12px 14px;border-radius:9px;margin-bottom:8px;cursor:pointer;min-height:46px;
+}
+.opt:hover{border-color:var(--dim)}
+.opt.correct{background:#0f2a20;border-color:var(--green);color:#b6f0d8}
+.opt.wrong{background:#2a1315;border-color:var(--red);color:#f6c6c8}
+.opt:disabled{cursor:default}
+.expl{display:none;margin-top:10px;padding:12px;background:#101820;border-left:3px solid var(--blue-lt);border-radius:0 8px 8px 0;font-size:14px;color:#cbd5e1}
+.expl.show{display:block}
+
+/* ---------- symbol library ---------- */
+.symgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin:12px 0}
+.sym{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 6px;text-align:center}
+.sym svg{display:block;margin:0 auto;width:100%;height:auto;max-width:120px}
+.sym .nm{font-size:12px;font-weight:700;margin-top:6px;color:var(--txt)}
+.sym .sb{font-size:10px;color:var(--dim);letter-spacing:1px;text-transform:uppercase}
+
+/* ---------- score ---------- */
+.scorebar{height:10px;background:var(--panel2);border-radius:999px;overflow:hidden;margin:8px 0}
+.scorebar i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--green));border-radius:999px;transition:width .4s}
+.stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin:14px 0}
+.stat div{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center}
+.stat .v{font-size:24px;font-weight:800;color:var(--orange)}
+.stat .k{font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);font-weight:700}
+
+.legend{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;font-size:11.5px;color:var(--muted);padding:6px 0}
+.legend span{display:flex;align-items:center;gap:5px}
+
+footer{text-align:center;padding:26px 16px;color:var(--dim);font-size:12px;border-top:1px solid var(--line);margin-top:30px}
+.pillrow{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:10px 0}
+.pill{font-size:10.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:999px;background:var(--panel2);color:var(--muted);border:1px solid var(--line)}
+.pill.o{color:var(--orange-lt);border-color:#5c3320}
+.pill.g{color:var(--green-lt);border-color:#22503d}
+.pill.b{color:var(--blue-lt);border-color:#1d3d63}
+
+table.tbl{width:100%;border-collapse:collapse;font-size:13.5px;margin:12px 0}
+table.tbl th{background:var(--panel2);color:var(--orange-lt);text-align:left;padding:9px 10px;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;border-bottom:1px solid var(--line)}
+table.tbl td{padding:9px 10px;border-bottom:1px solid var(--line);color:#cbd5e1;vertical-align:top}
+.slider{width:100%;margin:6px 0;accent-color:var(--orange)}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px;margin:10px 0}
+.readout div{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px;text-align:center}
+.readout .v{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+.readout .k{font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);font-weight:700}
+.readout .v.ok{color:var(--green-lt)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Fire System Mastery</div>
+  <h1>Isometric Trainer</h1>
+  <p class="sub">Pipe isometrics for sprinkler fitters — the compass, the three axes, plan&nbsp;+&nbsp;elevation to iso, offsets, and fitting orientation. Built to be worked, not read.</p>
+  <div class="pillrow">
+    <span class="pill o">9 Modules</span>
+    <span class="pill b">Interactive Compass Builder</span>
+    <span class="pill g">10 Graded Work Problems</span>
+  </div>
+  <p class="srcnote">Concepts adapted from the sprinkler-fitter drawing curriculum. All explanations are written in original wording and every figure in this app is drawn from scratch — no course artwork is reproduced.</p>
+</header>
+
+<nav><div class="navrow" id="nav"></div></nav>
+
+<main>
+
+<!-- ============ M0 ============ -->
+<section id="m0" class="on">
+  <div class="modhead">
+    <div class="kick">Module 1</div>
+    <h2>Why an Isometric Beats Two Flat Views</h2>
+    <p>What the drawing is for, and why the whole trade uses it.</p>
+  </div>
+
+  <div class="card">
+    <h3>The problem with flat views</h3>
+    <p>A plan view throws away height. An elevation throws away one horizontal direction. Neither one, on its own, tells you what the pipe actually does in the building — you have to hold both in your head and fuse them. That fusing step is where mistakes get made, and mistakes on a pipe drawing turn into cut pipe that doesn't fit.</p>
+    <p>An isometric keeps all three dimensions in a single picture. One sheet, and a fitter can see the run, the direction, and the rise at the same time.</p>
+
+    <div class="btnrow">
+      <button class="btn pri" id="whyToggle">Show the isometric →</button>
+    </div>
+    <div class="frame">
+      <div id="whyStage"></div>
+      <div class="cap" id="whyCap"></div>
+    </div>
+
+    <div class="rule">
+      <span class="lbl">Rule</span>
+      <p>Isometric pipe drawings are normally <strong>not drawn to scale</strong>. Every dimension you need is written on the line. Never measure a length off an isometric — read it.</p>
+    </div>
+
+    <h4>Where you'll meet them</h4>
+    <ul>
+      <li><strong>Orthographic</strong> — the standard plan and elevation sheets.</li>
+      <li><strong>P&amp;ID</strong> — process and instrumentation; schematic, no real geometry.</li>
+      <li><strong>Isometric</strong> — the three-dimensional picture of a pipe run. This app.</li>
+      <li><strong>Spool</strong> — one shop-fabricated assembly pulled out and dimensioned on its own.</li>
+      <li>Plus architectural, structural, civil, electrical and HVAC sheets you have to coordinate against.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ M1 ============ -->
+<section id="m1">
+  <div class="modhead">
+    <div class="kick">Module 2</div>
+    <h2>The Three Axes</h2>
+    <p>Where the 30° comes from, and the one rule that governs every measurement you make.</p>
+  </div>
+
+  <div class="card">
+    <h3>Equal measure</h3>
+    <p><em>Isometric</em> literally means equal measure. Three axes leave a common corner: one straight up, and two running off at 30° above horizontal. On paper they sit 120° apart from each other, and — this is the whole point — a length along any one of the three comes out the same on the page as the same length along either of the others.</p>
+    <p>That is not an accident of drafting. It's what you get if you take a cube, spin it a quarter-turn short of square, then tip it forward. Work the sliders until the two bottom edges read 30° and watch the three edge lengths lock together.</p>
+
+    <div class="frame">
+      <div id="cubeStage"></div>
+      <div class="cap">Drag the sliders. The cube is projected live.</div>
+    </div>
+
+    <div class="lenlbl">Spin about the vertical — <span id="spinVal">0°</span></div>
+    <input type="range" class="slider" id="spin" min="0" max="90" value="0" step="1">
+    <div class="lenlbl">Tip forward — <span id="tiltVal">0°</span></div>
+    <input type="range" class="slider" id="tilt" min="0" max="90" value="0" step="0.01">
+
+    <div class="readout">
+      <div><div class="v" id="roL">—</div><div class="k">Left edge on paper</div></div>
+      <div><div class="v" id="roR">—</div><div class="k">Right edge on paper</div></div>
+      <div><div class="v" id="roLen">—</div><div class="k">Edge lengths</div></div>
+    </div>
+
+    <div class="btnrow">
+      <button class="btn gr" id="snapIso">Snap to true isometric</button>
+      <button class="btn gh" id="resetIso">Reset</button>
+    </div>
+
+    <div class="rule">
+      <span class="lbl">The true-length rule</span>
+      <p>Only lines drawn <strong>on or parallel to</strong> the three axes measure true length. Anything else on the sheet is stretched or squashed by the projection and <strong>cannot be scaled</strong>. This is why a 45° offset always has to be dimensioned or noted — never measured.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ M2 ============ -->
+<section id="m2">
+  <div class="modhead">
+    <div class="kick">Module 3</div>
+    <h2>The Isometric Compass</h2>
+    <p>Three axes give you three lines. Pipe needs six directions.</p>
+  </div>
+
+  <div class="card">
+    <h3>Six lines of direction</h3>
+    <p>Extend each of the three axes through the corner and out the other side and you get six directions instead of three. The vertical becomes <strong>Up</strong> and <strong>Down</strong>. The two 30° axes become <strong>North / South</strong> and <strong>East / West</strong>. That set is the isometric compass, and it is the single most useful thing on a pipe iso.</p>
+    <p>Draw it in a corner of every isometric you make. It tells whoever picks up the sheet which way each line is running, and while you're drawing it tells you which way to put the next leg.</p>
+
+    <div class="compass-wrap">
+      <div class="compass" id="compassDemo"></div>
+    </div>
+    <div class="fb info show" id="compassMsg">Tap a direction to see the leg drawn.</div>
+
+    <div class="frame">
+      <div id="compassStage"></div>
+      <div class="cap">Legs you place appear here on the isometric.</div>
+    </div>
+    <div class="btnrow">
+      <button class="btn gh" id="compassClear">Clear</button>
+    </div>
+
+    <div class="warn">
+      <span class="lbl">Watch this</span>
+      <p>Up and Down are the <em>only</em> two directions that don't move you north, south, east or west. Every other line on a pipe iso is going somewhere on the compass — and if it isn't, it's a non-isometric line and needs a box around it (Module 7).</p>
+    </div>
+
+    <h3 style="margin-top:22px">Direction drill</h3>
+    <p>Six quick ones. Tap the direction the callout asks for.</p>
+    <div id="dirDrill"></div>
+  </div>
+</section>
+
+<!-- ============ M3 ============ -->
+<section id="m3">
+  <div class="modhead">
+    <div class="kick">Module 4</div>
+    <h2>Isometric Circles</h2>
+    <p>Every round thing on a pipe drawing becomes an ellipse. Here's how to lay one out.</p>
+  </div>
+
+  <div class="card">
+    <h3>Why it matters</h3>
+    <p>Pipe ends, flange faces, valve bodies, the face of every fitting — all round, and in isometric you are looking at every one of them on a slant. A circle seen on a slant is an ellipse, and if you freehand it you'll get a lopsided egg that makes the sheet look wrong.</p>
+    <p>The fix is the same trick you use for a circle on a flat sketch: build a square around it first. In isometric that square is a rhombus, and the circle touches it at the midpoint of each of the four sides.</p>
+
+    <div class="frame">
+      <div id="ellStage"></div>
+      <div class="cap" id="ellCap">Step 1 of 5</div>
+    </div>
+    <div class="btnrow">
+      <button class="btn blue" id="ellPrev">← Back</button>
+      <button class="btn pri" id="ellNext">Next step →</button>
+    </div>
+    <div class="seg" id="ellFace">
+      <button data-f="top" class="on">Top face</button>
+      <button data-f="left">Left face</button>
+      <button data-f="right">Right face</button>
+    </div>
+
+    <h4>The five steps</h4>
+    <ol>
+      <li>Lay out an isometric rhombus whose sides equal the diameter of the circle.</li>
+      <li>Mark the midpoint of each of the four sides.</li>
+      <li>The two <strong>long arcs</strong> sweep between the midpoints across the wide corners.</li>
+      <li>The two <strong>short arcs</strong> close it off across the narrow corners.</li>
+      <li>Every arc runs tangent to the rhombus at the midpoint mark — no corners, no flat spots.</li>
+    </ol>
+
+    <div class="rule">
+      <span class="lbl">Field shortcut</span>
+      <p>You almost never need a full ellipse on a pipe iso. A fitting face reads perfectly well as a short tick across the pipe. Save the full ellipse for when you're actually showing an open pipe end, a flange face, or a detail.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ M4 ============ -->
+<section id="m4">
+  <div class="modhead">
+    <div class="kick">Module 5</div>
+    <h2>Choosing Your View</h2>
+    <p>Eight views exist. Four get used. Picking the wrong one makes a clean run unreadable.</p>
+  </div>
+
+  <div class="card">
+    <h3>The four corners</h3>
+    <p>An isometric is drawn as if you're standing at one corner of the building looking in, so you see the top and two sides. There are eight possible corners; the bottom four are essentially never used on pipe work because you don't look at pipe from underneath. That leaves four: <strong>southeast, northeast, northwest, southwest</strong>.</p>
+    <p>Same pipe run below. Switch the view and watch what happens.</p>
+
+    <div class="seg" id="viewSeg">
+      <button data-v="SE" class="on">SE</button>
+      <button data-v="NE">NE</button>
+      <button data-v="NW">NW</button>
+      <button data-v="SW">SW</button>
+    </div>
+
+    <div class="frame">
+      <div id="viewStage"></div>
+      <div class="cap" id="viewCap"></div>
+    </div>
+    <div class="fb info show" id="viewMsg"></div>
+
+    <div class="rule">
+      <span class="lbl">Two rules for picking</span>
+      <p><strong>1.</strong> Choose the view that reads closest to the plan, so anyone holding the plan sheet can follow your iso without re-orienting.<br>
+      <strong>2.</strong> Avoid any view where two pipe lines cross. A crossing reads like a connection that isn't there — the app flags them in red above.</p>
+    </div>
+
+    <h4>What rotates with you</h4>
+    <p>When you change the view you are rotating the <em>building</em>, so the compass rotates with it. Up and Down never move. North, south, east and west swap corners. That's exactly why the compass has to be drawn on the sheet: without it, a northeast view and a southwest view of the same pipe look like two different systems.</p>
+  </div>
+</section>
+
+<!-- ============ M5 ============ -->
+<section id="m5">
+  <div class="modhead">
+    <div class="kick">Module 6</div>
+    <h2>Plan + Elevation → Isometric</h2>
+    <p>The core job skill. Two flat views in, one three-dimensional picture out.</p>
+  </div>
+
+  <div class="card">
+    <h3>The procedure</h3>
+    <ol>
+      <li><strong>Find the north arrow on the plan.</strong> Do this first, every time. North is not always up the sheet.</li>
+      <li><strong>Pick your view and draw the compass.</strong> Corner of the sheet, before you draw any pipe.</li>
+      <li><strong>Start where the pipe enters</strong> — a riser, a main connection, a wall penetration. Something you can point at on both views.</li>
+      <li><strong>Take one leg at a time.</strong> Read its direction off whichever view shows it, and its length off whichever view shows it true.</li>
+      <li><strong>Draw the leg along the matching compass direction.</strong> Not "roughly that way" — exactly along the axis.</li>
+      <li><strong>Drop the fitting symbol in at each joint</strong> before you move on, while you still remember what it was.</li>
+    </ol>
+
+    <div class="rule">
+      <span class="lbl">The two tells</span>
+      <p>A leg that shows as a <strong>point on the plan</strong> is running straight up or down.<br>
+      A leg that shows as a <strong>point on an elevation</strong> is running straight into or out of that elevation.<br>
+      In both cases the drawing marks it with a circle instead of a line.</p>
+    </div>
+
+    <h3 style="margin-top:22px">Worked example</h3>
+    <p>Step through it. Watch the leg light up on the plan and the elevation as it gets added to the iso.</p>
+    <div class="twoup">
+      <div class="frame"><div id="wePlan"></div><div class="cap">Plan</div></div>
+      <div class="frame"><div id="weElev"></div><div class="cap" id="weElevCap">Elevation</div></div>
+    </div>
+    <div class="frame"><div id="weIso"></div><div class="cap">Isometric — southeast view</div></div>
+    <div class="fb info show" id="weMsg"></div>
+    <div class="btnrow">
+      <button class="btn blue" id="wePrev">← Back</button>
+      <button class="btn pri" id="weNext">Next step →</button>
+      <button class="btn gh" id="weReset">Restart</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ M6 ============ -->
+<section id="m6">
+  <div class="modhead">
+    <div class="kick">Module 7</div>
+    <h2>Offsets &amp; Non-Isometric Lines</h2>
+    <p>The single biggest source of misread pipe drawings — and a two-second fix.</p>
+  </div>
+
+  <div class="card">
+    <h3>What makes a line non-isometric</h3>
+    <p>Every line you've drawn so far ran along one of the six compass directions. Real pipe doesn't always cooperate. A 45° offset to get around a beam, a rolling offset to clear two obstructions at once — those legs run diagonally, off every axis. Two things are true about them:</p>
+    <ul>
+      <li>They <strong>cannot be drawn to scale</strong>. The projection distorts them. (That's the true-length rule from Module 2.)</li>
+      <li>On their own they are <strong>ambiguous</strong>. Two completely different offsets can land on the exact same line on paper.</li>
+    </ul>
+
+    <h3 style="margin-top:20px">Box it in</h3>
+    <p>The fix is to draw the offset's two axis components as light broken lines, closing a box around it. The offset is the diagonal of that box. The box does one job: it tells the reader <strong>which plane the offset lies in</strong>.</p>
+    <p>Below is one drawn line. Nothing about the solid pipe changes. Only the box changes — and with it, the entire meaning.</p>
+
+    <div class="seg" id="boxSeg">
+      <button data-b="none" class="on">No box</button>
+      <button data-b="H">Box in horizontal plane</button>
+      <button data-b="V">Box in vertical plane</button>
+    </div>
+    <div class="frame">
+      <div id="boxStage"></div>
+      <div class="cap" id="boxCap"></div>
+    </div>
+    <div class="fb info show" id="boxMsg"></div>
+
+    <div class="warn">
+      <span class="lbl">This is the whole lesson</span>
+      <p>With no box, a fitter reading your sheet is guessing which way the pipe goes — and half of them will guess wrong. The two boxed versions above are different pipe, different fittings, different cut lengths. <strong>Always box a non-isometric line.</strong></p>
+    </div>
+
+    <h4>And add the note</h4>
+    <p>Any angle that isn't 90° gets a written note stating the angle and the direction it turns — for example <em>45° up from horizontal</em>, <em>45° in the horizontal plane</em>, <em>30° down from horizontal</em>. The box shows the plane; the note pins down the angle. Use both.</p>
+
+    <h3 style="margin-top:22px">Offset drill</h3>
+    <div id="offDrill"></div>
+  </div>
+</section>
+
+<!-- ============ M7 ============ -->
+<section id="m7">
+  <div class="modhead">
+    <div class="kick">Module 8</div>
+    <h2>Fittings, Valves &amp; Orientation</h2>
+    <p>The symbol library, plus the part people actually get wrong: which way it's pointing.</p>
+  </div>
+
+  <div class="card">
+    <h3>The orientation rule</h3>
+    <div class="rule">
+      <span class="lbl">Rule</span>
+      <p>The face of a fitting is always drawn <strong>perpendicular to the pipe it lands on</strong>. On an isometric that means the symbol tick runs along one of the <em>other</em> two axes — never along the pipe itself. Get this wrong and the fitting reads as though it's on the wrong run.</p>
+    </div>
+
+    <h3 style="margin-top:20px">Front view vs. isometric</h3>
+    <p>Same fitting, two ways of drawing it. On an isometric the symbol gets drawn isometrically too — it leans with the pipe.</p>
+    <div class="symgrid" id="symLib"></div>
+
+    <h3 style="margin-top:20px">Joint types</h3>
+    <p>The joint tells the fitter how it goes together, and it drives the cut length. These are the connector marks you'll see on a single-line drawing.</p>
+    <div class="symgrid" id="jointLib"></div>
+
+    <h3 style="margin-top:20px">Turned up, turned down</h3>
+    <p>On a plan view, a fitting that turns the pipe vertically can't be drawn as a line — you're looking straight down the barrel of it. It gets a circle instead, and the circle tells you which way it went.</p>
+    <div class="twoup">
+      <div class="frame"><div id="tuStage"></div><div class="cap">Turned up — toward you</div></div>
+      <div class="frame"><div id="tdStage"></div><div class="cap">Turned down — away from you</div></div>
+    </div>
+    <div class="rule">
+      <span class="lbl">Read it this way</span>
+      <p>You are looking <strong>down</strong> at a plan. An open circle is pipe coming <strong>up toward you</strong>. A circle with a bar through it is pipe heading <strong>down, away from you</strong>. On an elevation the same logic applies to pipe running into or out of the sheet.</p>
+    </div>
+
+    <h3 style="margin-top:22px">Symbol drill</h3>
+    <div id="symDrill"></div>
+  </div>
+</section>
+
+<!-- ============ M8 ============ -->
+<section id="m8">
+  <div class="modhead">
+    <div class="kick">Module 9</div>
+    <h2>Work Problems</h2>
+    <p>Ten graded problems. Read the views, build the isometric, get told exactly where you went wrong.</p>
+  </div>
+
+  <div class="card" id="wpIntro">
+    <h3>How this works</h3>
+    <p>Each problem gives you a plan and an elevation. Your job is to build the isometric leg by leg using the compass: tap a direction, set the length, add it. The app auto-places an elbow at every direction change, the same as real pipe would.</p>
+    <ul>
+      <li>Check your work whenever you like — you'll get the <strong>first</strong> thing that's wrong, not a list. Fix it and check again.</li>
+      <li>Two failed checks unlocks <em>Show me</em>.</li>
+      <li>A problem counts as clean if you get it on the first check.</li>
+    </ul>
+    <div class="btnrow">
+      <button class="btn pri" id="wpStart">Start problem 1 →</button>
+    </div>
+  </div>
+
+  <div id="wpArea" style="display:none">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <div class="qn" style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--orange);font-weight:800" id="wpNum"></div>
+        <div style="font-size:12px;color:var(--muted)" id="wpScore"></div>
+      </div>
+      <div class="scorebar"><i id="wpBar" style="width:0%"></i></div>
+      <h3 id="wpTitle" style="margin-top:12px"></h3>
+      <p id="wpBrief" style="color:#cbd5e1"></p>
+
+      <div class="twoup">
+        <div class="frame"><div id="wpPlan"></div><div class="cap" id="wpPlanCap">Plan</div></div>
+        <div class="frame"><div id="wpElev"></div><div class="cap" id="wpElevCap">Elevation</div></div>
+      </div>
+
+      <h4>Build it</h4>
+      <div class="frame"><div id="wpIso"></div><div class="cap">Your isometric — southeast view</div></div>
+
+      <div class="compass-wrap"><div class="compass" id="wpCompass"></div></div>
+
+      <div class="lenrow">
+        <div class="lenlbl">Length of this leg</div>
+        <div class="step">
+          <button id="wpFtDn">−</button><div class="val"><span id="wpFt">0</span>′</div><button id="wpFtUp">+</button>
+        </div>
+        <div class="step">
+          <button id="wpInDn">−</button><div class="val"><span id="wpIn">0</span>″</div><button id="wpInUp">+</button>
+        </div>
+      </div>
+
+      <div id="wpOffsetBox" style="display:none">
+        <div class="rule" style="margin:8px 0">
+          <span class="lbl">Offset mode</span>
+          <p style="font-size:13.5px">An offset is two axis components at once. Pick the <strong>second</strong> direction below — the first is whatever you tapped on the compass — then set the run each way.</p>
+        </div>
+        <div class="seg" id="wpOff2"></div>
+      </div>
+
+      <div class="btnrow">
+        <button class="btn pri" id="wpAdd">Add leg</button>
+        <button class="btn gh" id="wpUndo">Undo</button>
+        <button class="btn gh" id="wpOffToggle">Offset (45°)</button>
+      </div>
+
+      <div class="legs" id="wpLegs"></div>
+      <div class="fb" id="wpFb"></div>
+
+      <div class="btnrow">
+        <button class="btn gr" id="wpCheck">Check my work</button>
+        <button class="btn gh" id="wpShow" disabled>Show me</button>
+        <button class="btn blue" id="wpNextP" style="display:none">Next problem →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="wpDone" style="display:none">
+    <h3>Problem set complete</h3>
+    <div class="stat">
+      <div><div class="v" id="dsClean">0</div><div class="k">Clean first try</div></div>
+      <div><div class="v" id="dsSolved">0</div><div class="k">Solved</div></div>
+      <div><div class="v" id="dsShown">0</div><div class="k">Needed the answer</div></div>
+    </div>
+    <div id="dsWeak"></div>
+    <div class="btnrow">
+      <button class="btn pri" id="wpAgain">Run it again</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ M9 ============ -->
+<section id="m9">
+  <div class="modhead">
+    <div class="kick">Reference</div>
+    <h2>Cheat Sheet</h2>
+    <p>Everything on one screen. Print it or leave it open on your phone.</p>
+  </div>
+
+  <div class="card">
+    <h3>The compass</h3>
+    <div class="compass-wrap"><div class="compass" id="csCompass" style="width:190px;height:190px"></div></div>
+    <p style="text-align:center;font-size:13px;color:var(--muted)">Southeast view. Up and Down stay put in every view; the four horizontal directions swap corners.</p>
+
+    <h4>Non-negotiables</h4>
+    <table class="tbl">
+      <tr><th style="width:38%">Rule</th><th>Why</th></tr>
+      <tr><td>Compass on every sheet</td><td>Without it a NE view and a SW view of the same pipe look like different systems.</td></tr>
+      <tr><td>30° for horizontal, vertical for risers</td><td>Every horizontal run and every horizontal fitting face sits at 30°. Risers and stubs stay true vertical.</td></tr>
+      <tr><td>Only axis lines measure true</td><td>Anything off-axis is distorted by the projection. Dimension it, don't scale it.</td></tr>
+      <tr><td>Box every non-isometric line</td><td>The box states the plane. Without it the offset direction is a guess.</td></tr>
+      <tr><td>Note every angle that isn't 90°</td><td>e.g. "45° up from horizontal." The box gives the plane, the note gives the angle.</td></tr>
+      <tr><td>Fitting face ⟂ to its pipe</td><td>The tick runs along one of the other two axes, never along the pipe.</td></tr>
+      <tr><td>Dimensions are centre-to-centre</td><td>Standard on all piping work. Cut length is a separate number that allows for the fitting.</td></tr>
+      <tr><td>Iso is not to scale</td><td>Read the written dimension. Always.</td></tr>
+      <tr><td>Pick the view closest to plan, avoid crossings</td><td>Crossing lines read as connections that don't exist.</td></tr>
+    </table>
+
+    <h4>View selector</h4>
+    <table class="tbl">
+      <tr><th>View</th><th>Upper-left</th><th>Upper-right</th><th>Lower-left</th><th>Lower-right</th></tr>
+      <tr><td><strong>SE</strong></td><td>W</td><td>N</td><td>S</td><td>E</td></tr>
+      <tr><td><strong>NE</strong></td><td>S</td><td>W</td><td>E</td><td>N</td></tr>
+      <tr><td><strong>NW</strong></td><td>E</td><td>S</td><td>N</td><td>W</td></tr>
+      <tr><td><strong>SW</strong></td><td>N</td><td>E</td><td>W</td><td>S</td></tr>
+    </table>
+    <p style="font-size:13px;color:var(--muted)">Up is always straight up and Down is always straight down, in all four.</p>
+
+    <h4>Reading a point instead of a line</h4>
+    <table class="tbl">
+      <tr><th>You see</th><th>It means</th></tr>
+      <tr><td>Circle on the plan</td><td>The pipe runs vertically there. Open = up toward you. Barred = down away from you.</td></tr>
+      <tr><td>Circle on an elevation</td><td>The pipe runs into or out of that elevation. Open = toward you. Barred = away.</td></tr>
+      <tr><td>Horizontal line on the iso with no box</td><td>Suspect a 45° horizontal offset that somebody forgot to box. Ask.</td></tr>
+    </table>
+
+    <h4>Fitting quick reference</h4>
+    <div class="symgrid" id="csSyms"></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  Fire System Mastery · Isometric Trainer<br>
+  Works offline — save this page to your phone. Progress is stored on this device only.
+</footer>
+
+<script>
+"use strict";
+/* ============================================================
+   GEOMETRY ENGINE
+   3D space: x = East(+) / West(-),  y = North(+) / South(-),  z = Up(+) / Down(-)
+   All lengths in inches.
+   ============================================================ */
+const C30 = Math.sqrt(3)/2;                 // cos 30° = 0.86603
+const SLOT = { UR:[C30,-0.5], LR:[C30,0.5], LL:[-C30,0.5], UL:[-C30,-0.5] };
+const VIEWS = {
+  SE:{N:'UR',E:'LR',S:'LL',W:'UL'},
+  NE:{W:'UR',N:'LR',E:'LL',S:'UL'},
+  NW:{S:'UR',W:'LR',N:'LL',E:'UL'},
+  SW:{E:'UR',S:'LR',W:'LL',N:'UL'}
+};
+const DIR3 = { N:[0,1,0], S:[0,-1,0], E:[1,0,0], W:[-1,0,0], U:[0,0,1], D:[0,0,-1] };
+const DIRNAME = { N:'North', S:'South', E:'East', W:'West', U:'Up', D:'Down' };
+
+function basis(view){ const m=VIEWS[view]; return { E:SLOT[m.E], N:SLOT[m.N], U:[0,-1] }; }
+function proj(p, view){
+  const b = basis(view);
+  return [ p[0]*b.E[0] + p[1]*b.N[0] + p[2]*b.U[0],
+           p[0]*b.E[1] + p[1]*b.N[1] + p[2]*b.U[1] ];
+}
+function legDelta(l){
+  if (l.d) return l.d.slice();
+  const u = DIR3[l.dir];
+  return [u[0]*l.len, u[1]*l.len, u[2]*l.len];
+}
+function routePoints(legs){
+  let p=[0,0,0]; const pts=[p.slice()];
+  for(const l of legs){ const d=legDelta(l); p=[p[0]+d[0],p[1]+d[1],p[2]+d[2]]; pts.push(p.slice()); }
+  return pts;
+}
+function fmtLen(inch){
+  const neg = inch<0; inch = Math.abs(inch);
+  const ft = Math.floor(inch/12), i = inch%12;
+  let s = ft + "'-" + i + '"';
+  if (ft===0) s = i + '"';
+  return (neg?'-':'')+s;
+}
+function describeLeg(l){
+  if (l.d && !l.dir){
+    const parts=[];
+    if(l.d[0]) parts.push((l.d[0]>0?'East':'West')+' '+fmtLen(Math.abs(l.d[0])));
+    if(l.d[1]) parts.push((l.d[1]>0?'North':'South')+' '+fmtLen(Math.abs(l.d[1])));
+    if(l.d[2]) parts.push((l.d[2]>0?'Up':'Down')+' '+fmtLen(Math.abs(l.d[2])));
+    return '45° offset — '+parts.join(' + ');
+  }
+  return DIRNAME[l.dir]+' '+fmtLen(l.len);
+}
+function sameDelta(a,b){ return a[0]===b[0] && a[1]===b[1] && a[2]===b[2]; }
+
+/* --- projections for flat views --- */
+function projPlan(p, rotDeg){
+  const a = (rotDeg||0)*Math.PI/180;
+  const bx=p[0], by=-p[1];                    // north up before rotation
+  return [ bx*Math.cos(a)-by*Math.sin(a), bx*Math.sin(a)+by*Math.cos(a) ];
+}
+const ELEV_VIEWDIR = { S:[0,1,0], N:[0,-1,0], E:[-1,0,0], W:[1,0,0] };
+const ELEV_NAME = { S:'South Elevation', N:'North Elevation', E:'East Elevation', W:'West Elevation' };
+function projElev(p, from){
+  switch(from){
+    case 'S': return [ p[0], -p[2] ];
+    case 'N': return [-p[0], -p[2] ];
+    case 'E': return [ p[1], -p[2] ];
+    case 'W': return [-p[1], -p[2] ];
+  }
+}
+const PLAN_VIEWDIR = [0,0,-1];
+
+/* ============================================================
+   SVG HELPERS
+   ============================================================ */
+function fit(pts, w, h, pad){
+  pad = pad||30;
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+  for(const p of pts){ x0=Math.min(x0,p[0]); y0=Math.min(y0,p[1]); x1=Math.max(x1,p[0]); y1=Math.max(y1,p[1]); }
+  if(!isFinite(x0)){ x0=y0=0; x1=y1=1; }
+  const dw=Math.max(x1-x0,1e-6), dh=Math.max(y1-y0,1e-6);
+  const s = Math.min((w-2*pad)/dw, (h-2*pad)/dh);
+  const ox = (w - dw*s)/2 - x0*s, oy = (h - dh*s)/2 - y0*s;
+  return { s:s, ox:ox, oy:oy, at:function(p){ return [p[0]*s+ox, p[1]*s+oy]; } };
+}
+function nrm(v){ const m=Math.hypot(v[0],v[1])||1; return [v[0]/m, v[1]/m]; }
+function ln(a,b,attr){ return '<line x1="'+a[0].toFixed(2)+'" y1="'+a[1].toFixed(2)+'" x2="'+b[0].toFixed(2)+'" y2="'+b[1].toFixed(2)+'" '+attr+'/>'; }
+function txt(p,s,attr){ return '<text x="'+p[0].toFixed(1)+'" y="'+p[1].toFixed(1)+'" '+(attr||'')+'>'+s+'</text>'; }
+function svgWrap(w,h,inner,cls){
+  return '<svg viewBox="0 0 '+w+' '+h+'" xmlns="http://www.w3.org/2000/svg" '+(cls?'class="'+cls+'"':'')+
+         ' style="max-height:'+h+'px">'+inner+'</svg>';
+}
+const S = {
+  pipe:'stroke="#e6edf3" stroke-width="3.4" stroke-linecap="round"',
+  pipeGhost:'stroke="#f0a37e" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="7 5" opacity=".9"',
+  pipeDim:'stroke="#4a5666" stroke-width="3" stroke-linecap="round"',
+  pipeHot:'stroke="#D85A30" stroke-width="4.4" stroke-linecap="round"',
+  pipeGood:'stroke="#1D9E75" stroke-width="3.4" stroke-linecap="round"',
+  tick:'stroke="#e6edf3" stroke-width="2.2" stroke-linecap="round"',
+  tickHot:'stroke="#D85A30" stroke-width="2.6" stroke-linecap="round"',
+  box:'stroke="#3B93F7" stroke-width="1.6" stroke-dasharray="6 4" fill="none" opacity=".85"',
+  grid:'stroke="#1e2732" stroke-width="1"',
+  axis:'stroke="#8b949e" stroke-width="1.4"',
+  lbl:'fill="#8b949e" font-size="11" font-family="system-ui,sans-serif" font-weight="700"',
+  lblW:'fill="#e6edf3" font-size="11.5" font-family="system-ui,sans-serif" font-weight="700"',
+  lblO:'fill="#f07a4e" font-size="11.5" font-family="system-ui,sans-serif" font-weight="800"',
+  dimline:'stroke="#8b949e" stroke-width="1"'
+};
+
+/* --- first unused axis (x,y,z) gives the fitting-tick direction --- */
+function tickAxis(d){
+  if (d[0]===0) return [1,0,0];
+  if (d[1]===0) return [0,1,0];
+  return [0,0,1];
+}
+
+/* ============================================================
+   ISO RENDERER
+   ============================================================ */
+function renderIso(legs, o){
+  o = Object.assign({ w:600, h:340, view:'SE', compass:true, grid:false, dims:false,
+                      labels:false, ghost:-1, hot:-1, boxes:true, pad:44, fittings:true,
+                      crossings:false, endcaps:true }, o||{});
+  const pts3 = routePoints(legs);
+  const P = pts3.map(function(p){ return proj(p, o.view); });
+  const extra = [];
+  legs.forEach(function(l,i){
+    if (l.box && o.boxes){
+      const d = legDelta(l), a = pts3[i];
+      const c1 = boxComp(d,0), c2 = boxComp(d,1);
+      extra.push(proj([a[0]+c1[0],a[1]+c1[1],a[2]+c1[2]], o.view));
+      extra.push(proj([a[0]+c2[0],a[1]+c2[1],a[2]+c2[2]], o.view));
+    }
+  });
+  const F = fit(P.concat(extra), o.w, o.h, o.pad);
+  let s = '';
+
+  if (o.grid) s += isoGridSvg(o.w, o.h, o.view);
+
+  /* boxes first (behind pipe) */
+  legs.forEach(function(l,i){
+    if (!(l.box && o.boxes)) return;
+    const d=legDelta(l), a=pts3[i];
+    const c1=boxComp(d,0), c2=boxComp(d,1);
+    const A=F.at(proj(a,o.view));
+    const B=F.at(proj([a[0]+c1[0],a[1]+c1[1],a[2]+c1[2]],o.view));
+    const C=F.at(proj([a[0]+d[0],a[1]+d[1],a[2]+d[2]],o.view));
+    const D=F.at(proj([a[0]+c2[0],a[1]+c2[1],a[2]+c2[2]],o.view));
+    s += ln(A,B,S.box)+ln(B,C,S.box)+ln(A,D,S.box)+ln(D,C,S.box);
+  });
+
+  /* pipe */
+  legs.forEach(function(l,i){
+    const A=F.at(P[i]), B=F.at(P[i+1]);
+    let st = S.pipe;
+    if (o.ghost>=0 && i>=o.ghost) st = S.pipeGhost;
+    if (o.hot===i) st = S.pipeHot;
+    if (l.style==='dim') st = S.pipeDim;
+    if (l.style==='good') st = S.pipeGood;
+    s += ln(A,B,st);
+  });
+
+  /* branches (display-only) */
+  legs.forEach(function(l,i){
+    if(!l.branch) return;
+    let bp = pts3[i+1];
+    l.branch.forEach(function(bl){
+      const d=legDelta(bl);
+      const np=[bp[0]+d[0],bp[1]+d[1],bp[2]+d[2]];
+      s += ln(F.at(proj(bp,o.view)), F.at(proj(np,o.view)), S.pipe);
+      bp = np;
+    });
+  });
+
+  /* fittings */
+  if (o.fittings){
+    legs.forEach(function(l,i){
+      const hot = (o.hot===i || o.hot===i-1);
+      const st = hot ? S.tickHot : S.tick;
+      const nxt = legs[i+1];
+      if (l.fit && nxt){
+        s += fittingSvg(l.fit, pts3[i+1], legDelta(l), legDelta(nxt), F, o.view, st, l.branch);
+      } else if (l.fit && !nxt){
+        s += tickAt(pts3[i+1], legDelta(l), F, o.view, st, 0);
+      }
+    });
+  }
+
+  /* labels + dims */
+  if (o.labels || o.dims){
+    legs.forEach(function(l,i){
+      const A=F.at(P[i]), B=F.at(P[i+1]);
+      const m=[(A[0]+B[0])/2,(A[1]+B[1])/2];
+      const dir=nrm([B[0]-A[0],B[1]-A[1]]);
+      const off=[-dir[1]*15, dir[0]*15];
+      const showAt=[m[0]+off[0], m[1]+off[1]+4];
+      let str='';
+      if (o.labels && l.label) str += l.label;
+      if (o.dims){
+        const dd=legDelta(l);
+        const len = l.d && !l.dir ? Math.max(Math.abs(dd[0]),Math.abs(dd[1]),Math.abs(dd[2])) : l.len;
+        str += (str?'  ':'')+fmtLen(len);
+      }
+      if (str) s += txt(showAt, str, (o.hot===i?S.lblO:S.lblW)+' text-anchor="middle"');
+    });
+  }
+
+  /* crossing detection */
+  if (o.crossings){
+    const segs = [];
+    for(let i=0;i<legs.length;i++) segs.push([F.at(P[i]), F.at(P[i+1])]);
+    const hits = findCrossings(segs);
+    hits.forEach(function(h){
+      s += '<circle cx="'+h[0].toFixed(1)+'" cy="'+h[1].toFixed(1)+'" r="8" fill="none" stroke="#E5484D" stroke-width="2.4"/>';
+    });
+    s += '<!--X:'+hits.length+'-->';
+  }
+
+  if (o.compass) s += compassSvg(o.w-58, 50, 34, o.view);
+  return { svg: svgWrap(o.w,o.h,s), crossings: o.crossings ? (s.match(/<!--X:(\d+)-->/)||[0,0])[1]|0 : 0 };
+}
+
+function boxComp(d, which){
+  const idx = [];
+  for(let i=0;i<3;i++) if(d[i]!==0) idx.push(i);
+  if (idx.length<2) return [0,0,0];
+  const c=[0,0,0];
+  c[idx[which]] = d[idx[which]];
+  return c;
+}
+
+function tickAt(p3, dIn, F, view, st, side, scale){
+  scale = scale || 1;
+  const t = tickAxis(dIn);
+  const tv = nrm(proj(t, view));
+  const dv = nrm(proj(dIn, view));
+  const c = F.at(proj(p3, view));
+  const back = side===0 ? 0 : -side;
+  const cx = c[0] + dv[0]*back*9, cy = c[1] + dv[1]*back*9;
+  const L = 9*scale;
+  return ln([cx-tv[0]*L, cy-tv[1]*L], [cx+tv[0]*L, cy+tv[1]*L], st);
+}
+
+function fittingSvg(kind, p3, dIn, dOut, F, view, st, hasBranch){
+  let s='';
+  if (kind==='ell' || kind==='tee'){
+    s += tickAt(p3, dIn, F, view, st, 1);
+    s += tickAt(p3, dOut, F, view, st, -1);
+    if (kind==='tee' && hasBranch) s += tickAt(p3, legDelta(hasBranch[0]), F, view, st, -1);
+    return s;
+  }
+  /* valves sit mid-run on the outgoing leg */
+  const dv = nrm(proj(dOut, view));
+  const tv = nrm(proj(tickAxis(dOut), view));
+  const a = F.at(proj(p3, view));
+  const outLen = Math.hypot.apply(null, proj(dOut,view))*F.s;
+  const c = [a[0]+dv[0]*Math.min(outLen*0.45,34), a[1]+dv[1]*Math.min(outLen*0.45,34)];
+  s += tickAt(p3, dIn, F, view, st, 1);
+  s += tickAt(p3, dOut, F, view, st, -1);
+  s += valveGlyph(kind, c, dv, tv, st);
+  return s;
+}
+
+function valveGlyph(kind, c, dv, tv, st){
+  const L=11, W=8;
+  const p1=[c[0]-dv[0]*L-tv[0]*W, c[1]-dv[1]*L-tv[1]*W];
+  const p2=[c[0]-dv[0]*L+tv[0]*W, c[1]-dv[1]*L+tv[1]*W];
+  const p3=[c[0]+dv[0]*L-tv[0]*W, c[1]+dv[1]*L-tv[1]*W];
+  const p4=[c[0]+dv[0]*L+tv[0]*W, c[1]+dv[1]*L+tv[1]*W];
+  const bow = ln(p1,p2,st)+ln(p2,c,st)+ln(c,p1,st)+ln(p3,p4,st)+ln(p4,c,st)+ln(c,p3,st);
+  const stem = ln(c,[c[0]-tv[0]*0+ (0), c[1]-14], st) + ln([c[0]-6,c[1]-14],[c[0]+6,c[1]-14],st);
+  if (kind==='gate')  return bow+stem;
+  if (kind==='globe') return bow+stem+'<circle cx="'+c[0].toFixed(1)+'" cy="'+c[1].toFixed(1)+'" r="4" fill="#e6edf3"/>';
+  if (kind==='check') return ln(p1,p2,st)+ln(p2,p3,st)+ln(p3,p1,st)+ln([c[0]+dv[0]*L,c[1]+dv[1]*L],[c[0]-dv[0]*L,c[1]-dv[1]*L],st);
+  if (kind==='union') return tickPair(c,dv,tv,st,3);
+  if (kind==='flange')return tickPair(c,dv,tv,st,2);
+  return bow;
+}
+function tickPair(c,dv,tv,st,n){
+  let s=''; const gap=5;
+  for(let i=0;i<n;i++){
+    const off=(i-(n-1)/2)*gap;
+    const b=[c[0]+dv[0]*off, c[1]+dv[1]*off];
+    s += ln([b[0]-tv[0]*9,b[1]-tv[1]*9],[b[0]+tv[0]*9,b[1]+tv[1]*9],st);
+  }
+  return s;
+}
+
+function findCrossings(segs){
+  const out=[];
+  for(let i=0;i<segs.length;i++)for(let j=i+2;j<segs.length;j++){
+    const h=segInt(segs[i][0],segs[i][1],segs[j][0],segs[j][1]);
+    if(h) out.push(h);
+  }
+  return out;
+}
+function segInt(a,b,c,d){
+  const r=[b[0]-a[0],b[1]-a[1]], s=[d[0]-c[0],d[1]-c[1]];
+  const den=r[0]*s[1]-r[1]*s[0];
+  if (Math.abs(den)<1e-9) return null;
+  const t=((c[0]-a[0])*s[1]-(c[1]-a[1])*s[0])/den;
+  const u=((c[0]-a[0])*r[1]-(c[1]-a[1])*r[0])/den;
+  const e=0.02;
+  if(t>e&&t<1-e&&u>e&&u<1-e) return [a[0]+t*r[0], a[1]+t*r[1]];
+  return null;
+}
+
+function isoGridSvg(w,h,view){
+  let s='<g opacity=".55">';
+  const step=26;
+  for(let k=-40;k<=40;k++){
+    const x=w/2+k*step*C30;
+    s+=ln([x,-h],[x,2*h],S.grid);
+    s+=ln([-w, h/2 + k*step + w*0.5],[2*w, h/2 + k*step - w*0.5],S.grid);
+    s+=ln([-w, h/2 + k*step - w*0.5],[2*w, h/2 + k*step + w*0.5],S.grid);
+  }
+  s+='</g><rect x="0" y="0" width="'+w+'" height="'+h+'" fill="none"/>';
+  return s;
+}
+
+function compassSvg(cx,cy,r,view){
+  const m=VIEWS[view]; let s='<g>';
+  s += '<circle cx="'+cx+'" cy="'+cy+'" r="'+(r+3)+'" fill="#0e1116" opacity=".82"/>';
+  const D=['N','S','E','W','U','D'];
+  D.forEach(function(d){
+    const v = d==='U'?[0,-1] : d==='D'?[0,1] : SLOT[m[d]];
+    const e=[cx+v[0]*r, cy+v[1]*r];
+    s += ln([cx,cy],e,S.axis);
+    const t=[cx+v[0]*(r+9), cy+v[1]*(r+9)+3.5];
+    s += txt(t, d==='U'?'Up':d==='D'?'Dn':d, S.lbl+' text-anchor="middle"');
+  });
+  s+='</g>';
+  return s;
+}
+
+/* ============================================================
+   FLAT VIEW RENDERER (plan / elevation)
+   ============================================================ */
+function renderFlat(legs, o){
+  o = Object.assign({ w:340, h:250, kind:'plan', from:'S', rot:0, dims:true,
+                      labels:false, hot:-1, pad:38, north:true }, o||{});
+  const pts3 = routePoints(legs);
+  const pf = function(p){ return o.kind==='plan' ? projPlan(p,o.rot) : projElev(p,o.from); };
+  const P = pts3.map(pf);
+  const F = fit(P, o.w, o.h, o.pad);
+  const vdir = o.kind==='plan' ? PLAN_VIEWDIR : ELEV_VIEWDIR[o.from];
+  let s='';
+
+  legs.forEach(function(l,i){
+    const A=F.at(P[i]), B=F.at(P[i+1]);
+    const len = Math.hypot(B[0]-A[0], B[1]-A[1]);
+    const st = o.hot===i ? S.pipeHot : S.pipe;
+    if (len < 2){
+      /* perpendicular to this view → circle symbol */
+      const d = legDelta(l);
+      const dot = d[0]*vdir[0]+d[1]*vdir[1]+d[2]*vdir[2];
+      const away = dot > 0;
+      const col = o.hot===i ? '#D85A30' : '#e6edf3';
+      s += '<circle cx="'+A[0].toFixed(1)+'" cy="'+A[1].toFixed(1)+'" r="7.5" fill="none" stroke="'+col+'" stroke-width="2.6"/>';
+      if (away) s += ln([A[0]-7.5,A[1]],[A[0]+7.5,A[1]],'stroke="'+col+'" stroke-width="2.6"');
+      s += ln([A[0]+9,A[1]],[A[0]+17,A[1]],'stroke="'+col+'" stroke-width="2.2"');
+    } else {
+      s += ln(A,B,st);
+      const dir=nrm([B[0]-A[0],B[1]-A[1]]);
+      const t=[-dir[1],dir[0]];
+      const mid=[(A[0]+B[0])/2,(A[1]+B[1])/2];
+      if (o.dims){
+        const q=[mid[0]+t[0]*14, mid[1]+t[1]*14+4];
+        const dd=legDelta(l);
+        const ll = (l.d && !l.dir) ? Math.max(Math.abs(dd[0]),Math.abs(dd[1]),Math.abs(dd[2])) : l.len;
+        s += txt(q, fmtLen(ll), (o.hot===i?S.lblO:S.lblW)+' text-anchor="middle"');
+      }
+      /* small fitting ticks at both ends */
+      s += ln([A[0]+dir[0]*7-t[0]*6, A[1]+dir[1]*7-t[1]*6],[A[0]+dir[0]*7+t[0]*6, A[1]+dir[1]*7+t[1]*6], S.tick);
+      s += ln([B[0]-dir[0]*7-t[0]*6, B[1]-dir[1]*7-t[1]*6],[B[0]-dir[0]*7+t[0]*6, B[1]-dir[1]*7+t[1]*6], S.tick);
+    }
+  });
+
+  if (o.kind==='plan' && o.north){
+    const a=(o.rot||0)*Math.PI/180;
+    const nx=Math.sin(a)*1, ny=-Math.cos(a);
+    const bx=o.w-30, by=34, L=17;
+    s += ln([bx-nx*L,by-ny*L],[bx+nx*L,by+ny*L],'stroke="#D85A30" stroke-width="2.2"');
+    const hx=bx+nx*L, hy=by+ny*L;
+    const px=-ny, py=nx;
+    s += '<polygon points="'+hx.toFixed(1)+','+hy.toFixed(1)+' '+(hx-nx*8+px*5).toFixed(1)+','+(hy-ny*8+py*5).toFixed(1)+' '+(hx-nx*8-px*5).toFixed(1)+','+(hy-ny*8-py*5).toFixed(1)+'" fill="#D85A30"/>';
+    s += txt([bx+nx*(L+13), by+ny*(L+13)+4], 'N', 'fill="#D85A30" font-size="12" font-weight="800" font-family="system-ui" text-anchor="middle"');
+  }
+  return svgWrap(o.w,o.h,s);
+}
+
+/* legend strip under plan views */
+const PLAN_LEGEND =
+  '<div class="legend">'+
+  '<span><svg width="20" height="20" style="width:20px;height:20px"><circle cx="10" cy="10" r="6.5" fill="none" stroke="#e6edf3" stroke-width="2.2"/></svg> turned up (toward you)</span>'+
+  '<span><svg width="20" height="20" style="width:20px;height:20px"><circle cx="10" cy="10" r="6.5" fill="none" stroke="#e6edf3" stroke-width="2.2"/><line x1="3.5" y1="10" x2="16.5" y2="10" stroke="#e6edf3" stroke-width="2.2"/></svg> turned down (away)</span>'+
+  '</div>';
+
+/* ============================================================
+   INTERACTIVE COMPASS WIDGET
+   ============================================================ */
+function buildCompass(el, view, onPick){
+  view = view||'SE';
+  const m=VIEWS[view], R=74, cx=110, cy=110;
+  let svg='<svg viewBox="0 0 220 220">';
+  const D=['N','S','E','W','U','D'];
+  D.forEach(function(d){
+    const v = d==='U'?[0,-1] : d==='D'?[0,1] : SLOT[m[d]];
+    svg += '<line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+v[0]*R)+'" y2="'+(cy+v[1]*R)+'" stroke="#2a3340" stroke-width="2"/>';
+  });
+  svg += '<circle cx="'+cx+'" cy="'+cy+'" r="4" fill="#D85A30"/></svg>';
+  el.innerHTML = svg;
+  D.forEach(function(d){
+    const v = d==='U'?[0,-1] : d==='D'?[0,1] : SLOT[m[d]];
+    const b=document.createElement('button');
+    b.className='cbtn'; b.dataset.dir=d;
+    b.textContent = d==='U'?'▲' : d==='D'?'▼' : d;
+    b.style.left = (cx+v[0]*R)+'px';
+    b.style.top  = (cy+v[1]*R)+'px';
+    b.addEventListener('click', function(){
+      el.querySelectorAll('.cbtn').forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on');
+      if(onPick) onPick(d);
+    });
+    el.appendChild(b);
+  });
+  return {
+    select:function(d){ el.querySelectorAll('.cbtn').forEach(function(x){ x.classList.toggle('on', x.dataset.dir===d); }); },
+    clear:function(){ el.querySelectorAll('.cbtn').forEach(function(x){x.classList.remove('on');}); },
+    highlight:function(d){ el.querySelectorAll('.cbtn').forEach(function(x){ x.classList.toggle('hl', x.dataset.dir===d); }); }
+  };
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+const MODULES = [
+  {id:'m0', short:'Why Iso'},
+  {id:'m1', short:'Three Axes'},
+  {id:'m2', short:'Compass'},
+  {id:'m3', short:'Iso Circles'},
+  {id:'m4', short:'Views'},
+  {id:'m5', short:'Plan → Iso'},
+  {id:'m6', short:'Offsets'},
+  {id:'m7', short:'Fittings'},
+  {id:'m8', short:'Work Problems'},
+  {id:'m9', short:'Cheat Sheet'}
+];
+const store = {
+  get:function(){ try{ return JSON.parse(localStorage.getItem('fsm-iso-trainer-v1'))||{}; }catch(e){ return {}; } },
+  set:function(o){ try{ localStorage.setItem('fsm-iso-trainer-v1', JSON.stringify(o)); }catch(e){} }
+};
+let ST = store.get();
+ST.seen = ST.seen || {};
+function markSeen(id){ ST.seen[id]=true; store.set(ST); paintNav(); }
+
+const navEl = document.getElementById('nav');
+MODULES.forEach(function(m,i){
+  const b=document.createElement('button');
+  b.className='navbtn'; b.dataset.id=m.id;
+  b.innerHTML = '<b>'+(i<9?(i+1):'✦')+'</b>'+m.short;
+  b.addEventListener('click', function(){ go(m.id); });
+  navEl.appendChild(b);
+});
+function paintNav(){
+  navEl.querySelectorAll('.navbtn').forEach(function(b){
+    b.classList.toggle('done', !!ST.seen[b.dataset.id]);
+  });
+}
+function go(id){
+  document.querySelectorAll('main section').forEach(function(s){ s.classList.toggle('on', s.id===id); });
+  navEl.querySelectorAll('.navbtn').forEach(function(b){ b.classList.toggle('on', b.dataset.id===id); });
+  markSeen(id);
+  window.scrollTo({top:0,behavior:'smooth'});
+  const b=navEl.querySelector('.navbtn.on'); if(b) b.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});
+}
+paintNav();
+navEl.querySelector('.navbtn').classList.add('on');
+markSeen('m0');
+
+/* ============================================================
+   M1 — why iso
+   ============================================================ */
+const WHY_ROUTE = [
+  {dir:'U', len:36, fit:'ell'},
+  {dir:'E', len:132, fit:'ell'},
+  {dir:'N', len:84, fit:'ell'},
+  {dir:'D', len:48}
+];
+let whyMode = 0;
+function paintWhy(){
+  const stage=document.getElementById('whyStage');
+  const cap=document.getElementById('whyCap');
+  const btn=document.getElementById('whyToggle');
+  if(whyMode===0){
+    const a = renderFlat(WHY_ROUTE,{w:300,h:210,kind:'plan',dims:true});
+    const b = renderFlat(WHY_ROUTE,{w:300,h:210,kind:'elev',from:'S',dims:true});
+    stage.innerHTML = '<div class="twoup"><div>'+a+'<div class="cap">Plan</div></div><div>'+b+'<div class="cap">South Elevation</div></div></div>'+PLAN_LEGEND;
+    cap.textContent = 'Two flat views. Neither one shows you the whole run.';
+    btn.textContent = 'Show the isometric →';
+  } else {
+    stage.innerHTML = renderIso(WHY_ROUTE,{w:600,h:330,dims:true}).svg;
+    cap.textContent = 'One isometric. Same pipe — run, direction and rise all readable at once.';
+    btn.textContent = '← Back to the flat views';
+  }
+}
+document.getElementById('whyToggle').addEventListener('click', function(){ whyMode=1-whyMode; paintWhy(); });
+paintWhy();
+
+/* ============================================================
+   M2 — cube
+   ============================================================ */
+const CUBE_V=[[0,0,0],[1,0,0],[1,1,0],[0,1,0],[0,0,1],[1,0,1],[1,1,1],[0,1,1]];
+const CUBE_E=[[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+function cubeProj(v,th,ph){
+  const t=th*Math.PI/180, p=ph*Math.PI/180;
+  const x=v[0]-0.5, y=v[1]-0.5, z=v[2]-0.5;
+  const x1=x*Math.cos(t)-y*Math.sin(t), y1=x*Math.sin(t)+y*Math.cos(t), z1=z;
+  return [ x1, -(y1*Math.sin(p) + z1*Math.cos(p)) ];
+}
+function paintCube(){
+  const th=+document.getElementById('spin').value, ph=+document.getElementById('tilt').value;
+  document.getElementById('spinVal').textContent = (Math.round(th*10)/10)+'°';
+  document.getElementById('tiltVal').textContent = (Math.round(ph*100)/100)+'°';
+  const P = CUBE_V.map(function(v){ return cubeProj(v,th,ph); });
+  const F = fit(P, 560, 300, 60);
+  let s='';
+  CUBE_E.forEach(function(e){
+    const back = (e[0]===3||e[1]===3) && (e.indexOf(0)<0 || false);
+    s += ln(F.at(P[e[0]]), F.at(P[e[1]]), 'stroke="#e6edf3" stroke-width="2.4" stroke-linecap="round"');
+  });
+  /* highlight the three axes from the front-bottom corner (vertex 0) */
+  [[0,1,'#D85A30'],[0,3,'#3B93F7'],[0,4,'#1D9E75']].forEach(function(a){
+    s += ln(F.at(P[a[0]]), F.at(P[a[1]]), 'stroke="'+a[2]+'" stroke-width="4.2" stroke-linecap="round"');
+  });
+  document.getElementById('cubeStage').innerHTML = svgWrap(560,300,s);
+
+  const A=P[0];
+  const angR = Math.abs(Math.atan2(P[1][1]-A[1], P[1][0]-A[0])*180/Math.PI);
+  const angL = 180-Math.abs(Math.atan2(P[3][1]-A[1], P[3][0]-A[0])*180/Math.PI);
+  const lenR = Math.hypot(P[1][0]-A[0],P[1][1]-A[1]);
+  const lenL = Math.hypot(P[3][0]-A[0],P[3][1]-A[1]);
+  const lenV = Math.hypot(P[4][0]-A[0],P[4][1]-A[1]);
+  const near=function(a,b,t){ return Math.abs(a-b)<=t; };
+  const eqAng = near(angR,30,0.6)&&near(angL,30,0.6);
+  const eqLen = near(lenR,lenL,0.02)&&near(lenL,lenV,0.02);
+  document.getElementById('roL').innerHTML = angL.toFixed(1)+'°';
+  document.getElementById('roR').innerHTML = angR.toFixed(1)+'°';
+  document.getElementById('roL').className='v'+(eqAng?' ok':'');
+  document.getElementById('roR').className='v'+(eqAng?' ok':'');
+  const le=document.getElementById('roLen');
+  le.textContent = eqLen ? 'all equal ✓' : lenL.toFixed(2)+' / '+lenR.toFixed(2)+' / '+lenV.toFixed(2);
+  le.className='v'+(eqLen?' ok':'');
+}
+document.getElementById('spin').addEventListener('input', paintCube);
+document.getElementById('tilt').addEventListener('input', paintCube);
+document.getElementById('snapIso').addEventListener('click', function(){
+  /* asin(tan 30°) = 35.264° — the exact tip that lands both bottom edges on 30° */
+  document.getElementById('spin').value=45;
+  document.getElementById('tilt').value=35.26;
+  paintCube();
+});
+document.getElementById('resetIso').addEventListener('click', function(){
+  document.getElementById('spin').value=0;
+  document.getElementById('tilt').value=0;
+  paintCube();
+});
+paintCube();
+
+/* ============================================================
+   M3 — compass playground + drill
+   ============================================================ */
+let cdLegs=[];
+const cdCompass = buildCompass(document.getElementById('compassDemo'),'SE',function(d){
+  if(cdLegs.length) cdLegs[cdLegs.length-1].fit='ell';
+  cdLegs.push({dir:d, len:72});
+  if(cdLegs.length>7) cdLegs.shift();
+  paintCD(d);
+});
+function paintCD(d){
+  const legs = cdLegs.length?cdLegs:[{dir:'N',len:72,style:'dim'}];
+  document.getElementById('compassStage').innerHTML = renderIso(legs,{w:560,h:290,dims:cdLegs.length>0}).svg;
+  if(d) document.getElementById('compassMsg').innerHTML = 'Added a leg running <b>'+DIRNAME[d]+'</b>. Notice it lands exactly on the '+(d==='U'||d==='D'?'vertical axis':'30° axis')+' — never freehand.';
+}
+document.getElementById('compassClear').addEventListener('click', function(){
+  cdLegs=[]; cdCompass.clear(); paintCD();
+  document.getElementById('compassMsg').innerHTML='Cleared. Tap a direction to start again.';
+});
+paintCD();
+
+/* --- generic quiz builder --- */
+function buildQuiz(host, items, tag){
+  host.innerHTML='';
+  items.forEach(function(it,i){
+    const d=document.createElement('div'); d.className='q';
+    let h = '<div class="qn">'+tag+' '+(i+1)+' of '+items.length+'</div><div class="qt">'+it.q+'</div>';
+    if(it.svg) h += '<div class="frame">'+it.svg+'</div>';
+    h += '<div class="opts"></div><div class="expl"></div>';
+    d.innerHTML=h;
+    const ow=d.querySelector('.opts'), ex=d.querySelector('.expl');
+    it.a.forEach(function(txt,j){
+      const b=document.createElement('button');
+      b.className='opt'; b.textContent=txt;
+      b.addEventListener('click', function(){
+        ow.querySelectorAll('.opt').forEach(function(x){ x.disabled=true; });
+        ow.querySelectorAll('.opt')[it.c].classList.add('correct');
+        if(j!==it.c) b.classList.add('wrong');
+        ex.innerHTML = (j===it.c?'<b style="color:#2fd39c">Correct. </b>':'<b style="color:#E5484D">Not quite. </b>')+it.e;
+        ex.classList.add('show');
+        recordDrill(tag, j===it.c);
+      });
+      ow.appendChild(b);
+    });
+    host.appendChild(d);
+  });
+}
+function recordDrill(tag, ok){
+  ST.drill = ST.drill||{};
+  ST.drill[tag] = ST.drill[tag] || {right:0,total:0};
+  ST.drill[tag].total++; if(ok) ST.drill[tag].right++;
+  store.set(ST);
+}
+
+/* --- direction drill (tap-the-compass) --- */
+const DIR_DRILL = [
+  {ask:'The elevation shows a riser going straight up. Which compass direction?', ans:'U',
+   why:'Vertical up is the top of the compass. It is the one direction that reads the same in every isometric view.'},
+  {ask:'On a plan with north up the sheet, a branch runs toward the bottom of the page. Which direction?', ans:'S',
+   why:'North is up the sheet, so the bottom of the page is south. Always establish the north arrow before you read a single line.'},
+  {ask:'A main runs to the right on a plan with north up the sheet. Which direction?', ans:'E',
+   why:'North up means east is to the right. On a southeast view that leg draws down-and-right at 30°.'},
+  {ask:'A drop from a branch line to a sidewall head heads for the floor. Which direction?', ans:'D',
+   why:'Down is the bottom of the compass. Like Up, it does not change when you switch isometric views.'},
+  {ask:'On the plan the pipe heads for the left edge of the sheet, north still up. Which direction?', ans:'W',
+   why:'North up means west is to the left. On a southeast view that leg draws up-and-left at 30°.'},
+  {ask:'The plan shows this leg as a single circle with a bar through it. Which direction is the pipe running?', ans:'D',
+   why:'A circle on a plan means the pipe is vertical. The bar means it is heading down, away from you as you look down at the sheet.'}
+];
+(function(){
+  const host=document.getElementById('dirDrill');
+  DIR_DRILL.forEach(function(it,i){
+    const wrap=document.createElement('div'); wrap.className='q';
+    wrap.innerHTML='<div class="qn">Drill '+(i+1)+' of '+DIR_DRILL.length+'</div><div class="qt">'+it.ask+'</div>'+
+                   '<div class="compass-wrap"><div class="compass" style="width:190px;height:190px"></div></div>'+
+                   '<div class="expl"></div>';
+    const cw=wrap.querySelector('.compass'), ex=wrap.querySelector('.expl');
+    let answered=false;
+    buildCompass(cw,'SE',function(d){
+      if(answered) return; answered=true;
+      const ok = d===it.ans;
+      ex.innerHTML=(ok?'<b style="color:#2fd39c">Correct — '+DIRNAME[it.ans]+'. </b>':'<b style="color:#E5484D">You tapped '+DIRNAME[d]+'. The answer is '+DIRNAME[it.ans]+'. </b>')+it.why;
+      ex.classList.add('show');
+      cw.querySelectorAll('.cbtn').forEach(function(b){
+        if(b.dataset.dir===it.ans) b.classList.add('hl');
+      });
+      recordDrill('Compass', ok);
+    });
+    host.appendChild(wrap);
+  });
+})();
+
+/* ============================================================
+   M4 — isometric circle construction
+   ============================================================ */
+let ellStep=1, ellFace='top';
+function paintEll(){
+  const W=520,H=330, cx=W/2, cy=H/2+10, R=95;
+  let ax,ay;
+  if(ellFace==='top'){ ax=SLOT.LR; ay=SLOT.LL; }
+  else if(ellFace==='left'){ ax=SLOT.LL; ay=[0,-1]; }
+  else { ax=SLOT.LR; ay=[0,-1]; }
+  const O=[cx-(ax[0]+ay[0])*R/2, cy-(ax[1]+ay[1])*R/2];
+  const A=O, B=[O[0]+ax[0]*R,O[1]+ax[1]*R],
+        C=[O[0]+(ax[0]+ay[0])*R,O[1]+(ax[1]+ay[1])*R], D=[O[0]+ay[0]*R,O[1]+ay[1]*R];
+  const mid=function(p,q){ return [(p[0]+q[0])/2,(p[1]+q[1])/2]; };
+  const M=[mid(A,B),mid(B,C),mid(C,D),mid(D,A)];
+  let s='';
+  if(ellStep>=1) s += ln(A,B,S.box)+ln(B,C,S.box)+ln(C,D,S.box)+ln(D,A,S.box);
+  if(ellStep>=2) M.forEach(function(m){ s+='<circle cx="'+m[0].toFixed(1)+'" cy="'+m[1].toFixed(1)+'" r="4" fill="#D85A30"/>'; });
+  const arc=function(p,q,r,col,wd){
+    return '<path d="M '+p[0].toFixed(1)+' '+p[1].toFixed(1)+' A '+r+' '+r+' 0 0 1 '+q[0].toFixed(1)+' '+q[1].toFixed(1)+'" fill="none" stroke="'+col+'" stroke-width="'+wd+'" stroke-linecap="round"/>';
+  };
+  const long=R*1.05, short=R*0.42;
+  if(ellStep>=3){ s += arc(M[0],M[1],long,'#1D9E75',3.2); s += arc(M[2],M[3],long,'#1D9E75',3.2); }
+  if(ellStep>=4){ s += arc(M[1],M[2],short,'#3B93F7',3.2); s += arc(M[3],M[0],short,'#3B93F7',3.2); }
+  if(ellStep>=5){
+    s = ln(A,B,'stroke="#232c38" stroke-width="1.2" stroke-dasharray="5 4" fill="none"')+
+        ln(B,C,'stroke="#232c38" stroke-width="1.2" stroke-dasharray="5 4" fill="none"')+
+        ln(C,D,'stroke="#232c38" stroke-width="1.2" stroke-dasharray="5 4" fill="none"')+
+        ln(D,A,'stroke="#232c38" stroke-width="1.2" stroke-dasharray="5 4" fill="none"')+
+        arc(M[0],M[1],long,'#e6edf3',3.4)+arc(M[1],M[2],short,'#e6edf3',3.4)+
+        arc(M[2],M[3],long,'#e6edf3',3.4)+arc(M[3],M[0],short,'#e6edf3',3.4);
+  }
+  const caps=['',
+    '1 / 5 — Lay out the isometric rhombus. Each side equals the circle diameter.',
+    '2 / 5 — Mark the midpoint of all four sides. The circle touches here.',
+    '3 / 5 — Sweep the two long arcs across the wide corners (green).',
+    '4 / 5 — Close it with the two short arcs across the narrow corners (blue).',
+    '5 / 5 — Erase the construction. That is your isometric circle.'];
+  document.getElementById('ellStage').innerHTML = svgWrap(W,H,s);
+  document.getElementById('ellCap').textContent = caps[ellStep];
+}
+document.getElementById('ellNext').addEventListener('click', function(){ ellStep=Math.min(5,ellStep+1); paintEll(); });
+document.getElementById('ellPrev').addEventListener('click', function(){ ellStep=Math.max(1,ellStep-1); paintEll(); });
+document.getElementById('ellFace').addEventListener('click', function(e){
+  if(e.target.tagName!=='BUTTON') return;
+  this.querySelectorAll('button').forEach(function(b){b.classList.remove('on');});
+  e.target.classList.add('on'); ellFace=e.target.dataset.f; paintEll();
+});
+paintEll();
+
+/* ============================================================
+   M5 — view chooser
+   ============================================================ */
+/* Chosen deliberately: this run reads clean in SE, NE and SW, and crosses itself
+   in NW. That is the whole lesson — same pipe, one view is unusable. */
+const VIEW_ROUTE = [
+  {dir:'U', len:30, fit:'ell'},
+  {dir:'N', len:60, fit:'ell'},
+  {dir:'E', len:96, fit:'ell'},
+  {dir:'S', len:30, fit:'ell'},
+  {dir:'D', len:60}
+];
+let curView='SE';
+function paintView(){
+  const r = renderIso(VIEW_ROUTE,{w:600,h:340,view:curView,dims:true,crossings:true});
+  document.getElementById('viewStage').innerHTML = r.svg;
+  document.getElementById('viewCap').textContent = {SE:'Southeast view',NE:'Northeast view',NW:'Northwest view',SW:'Southwest view'}[curView];
+  const m=VIEWS[curView];
+  const msg=document.getElementById('viewMsg');
+  const cross = r.crossings;
+  const inv={}; Object.keys(m).forEach(function(k){ inv[m[k]]=k; });
+  const t = 'Compass for this view — upper-right = <b>'+inv.UR+'</b> · lower-right = <b>'+inv.LR+
+            '</b> · lower-left = <b>'+inv.LL+'</b> · upper-left = <b>'+inv.UL+'</b>. Up and Down never move.';
+  if(cross>0){
+    msg.className='fb bad show';
+    msg.innerHTML = t+'<br><br><b>'+cross+' crossing'+(cross>1?'s':'')+' flagged in red.</b> Two pipe lines cross with nothing joining them — a fitter reading this will see a connection that does not exist. This view is unusable for this run. Try another.';
+  } else {
+    msg.className='fb good show';
+    msg.innerHTML = t+'<br><br><b>No crossings — this view works.</b> Of the usable ones, prefer whichever reads closest to the plan sheet.';
+  }
+}
+document.getElementById('viewSeg').addEventListener('click', function(e){
+  if(e.target.tagName!=='BUTTON') return;
+  this.querySelectorAll('button').forEach(function(b){b.classList.remove('on');});
+  e.target.classList.add('on'); curView=e.target.dataset.v; paintView();
+});
+paintView();
+
+/* ============================================================
+   M6 — worked example
+   ============================================================ */
+const WE_ROUTE = [
+  {dir:'U', len:36, fit:'ell', label:'A'},
+  {dir:'N', len:96, fit:'ell', label:'B'},
+  {dir:'U', len:48, label:'C'}
+];
+const WE_ELEV='E';
+const WE_STEPS = [
+  'Start at the bottom of the riser, where the pipe comes out of the main. Nothing drawn yet — but the compass goes on the sheet first.',
+  '<b>Leg A.</b> The elevation shows it climbing vertically and the plan shows it as a single circle — that circle is the tell. Vertical, <b>Up 3&#8242;-0&#8243;</b>.',
+  '<b>Leg B.</b> On the plan it runs off toward north; on the East Elevation it reads across as a true-length horizontal. An elbow turns the riser north. <b>North 8&#8242;-0&#8243;</b>.',
+  '<b>Leg C.</b> Back to a circle on the plan and vertical on the elevation. A second elbow turns it up. <b>Up 4&#8242;-0&#8243;</b>.',
+  'Done. Three legs, two elbows, all three dimensions readable in one picture. Compare it against the two flat views — every line above came off one of them.'
+];
+let weStep=0;
+function paintWE(){
+  const n = weStep;
+  const shown = WE_ROUTE.slice(0, n);
+  const hot = n-1;
+  document.getElementById('wePlan').innerHTML = renderFlat(WE_ROUTE,{w:320,h:230,kind:'plan',hot:hot,dims:true}) ;
+  document.getElementById('weElev').innerHTML = renderFlat(WE_ROUTE,{w:320,h:230,kind:'elev',from:WE_ELEV,hot:hot,dims:true});
+  document.getElementById('weElevCap').textContent = ELEV_NAME[WE_ELEV];
+  const disp = shown.length ? shown : [];
+  document.getElementById('weIso').innerHTML = disp.length
+    ? renderIso(disp,{w:560,h:300,dims:true,labels:true,hot:hot}).svg
+    : renderIso([{dir:'N',len:1,style:'dim'}],{w:560,h:300,dims:false,fittings:false}).svg;
+  document.getElementById('weMsg').innerHTML = WE_STEPS[Math.min(n, WE_STEPS.length-1)];
+  document.getElementById('wePrev').disabled = n===0;
+  document.getElementById('weNext').disabled = n>=WE_ROUTE.length+1;
+}
+document.getElementById('weNext').addEventListener('click', function(){ weStep=Math.min(WE_ROUTE.length+1,weStep+1); paintWE(); });
+document.getElementById('wePrev').addEventListener('click', function(){ weStep=Math.max(0,weStep-1); paintWE(); });
+document.getElementById('weReset').addEventListener('click', function(){ weStep=0; paintWE(); });
+paintWE();
+
+/* ============================================================
+   M7 — offset box lab
+   ============================================================ */
+let boxMode='none';
+function paintBox(){
+  let legs;
+  if(boxMode==='V'){
+    legs=[{dir:'N',len:72,fit:'ell'},{d:[0,48,48],box:true,fit:'ell'},{dir:'N',len:60}];
+  } else {
+    legs=[{dir:'N',len:72,fit:'ell'},{d:[48,48,0],box:(boxMode==='H'),fit:'ell'},{dir:'N',len:60}];
+  }
+  if(boxMode==='none'){
+    legs=[{dir:'N',len:72,fit:'ell'},{d:[48,48,0],box:false,fit:'ell'},{dir:'N',len:60}];
+  }
+  document.getElementById('boxStage').innerHTML = renderIso(legs,{w:600,h:320,dims:false}).svg;
+  const caps={
+    none:'One diagonal, no box. Which way does it go?',
+    H:'Box in the horizontal plane — the offset stays level and swings east.',
+    V:'Box in the vertical plane — the offset climbs as it runs north.'
+  };
+  document.getElementById('boxCap').textContent = caps[boxMode];
+  const msgs={
+    none:'<b>Ambiguous.</b> That solid line could be a level 45° swing to the east, or a 45° climb — the drawing does not say. A fitter cutting from this sheet is guessing.',
+    H:'<b>45° in the horizontal plane.</b> The broken box lies flat, so the offset runs level and shifts the pipe east while it continues north. Note it on the drawing: <em>45° in the horizontal plane</em>.',
+    V:'<b>45° up from horizontal.</b> The broken box stands upright, so the offset gains elevation as it runs north. Note it on the drawing: <em>45° up from horizontal</em>.'
+  };
+  const el=document.getElementById('boxMsg');
+  el.className = 'fb show '+(boxMode==='none'?'bad':'good');
+  el.innerHTML = msgs[boxMode];
+}
+document.getElementById('boxSeg').addEventListener('click', function(e){
+  if(e.target.tagName!=='BUTTON') return;
+  this.querySelectorAll('button').forEach(function(b){b.classList.remove('on');});
+  e.target.classList.add('on'); boxMode=e.target.dataset.b; paintBox();
+});
+paintBox();
+
+buildQuiz(document.getElementById('offDrill'), [
+  { q:'A pipe iso shows a 45° offset with no box and no note. What is the correct move?',
+    a:['Assume it is a horizontal offset — that is the most common',
+       'Scale it off the drawing to work out the rise',
+       'Treat the drawing as incomplete and get it clarified before cutting',
+       'Draw the box in yourself using your best guess'],
+    c:2,
+    e:'An unboxed, unnoted non-isometric line does not contain enough information to build from — and it cannot be scaled, because off-axis lines are distorted by the projection. The drawing is incomplete; get it fixed rather than guessing on the pipe.' },
+  { q:'Why can a 45° offset never be measured off an isometric drawing?',
+    a:['Because isometrics are always drawn at 1/8" = 1\'-0"',
+       'Because it is not parallel to any of the three isometric axes, so the projection distorts its length',
+       'Because offsets are always dimensioned in the elevation instead',
+       'Because the drafter leaves offsets out of the scale intentionally'],
+    c:1,
+    e:'Only lines on or parallel to the three axes come out true length. An offset diagonal is off-axis, so its drawn length has no fixed relationship to its real length. Dimension it or note it — never scale it.' },
+  { q:'The box around an offset is drawn with light broken lines. What is it actually telling the reader?',
+    a:['The pipe size of the offset',
+       'The plane the offset lies in, and therefore which way it goes',
+       'That the offset is an alternate, not part of the base bid',
+       'The cut length of the offset piece'],
+    c:1,
+    e:'The box is the two axis components of the offset, drawn as construction lines. Because those components are on-axis, the reader can see exactly which plane the diagonal lives in. Same diagonal, box laid flat vs. box stood up, and you have two completely different pieces of pipe.' },
+  { q:'On a horizontal 45° offset drawn on a southeast isometric, the offset line comes out perfectly horizontal on the page. Why does that happen?',
+    a:['Because the drafter made an error',
+       'Because the two 30° components cancel each other vertically and add horizontally',
+       'Because horizontal offsets are always drawn flat by convention',
+       'Because the drawing is not to scale'],
+    c:1,
+    e:'One component runs up-and-right at 30°, the other down-and-right at 30°. Their vertical parts cancel and their horizontal parts add, so the diagonal lands dead level on the page. That flat line looks nothing like a 45° turn, which is exactly why it needs the box.' }
+], 'Offsets');
+
+/* ============================================================
+   M8 — fitting symbol library
+   ============================================================ */
+function symCard(name, sub, frontSvg, isoSvg){
+  return '<div class="sym"><div style="display:flex;gap:4px;align-items:center;justify-content:center">'+
+         '<div style="flex:1">'+frontSvg+'<div class="sb">front</div></div>'+
+         '<div style="flex:1">'+isoSvg+'<div class="sb">iso</div></div></div>'+
+         '<div class="nm">'+name+'</div><div class="sb">'+sub+'</div></div>';
+}
+function mini(inner){ return '<svg viewBox="0 0 90 62" style="width:100%;max-width:90px">'+inner+'</svg>'; }
+const PW='stroke="#e6edf3" stroke-width="2.6" stroke-linecap="round"';
+const TK='stroke="#e6edf3" stroke-width="2" stroke-linecap="round"';
+/* iso helper: a leg drawn at 30° right-down (East) and 30° right-up (North) */
+function isoLeg(x1,y1,dx,dy){ return ln([x1,y1],[x1+dx,y1+dy],PW); }
+
+const SYMS = [
+  ['90° Elbow','turns the run 90°',
+    mini(ln([10,50],[45,50],PW)+ln([45,50],[45,14],PW)+ln([37,50],[37,42],TK)+ln([45,42],[53,42],TK)),
+    mini(ln([12,40],[46,20],PW)+ln([46,20],[46,52],PW)+ln([38,32],[42,42],TK)+ln([38,20],[54,20],TK))],
+  ['Tee','branch off a run',
+    mini(ln([10,44],[78,44],PW)+ln([44,44],[44,14],PW)+ln([36,36],[36,52],TK)+ln([52,36],[52,52],TK)+ln([36,22],[52,22],TK)),
+    mini(ln([8,46],[76,22],PW)+ln([42,34],[42,8],PW)+ln([32,30],[36,44],TK)+ln([48,26],[52,40],TK)+ln([34,20],[50,20],TK))],
+  ['Gate Valve','full-port shutoff',
+    mini(ln([6,40],[26,40],PW)+ln([64,40],[84,40],PW)+'<path d="M26 28 L26 52 L45 40 Z" fill="none" '+PW+'/><path d="M64 28 L64 52 L45 40 Z" fill="none" '+PW+'/>'+ln([45,40],[45,16],TK)+ln([36,16],[54,16],TK)),
+    mini(ln([6,48],[28,36],PW)+ln([62,17],[84,6],PW)+'<path d="M28 24 L28 48 L45 34 Z" fill="none" '+PW+'/><path d="M62 12 L62 36 L45 34 Z" fill="none" '+PW+'/>'+ln([45,34],[45,12],TK)+ln([36,12],[54,12],TK))],
+  ['Globe Valve','throttling / regulating',
+    mini(ln([6,40],[26,40],PW)+ln([64,40],[84,40],PW)+'<path d="M26 28 L26 52 L45 40 Z" fill="none" '+PW+'/><path d="M64 28 L64 52 L45 40 Z" fill="none" '+PW+'/><circle cx="45" cy="40" r="5" fill="#e6edf3"/>'+ln([45,35],[45,16],TK)+ln([36,16],[54,16],TK)),
+    mini(ln([6,48],[28,36],PW)+ln([62,17],[84,6],PW)+'<path d="M28 24 L28 48 L45 34 Z" fill="none" '+PW+'/><path d="M62 12 L62 36 L45 34 Z" fill="none" '+PW+'/><circle cx="45" cy="34" r="5" fill="#e6edf3"/>'+ln([45,29],[45,10],TK)+ln([36,10],[54,10],TK))],
+  ['Check Valve','one direction only',
+    mini(ln([6,40],[30,40],PW)+ln([60,40],[84,40],PW)+'<path d="M30 26 L30 54 L58 40 Z" fill="none" '+PW+'/>'+ln([58,26],[58,54],PW)),
+    mini(ln([6,48],[30,35],PW)+ln([60,18],[84,6],PW)+'<path d="M30 22 L30 50 L58 32 Z" fill="none" '+PW+'/>'+ln([58,18],[58,46],PW))],
+  ['Union','breaks the line for service',
+    mini(ln([6,40],[84,40],PW)+ln([36,28],[36,52],TK)+ln([45,28],[45,52],TK)+ln([54,28],[54,52],TK)),
+    mini(ln([6,48],[84,10],PW)+ln([36,36],[36,60],TK)+ln([45,32],[45,56],TK)+ln([54,28],[54,52],TK))],
+  ['Flange','bolted connection',
+    mini(ln([6,40],[84,40],PW)+ln([39,26],[39,54],TK)+ln([51,26],[51,54],TK)),
+    mini(ln([6,48],[84,10],PW)+ln([39,34],[39,60],TK)+ln([51,28],[51,54],TK))],
+  ['Angle Globe Valve','90° turn and throttle',
+    mini(ln([10,52],[44,52],PW)+'<path d="M24 40 L24 62 L44 52 Z" fill="none" '+PW+'/>'+ln([44,52],[44,20],PW)+ln([32,20],[56,20],TK)),
+    mini(ln([10,44],[44,26],PW)+'<path d="M24 26 L24 48 L44 36 Z" fill="none" '+PW+'/>'+ln([44,36],[44,8],PW)+ln([32,8],[56,8],TK))],
+  ['Square Head Cock','quarter-turn plug',
+    mini(ln([6,40],[30,40],PW)+'<rect x="30" y="28" width="28" height="24" fill="none" '+PW+'/>'+ln([58,40],[84,40],PW)+ln([44,28],[44,14],TK)),
+    mini(ln([6,48],[30,35],PW)+'<path d="M30 24 L52 12 L74 24 L52 36 Z" fill="none" '+PW+'/>'+ln([74,24],[86,18],PW)+ln([52,12],[52,2],TK))]
+];
+document.getElementById('symLib').innerHTML = SYMS.map(function(s){ return symCard(s[0],s[1],s[2],s[3]); }).join('');
+document.getElementById('csSyms').innerHTML = SYMS.map(function(s){ return symCard(s[0],s[1],s[2],s[3]); }).join('');
+
+const JOINTS = [
+  ['Screwed','threaded — NPT', mini(ln([6,32],[84,32],PW)+ln([45,20],[45,44],TK)), mini(ln([6,40],[84,14],PW)+ln([45,15],[45,39],TK))],
+  ['Flanged','bolted flange pair', mini(ln([6,32],[84,32],PW)+ln([38,20],[38,44],TK)+ln([52,20],[52,44],TK)), mini(ln([6,40],[84,14],PW)+ln([38,20],[38,44],TK)+ln([52,15],[52,39],TK))],
+  ['Welded','field or shop weld', mini(ln([6,32],[84,32],PW)+ln([39,24],[51,40],TK)+ln([51,24],[39,40],TK)), mini(ln([6,40],[84,14],PW)+ln([39,22],[51,38],TK)+ln([51,22],[39,38],TK))],
+  ['Soldered','solder / braze', mini(ln([6,32],[84,32],PW)+'<circle cx="45" cy="32" r="5" fill="none" '+TK+'/>'), mini(ln([6,40],[84,14],PW)+'<circle cx="45" cy="27" r="5" fill="none" '+TK+'/>')],
+  ['Bell &amp; Spigot','gasketed push-on', mini(ln([6,32],[38,32],PW)+'<path d="M38 22 Q52 32 38 42" fill="none" '+PW+'/>'+ln([52,32],[84,32],PW)), mini(ln([6,40],[38,29],PW)+'<path d="M38 19 Q52 29 38 39" fill="none" '+PW+'/>'+ln([52,26],[84,15],PW))]
+];
+document.getElementById('jointLib').innerHTML = JOINTS.map(function(s){ return symCard(s[0],s[1],s[2],s[3]); }).join('');
+
+/* turned up / turned down */
+document.getElementById('tuStage').innerHTML = svgWrap(200,140,
+  ln([16,70],[86,70],PW)+'<circle cx="96" cy="70" r="11" fill="none" stroke="#e6edf3" stroke-width="2.8"/>'+
+  txt([96,116],'open circle','fill="#8b949e" font-size="12" font-family="system-ui" text-anchor="middle"')+
+  txt([96,36],'pipe turns UP','fill="#1D9E75" font-size="12" font-weight="800" font-family="system-ui" text-anchor="middle"'));
+document.getElementById('tdStage').innerHTML = svgWrap(200,140,
+  ln([16,70],[86,70],PW)+'<circle cx="96" cy="70" r="11" fill="none" stroke="#e6edf3" stroke-width="2.8"/>'+
+  ln([85,70],[107,70],'stroke="#e6edf3" stroke-width="2.8"')+
+  txt([96,116],'circle with a bar','fill="#8b949e" font-size="12" font-family="system-ui" text-anchor="middle"')+
+  txt([96,36],'pipe turns DOWN','fill="#D85A30" font-size="12" font-weight="800" font-family="system-ui" text-anchor="middle"'));
+
+buildQuiz(document.getElementById('symDrill'), [
+  { q:'A 90° elbow turns a north-running main up. On the isometric, which way does the symbol tick on the vertical leg run?',
+    a:['Along the vertical leg itself',
+       'Along one of the two 30° axes, across the vertical leg',
+       'At 45° to everything so it stands out',
+       'Whichever way fits best in the space'],
+    c:1,
+    e:'The face of a fitting is drawn perpendicular to the pipe it lands on. A vertical pipe has a horizontal face, so the tick runs along one of the horizontal (30°) axes — never up and down with the pipe.' },
+  { q:'On a plan view you find an open circle at the end of a branch line, with no bar through it. What is the pipe doing?',
+    a:['Running down toward the floor',
+       'Running up toward you, out of the sheet',
+       'Capped off — dead end',
+       'Continuing horizontally, drawn short for clarity'],
+    c:1,
+    e:'You are looking down at a plan, so a circle means the pipe is vertical. Open circle = coming up toward you. A bar through it would mean heading down, away from you.' },
+  { q:'Which symbol tells the fitter the connection can be broken later for service without cutting pipe?',
+    a:['Flange','Union','Check valve','Square head cock'],
+    c:1,
+    e:'A union is a three-piece threaded coupling that breaks the line — that is its entire purpose. A flange also bolts apart, but the union is the one you deliberately design into a threaded run so it can be taken down.' },
+  { q:'You see a bowtie symbol with a small solid circle in the centre of it. What is it?',
+    a:['Gate valve','Globe valve','Check valve','Union'],
+    c:1,
+    e:'A plain bowtie is a gate valve. Add the solid centre and it becomes a globe valve — the seat and disc that let it throttle. Gates are shutoff only; globes regulate.' },
+  { q:'Why does a check valve symbol look different from the gate and globe symbols?',
+    a:['Because it is always installed vertically',
+       'Because it is not operated by a handwheel, so it has no stem — and it has a defined flow direction',
+       'Because it is drawn at half scale',
+       'Because it is only used on dry systems'],
+    c:1,
+    e:'Gate and globe valves are operated, so their symbols carry a stem and handwheel. A check valve has no operator — it is opened by flow — and its symbol shows the flapper so the reader can see which way flow is allowed.' },
+  { q:'A tee sits in a north-running main with a branch going up. How many symbol ticks does that fitting get on the isometric?',
+    a:['One, at the centre of the tee','Two — one on each side of the main','Three — one on each of the three openings','None; tees are shown by the line junction alone'],
+    c:2,
+    e:'Every opening on the fitting gets a face, and every face gets a tick perpendicular to its own pipe. A tee has three openings, so three ticks — two across the main and one across the branch.' }
+], 'Fittings');
+
+/* ============================================================
+   M9 — WORK PROBLEMS
+   ============================================================ */
+const PROBLEMS = [
+  { t:'Riser to a branch line',
+    b:'The main comes up out of the floor, turns north, and climbs to the branch elevation. Three legs.',
+    elev:'E', rot:0, topic:'Plan → Iso',
+    legs:[{dir:'U',len:36},{dir:'N',len:96},{dir:'U',len:48}] },
+
+  { t:'Around the corner',
+    b:'Out of the riser, east along the wall, then a turn north before it drops to a sidewall head. Four legs. Watch the leg that reads as a circle on the elevation.',
+    elev:'S', rot:0, topic:'Plan → Iso',
+    legs:[{dir:'U',len:24},{dir:'E',len:120},{dir:'N',len:72},{dir:'D',len:36}] },
+
+  { t:'Drop, run and climb back',
+    b:'The feed drops below a duct, runs west and south, then climbs back to ceiling height. Four legs.',
+    elev:'S', rot:0, topic:'Plan → Iso',
+    legs:[{dir:'D',len:48},{dir:'W',len:144},{dir:'S',len:108},{dir:'U',len:72}] },
+
+  { t:'Two turns and a stub',
+    b:'A short riser nipple, a run south, up over an obstruction, then west to the next drop. Four legs.',
+    elev:'E', rot:0, topic:'Plan → Iso',
+    legs:[{dir:'U',len:18},{dir:'S',len:84},{dir:'U',len:30},{dir:'W',len:132}] },
+
+  { t:'Level 45° offset',
+    b:'The main runs east, swings around a column with a level 45° offset, then carries on east. The offset shifts it 4&#8242;-0&#8243; north while it travels 4&#8242;-0&#8243; east. Use Offset mode for the middle leg.',
+    elev:'S', rot:0, topic:'Offsets',
+    legs:[{dir:'E',len:72},{d:[48,48,0],box:true},{dir:'E',len:96}] },
+
+  { t:'45° up from horizontal',
+    b:'The branch runs north, rises over a beam with a 45° offset — 3&#8242;-0&#8243; up while travelling 3&#8242;-0&#8243; north — then continues north at the higher elevation.',
+    elev:'E', rot:0, topic:'Offsets',
+    legs:[{dir:'N',len:96},{d:[0,36,36],box:true},{dir:'N',len:60}] },
+
+  { t:'North arrow is not up',
+    b:'Same job, different sheet. <b>Check the north arrow on the plan before you read a single line.</b> Four legs.',
+    elev:'S', rot:90, topic:'Plan → Iso',
+    legs:[{dir:'U',len:30},{dir:'N',len:108},{dir:'E',len:84},{dir:'D',len:42}] },
+
+  { t:'Feed main with two elevation changes',
+    b:'Five legs. The pipe crosses two obstructions on its way to the far bay.',
+    elev:'S', rot:0, topic:'Plan → Iso',
+    legs:[{dir:'E',len:96},{dir:'U',len:36},{dir:'E',len:72},{dir:'D',len:36},{dir:'E',len:60}] },
+
+  { t:'Offset down, then around',
+    b:'The main runs east, drops around a duct on a 45° offset (2&#8242;-6&#8243; down, 2&#8242;-6&#8243; east), then turns south and climbs back up. Five legs.',
+    elev:'S', rot:0, topic:'Offsets',
+    legs:[{dir:'E',len:84},{d:[30,0,-30],box:true},{dir:'E',len:48},{dir:'S',len:90},{dir:'U',len:30}] },
+
+  { t:'Full run — six legs',
+    b:'Everything at once. Riser, run, offset around a column, turn, and drop to the head. Read both views carefully before you start.',
+    elev:'E', rot:0, topic:'Plan → Iso',
+    legs:[{dir:'U',len:42},{dir:'N',len:120},{d:[36,36,0],box:true},{dir:'N',len:72},{dir:'E',len:60},{dir:'D',len:54}] }
+];
+
+let wpIdx=0, wpBuilt=[], wpTries=0, wpShown=false, wpSolvedFlag=false;
+let wpDir=null, wpFt=0, wpIn=0, wpOffMode=false, wpOff2=null;
+let wpResults=[];
+const wpCompassW = buildCompass(document.getElementById('wpCompass'),'SE', function(d){
+  wpDir=d; paintOffPicker(); paintWpIso();
+});
+
+function paintOffPicker(){
+  const host=document.getElementById('wpOff2');
+  document.getElementById('wpOffsetBox').style.display = wpOffMode ? 'block' : 'none';
+  if(!wpOffMode) return;
+  const opts = ['N','S','E','W','U','D'].filter(function(d){
+    if(!wpDir) return true;
+    const a=DIR3[wpDir], b=DIR3[d];
+    return !(a[0]&&b[0]) && !(a[1]&&b[1]) && !(a[2]&&b[2]);
+  });
+  host.innerHTML = opts.map(function(d){
+    return '<button data-d="'+d+'"'+(wpOff2===d?' class="on"':'')+'>'+DIRNAME[d]+'</button>';
+  }).join('');
+}
+document.getElementById('wpOff2').addEventListener('click', function(e){
+  if(e.target.tagName!=='BUTTON') return;
+  wpOff2 = e.target.dataset.d; paintOffPicker(); paintWpIso();
+});
+document.getElementById('wpOffToggle').addEventListener('click', function(){
+  wpOffMode=!wpOffMode; wpOff2=null;
+  this.classList.toggle('pri', wpOffMode);
+  this.textContent = wpOffMode ? 'Offset mode: ON' : 'Offset (45°)';
+  paintOffPicker(); paintWpIso();
+});
+
+function stepBtn(id, delta, which){
+  document.getElementById(id).addEventListener('click', function(){
+    if(which==='ft'){ wpFt = Math.max(0, Math.min(60, wpFt+delta)); }
+    else { wpIn = (wpIn + delta + 12) % 12; wpIn = Math.round(wpIn/3)*3 % 12; }
+    document.getElementById('wpFt').textContent = wpFt;
+    document.getElementById('wpIn').textContent = wpIn;
+    paintWpIso();
+  });
+}
+stepBtn('wpFtUp', 1,'ft'); stepBtn('wpFtDn', -1,'ft');
+stepBtn('wpInUp', 3,'in'); stepBtn('wpInDn', -3,'in');
+
+function pendingLeg(){
+  const L = wpFt*12 + wpIn;
+  if(!wpDir || L<=0) return null;
+  if(wpOffMode){
+    if(!wpOff2) return null;
+    const a=DIR3[wpDir], b=DIR3[wpOff2];
+    return { d:[ (a[0]+b[0])*L, (a[1]+b[1])*L, (a[2]+b[2])*L ], box:true };
+  }
+  return { dir:wpDir, len:L };
+}
+
+function paintWpIso(){
+  const pend = pendingLeg();
+  let legs = wpBuilt.map(function(l,i){
+    const c=Object.assign({},l);
+    if(i<wpBuilt.length-1 || pend) c.fit='ell';
+    return c;
+  });
+  let ghostAt=-1;
+  if(pend){ ghostAt=legs.length; legs=legs.concat([pend]); }
+  if(!legs.length){
+    document.getElementById('wpIso').innerHTML = renderIso([{dir:'N',len:1,style:'dim'}],{w:560,h:300,fittings:false}).svg;
+    return;
+  }
+  document.getElementById('wpIso').innerHTML = renderIso(legs,{w:560,h:300,dims:true,ghost:ghostAt}).svg;
+  paintWpLegs();
+}
+function paintWpLegs(){
+  const host=document.getElementById('wpLegs');
+  if(!wpBuilt.length){ host.innerHTML='<div class="empty">No legs yet. Tap a compass direction, set the length, then Add leg.</div>'; return; }
+  host.innerHTML = wpBuilt.map(function(l,i){
+    const cls = l._mark ? (' '+l._mark) : '';
+    return '<div class="lg'+cls+'"><span class="n">'+(i+1)+'</span>'+describeLeg(l)+'</div>';
+  }).join('');
+}
+
+document.getElementById('wpAdd').addEventListener('click', function(){
+  const p = pendingLeg();
+  const fb=document.getElementById('wpFb');
+  if(!p){
+    fb.className='fb bad show';
+    fb.innerHTML = !wpDir ? 'Pick a direction on the compass first.'
+      : (wpOffMode && !wpOff2) ? 'Offset mode needs a second direction — pick one below the compass.'
+      : 'Set a length greater than zero.';
+    return;
+  }
+  wpBuilt.push(p);
+  fb.className='fb'; fb.innerHTML='';
+  /* Reset direction AND length after every leg. Carrying a length over silently
+     produces off-by-inches errors that are very hard for a student to spot. */
+  wpDir=null; wpOff2=null; wpFt=0; wpIn=0;
+  document.getElementById('wpFt').textContent='0';
+  document.getElementById('wpIn').textContent='0';
+  wpCompassW.clear();
+  paintOffPicker(); paintWpIso();
+});
+document.getElementById('wpUndo').addEventListener('click', function(){
+  wpBuilt.pop();
+  wpBuilt.forEach(function(l){ delete l._mark; });
+  document.getElementById('wpFb').className='fb';
+  paintWpIso();
+});
+
+function compareBuild(built, answer){
+  for(let i=0;i<Math.max(built.length, answer.length);i++){
+    const b=built[i], a=answer[i];
+    if(!b) return { i:i, msg:'You are <b>'+(answer.length-built.length)+'</b> leg'+(answer.length-built.length>1?'s':'')+' short. The views show <b>'+answer.length+'</b> legs in total — go back and find the one you skipped. A leg that shows as a circle on one view is easy to miss.' };
+    if(!a) return { i:i, msg:'You have <b>'+(built.length-answer.length)+'</b> leg'+(built.length-answer.length>1?'s':'')+' too many. The run only has <b>'+answer.length+'</b>. Undo the extras.' };
+    const bd=legDelta(b), ad=legDelta(a);
+    if(!sameDelta(bd,ad)){
+      const bIsOff = !!(b.d && !b.dir), aIsOff = !!(a.d && !a.dir);
+      let hint;
+      if(aIsOff && !bIsOff) hint = 'That leg is a <b>45° offset</b>, not a straight run — it moves in two directions at once. Turn on Offset mode.';
+      else if(bIsOff && !aIsOff) hint = 'That leg is a <b>straight run along one axis</b>, not an offset. Turn Offset mode off.';
+      else {
+        const bl = (bd[0]?Math.abs(bd[0]):bd[1]?Math.abs(bd[1]):Math.abs(bd[2]));
+        const al = (ad[0]?Math.abs(ad[0]):ad[1]?Math.abs(ad[1]):Math.abs(ad[2]));
+        const sameAxis = (bd[0]!==0)===(ad[0]!==0) && (bd[1]!==0)===(ad[1]!==0) && (bd[2]!==0)===(ad[2]!==0);
+        if(sameAxis && bl!==al) hint = 'Right direction, wrong length. Check which view shows that leg <b>true length</b> — a leg is foreshortened or shown as a point in the view it runs into.';
+        else if(bd[2]!==0 && ad[2]===0) hint = 'You went vertical. That leg is <b>horizontal</b> — it reads as a line on the plan, not a circle.';
+        else if(bd[2]===0 && ad[2]!==0) hint = 'That leg is <b>vertical</b>. Look at the plan: it shows as a circle, not a line.';
+        else hint = 'Right axis pair, wrong way along it. Re-check the north arrow on the plan, then re-read which way that leg heads.';
+      }
+      return { i:i, msg:'<b>Leg '+(i+1)+'</b> — you drew <b>'+describeLeg(b)+'</b>. '+hint };
+    }
+  }
+  return null;
+}
+
+document.getElementById('wpCheck').addEventListener('click', function(){
+  const P=PROBLEMS[wpIdx];
+  const fb=document.getElementById('wpFb');
+  wpBuilt.forEach(function(l){ delete l._mark; });
+  const err = compareBuild(wpBuilt, P.legs);
+  if(err){
+    wpTries++;
+    wpBuilt.forEach(function(l,i){ l._mark = i<err.i ? 'ok' : (i===err.i ? 'bad' : ''); });
+    fb.className='fb bad show';
+    fb.innerHTML = err.msg + (wpTries>=2 ? '<br><br><em>Show me is unlocked below.</em>' : '');
+    if(wpTries>=2) document.getElementById('wpShow').disabled=false;
+    paintWpLegs();
+    return;
+  }
+  wpBuilt.forEach(function(l){ l._mark='ok'; });
+  paintWpLegs();
+  fb.className='fb good show';
+  fb.innerHTML = '<b>Correct.</b> '+(wpTries===0 && !wpShown ? 'Clean on the first check — that is the standard.' : 'Solved.')+
+                 ' '+P.legs.length+' legs, '+(P.legs.length-1)+' fitting'+(P.legs.length-1>1?'s':'')+'.';
+  if(!wpSolvedFlag){
+    wpSolvedFlag=true;
+    wpResults.push({ topic:P.topic, clean:(wpTries===0 && !wpShown), shown:wpShown });
+  }
+  document.getElementById('wpNextP').style.display='block';
+  document.getElementById('wpNextP').textContent = (wpIdx<PROBLEMS.length-1) ? 'Next problem →' : 'See results →';
+});
+
+document.getElementById('wpShow').addEventListener('click', function(){
+  const P=PROBLEMS[wpIdx];
+  wpShown=true;
+  wpBuilt = P.legs.map(function(l){ return Object.assign({},l); });
+  document.getElementById('wpIso').innerHTML = renderIso(
+    P.legs.map(function(l,i){ const c=Object.assign({},l); if(i<P.legs.length-1) c.fit='ell'; return c; }),
+    {w:560,h:300,dims:true}).svg;
+  paintWpLegs();
+  const fb=document.getElementById('wpFb');
+  fb.className='fb info show';
+  fb.innerHTML='<b>Here is the run.</b> Trace each leg back to the plan and the elevation and satisfy yourself where every direction and every length came from. Then move on.';
+  if(!wpSolvedFlag){ wpSolvedFlag=true; wpResults.push({topic:P.topic, clean:false, shown:true}); }
+  document.getElementById('wpNextP').style.display='block';
+  document.getElementById('wpNextP').textContent = (wpIdx<PROBLEMS.length-1) ? 'Next problem →' : 'See results →';
+});
+
+function loadProblem(i){
+  wpIdx=i; wpBuilt=[]; wpTries=0; wpShown=false; wpSolvedFlag=false;
+  wpDir=null; wpFt=0; wpIn=0; wpOff2=null;
+  wpOffMode=false;
+  const tg=document.getElementById('wpOffToggle');
+  tg.classList.remove('pri'); tg.textContent='Offset (45°)';
+  document.getElementById('wpFt').textContent='0';
+  document.getElementById('wpIn').textContent='0';
+  wpCompassW.clear();
+  paintOffPicker();
+  const P=PROBLEMS[i];
+  document.getElementById('wpNum').textContent = 'Problem '+(i+1)+' of '+PROBLEMS.length+' · '+P.topic;
+  document.getElementById('wpScore').textContent = wpResults.filter(function(r){return r.clean;}).length+' clean';
+  document.getElementById('wpBar').style.width = (i/PROBLEMS.length*100)+'%';
+  document.getElementById('wpTitle').textContent = P.t;
+  document.getElementById('wpBrief').innerHTML = P.b;
+  document.getElementById('wpPlan').innerHTML = renderFlat(P.legs,{w:320,h:240,kind:'plan',rot:P.rot,dims:true});
+  document.getElementById('wpElev').innerHTML = renderFlat(P.legs,{w:320,h:240,kind:'elev',from:P.elev,dims:true});
+  document.getElementById('wpPlanCap').innerHTML = 'Plan' + (P.rot?' — <span style="color:#D85A30">check the north arrow</span>':'');
+  document.getElementById('wpElevCap').textContent = ELEV_NAME[P.elev];
+  document.getElementById('wpFb').className='fb';
+  document.getElementById('wpShow').disabled=true;
+  document.getElementById('wpNextP').style.display='none';
+  paintWpIso();
+}
+document.getElementById('wpStart').addEventListener('click', function(){
+  document.getElementById('wpIntro').style.display='none';
+  document.getElementById('wpDone').style.display='none';
+  document.getElementById('wpArea').style.display='block';
+  wpResults=[]; loadProblem(0);
+});
+document.getElementById('wpNextP').addEventListener('click', function(){
+  if(wpIdx < PROBLEMS.length-1){ loadProblem(wpIdx+1); window.scrollTo({top:document.getElementById('m8').offsetTop-60,behavior:'smooth'}); }
+  else finishWP();
+});
+document.getElementById('wpAgain').addEventListener('click', function(){
+  wpResults=[];
+  document.getElementById('wpDone').style.display='none';
+  document.getElementById('wpArea').style.display='block';
+  loadProblem(0);
+});
+function finishWP(){
+  document.getElementById('wpArea').style.display='none';
+  document.getElementById('wpDone').style.display='block';
+  const clean=wpResults.filter(function(r){return r.clean;}).length;
+  const shown=wpResults.filter(function(r){return r.shown;}).length;
+  document.getElementById('dsClean').textContent=clean;
+  document.getElementById('dsSolved').textContent=wpResults.length;
+  document.getElementById('dsShown').textContent=shown;
+  const byTopic={};
+  wpResults.forEach(function(r){
+    byTopic[r.topic]=byTopic[r.topic]||{c:0,t:0};
+    byTopic[r.topic].t++; if(r.clean) byTopic[r.topic].c++;
+  });
+  let h='<h4>By topic</h4>';
+  Object.keys(byTopic).forEach(function(k){
+    const b=byTopic[k], pct=Math.round(b.c/b.t*100);
+    h+='<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:4px"><b>'+k+'</b><span style="color:'+(pct>=80?'#2fd39c':pct>=50?'#f07a4e':'#E5484D')+'">'+b.c+' / '+b.t+' clean</span></div><div class="scorebar"><i style="width:'+pct+'%"></i></div></div>';
+  });
+  const weak=Object.keys(byTopic).filter(function(k){ return byTopic[k].c/byTopic[k].t < 0.7; });
+  if(!wpResults.length){
+    h = '<p style="color:#8b949e">No problems attempted this run.</p>';
+  } else if(weak.length){
+    h+='<div class="warn"><span class="lbl">Go back to</span><p>'+
+       weak.map(function(k){ return k==='Offsets' ? 'Module 7 — Offsets &amp; Non-Isometric Lines' : 'Module 6 — Plan + Elevation → Isometric'; }).join('<br>')+
+       '</p></div>';
+  } else {
+    h+='<div class="rule"><span class="lbl">Solid</span><p>You are reading both views and translating them cleanly. Run the set again in a week to make it stick, and try Module 5 to practise picking the right view before you draw.</p></div>';
+  }
+  document.getElementById('dsWeak').innerHTML=h;
+  ST.wp = { clean:clean, total:wpResults.length, at:Date.now() };
+  store.set(ST);
+}
+
+/* cheat-sheet compass */
+buildCompass(document.getElementById('csCompass'),'SE',function(){});
+</script>
+</body>
+</html>
