@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FSM Classroom — Fire System Mastery Podcast</title>
+<meta name="description" content="The Fire System Mastery Classroom. Two voices working through one fire protection topic until it holds. Every claim carries its NFPA section.">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#0f1923;
+  --panel:#1a2736;
+  --panel-2:#16212e;
+  --line:#243447;
+  --line-soft:#1f2c3c;
+
+  --ink:#e8edf2;
+  --ink-2:#8b9fb5;
+  --ink-3:#7e93aa;
+
+  /* Fills keep the brand values. Text uses the lifted pair so it clears 4.5:1. */
+  --orange:#D85A30;   --orange-tx:#F0743F;
+  --blue:#185FA5;     --blue-tx:#5AA9F0;
+  --green:#1D9E75;    --green-tx:#2BBF8F;
+}
+
+html,body{background:var(--bg);overflow-x:hidden}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,Arial,sans-serif;
+  color:var(--ink);
+  line-height:1.6;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  padding:0 0 64px;
+}
+.wrap{width:100%;max-width:860px;margin:0 auto;padding:0 20px}
+
+a{color:var(--blue-tx)}
+
+/* ---------- top bar ---------- */
+.topbar{
+  border-bottom:1px solid var(--line-soft);
+  padding:2px 0;
+  margin-bottom:38px;
+}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.back{
+  font-size:13px;font-weight:600;color:var(--ink-2);text-decoration:none;
+  display:inline-flex;align-items:center;gap:7px;
+  min-height:44px;
+}
+.back:hover{color:var(--ink)}
+.brandmark{
+  font-size:11px;font-weight:800;letter-spacing:3px;
+  color:var(--orange-tx);text-transform:uppercase;
+}
+
+/* ---------- hero ---------- */
+.hero{text-align:center;padding:8px 0 40px}
+.wave{display:block;width:100%;max-width:340px;height:56px;margin:0 auto 22px}
+.kicker{
+  font-size:11px;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;
+  color:var(--orange-tx);margin-bottom:14px;
+}
+h1{
+  font-size:clamp(34px,8vw,54px);font-weight:800;line-height:1.05;
+  letter-spacing:-.02em;color:#fff;margin-bottom:16px;
+}
+.tagline{
+  font-size:17px;color:var(--ink-2);max-width:540px;margin:0 auto;
+}
+.tagline b{color:var(--ink);font-weight:600}
+
+/* ---------- episode shell ---------- */
+.ep{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:18px;
+  overflow:hidden;
+  margin-bottom:34px;
+}
+.ep-head{
+  padding:28px 26px 24px;
+  background:linear-gradient(135deg,#1c2b3c 0%,#1f1a14 140%);
+  border-bottom:1px solid var(--line);
+}
+.ep-num{
+  display:inline-block;
+  font-size:11px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;
+  color:#25120a;background:var(--orange);
+  padding:5px 12px;border-radius:20px;margin-bottom:16px;
+}
+.ep-head h2{
+  font-size:clamp(23px,5.4vw,31px);font-weight:800;line-height:1.2;
+  letter-spacing:-.015em;color:#fff;margin-bottom:12px;
+}
+.ep-sub{font-size:15.5px;color:var(--ink-2);max-width:620px}
+.ep-facts{
+  display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;
+}
+.fact{
+  font-size:11.5px;font-weight:700;letter-spacing:.6px;
+  padding:5px 11px;border-radius:6px;
+  background:#101c2e;color:var(--blue-tx);border:1px solid #1c3350;
+}
+.fact.o{background:#2a1a12;color:var(--orange-tx);border-color:#43261a}
+.fact.g{background:#0f2620;color:var(--green-tx);border-color:#1b4034}
+
+/* ---------- player ---------- */
+.player{padding:26px}
+.pl-row{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.btn-play{
+  flex:none;width:62px;height:62px;border-radius:50%;
+  background:var(--orange);border:none;cursor:pointer;
+  display:grid;place-items:center;
+  transition:transform .12s ease,background .12s ease;
+}
+.btn-play:hover{background:#e8683c;transform:scale(1.04)}
+.btn-play:focus-visible{outline:3px solid var(--blue-tx);outline-offset:3px}
+.btn-play svg{display:block}
+.pl-meta{min-width:0;flex:1}
+.pl-title{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.pl-state{font-size:12.5px;color:var(--ink-3)}
+
+.scrub{
+  position:relative;height:44px;display:flex;align-items:center;
+  cursor:pointer;touch-action:none;
+}
+.scrub:focus-visible{outline:2px solid var(--blue-tx);outline-offset:2px;border-radius:6px}
+.track{
+  position:relative;width:100%;height:7px;border-radius:4px;
+  background:#0d1620;border:1px solid var(--line-soft);overflow:hidden;
+}
+.buffer{position:absolute;inset:0 auto 0 0;width:0;background:#22394f}
+.fill{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,var(--orange),#F0743F)}
+.knob{
+  position:absolute;top:50%;left:0;width:15px;height:15px;border-radius:50%;
+  background:#fff;border:3px solid var(--orange);
+  transform:translate(-50%,-50%);pointer-events:none;
+}
+.times{
+  display:flex;justify-content:space-between;
+  font-size:12px;color:var(--ink-3);
+  font-variant-numeric:tabular-nums;margin-top:-2px;
+}
+
+.pl-ctrls{
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+  margin-top:18px;padding-top:18px;border-top:1px solid var(--line-soft);
+}
+.ctrl{
+  font-family:inherit;font-size:13px;font-weight:700;
+  color:var(--ink-2);background:var(--panel-2);
+  border:1px solid var(--line);border-radius:8px;
+  padding:8px 13px;cursor:pointer;
+  min-height:44px;min-width:44px;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  transition:border-color .12s ease,color .12s ease;
+}
+.ctrl:hover{color:var(--ink);border-color:#33465c}
+.ctrl:focus-visible{outline:2px solid var(--blue-tx);outline-offset:2px}
+.ctrl.on{color:var(--orange-tx);border-color:#5a3220;background:#231710}
+.spacer{flex:1}
+.resume{
+  width:100%;font-size:12.5px;color:var(--blue-tx);
+  background:none;border:none;padding:12px 0 6px;cursor:pointer;min-height:44px;
+  font-family:inherit;text-align:left;text-decoration:underline;
+}
+.resume:focus-visible{outline:2px solid var(--blue-tx);outline-offset:2px}
+.resume[hidden]{display:none}
+
+.fallback{
+  margin-top:16px;padding:12px 14px;border-radius:8px;
+  background:#2a1214;border:1px solid #4a1f22;
+  font-size:13px;color:#F5928C;
+}
+.fallback[hidden]{display:none}
+.fallback a{color:#FFB3AD}
+
+/* ---------- content blocks ---------- */
+.sec{margin-bottom:34px}
+.sec-h{
+  font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:16px;
+  padding-bottom:10px;border-bottom:1px solid var(--line-soft);
+}
+
+.beat{
+  display:flex;gap:15px;padding:15px 0;
+  border-bottom:1px solid var(--line-soft);
+}
+.beat:last-child{border-bottom:none}
+.beat-n{
+  flex:none;width:27px;height:27px;border-radius:7px;
+  background:var(--panel);border:1px solid var(--line);
+  display:grid;place-items:center;
+  font-size:12px;font-weight:800;color:var(--ink-3);
+  font-variant-numeric:tabular-nums;
+}
+.beat-b{min-width:0}
+.beat-t{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:4px;line-height:1.35}
+.beat-d{font-size:14.5px;color:var(--ink-2)}
+.cite{
+  display:inline-block;margin-top:7px;
+  font-size:11.5px;font-weight:700;letter-spacing:.4px;
+  color:var(--blue-tx);background:#101c2e;
+  border:1px solid #1c3350;border-radius:5px;padding:3px 8px;
+}
+
+.takeaways{
+  background:linear-gradient(135deg,#141f18 0%,#16212e 100%);
+  border:1px solid #1b4034;border-left:4px solid var(--green);
+  border-radius:12px;padding:22px 24px;
+}
+.takeaways h3{
+  font-size:12px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--green-tx);margin-bottom:15px;
+}
+.takeaways ol{margin:0;padding-left:20px}
+.takeaways li{font-size:15.5px;color:var(--ink);margin-bottom:11px;padding-left:4px}
+.takeaways li:last-child{margin-bottom:0}
+.takeaways b{color:#fff}
+
+/* ---------- review questions ---------- */
+.q{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:12px;margin-bottom:12px;overflow:hidden;
+}
+.q-btn{
+  width:100%;text-align:left;font-family:inherit;cursor:pointer;
+  background:none;border:none;padding:18px 20px;min-height:44px;
+  display:flex;gap:13px;align-items:flex-start;
+  color:var(--ink);
+}
+.q-btn:focus-visible{outline:2px solid var(--blue-tx);outline-offset:-2px}
+.q-btn:hover .q-t{color:#fff}
+.q-n{
+  flex:none;width:24px;height:24px;border-radius:6px;margin-top:1px;
+  background:#2a1a12;color:var(--orange-tx);
+  display:grid;place-items:center;font-size:12px;font-weight:800;
+}
+.q-t{font-size:15.5px;font-weight:600;line-height:1.5;flex:1}
+.chev{
+  flex:none;margin-top:4px;color:var(--ink-3);
+  transition:transform .18s ease;
+}
+.q.open .chev{transform:rotate(180deg)}
+.q-a{
+  display:none;padding:0 20px 20px 57px;
+  font-size:15px;color:var(--ink-2);
+}
+.q.open .q-a{display:block}
+.q-a p+p{margin-top:10px}
+.q-a b{color:var(--ink);font-weight:600}
+.q-a em{color:#fff;font-style:normal;font-weight:600}
+
+/* ---------- more / footer ---------- */
+.more{
+  background:var(--panel-2);border:1px dashed var(--line);
+  border-radius:12px;padding:22px 24px;text-align:center;
+}
+.more h3{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:7px}
+.more p{font-size:14.5px;color:var(--ink-2)}
+
+.foot{
+  margin-top:44px;padding-top:22px;border-top:1px solid var(--line-soft);
+  font-size:12.5px;color:var(--ink-3);text-align:center;line-height:1.7;
+}
+.foot b{color:var(--ink-2);font-weight:600}
+
+@media (max-width:520px){
+  .wrap{padding:0 15px}
+  .player,.ep-head{padding-left:18px;padding-right:18px}
+  .q-a{padding-left:20px}
+  .btn-play{width:54px;height:54px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition-duration:.01ms !important;animation-duration:.01ms !important}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <a class="back" href="index.html">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Quiz Hub
+    </a>
+    <span class="brandmark">Fire System Mastery</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="hero">
+    <svg class="wave" viewBox="0 0 340 56" aria-hidden="true">
+      <g fill="none" stroke-linecap="round" stroke-width="3">
+        <path d="M6 28v0"      stroke="#243447"/>
+        <path d="M16 20v16"    stroke="#2b4055"/>
+        <path d="M26 13v30"    stroke="#33506b"/>
+        <path d="M36 6v44"     stroke="#185FA5"/>
+        <path d="M46 16v24"    stroke="#33506b"/>
+        <path d="M56 24v8"     stroke="#2b4055"/>
+        <path d="M66 11v34"    stroke="#185FA5"/>
+        <path d="M76 3v50"     stroke="#D85A30"/>
+        <path d="M86 18v20"    stroke="#33506b"/>
+        <path d="M96 9v38"     stroke="#185FA5"/>
+        <path d="M106 22v12"   stroke="#2b4055"/>
+        <path d="M116 5v46"    stroke="#D85A30"/>
+        <path d="M126 15v26"   stroke="#33506b"/>
+        <path d="M136 25v6"    stroke="#243447"/>
+        <path d="M146 10v36"   stroke="#185FA5"/>
+        <path d="M156 2v52"    stroke="#D85A30"/>
+        <path d="M166 14v28"   stroke="#33506b"/>
+        <path d="M176 21v14"   stroke="#2b4055"/>
+        <path d="M186 7v42"    stroke="#185FA5"/>
+        <path d="M196 17v22"   stroke="#33506b"/>
+        <path d="M206 4v48"    stroke="#D85A30"/>
+        <path d="M216 23v10"   stroke="#2b4055"/>
+        <path d="M226 12v32"   stroke="#185FA5"/>
+        <path d="M236 19v18"   stroke="#33506b"/>
+        <path d="M246 8v40"    stroke="#1D9E75"/>
+        <path d="M256 26v4"    stroke="#243447"/>
+        <path d="M266 15v26"   stroke="#33506b"/>
+        <path d="M276 21v14"   stroke="#2b4055"/>
+        <path d="M286 11v34"   stroke="#185FA5"/>
+        <path d="M296 24v8"    stroke="#2b4055"/>
+        <path d="M306 17v22"   stroke="#33506b"/>
+        <path d="M316 22v12"   stroke="#2b4055"/>
+        <path d="M326 26v4"    stroke="#243447"/>
+        <path d="M336 28v0"    stroke="#243447"/>
+      </g>
+    </svg>
+    <div class="kicker">The Fire System Mastery Podcast</div>
+    <h1>FSM Classroom</h1>
+    <p class="tagline">Two voices, one topic, worked all the way down until it holds. <b>George</b> teaches, <b>Charlie</b> asks the question you were too embarrassed to ask. Every claim carries its section number.</p>
+  </div>
+
+  <!-- ================= EPISODE 1 ================= -->
+  <div class="ep">
+    <div class="ep-head">
+      <span class="ep-num">Episode 1</span>
+      <h2>Commodity Classification</h2>
+      <p class="ep-sub">You are not classifying a product. You are classifying a storage unit — the product, the packaging wrapped around it, and the pallet under it. Get this one answer wrong and every number downstream is confidently, precisely wrong.</p>
+      <div class="ep-facts">
+        <span class="fact o">25 min</span>
+        <span class="fact">NFPA 13 · 2019 · Chapter 20</span>
+        <span class="fact g">Storage series · Guide 1</span>
+      </div>
+    </div>
+
+    <div class="player">
+      <div class="pl-row">
+        <button class="btn-play" id="play" aria-label="Play episode">
+          <svg id="ic-play" width="22" height="24" viewBox="0 0 22 24" aria-hidden="true"><path d="M3 2.4c0-1 1.1-1.6 1.9-1.1l14.4 9.6c.8.5.8 1.7 0 2.2L4.9 22.7c-.8.5-1.9-.1-1.9-1.1V2.4z" fill="#fff"/></svg>
+          <svg id="ic-pause" width="20" height="22" viewBox="0 0 20 22" aria-hidden="true" style="display:none"><rect x="2" y="1" width="6" height="20" rx="2" fill="#fff"/><rect x="12" y="1" width="6" height="20" rx="2" fill="#fff"/></svg>
+        </button>
+        <div class="pl-meta">
+          <div class="pl-title">Ep. 1 — Commodity Classification</div>
+          <div class="pl-state" id="state">Ready · 25:38</div>
+        </div>
+      </div>
+
+      <div class="scrub" id="scrub" role="slider" tabindex="0"
+           aria-label="Seek through episode"
+           aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 minutes 0 seconds">
+        <div class="track">
+          <div class="buffer" id="buffer"></div>
+          <div class="fill" id="fill"></div>
+        </div>
+        <div class="knob" id="knob"></div>
+      </div>
+      <div class="times"><span id="cur">0:00</span><span id="dur">25:38</span></div>
+
+      <div class="pl-ctrls">
+        <button class="ctrl" id="back15" aria-label="Back 15 seconds">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3.2V.8L4.4 3.6 8 6.4V4c2.4 0 4.4 2 4.4 4.4S10.4 12.8 8 12.8 3.6 10.8 3.6 8.4H2c0 3.3 2.7 6 6 6s6-2.7 6-6-2.7-5.2-6-5.2z" fill="currentColor"/></svg>
+          15
+        </button>
+        <button class="ctrl" id="fwd15" aria-label="Forward 15 seconds">
+          15
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3.2V.8l3.6 2.8L8 6.4V4C5.6 4 3.6 6 3.6 8.4s2 4.4 4.4 4.4 4.4-2 4.4-4.4H14c0 3.3-2.7 6-6 6s-6-2.7-6-6 2.7-5.2 6-5.2z" fill="currentColor" transform="scale(-1,1) translate(-16,0)"/></svg>
+        </button>
+        <div class="spacer"></div>
+        <button class="ctrl" id="rate" aria-label="Playback speed">1&times;</button>
+        <a class="ctrl" id="dl" href="audio/FSM_Classroom_Ep1_Commodity_Classification.mp3" download aria-label="Download the episode audio">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 1v8m0 0L4 6m3 3l3-3M1.5 11.5h11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <button class="resume" id="resume" hidden></button>
+      </div>
+
+      <div class="fallback" id="fallback" hidden>
+        Audio could not load in this browser.
+        <a href="audio/FSM_Classroom_Ep1_Commodity_Classification.mp3" download>Download the MP3 instead.</a>
+      </div>
+
+      <audio id="au" preload="metadata">
+        <source src="audio/FSM_Classroom_Ep1_Commodity_Classification.mp3" type="audio/mpeg">
+      </audio>
+    </div>
+  </div>
+
+  <!-- ================= SHOW NOTES ================= -->
+  <div class="sec">
+    <div class="sec-h">What the episode walks through</div>
+
+    <div class="beat">
+      <div class="beat-n">1</div>
+      <div class="beat-b">
+        <div class="beat-t">Step zero — are you even in this chapter?</div>
+        <div class="beat-d">Miscellaneous, low-piled storage meeting the Chapter 4 criteria is protected on ordinary occupancy hazard criteria and never enters the storage chapter at all. Apprentices burn hours classifying a pile that never needed a class.</div>
+        <span class="cite">NFPA 13 §20.1.1 · §20.2</span>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-n">2</div>
+      <div class="beat-b">
+        <div class="beat-t">You classify the storage unit, not the product</div>
+        <div class="beat-d">Three things get counted: the product materials, the primary packaging, and the pallet it sits on. A steel product in a wood crate on a plastic pallet is not "a steel product."</div>
+        <span class="cite">NFPA 13 §20.3.1 · §20.3.1.1 · §3.3.35</span>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-n">3</div>
+      <div class="beat-b">
+        <div class="beat-t">The ladder climbs for two different reasons</div>
+        <div class="beat-d">Class I and II are both noncombustible product — they split on packaging, and the hinge is the single word <em>single</em>. Class III and IV climb on what is inside the package instead. Same appliance, exposed versus cartoned, is listed twice in NFPA's own example tables.</div>
+        <span class="cite">NFPA 13 §20.4.1 · §20.4.2 · §20.4.3.1 · §20.4.4.1</span>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-n">4</div>
+      <div class="beat-b">
+        <div class="beat-t">Plastics A, B, C — and why the alphabet runs backwards</div>
+        <div class="beat-d">Group A is the worst and Group C the tamest. Group B is a three-item list worth memorizing outright. The hook that makes all three stick: PVC appears in two of them, split on plasticizer content, and one number decides which.</div>
+        <span class="cite">NFPA 13 §20.4.5 · §20.4.5.1 · §20.4.6 · §20.4.7</span>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-n">5</div>
+      <div class="beat-b">
+        <div class="beat-t">How each group gets protected</div>
+        <div class="beat-d">Group C is protected as Class III — and not by analogy: Group C is named inside the Class III definition itself, alongside wood and paper. Group B is protected as Class IV. Group A gets no class number at all and runs on its own track.</div>
+        <span class="cite">NFPA 13 §20.4.8 · §20.4.8.1 · §20.4.8.2</span>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-n">6</div>
+      <div class="beat-b">
+        <div class="beat-t">The percentage ladder — weight for solid, volume for foam</div>
+        <div class="beat-d">You do not get to pick the unit. Solid plastic concentrates fuel in mass; foam is mostly air and carries its hazard in surface area, which a scale cannot see. The cartoned and exposed columns agree on solid plastic and stop agreeing on foam — exposed foam skips the Class IV band entirely.</div>
+        <span class="cite">NFPA 13 §20.4.3.2 · §20.4.4.1 · §20.4.5.3 · §20.4.5.4</span>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-n">7</div>
+      <div class="beat-b">
+        <div class="beat-t">Both kinds of plastic in one load? You go to a graph.</div>
+        <div class="beat-d">You do not add the percentages. Percent by weight of Group A nonexpanded plots against percent by volume of Group A expanded, and the zone your point lands in gives you the class — one figure for cartoned, a different one for exposed.</div>
+        <span class="cite">NFPA 13 §20.4.3.3 · Fig. 20.4.3.3(a) &amp; (b)</span>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-n">8</div>
+      <div class="beat-b">
+        <div class="beat-t">Pallets: the modifier nobody calls you about</div>
+        <div class="beat-d">Wood and metal are the baseline. Unreinforced polypropylene or high-density polyethylene push Class I through IV up one class. Reinforced plastic pallets push it up two. A warehouse swapping pallets to save money can undersize its own sprinkler system over a weekend.</div>
+        <span class="cite">NFPA 13 §20.3.2.1 · §20.3.2.2.1.1 · §20.3.2.2.2.1</span>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-n">9</div>
+      <div class="beat-b">
+        <div class="beat-t">There is no "classify it by whatever there's most of" rule</div>
+        <div class="beat-d">People will tell you there is. It does not exist in Chapter 20 — the word <em>predominantly</em> appears exactly once in the whole chapter, and it is about carton records storage. Mixed storage has two legitimate ways out: disperse it, or segregate it. Satisfy neither and you design for the worst commodity present.</div>
+        <span class="cite">NFPA 13 §20.4.13 · §20.4.14.1 · §20.4.14.2 · §20.4.14.3 · §20.4.14.4</span>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-n">10</div>
+      <div class="beat-b">
+        <div class="beat-t">The commodities that skip the ladder</div>
+        <div class="beat-d">Tires, rolled paper, plastic motor vehicle components, big-box retail, baled cotton and carton records storage were pulled out of the I–IV system. Force them onto the ladder and you get the wrong answer. Rolled paper runs on basis weight instead.</div>
+        <span class="cite">NFPA 13 §20.4.9 · §20.4.10 · §20.4.11 · §20.4.12 · §20.4.12.1 · §20.4.13</span>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-n">11</div>
+      <div class="beat-b">
+        <div class="beat-t">When the standard argues with itself</div>
+        <div class="beat-d">Two annex tables in the same edition classify the identical PET container configuration differently — one calls it Class I, the other Class IV. You do not get to quietly pick the cheap answer. Take the higher hazard, and if it is the deciding factor, put it in writing to the AHJ.</div>
+        <span class="cite">NFPA 13 Table A.20.4.1 vs. Table A.20.4(b)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TAKEAWAYS ================= -->
+  <div class="sec">
+    <div class="sec-h">Three things to walk away with</div>
+    <div class="takeaways">
+      <h3>Say these out loud before the next storage job</h3>
+      <ol>
+        <li>Classify the <b>entire storage unit</b> — product, packaging and pallet. All three count.</li>
+        <li><b>Solid plastic is by weight. Foam is by volume.</b> You do not get to pick.</li>
+        <li><b>Always ask what the pallets are.</b> It is the modifier that moves a class two rungs while nobody is watching.</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ================= REVIEW ================= -->
+  <div class="sec">
+    <div class="sec-h">Review questions — answer before you open it</div>
+
+    <div class="q">
+      <button class="q-btn" aria-expanded="false">
+        <span class="q-n">1</span>
+        <span class="q-t">A load of noncombustible product is Class I. The identical product on the next rack is Class II. The product did not change — what did?</span>
+        <svg class="chev" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="q-a">
+        <p><b>The packaging.</b> Class I is the noncombustible product in single-layer packaging — shrink wrap, or a single-layer corrugated carton with single-thickness dividers. Class II is that same noncombustible product in heavier or multiple-layered packaging: slatted wooden crates, solid wood boxes, multi-layer cartons.</p>
+        <p>Read the two back to back and the hinge is one word: <em>single</em>. If the only question you ask is "what is in the box," you will call every Class II a Class I and under-design the system.</p>
+        <span class="cite">NFPA 13 §20.4.1(2) vs. §20.4.2</span>
+      </div>
+    </div>
+
+    <div class="q">
+      <button class="q-btn" aria-expanded="false">
+        <span class="q-n">2</span>
+        <span class="q-t">Class III allows a limited amount of plastic. There are two numbers and two different units — what are they, and why aren't they the same unit?</span>
+        <svg class="chev" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="q-a">
+        <p><b>5 percent or less by weight</b> for nonexpanded plastic, and <b>5 percent or less by volume</b> for expanded foam plastic.</p>
+        <p>They are different units because the hazard lives somewhere different in each. Solid plastic concentrates its fuel in mass, so a scale measures it honestly. Foam is mostly air — its danger is surface area, and weighing it tells you almost nothing.</p>
+        <p>Note the direction of the limit while you are here: it is a ceiling, not a trigger. <em>Five or less, still three.</em> Class IV begins above 5 percent, not at it — and phrasing it as "5 percent or more jumps to Class IV" moves the line by exactly the hair the exam is testing.</p>
+        <span class="cite">NFPA 13 §20.4.3.2</span>
+      </div>
+    </div>
+
+    <div class="q">
+      <button class="q-btn" aria-expanded="false">
+        <span class="q-n">3</span>
+        <span class="q-t">A warehouse is almost entirely Class I, with a handful of pallet loads of Group A plastic commodity mixed into the racks. Can you design the whole building for Class I?</span>
+        <svg class="chev" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="q-a">
+        <p><b>Not automatically — and the reason matters.</b> Protection requirements are not based on the overall commodity mix in a fire area, and mixed storage is protected to the highest classified commodity and storage arrangement present. So the default answer is that you design the whole building for Group A.</p>
+        <p>There are two ways out. <em>Disperse it</em> — up to 10 pallet loads of the higher hazard, in an area not exceeding 40,000 square feet, randomly dispersed with no adjacent loads in any direction, including diagonally. But read the third criterion, because it is the one that decides this case: where the ceiling protection is based on Class I or Class II commodities, that allowance drops from 10 to <em>five</em> pallet loads for Class IV or Group A plastics. This warehouse is protected to Class I, so your number is five, not ten.</p>
+        <p>Or <em>segregate it</em> — confine the Group A material to a designated area and protect that area to the higher hazard, and the rest of the room may then use the lower class. Satisfy neither, and you design for the worst commodity present.</p>
+        <span class="cite">NFPA 13 §20.4.14.1 · §20.4.14.2 · §20.4.14.3 · §20.4.14.4</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="more">
+    <h3>Episode 2 is in the works</h3>
+    <p>FSM Classroom follows the storage series in order. Next up continues from where commodity classification leaves you — with a class in hand and five steps still to go.</p>
+  </div>
+
+  <div class="foot">
+    <b>Fire System Mastery</b> · FSM Classroom<br>
+    Concepts are taught in original words and keyed to the section number so you can verify them against the standard yourself. NFPA 13 is copyrighted by the National Fire Protection Association; nothing here reproduces it.<br>
+    <em>Read it, don't recall it.</em>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var au    = document.getElementById('au');
+  var play  = document.getElementById('play');
+  var icP   = document.getElementById('ic-play');
+  var icU   = document.getElementById('ic-pause');
+  var scrub = document.getElementById('scrub');
+  var fill  = document.getElementById('fill');
+  var buf   = document.getElementById('buffer');
+  var knob  = document.getElementById('knob');
+  var cur   = document.getElementById('cur');
+  var dur   = document.getElementById('dur');
+  var state = document.getElementById('state');
+  var rateB = document.getElementById('rate');
+  var back  = document.getElementById('back15');
+  var fwd   = document.getElementById('fwd15');
+  var resB  = document.getElementById('resume');
+  var fbk   = document.getElementById('fallback');
+
+  var KEY   = 'fsm-classroom-ep1-pos';
+  var RATES = [1, 1.25, 1.5, 1.75, 2];
+  var ri    = 0;
+  var seeking = false;
+
+  /* mm:ss, and h:mm:ss once past an hour. */
+  function fmt(s){
+    if(!isFinite(s) || s < 0) s = 0;
+    s = Math.floor(s);
+    var h = Math.floor(s/3600), m = Math.floor((s%3600)/60), x = s%60;
+    var mm = (h && m < 10) ? '0'+m : String(m);
+    return (h ? h+':' : '') + mm + ':' + (x<10 ? '0'+x : x);
+  }
+  function spoken(s){
+    s = Math.floor(s||0);
+    var m = Math.floor(s/60), x = s%60;
+    return m + (m===1?' minute ':' minutes ') + x + (x===1?' second':' seconds');
+  }
+
+  /* ---- storage is optional; a locked-down browser must not break the player ---- */
+  function save(v){ try{ localStorage.setItem(KEY, String(v)); }catch(e){} }
+  function load(){ try{ return parseFloat(localStorage.getItem(KEY)); }catch(e){ return NaN; } }
+  function drop(){ try{ localStorage.removeItem(KEY); }catch(e){} }
+
+  function paint(){
+    var d = au.duration;
+    if(!isFinite(d) || d <= 0) return;
+    var p = Math.min(100, Math.max(0, (au.currentTime / d) * 100));
+    fill.style.width = p + '%';
+    knob.style.left  = p + '%';
+    cur.textContent  = fmt(au.currentTime);
+    scrub.setAttribute('aria-valuenow', Math.round(p));
+    scrub.setAttribute('aria-valuetext', spoken(au.currentTime) + ' of ' + spoken(d));
+  }
+
+  function paintBuffer(){
+    var d = au.duration;
+    if(!isFinite(d) || d <= 0 || !au.buffered.length) return;
+    buf.style.width = ((au.buffered.end(au.buffered.length-1) / d) * 100) + '%';
+  }
+
+  function setPlaying(on){
+    icP.style.display = on ? 'none' : 'block';
+    icU.style.display = on ? 'block' : 'none';
+    play.setAttribute('aria-label', on ? 'Pause episode' : 'Play episode');
+  }
+
+  /* ---------- metadata ---------- */
+  au.addEventListener('loadedmetadata', function(){
+    if(isFinite(au.duration)){
+      dur.textContent = fmt(au.duration);
+      state.textContent = 'Ready · ' + fmt(au.duration);
+    }
+    var saved = load();
+    /* Offer the resume rather than jumping — a silent seek is disorienting. */
+    if(isFinite(saved) && saved > 30 && saved < au.duration - 20){
+      resB.textContent = 'Resume where you left off — ' + fmt(saved);
+      resB.hidden = false;
+    }
+    paint();
+  });
+
+  au.addEventListener('error', function(){
+    fbk.hidden = false;
+    state.textContent = 'Audio unavailable';
+  });
+
+  au.addEventListener('timeupdate', function(){
+    if(!seeking) paint();
+    if(!au.paused && Math.floor(au.currentTime) % 5 === 0) save(au.currentTime);
+  });
+  au.addEventListener('progress', paintBuffer);
+
+  au.addEventListener('play',  function(){ setPlaying(true);  state.textContent = 'Playing'; resB.hidden = true; });
+  au.addEventListener('pause', function(){ setPlaying(false); if(!au.ended) state.textContent = 'Paused'; save(au.currentTime); });
+  au.addEventListener('waiting', function(){ state.textContent = 'Buffering…'; });
+  au.addEventListener('playing', function(){ state.textContent = 'Playing'; });
+  au.addEventListener('ended', function(){
+    setPlaying(false);
+    state.textContent = 'Finished — now go answer the three questions below';
+    drop();
+  });
+
+  /* ---------- controls ---------- */
+  play.addEventListener('click', function(){
+    if(au.paused){ au.play().catch(function(){ fbk.hidden = false; }); }
+    else { au.pause(); }
+  });
+
+  resB.addEventListener('click', function(){
+    var saved = load();
+    if(isFinite(saved)) au.currentTime = saved;
+    resB.hidden = true;
+    au.play().catch(function(){});
+  });
+
+  function nudge(sec){
+    if(!isFinite(au.duration)) return;
+    au.currentTime = Math.min(au.duration, Math.max(0, au.currentTime + sec));
+    paint();
+  }
+  back.addEventListener('click', function(){ nudge(-15); });
+  fwd .addEventListener('click', function(){ nudge(15);  });
+
+  rateB.addEventListener('click', function(){
+    ri = (ri + 1) % RATES.length;
+    au.playbackRate = RATES[ri];
+    rateB.innerHTML = RATES[ri] + '&times;';
+    rateB.classList.toggle('on', RATES[ri] !== 1);
+    rateB.setAttribute('aria-label', 'Playback speed ' + RATES[ri] + ' times');
+  });
+
+  /* ---------- scrubbing ---------- */
+  function seekFromX(clientX){
+    if(!isFinite(au.duration)) return;
+    var r = scrub.getBoundingClientRect();
+    var p = Math.min(1, Math.max(0, (clientX - r.left) / r.width));
+    au.currentTime = p * au.duration;
+    paint();
+  }
+
+  scrub.addEventListener('pointerdown', function(e){
+    if(!isFinite(au.duration)) return;
+    seeking = true;
+    scrub.setPointerCapture(e.pointerId);
+    seekFromX(e.clientX);
+  });
+  scrub.addEventListener('pointermove', function(e){
+    if(seeking) seekFromX(e.clientX);
+  });
+  function endSeek(e){
+    if(!seeking) return;
+    seeking = false;
+    try{ scrub.releasePointerCapture(e.pointerId); }catch(err){}
+    save(au.currentTime);
+  }
+  scrub.addEventListener('pointerup', endSeek);
+  scrub.addEventListener('pointercancel', endSeek);
+
+  scrub.addEventListener('keydown', function(e){
+    var k = e.key, d = au.duration;
+    if(!isFinite(d)) return;
+    if(k === 'ArrowRight'){ nudge(5);  e.preventDefault(); }
+    else if(k === 'ArrowLeft'){ nudge(-5); e.preventDefault(); }
+    else if(k === 'Home'){ au.currentTime = 0; paint(); e.preventDefault(); }
+    else if(k === 'End'){ au.currentTime = d; paint(); e.preventDefault(); }
+    else if(k === ' ' || k === 'Enter'){ play.click(); e.preventDefault(); }
+  });
+
+  /* Space toggles play, but never while the reader is on a button or a link. */
+  document.addEventListener('keydown', function(e){
+    if(e.key !== ' ') return;
+    var t = e.target;
+    if(t && (t.tagName === 'BUTTON' || t.tagName === 'A' || t === scrub)) return;
+    e.preventDefault();
+    play.click();
+  });
+
+  /* ---------- review questions ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll('.q-btn'), function(b){
+    b.addEventListener('click', function(){
+      var q = b.parentElement;
+      var open = q.classList.toggle('open');
+      b.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
