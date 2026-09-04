@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NFPA 25 (2020) ITM — 8-Hour Comprehensive CE · Fire System Mastery</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
@@ -116,6 +114,11 @@
   .cert-sig-img{height:58px;width:auto;max-width:240px;object-fit:contain;display:block;margin:0 auto;border-bottom:1.5px solid #333;padding:0 14px 4px}
   .flame-red{width:auto;height:58px;object-fit:contain}
   .muted-note{color:var(--muted);font-size:12px;margin-top:12px}
+  .certbuy{display:flex;align-items:center;gap:18px;margin-top:18px;padding:18px 20px;
+    border:1px solid var(--gold);border-radius:12px;background:rgba(245,179,1,.07)}
+  .certbuy-price{font-size:38px;font-weight:800;color:var(--gold);line-height:1}
+  .certbuy-what{font-size:15px;font-weight:600;line-height:1.4}
+  .certbuy-what small{display:block;font-weight:400;font-size:12.5px;color:var(--muted);margin-top:4px}
   @media(max-width:600px){
     .hero h1{font-size:30px}.scard{grid-template-columns:48px 1fr;gap:12px}.sstat{grid-column:1/-1;justify-self:start;margin-top:4px}
     #certificate{transform:scale(.62);transform-origin:top center;margin-bottom:-230px}
@@ -133,8 +136,8 @@
   <div class="hero">
     <div class="eyebrow">Illinois OSFM Approved Continuing Education</div>
     <h1>NFPA 25 (2020) ITM<br><span class="accent">8-Hour Comprehensive Course</span></h1>
-    <p>Eight sections covering the full inspection, testing, and maintenance of water-based fire protection systems. Complete each section and pass its quiz to unlock the next — earn your 8.0-hour certificate at the end.</p>
-    <span class="badge">8 Sections · 8.0 CE Hours · 70% to Pass Each Quiz</span>
+    <p>Eight sections covering the full inspection, testing, and maintenance of water-based fire protection systems. Complete each section and pass its quiz to unlock the next. <b>The course is free to take</b> — the Illinois OSFM certificate is available at the end.</p>
+    <span class="badge">8 Sections · Free to Take · 8.0 CE Hours · 70% to Pass Each Quiz</span>
   </div>
 
   <div class="progwrap">
@@ -148,7 +151,7 @@
   <div class="certgate locked" id="certgate">
     <h2>🎓 Your <span class="accent">8.0-Hour Certificate</span></h2>
     <p id="certmsg">Complete all 8 sections to unlock your certificate.</p>
-    <button class="btn" id="certbtn" disabled onclick="openCert()">Claim Certificate</button>
+    <button class="btn" id="certbtn" disabled onclick="requestCert()">Get My Certificate</button>
   </div>
 
   <div class="foot">
@@ -157,56 +160,32 @@
   </div>
 </div>
 
-<!-- CERT MODAL -->
+<!-- CERT REQUEST MODAL -->
 <div class="modal" id="modal">
   <div class="msheet">
     <div id="certForm">
-      <h2>Claim Your 8.0-Hour Certificate</h2>
-      <p class="sub">Enter your name exactly as it should appear on your certificate.</p>
-      <div class="field"><label>Full Name</label><input type="text" id="fName" placeholder="e.g. Maurice Sonnemaker"></div>
-      <div class="field"><label>Email (where your certificate is sent)</label><input type="email" id="fEmail" placeholder="you@email.com"></div>
-      <div class="field"><label>License # (optional — for your records)</label><input type="text" id="fLic" placeholder="OSFM / sprinklerfitter license #"></div>
-      <div class="row" style="display:flex;justify-content:space-between;gap:12px">
-        <button class="btn-ghost" onclick="closeCert()">Cancel</button>
-        <button class="btn" onclick="issue()">Generate My Certificate ▶</button>
-      </div>
-    </div>
+      <h2>Get Your 8.0-Hour Certificate</h2>
+      <p class="sub">The course is free. The Illinois OSFM certificate is the paid part —
+        it carries your name, your license number and Maurice's signature, and it's what you
+        hand in at renewal.</p>
 
-    <div id="certView" style="display:none">
-      <div id="emailBanner" class="banner"></div>
-      <div class="cert-stage">
-        <div id="certificate">
-          <div class="cert-top">
-            <div class="cert-left-logo">
-              <img class="flame-red" src="assets/flame.png" alt="FSM">
-              <div class="fsm-tag">FSM</div>
-              <div class="cert-osfm">ILLINOIS OSFM<br>APPROVED CE</div>
-            </div>
-            <div class="cert-word">FIRE SYSTEM<br>MASTERY</div>
-          </div>
-          <div class="cert-title-block">
-            <div class="cert-coc">CERTIFICATE OF COMPLETION</div>
-            <div class="cert-course">NFPA 25 ITM — 8-Hour Comprehensive Course</div>
-            <div class="cert-nfpa">NFPA 25 (2020 Edition) — Inspection, Testing &amp; Maintenance of Water-Based Systems</div>
-            <div class="cert-nfpa">Illinois OSFM Approved Continuing Education</div>
-          </div>
-          <div class="cert-issued">ISSUED TO:</div>
-          <div style="text-align:center"><div class="cert-name" id="certName">—</div></div>
-          <div class="cert-body">This certificate is presented to recognize successful completion of all eight sections of this course.
-            <small>This training aligns with NFPA-based continuing education requirements and may be accepted by local AHJs for recertification.</small>
-          </div>
-          <div class="cert-foot">
-            <div class="fld"><div class="val" id="certDate">—</div><div class="lbl">Date of Issue</div></div>
-            <div class="fld"><div class="val">8.0-hr</div><div class="lbl">Credit Hours</div></div>
-            <div class="fld"><img class="cert-sig-img" src="assets/signature.png?v=2" alt="Maurice Sonnemaker signature"><div class="lbl">Founder, FSM</div></div>
-          </div>
+      <div class="certbuy">
+        <div class="certbuy-price">$249</div>
+        <div class="certbuy-what">NFPA 25 ITM — 8.0 CE Hours<br>
+          <small>Illinois OSFM Approved Continuing Education · covers your full annual requirement</small>
         </div>
       </div>
-      <div class="row" style="display:flex;justify-content:space-between;gap:12px;margin-top:16px">
-        <button class="btn-ghost" onclick="closeCert()">Close</button>
-        <button class="btn" id="dlBtn" onclick="downloadCert()">⬇ Download Certificate (PDF)</button>
+
+      <p class="sub" style="margin-top:14px">Certificates are issued by hand, usually the same day.
+        Click below and tell me the name and license number that should appear on it.</p>
+
+      <div class="row" style="display:flex;justify-content:space-between;gap:12px">
+        <button class="btn-ghost" onclick="closeCert()">Not yet</button>
+        <button class="btn" id="buyBtn" type="button" onclick="goBuy()">Request My Certificate ▶</button>
       </div>
-      <p class="muted-note">Your completion (name, email, license, date) is logged for OSFM records and a copy of this PDF is emailed to you automatically.</p>
+
+      <p class="muted-note">Questions first? Email
+        <a href="mailto:maurice@firesystemmastery.com" style="color:var(--gold)">maurice@firesystemmastery.com</a>.</p>
     </div>
   </div>
 </div>
@@ -224,7 +203,23 @@ const SECTIONS=[
  {t:"Records & Impairment Management", c:"Chapters 4 & 15"}
 ];
 const COURSE_NAME='NFPA 25 (2020) ITM — 8-Hour Comprehensive CE';
-const ENDPOINT='https://script.google.com/macros/s/AKfycbwTzVpUPFpz3I3rWjpyjKMkNlJn9T8grGVGMBWuK11nquv_a7J_6BsHEufQtzmaStejeg/exec';
+
+/* ===== certificate purchase =====
+   The course teaches for free; the OSFM certificate is the paid product and is issued
+   by hand from the Certificate Issuer tool. No certificate is generated in this page.
+
+   TO SWITCH TO STRIPE: paste your Stripe Payment Link into CERT_LINK below. Leave it
+   empty and the button falls back to an email request, which works today. */
+const CERT_LINK = '';
+const CERT_PRICE = '$249';
+const CERT_MAILTO =
+  'mailto:maurice@firesystemmastery.com'
+  + '?subject=' + encodeURIComponent('Certificate request — NFPA 25 ITM 8-Hour Course')
+  + '&body='    + encodeURIComponent(
+      'I finished all 8 sections of the NFPA 25 ITM 8-Hour Course and would like my certificate.\n\n'
+    + 'Name exactly as it should appear on the certificate:\n\n'
+    + 'License #:\n\n'
+    + 'Best email for the certificate:\n');
 
 function passed(n){try{return localStorage.getItem('fsm8_sec'+n)==='1';}catch(e){return false;}}
 function countPassed(){let c=0;for(let n=1;n<=8;n++)if(passed(n))c++;return c;}
@@ -250,56 +245,20 @@ function render(){
   document.getElementById('pbar').style.width=(done/8*100)+'%';
   document.getElementById('phours').textContent=(done*1.0).toFixed(1)+' / 8.0 CE hours';
   const gate=document.getElementById('certgate'),btn=document.getElementById('certbtn'),msg=document.getElementById('certmsg');
-  if(done>=8){gate.classList.remove('locked');btn.disabled=false;msg.textContent='All 8 sections complete — claim your 8.0-hour OSFM CE certificate below.';}
+  if(done>=8){gate.classList.remove('locked');btn.disabled=false;msg.textContent='All 8 sections complete. Your 8.0-hour Illinois OSFM certificate is ready to be issued.';}
   else{gate.classList.add('locked');btn.disabled=true;msg.textContent=`Complete all 8 sections to unlock your certificate. (${done}/8 done — ${8-done} to go.)`;}
 }
 function resetProgress(){if(confirm('Reset all course progress? This clears which sections you have completed.')){for(let n=1;n<=8;n++)localStorage.removeItem('fsm8_sec'+n);render();}}
 
-/* ===== certificate ===== */
-function openCert(){if(countPassed()<8)return;document.getElementById('modal').classList.add('on');document.getElementById('certForm').style.display='block';document.getElementById('certView').style.display='none';}
+/* ===== certificate request =====
+   Nothing here builds a certificate. The button opens the purchase panel and points at
+   Stripe (if CERT_LINK is set) or an email request. Certificates are issued by hand. */
+function goBuy(){ location.href = CERT_LINK || CERT_MAILTO; }
+function requestCert(){
+  if(countPassed()<8) return;
+  document.getElementById('modal').classList.add('on');
+}
 function closeCert(){document.getElementById('modal').classList.remove('on');}
-function issue(){
-  const name=document.getElementById('fName').value.trim();
-  const email=document.getElementById('fEmail').value.trim();
-  const license=document.getElementById('fLic').value.trim();
-  if(!name){alert('Please enter your name.');return;}
-  if(!email||!email.includes('@')){alert('Please enter a valid email.');return;}
-  document.getElementById('certName').textContent=name;
-  document.getElementById('certDate').textContent=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-  document.getElementById('certForm').style.display='none';
-  document.getElementById('certView').style.display='block';
-  const banner=document.getElementById('emailBanner');
-  banner.innerHTML=`⏳ Emailing your certificate to <b>${email}</b> and recording your completion…`;
-  sendCompletion(name,email,license).then(ok=>{
-    banner.innerHTML= ok
-      ? `✅ Your 8.0-hour certificate has been emailed to <b>${email}</b> and your completion is recorded for OSFM. Download a copy below 👇`
-      : `⚠️ Your certificate is ready below — please download your copy. (We couldn't confirm the automatic email.)`;
-  });
-}
-async function sendCompletion(name,email,license){
-  try{
-    const canvas=await html2canvas(document.getElementById('certificate'),{scale:2,backgroundColor:'#ffffff',useCORS:true});
-    const {jsPDF}=window.jspdf;
-    const pdf=new jsPDF({orientation:'landscape',unit:'px',format:[canvas.width,canvas.height]});
-    pdf.addImage(canvas.toDataURL('image/jpeg',0.95),'JPEG',0,0,canvas.width,canvas.height);
-    const base64=pdf.output('datauristring').split(',')[1];
-    const payload={name,email,license,course:COURSE_NAME,score:'8 of 8 sections',result:'PASS',
-      date:document.getElementById('certDate').textContent,pdfBase64:base64};
-    await fetch(ENDPOINT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
-    return true;
-  }catch(err){console.error('sendCompletion failed',err);return false;}
-}
-function downloadCert(){
-  const btn=document.getElementById('dlBtn');const name=document.getElementById('certName').textContent;
-  btn.textContent='Generating…';btn.disabled=true;
-  html2canvas(document.getElementById('certificate'),{scale:2,backgroundColor:'#ffffff',useCORS:true}).then(canvas=>{
-    const {jsPDF}=window.jspdf;
-    const pdf=new jsPDF({orientation:'landscape',unit:'px',format:[canvas.width,canvas.height]});
-    pdf.addImage(canvas.toDataURL('image/jpeg',0.95),'JPEG',0,0,canvas.width,canvas.height);
-    pdf.save(`FSM NFPA 25 8-Hour CE Certificate - ${name}.pdf`);
-    btn.textContent='⬇ Download Certificate (PDF)';btn.disabled=false;
-  }).catch(()=>{alert("PDF library needs internet to load. You can also use your browser's Print → Save as PDF.");btn.textContent='⬇ Download Certificate (PDF)';btn.disabled=false;});
-}
 render();
 </script>
 </body>
