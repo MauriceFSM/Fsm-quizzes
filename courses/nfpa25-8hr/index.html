@@ -212,14 +212,6 @@ const COURSE_NAME='NFPA 25 (2020) ITM — 8-Hour Comprehensive CE';
    empty and the button falls back to an email request, which works today. */
 const CERT_LINK = 'https://buy.stripe.com/00wcN5gtv0bg0cwd64cIE00';
 const CERT_PRICE = '$249';
-const CERT_MAILTO =
-  'mailto:maurice@firesystemmastery.com'
-  + '?subject=' + encodeURIComponent('Certificate request — NFPA 25 ITM 8-Hour Course')
-  + '&body='    + encodeURIComponent(
-      'I finished all 8 sections of the NFPA 25 ITM 8-Hour Course and would like my certificate.\n\n'
-    + 'Name exactly as it should appear on the certificate:\n\n'
-    + 'License #:\n\n'
-    + 'Best email for the certificate:\n');
 
 function passed(n){try{return localStorage.getItem('fsm8_sec'+n)==='1';}catch(e){return false;}}
 function countPassed(){let c=0;for(let n=1;n<=8;n++)if(passed(n))c++;return c;}
@@ -253,7 +245,10 @@ function resetProgress(){if(confirm('Reset all course progress? This clears whic
 /* ===== certificate request =====
    Nothing here builds a certificate. The button opens the purchase panel and points at
    Stripe (if CERT_LINK is set) or an email request. Certificates are issued by hand. */
-function goBuy(){ location.href = CERT_LINK || CERT_MAILTO; }
+function goBuy(){
+  if(!CERT_LINK){ alert('Certificate checkout is temporarily unavailable. Please email maurice@firesystemmastery.com and he will sort it out.'); return; }
+  location.href = CERT_LINK;
+}
 function requestCert(){
   if(countPassed()<8) return;
   document.getElementById('modal').classList.add('on');

@@ -344,17 +344,12 @@ function resetQuiz(){document.getElementById('quiz').reset();go(1);}
    05 Products/CE Courses/_Backend/FSM-Certificate-Issuer.html
 
    TO SWITCH TO STRIPE: paste your Stripe Payment Link into CERT_LINK below. */
-const CERT_LINK = '';
-const CERT_MAILTO =
-  'mailto:maurice@firesystemmastery.com'
-  + '?subject=' + encodeURIComponent('Certificate request — Testing in the ITM Cycle')
-  + '&body='    + encodeURIComponent(
-      'I passed the Testing in the ITM Cycle course and would like my 1.0-hour certificate.\n\n'
-    + 'Name exactly as it should appear on the certificate:\n\n'
-    + 'License #:\n\n'
-    + 'Best email for the certificate:\n');
+const CERT_LINK = 'https://buy.stripe.com/9B600jfpr3ns1gA8POcIE01';
 
-function goBuy(){ location.href = CERT_LINK || CERT_MAILTO; }
+function goBuy(){
+  if(!CERT_LINK){ alert('Certificate checkout is temporarily unavailable. Please email maurice@firesystemmastery.com and he will sort it out.'); return; }
+  location.href = CERT_LINK;
+}
 function requestCert(){
 }
 render();
