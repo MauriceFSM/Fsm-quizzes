@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Expansion Tank Calculator — NFPA 13 Antifreeze Systems | FSM</title>
+<style>
+:root{
+  --orange:#D85A30; --orange-dk:#B4471F; --blue:#185FA5; --blue-dk:#0F4477;
+  --green:#1D9E75; --red:#C0392B; --amber:#B8860B;
+  --ink:#1A1D21; --ink2:#4A5158; --ink3:#7A838C;
+  --bg:#F4F6F8; --card:#FFFFFF; --line:#DDE3E8; --line2:#EDF1F4;
+  --shadow:0 1px 3px rgba(20,30,40,.08), 0 6px 18px rgba(20,30,40,.06);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  padding:0 0 64px;
+}
+.wrap{max-width:720px;margin:0 auto;padding:0 14px}
+
+/* ---------- header ---------- */
+header{background:linear-gradient(135deg,#1A1D21,#2A3138);color:#fff;padding:20px 0 18px;margin-bottom:16px}
+header .wrap{display:block}
+.brand{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.brand-mark{width:26px;height:26px;border-radius:6px;background:var(--orange);display:grid;place-items:center;font-weight:800;font-size:13px;color:#fff;flex:none}
+.brand-name{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#B9C2CA;font-weight:600}
+h1{margin:0 0 6px;font-size:22px;line-height:1.25;font-weight:700;letter-spacing:-.01em}
+.sub{margin:0;font-size:13.5px;color:#A9B4BE;line-height:1.45}
+
+/* ---------- edition bar ---------- */
+.edbar{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:16px;box-shadow:var(--shadow)}
+.edbar .lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px}
+.edopts{display:flex;gap:7px}
+.edopt{flex:1;padding:11px 4px;border:1.5px solid var(--line);border-radius:9px;background:#fff;font-size:14px;font-weight:600;color:var(--ink2);cursor:pointer;text-align:center;transition:.14s}
+.edopt[aria-pressed="true"]{border-color:var(--blue);background:#EDF4FB;color:var(--blue-dk)}
+.edcite{margin-top:10px;font-size:12.5px;color:var(--ink3);line-height:1.5}
+.edcite b{color:var(--ink2);font-weight:600}
+
+/* ---------- cards ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
+.card > h2{
+  margin:0 0 4px;font-size:16px;font-weight:700;letter-spacing:-.005em;
+  display:flex;align-items:center;gap:9px;
+}
+.num{width:24px;height:24px;border-radius:7px;background:var(--orange);color:#fff;font-size:13px;font-weight:700;display:grid;place-items:center;flex:none}
+.hint{margin:0 0 14px 33px;font-size:13px;color:var(--ink3);line-height:1.5}
+
+/* ---------- form ---------- */
+label{display:block;font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:5px}
+.unit{font-weight:400;color:var(--ink3)}
+input,select{
+  width:100%;padding:11px 12px;font-size:16px;font-family:inherit;color:var(--ink);
+  border:1.5px solid var(--line);border-radius:9px;background:#fff;
+}
+input:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(24,95,165,.12)}
+input[readonly]{background:var(--line2);color:var(--ink2)}
+.row{display:grid;gap:11px;margin-bottom:13px}
+.row.c2{grid-template-columns:1fr 1fr}
+.row.c3{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:420px){ .row.c3{grid-template-columns:1fr 1fr} }
+
+/* ---------- pipe takeoff ---------- */
+.takeoff{border:1px solid var(--line);border-radius:11px;overflow:hidden;margin-bottom:11px}
+.tk-head{display:grid;grid-template-columns:1.25fr 1fr .85fr 34px;gap:6px;padding:9px 10px;background:var(--line2);font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3)}
+.tk-row{display:grid;grid-template-columns:1.25fr 1fr .85fr 34px;gap:6px;padding:8px 10px;border-top:1px solid var(--line2);align-items:center}
+.tk-row select,.tk-row input{padding:8px 7px;font-size:14px;border-radius:7px}
+.tk-del{width:30px;height:30px;border:none;background:none;color:var(--ink3);font-size:20px;line-height:1;cursor:pointer;border-radius:7px}
+.tk-del:hover{background:#FCECE8;color:var(--red)}
+.tk-foot{display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--line2);border-top:1px solid var(--line);font-size:14px}
+.tk-foot b{font-size:16px;font-variant-numeric:tabular-nums}
+.btn-add{width:100%;padding:11px;border:1.5px dashed var(--line);border-radius:9px;background:#fff;color:var(--blue);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer}
+.btn-add:hover{border-color:var(--blue);background:#F5F9FD}
+
+.toggle{display:flex;gap:7px;margin-bottom:13px}
+.toggle button{flex:1;padding:10px 6px;border:1.5px solid var(--line);border-radius:9px;background:#fff;font-size:13.5px;font-weight:600;font-family:inherit;color:var(--ink2);cursor:pointer;transition:.14s}
+.toggle button[aria-pressed="true"]{border-color:var(--orange);background:#FDF1EC;color:var(--orange-dk)}
+
+/* ---------- flags ---------- */
+.flag{display:flex;gap:9px;padding:11px 12px;border-radius:10px;font-size:13px;line-height:1.55;margin-bottom:11px;align-items:flex-start}
+.flag .ic{flex:none;font-weight:700;font-size:13px}
+.flag.warn{background:#FDF6E3;border:1px solid #EBD9A8;color:#6B5310}
+.flag.warn .ic{color:var(--amber)}
+.flag.stop{background:#FCEDEB;border:1px solid #F0C5BE;color:#7A2418}
+.flag.stop .ic{color:var(--red)}
+.flag.info{background:#EFF5FB;border:1px solid #CADCEE;color:#14456F}
+.flag.info .ic{color:var(--blue)}
+.flag.ok{background:#EBF8F3;border:1px solid #B5E3D2;color:#0D5F45}
+.flag.ok .ic{color:var(--green)}
+.flag b{font-weight:700}
+.flag code{background:rgba(0,0,0,.05);padding:1px 4px;border-radius:4px;font-size:12px}
+
+.verify{display:inline-block;font-size:11px;font-weight:700;color:var(--amber);background:#FDF6E3;border:1px solid #EBD9A8;border-radius:5px;padding:1px 5px;margin-left:5px;vertical-align:middle;letter-spacing:.02em}
+
+/* ---------- results ---------- */
+#results{display:none}
+.res-hero{background:linear-gradient(135deg,var(--blue),var(--blue-dk));color:#fff;border-radius:13px;padding:18px;margin-bottom:14px;text-align:center}
+.res-hero.bad{background:linear-gradient(135deg,#C0392B,#8E2A1F)}
+.res-hero .k{font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;opacity:.82;margin-bottom:6px;font-weight:600}
+.res-hero .v{font-size:38px;font-weight:800;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.res-hero .u{font-size:17px;font-weight:600;opacity:.85;margin-left:4px}
+.res-hero .n{font-size:12.5px;opacity:.85;margin-top:8px;line-height:1.5}
+
+.steps{border:1px solid var(--line);border-radius:11px;overflow:hidden;margin-bottom:14px}
+.step{padding:12px 13px;border-top:1px solid var(--line2);font-size:13.5px}
+.step:first-child{border-top:none}
+.step .sk{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px}
+.step .sf{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;color:var(--ink2);background:var(--line2);padding:7px 9px;border-radius:6px;margin:5px 0;overflow-x:auto;white-space:nowrap}
+.step .sv{font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink)}
+
+/* ---------- tank table ---------- */
+.tanktbl{border:1px solid var(--line);border-radius:11px;overflow:hidden}
+.tt-head{display:grid;grid-template-columns:1.4fr .6fr .7fr .7fr 1fr;gap:5px;padding:9px 10px;background:var(--line2);font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3);line-height:1.25}
+.tt-row{display:grid;grid-template-columns:1.4fr .6fr .7fr .7fr 1fr;gap:5px;padding:10px;border-top:1px solid var(--line2);font-size:13px;align-items:center;font-variant-numeric:tabular-nums}
+.tt-row.fail{color:var(--ink3);background:#FCFCFD}
+.tt-row.pass{background:#FAFDFC}
+.tt-row.pick{background:#EBF8F3;box-shadow:inset 3px 0 0 var(--green)}
+.tt-row.pick .tt-v{color:var(--green);font-weight:700}
+.tt-row.fail .tt-v{color:var(--red)}
+.tt-sub{display:block;font-size:11px;color:var(--ink3);font-weight:400;margin-top:1px}
+.tt-v{font-size:12.5px;font-weight:600}
+@media(max-width:420px){
+  .tt-head,.tt-row{grid-template-columns:1.2fr .55fr .6fr .6fr .85fr;padding-left:7px;padding-right:7px;font-size:11.5px;gap:3px}
+  .tt-head{font-size:9px}
+  .tt-sub{font-size:10px}
+  .tt-v{font-size:11px}
+}
+
+.btn{display:block;width:100%;padding:15px;border:none;border-radius:11px;background:var(--orange);color:#fff;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;margin-bottom:11px}
+.btn:hover{background:var(--orange-dk)}
+.btn.sec{background:#fff;color:var(--blue);border:1.5px solid var(--line)}
+.btn.sec:hover{border-color:var(--blue);background:#F5F9FD}
+
+footer{margin-top:24px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink3);line-height:1.6}
+footer b{color:var(--ink2)}
+
+@media print{
+  body{background:#fff;padding:0}
+  header{background:#fff;color:var(--ink);border-bottom:2px solid var(--orange)}
+  header h1{color:var(--ink)} .sub,.brand-name{color:var(--ink2)}
+  .card,.edbar{box-shadow:none;break-inside:avoid}
+  .noprint,.btn,.btn-add,.tk-del{display:none!important}
+  .res-hero{background:#fff!important;color:var(--ink)!important;border:2px solid var(--blue)}
+  .res-hero .k{color:var(--ink2)}
+  /* A calc sheet should show ONE edition and ONE volume method — the ones used.
+     Printing the unselected options invites an AHJ to ask which was applied. */
+  .edopt[aria-pressed="false"],
+  .toggle button[aria-pressed="false"]{display:none!important}
+  .edopts,.toggle{display:block}
+  .edopt[aria-pressed="true"],
+  .toggle button[aria-pressed="true"]{width:auto;display:inline-block;padding:6px 14px}
+  /* Failing tank rows DO print — they are the evidence that the selection was
+     reasoned rather than guessed, and the acceptance-short row is the whole point. */
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand"><div class="brand-mark">F</div><div class="brand-name">Fire System Mastery</div></div>
+    <h1>Antifreeze Expansion Tank Calculator</h1>
+    <p class="sub">Sizes the expansion chamber by the NFPA&nbsp;13 annex method — combined gas law, absolute temperatures. Produces a worked calc sheet for the submittal package.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- EDITION -->
+  <div class="edbar">
+    <div class="lbl">Calculating under</div>
+    <div class="edopts" id="edOpts">
+      <button class="edopt" data-ed="2016" aria-pressed="false">NFPA 13<br>2016</button>
+      <button class="edopt" data-ed="2019" aria-pressed="true">NFPA 13<br>2019</button>
+      <button class="edopt" data-ed="2025" aria-pressed="false">NFPA 13<br>2025</button>
+    </div>
+    <div class="edcite" id="edCite"></div>
+    <div id="edVerify"></div>
+  </div>
+
+  <!-- 1. SYSTEM VOLUME -->
+  <div class="card">
+    <h2><span class="num">1</span> System volume</h2>
+    <p class="hint">Volume of the antifreeze system piping, <b>not</b> including the expansion chamber. This is <code>SV</code> in the annex formula.</p>
+
+    <div class="toggle" id="volMode">
+      <button data-mode="takeoff" aria-pressed="true">Pipe takeoff</button>
+      <button data-mode="manual" aria-pressed="false">Enter directly</button>
+    </div>
+
+    <div id="paneTakeoff">
+      <div class="takeoff">
+        <div class="tk-head"><div>Pipe</div><div>Type</div><div>Length (ft)</div><div></div></div>
+        <div id="tkRows"></div>
+        <div class="tk-foot"><span>System volume</span><b><span id="tkTotal">0.00</span> gal</b></div>
+      </div>
+      <button class="btn-add" id="btnAddRow">+ Add pipe run</button>
+      <div class="flag stop" style="margin-top:11px">
+        <span class="ic">■</span>
+        <div><b>Lightwall pipe is not Schedule 10.</b> Allied Super-Flo/XL, Wheatland Mega-Flo and Bull Moose Eddy-Flow are UL-listed thin-wall sprinkler pipe with walls thinner than Sch&nbsp;10 — a 2" lightwall run does <b>not</b> have a 2.157" ID. If any of this system is lightwall, use <b>Enter directly</b> and compute that volume from the manufacturer's own dimension table.</div>
+      </div>
+      <div class="flag info" style="margin-top:11px">
+        <span class="ic">i</span>
+        <div>Internal diameters are fixed by the dimensional standards NFPA&nbsp;13 references (ASTM A135/A795, ASME B36.10M, ASTM F442, ASTM B88) and were verified against Wheatland, Bull Moose and Allied submittals — they do not vary by mill. Two values carry a caveat: <b>5" Sch 40</b> and <b>copper Type L</b> were confirmed from standard-derived tables rather than the paywalled standards themselves, and <b>3" CPVC</b> is published as both 2.950 and 2.952 (a 0.14% volume difference).</div>
+      </div>
+    </div>
+
+    <div id="paneManual" style="display:none">
+      <div class="row"><div>
+        <label>System volume <span class="unit">(gal)</span></label>
+        <input type="number" id="svManual" step="0.1" min="0" placeholder="e.g. 62.5">
+      </div></div>
+    </div>
+
+    <div id="volNotes"></div>
+  </div>
+
+  <!-- 2. ANTIFREEZE -->
+  <div class="card">
+    <h2><span class="num">2</span> Antifreeze solution</h2>
+    <p class="hint">The annex needs solution <b>density at the lowest</b> expected temperature (<code>DL</code>) and <b>at the highest</b> (<code>DH</code>). Both come off the manufacturer's data sheet for the specific listed product and concentration.</p>
+
+    <div class="row"><div>
+      <label>Product</label>
+      <select id="product"></select>
+    </div></div>
+
+    <div id="prodNote"></div>
+
+    <div class="row c2">
+      <div>
+        <label>D<sub>L</sub> — density at low temp <span class="unit">(g/mL)</span></label>
+        <input type="number" id="dl" step="0.0001" min="0.5" max="1.6" placeholder="from data sheet">
+      </div>
+      <div>
+        <label>D<sub>H</sub> — density at high temp <span class="unit">(g/mL)</span></label>
+        <input type="number" id="dh" step="0.0001" min="0.5" max="1.6" placeholder="from data sheet">
+      </div>
+    </div>
+    <div id="densNotes"></div>
+  </div>
+
+  <!-- 3. TEMPERATURES -->
+  <div class="card">
+    <h2><span class="num">3</span> Temperatures</h2>
+    <p class="hint">Converted to absolute (Rankine) internally. Including the <b>precharge air temperature</b> is mandatory, not optional — see the citation in the edition bar above.<br><br>T<sub>1</sub> and T<sub>2</sub> are the <b>chamber air</b> temperatures when the piping sits at its lowest and highest expected temperature. They equal the piping temperatures only when the tank is in the same space as the piping — which is the normal case, and what the densities above are read at. If the chamber lives somewhere warmer, such as a heated riser room off an unheated attic, this method needs care beyond what this tool provides.</p>
+    <div class="row c3">
+      <div>
+        <label>T<sub>0</sub> — at precharge <span class="unit">(°F)</span></label>
+        <input type="number" id="t0" value="70" step="1">
+      </div>
+      <div>
+        <label>T<sub>1</sub> — lowest expected <span class="unit">(°F)</span></label>
+        <input type="number" id="t1" value="20" step="1">
+      </div>
+      <div>
+        <label>T<sub>2</sub> — highest expected <span class="unit">(°F)</span></label>
+        <input type="number" id="t2" value="150" step="1">
+      </div>
+    </div>
+    <div id="tempNotes"></div>
+  </div>
+
+  <!-- 4. PRESSURES -->
+  <div class="card">
+    <h2><span class="num">4</span> Pressures</h2>
+    <p class="hint">Enter <b>gauge</b> pressures — 14.7 psi is added internally to get the absolute values the gas law needs. <code>P0</code> and <code>P1</code> are separate variables: precharge happens before installation, static is measured on the supply side of the backflow preventer.</p>
+    <div class="row c3">
+      <div>
+        <label>P<sub>0</sub> — precharge <span class="unit">(psi)</span></label>
+        <input type="number" id="p0" value="40" step="1" min="0">
+      </div>
+      <div>
+        <label>P<sub>1</sub> — static supply <span class="unit">(psi)</span></label>
+        <input type="number" id="p1" value="40" step="1" min="0">
+      </div>
+      <div>
+        <label>P<sub>2</sub> — max allowable <span class="unit">(psi)</span></label>
+        <input type="number" id="p2" value="175" step="1" min="0">
+      </div>
+    </div>
+    <div id="presNotes"></div>
+  </div>
+
+  <button class="btn noprint" id="btnCalc">Calculate required chamber volume</button>
+
+  <div id="stopPanel"></div>
+
+  <!-- RESULTS -->
+  <div id="results">
+    <div class="res-hero" id="hero">
+      <div class="k">Minimum required chamber volume — V<sub>EC</sub></div>
+      <div><span class="v" id="vecVal">—</span><span class="u" id="vecUnit">gal</span></div>
+      <div class="n" id="vecNote"></div>
+    </div>
+
+    <div class="card" id="twoChecks">
+      <h2 style="margin-bottom:4px">Both checks must pass</h2>
+      <p class="hint" style="margin-left:0">A chamber is not sized until it satisfies both. On a fixed-diaphragm tank these are very different numbers.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="sk">1 — Total chamber volume · V<sub>EC</sub></div>
+          <div><span class="sv" id="chkTotal">—</span> gal or larger</div>
+          <div style="font-size:12.5px;color:var(--ink3);margin-top:6px;line-height:1.5">The gas cushion must be big enough that peak pressure stays under the component rating. Compare against the tank's <b>total volume</b>.</div>
+        </div>
+        <div class="step">
+          <div class="sk">2 — Acceptance the shell must provide</div>
+          <div><span class="sv" id="chkAccept">—</span> gal at a shell exactly equal to V<sub>EC</sub></div>
+          <div style="font-size:12.5px;color:var(--ink3);margin-top:6px;line-height:1.5">The fluid the tank takes in at peak temperature — compared against published <b>maximum acceptance volume</b>, never against total volume. This figure <b>rises with shell size</b>, because a larger tank holds more water at static before any heating. The table below evaluates each model against its own requirement; this number is only the value at the theoretical minimum shell.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="tankCard">
+      <h2 style="margin-bottom:4px">Tank selection — Amtrol FIRE-X-TROL</h2>
+      <p class="hint" style="margin-left:0">UL Listed / FM Approved, 175 psig max working. Verified against brochure MC10016 (01/24). This is one manufacturer's line, not the whole market.</p>
+      <div id="tankPick"></div>
+    </div>
+
+    <div id="resFlags"></div>
+
+    <div class="card">
+      <h2 style="margin-bottom:12px">Worked calculation</h2>
+      <div class="steps" id="steps"></div>
+      <button class="btn sec noprint" onclick="window.print()">Print calc sheet for submittal</button>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-bottom:12px">Still required — this tool does not cover it</h2>
+      <div id="reminders"></div>
+    </div>
+  </div>
+
+  <div class="card noprint" id="selfTestCard">
+    <h2 style="margin-bottom:4px">Self-test</h2>
+    <p class="hint" style="margin-left:0">Runs known cases against the <b>same engine</b> the calculator uses — there is only one copy of the math, so a passing test means the shipped math is intact. Run it any time, especially after anyone edits this file.</p>
+    <button class="btn sec" id="btnTest" style="margin-bottom:0">Run self-test</button>
+    <div id="testOut" style="margin-top:13px"></div>
+  </div>
+
+  <footer>
+    <b>Scope.</b> This sizes the expansion chamber only. It is not a complete antifreeze system design, and it does not replace the manufacturer's listing documents — where a listed product's data sheet gives its own sizing method or expansion table, that data sheet governs.<br><br>
+    <b>Method.</b> NFPA 13 annex, one formula among several the annex acknowledges. Concepts are described in original wording with section numbers cited; no standard text is reproduced. Verify every value against the edition your AHJ enforces.<br><br>
+    Fire System Mastery · <span id="stamp"></span>
+  </footer>
+</div>
+
+<script>
+"use strict";
+
+/* ============================================================
+   EDITION CONSTANTS
+   Section numbers verified against the NFPA 13 text in
+   01 NFPA Library. The sizing formula itself is identical
+   across these editions; only the numbering moved.
+   ============================================================ */
+var EDITIONS = {
+  /* 2016 and 2019 read from the vault PDFs in 01 NFPA Library.
+     2025 confirmed section-by-section against NFPA Link (CASI), 2026-09-17.
+     Two section numbers were wrong before that check and are fixed here:
+       - 2016 Darcy was 23.4.4.7; the requirement is 23.4.2.1.3
+         (23.4.4.8.2 is the aged-pipe / Moody application of it, not the trigger)
+       - 2025 Darcy is 28.2.2.1.3, NOT 27.2.2.1.3 — the hydraulics chapter
+         moved from 27 to 28 between 2019 and 2025. */
+  "2016": {
+    annex:"A.7.6.3.2", sizeReq:"7.6.3.3", preTemp:"7.6.3.3.1",
+    maxPres:"7.6.3.3.2", relief:"7.6.3.4",
+    solutions:"7.6.2.1", legacyAnnex:"A.7.6.2.1", altSection:"7.6.3.5",
+    placardSec:"7.6.1.5", darcy:"23.4.2.1.3",
+    reliefGal:40, reliefSize:'1/2 in. (13 mm)',
+    note:"Listed antifreeze solutions are required for new systems in this edition.",
+    placard:"manufacturer type and brand, concentration by volume, and the volume of solution in the system"
+  },
+  "2019": {
+    annex:"A.8.6.3.2", sizeReq:"8.6.3.3", preTemp:"8.6.3.3.1",
+    maxPres:"8.6.3.3.2", relief:"8.6.3.4",
+    solutions:"8.6.2.1", legacyAnnex:"A.8.6.2.1", altSection:"8.6.3.5",
+    placardSec:"8.6.1.5", darcy:"27.2.2.1.3",
+    reliefGal:40, reliefSize:'1/2 in. (15 mm)',
+    note:"New systems are restricted to listed antifreeze solutions. The glycerine 48% / propylene glycol 38% concentration caps apply only to existing systems that have been analyzed and approved by the AHJ to remain in service.",
+    placard:"manufacturer type and brand, concentration by volume, and the volume of solution in the system"
+  },
+  "2025": {
+    annex:"A.8.6.3.2", sizeReq:"8.6.3.3", preTemp:"8.6.3.3.1",
+    maxPres:"8.6.3.3.2", relief:"8.6.3.4",
+    solutions:"8.6.2.1", legacyAnnex:"A.8.6.2.1", altSection:"8.6.3.5",
+    placardSec:"8.6.1.5", darcy:"28.2.2.1.3",
+    reliefGal:40, reliefSize:'1/2 in. (15 mm)',
+    placardChanged:true,
+    note:"New systems are restricted to listed antifreeze solutions, with a narrow ESFR exception at §8.6.2.2. The glycerine 48% / propylene glycol 38% caps apply only to existing systems analyzed and approved by the AHJ.",
+    placard:"manufacturer type and brand, the solution's MINIMUM-USE TEMPERATURE, and the volume of solution in the system"
+  }
+};
+var ed = "2019";
+var lastStops = [];
+
+/* ============================================================
+   PIPE DATA — defaults to verify, user-editable
+   ID in inches. gal/ft computed, not stored.
+   ============================================================ */
+/* NOTE on 8" Sch 10 — the ID is 8.249, NOT 8.329.
+   Fire sprinkler Schedule 10 per ASTM A135/A795 uses a 0.188" wall at 8".
+   Generic ASME B36.10M "Schedule 10" pipe charts show a 0.148" wall, which
+   gives 8.329 and overstates volume by ~2%. Wheatland, Bull Moose and Allied
+   all publish 8.249. Do not "correct" this back to a generic chart value. */
+/* Arrays, not objects — JS reorders integer-like object keys, which put
+   1, 2, 3 ahead of 3/4 and 1-1/4 in the size dropdown. */
+var PIPE = {
+  "sch10": { label:"Steel Sch 10", sizes:[
+    ["1",1.097],["1-1/4",1.442],["1-1/2",1.682],["2",2.157],["2-1/2",2.635],
+    ["3",3.260],["4",4.260],["5",5.295],["6",6.357],["8",8.249] ] },
+  "sch40": { label:"Steel Sch 40", sizes:[
+    ["1",1.049],["1-1/4",1.380],["1-1/2",1.610],["2",2.067],["2-1/2",2.469],
+    ["3",3.068],["4",4.026],["5",5.047],["6",6.065],["8",7.981] ] },
+  "cpvc":  { label:"CPVC SDR 13.5", sizes:[
+    ["3/4",0.874],["1",1.101],["1-1/4",1.394],["1-1/2",1.598],["2",2.003],
+    ["2-1/2",2.423],["3",2.950] ] },
+  "copper":{ label:"Copper Type L", sizes:[
+    ["3/4",0.785],["1",1.025],["1-1/4",1.265],["1-1/2",1.505],["2",1.985],
+    ["2-1/2",2.465],["3",2.945] ] }
+};
+function pipeID(type,size){
+  var arr = PIPE[type] && PIPE[type].sizes; if(!arr) return null;
+  for(var i=0;i<arr.length;i++){ if(arr[i][0] === size) return arr[i][1]; }
+  return null;
+}
+function sizeOptionsHTML(type){
+  return PIPE[type].sizes.map(function(s){
+    return '<option value="'+s[0]+'">'+s[0]+'&quot;</option>'; }).join("");
+}
+
+/* gallons per linear foot for a given ID in inches */
+function galPerFt(idIn){ return (Math.PI/4) * idIn * idIn * 12 / 231; }
+
+/* ============================================================
+   PRODUCTS
+   No listed-product density table ships as a preset until it
+   has been transcribed from the manufacturer's own data sheet.
+   A wrong density here produces a confidently wrong tank size,
+   so manual entry is the honest default.
+   ============================================================ */
+var PRODUCTS = [
+  { id:"manual", name:"Enter Dₗ / Dₕ by hand", blocked:false, rows:null,
+    note:"Read density (or specific gravity) at your lowest and highest expected temperatures off the data sheet for the exact product and concentration. Either quantity works — the formula uses their ratio, so units cancel, as long as both values are the same kind and from the same table." },
+
+  /* Tyco LFP — TFP1680, June 2023. Table E density, lb/ft3 column.
+     The lb/gal column on this sheet carries only 2 decimals (9.7/9.5/9.4/9.2/9.1)
+     and is too coarse to form a density ratio. Use lb/ft3.
+     Density interpolation is explicitly permitted by Table E note (a). */
+  { id:"lfp", name:"Tyco LFP Antifreeze (TFP1680)", blocked:false, unit:"lb/ft³",
+    doc:"TFP1680, June 2023 · Johnson Controls / Tyco Fire Products",
+    minF:-10, maxF:150, premixed:true,
+    rows:[[-10,72.4],[36,71.2],[77,70.3],[120,69.0],[150,68.2]],
+    note:"Factory pre-mixed at 100% — there is no concentration to select, and field dilution is prohibited by the data sheet. Density table runs −10°F to 150°F; those endpoints are also the listed minimum and maximum use temperatures, so the product is not listed outside them." },
+
+  /* Tyco LFP Antifreeze+ — TFP1682, June 2023. Table E, lb/ft3.
+     Note: this sheet never states a maximum system pressure. Do not invent one. */
+  { id:"lfpplus", name:"Tyco LFP Antifreeze+ (TFP1682)", blocked:false, unit:"lb/ft³",
+    doc:"TFP1682, June 2023 · Johnson Controls / Tyco Fire Products",
+    minF:-25, maxF:150, premixed:true,
+    rows:[[-25,73.0],[0,72.6],[38.5,72.1],[77,71.4],[117.9,71.0],[150,70.5]],
+    note:"Factory pre-mixed at 100%; no field dilution. Listed use range −25°F to 150°F. This data sheet does not state a maximum system pressure — take P₂ from your lowest-rated component, not from the antifreeze." },
+
+  /* freezemaster (Lubrizol) — TDS 20-0249050, July 2023 + Installation Guide Table C.
+     The 77F row is printed directly on the TDS as 1.085 g/cc. Rows at 68F and below
+     are exact decimal conversions of the published kg/m3 column, not interpolations.
+     There is no "AR-1" or "AR-2" product — that designation appears nowhere in
+     Lubrizol's documentation. Do not relabel this preset. */
+  { id:"freezemaster", name:"freezemaster −12°F premixed (Lubrizol)", blocked:false, unit:"g/mL",
+    doc:"TDS 20-0249050, July 2023 · Lubrizol Advanced Materials",
+    minF:-12, maxF:150, premixed:true,
+    rows:[[-12,1.1153],[-10,1.1146],[-5,1.1129],[0,1.1112],[5,1.1095],[10,1.1078],
+          [15,1.1062],[20,1.1045],[25,1.1028],[30,1.1011],[35,1.0994],[40,1.0977],
+          [45,1.0960],[50,1.0944],[55,1.0927],[60,1.0910],[68,1.0883],[77,1.0850],
+          [104,1.0762],[150,1.0606]],
+    note:"Factory pre-mixed. Published range −12°F to 150°F. The underlying table is close to a linear fit, so treat values as approximate to the printed decimal. If you were told this product is “AR-1” or “AR-2”, that designation does not exist in Lubrizol's documentation — confirm what is actually on the drum." },
+
+  { id:"noble", name:"Noble Eliminator 1330 — blocked", blocked:true,
+    note:"BLOCKED, and the reason is worth knowing. Noble's own literature contradicts itself at 77°F: the density table gives 69.75 lb/ft³ (about 1.118 g/mL), while the same document sets a field acceptance band of 1.142–1.158 specific gravity at that same temperature. A compliant field sample would hydrometer outside what the density table allows, and the contradiction is printed in both the Installation Instructions and the Product Information Guide, so it is not a single-printing typo. Beyond that, only two temperatures are published (−17°F and 150°F), so anything in between would be a number this calculator invented. Resolve it with Noble tech services before using this product here, then enter the densities by hand." },
+
+  { id:"legacy-gly", name:"Legacy — glycerine (existing systems only)", blocked:true,
+    note:"BLOCKED. Glycerine is not a listed antifreeze solution. It is permitted only on an existing system that has been analyzed and approved by the AHJ to remain in service, capped at 48% by volume. Do not size a new system on this basis." },
+
+  { id:"legacy-pg", name:"Legacy — propylene glycol (existing systems only)", blocked:true,
+    note:"BLOCKED. Unlisted propylene glycol is permitted only on an existing analyzed-and-approved system, capped at 38% by volume. One narrow exception exists for premixed PG with ESFR sprinklers specifically listed for that use. Do not size a new system on this basis." }
+];
+
+/* ============================================================
+   TANKS — Amtrol FIRE-X-TROL, brochure MC10016 (01/24) p.2.
+   UL Listed / FM Approved, 175 psig max working, ASME Sec VIII Div 1.
+
+   READ THE ACCEPTANCE COLUMN. This is a fixed-diaphragm tank, so
+   acceptance volume is NOT proportional to shell volume and it
+   PLATEAUS: 42V/60V/70V all accept 11.0 gal on shells of 17.5/25/34,
+   and 80V/120V/180V/210V all accept 35.0 gal on shells of 53/66/77/90.
+   Sizing on total volume alone picks a tank that cannot take the fluid.
+   ============================================================ */
+var TANKS = [
+  {model:"FPT-5(C)",    total:2.1,  accept:0.90, conn:'3/4"',   form:"In-line"},
+  {model:"FPT-12(C)",   total:6.4,  accept:3.2,  conn:'3/4"',   form:"In-line"},
+  {model:"FPT-20V(C)",  total:8.0,  accept:3.2,  conn:'3/4"',   form:"Stand"},
+  {model:"FPT-30V(C)",  total:14.0, accept:9.0,  conn:'3/4"',   form:"Stand"},
+  {model:"FPT-42V(C)",  total:17.5, accept:11.0, conn:'3/4"',   form:"Stand"},
+  {model:"FPT-60V(C)",  total:25.0, accept:11.0, conn:'3/4"',   form:"Stand"},
+  {model:"FPT-70V(C)",  total:34.0, accept:11.0, conn:'3/4"',   form:"Stand"},
+  {model:"FPT-80V(C)",  total:53.0, accept:35.0, conn:'1-1/4"', form:"Stand"},
+  {model:"FPT-120V(C)", total:66.0, accept:35.0, conn:'1-1/4"', form:"Stand"},
+  {model:"FPT-180V(C)", total:77.0, accept:35.0, conn:'1-1/4"', form:"Stand"},
+  {model:"FPT-210V(C)", total:90.0, accept:35.0, conn:'1-1/4"', form:"Stand"}
+];
+var TANK_MAXP = 175;
+
+/* linear interpolation on a published density table; null outside its domain */
+function densityAt(p, tF){
+  if(!p.rows) return null;
+  if(tF < p.minF || tF > p.maxF) return null;
+  var r = p.rows;
+  for(var i=0;i<r.length;i++){ if(Math.abs(r[i][0]-tF) < 1e-9) return r[i][1]; }
+  for(var j=0;j<r.length-1;j++){
+    if(tF > r[j][0] && tF < r[j+1][0]){
+      var f = (tF - r[j][0]) / (r[j+1][0] - r[j][0]);
+      return r[j][1] + f * (r[j+1][1] - r[j][1]);
+    }
+  }
+  return null;
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function $(id){ return document.getElementById(id); }
+function num(id){ var v = parseFloat($(id).value); return isFinite(v) ? v : NaN; }
+function R(f){ return f + 459.67; }          /* Fahrenheit -> Rankine */
+function abs(psi){ return psi + 14.7; }       /* gauge -> absolute */
+function fmt(n,d){ if(!isFinite(n)) return "—"; return n.toFixed(d===undefined?2:d); }
+function esc(s){ return String(s).replace(/[&<>"]/g,function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+function flag(kind,ic,html){ return '<div class="flag '+kind+'"><span class="ic">'+ic+'</span><div>'+html+'</div></div>'; }
+
+/* ============================================================
+   EDITION UI
+   ============================================================ */
+function renderEdition(){
+  var e = EDITIONS[ed];
+  var opts = $("edOpts").children;
+  for(var i=0;i<opts.length;i++){
+    opts[i].setAttribute("aria-pressed", opts[i].dataset.ed === ed ? "true" : "false");
+  }
+  var v = e.verify || [];
+  var mark = function(k){ return v.indexOf(k) >= 0 ? '<span class="verify">⚠ verify</span>' : ''; };
+  $("edCite").innerHTML =
+    "Sizing method: <b>§"+e.annex+"</b> (annex) · required by <b>§"+e.sizeReq+"</b><br>"+
+    "Precharge temperature and pressure must be included: <b>§"+e.preTemp+"</b>"+mark("preTemp")+" · "+
+    "chamber must hold max system pressure within component ratings: <b>§"+e.maxPres+"</b>"+mark("maxPres");
+  $("edVerify").innerHTML = v.length
+    ? flag("warn","⚠","<b>Some "+ed+" citations are unverified.</b> The sizing formula, the "+e.reliefGal+
+        " gal / "+e.reliefSize+" relief-valve threshold, the §"+e.annex+" location"+
+        (e.altSection ? ", the §"+e.altSection+" automatic pressure-maintenance alternative" : "")+
+        " and the legacy concentration caps were corroborated against a second source. The section numbers marked <span class='verify'>⚠ verify</span> were not — they are carried forward from the 2019 numbering and need one check against the actual book before this calc sheet goes to an AHJ. The <b>math is unaffected</b>; only the citations are in question.")
+    : "";
+  $("stamp").textContent = "NFPA 13 " + ed + " edition method";
+  calc(true);
+}
+Array.prototype.forEach.call($("edOpts").children, function(b){
+  b.addEventListener("click", function(){ ed = b.dataset.ed; renderEdition(); });
+});
+
+/* ============================================================
+   PIPE TAKEOFF
+   ============================================================ */
+function rowHTML(i){
+  var typeOpts = "";
+  for(var k in PIPE){ typeOpts += '<option value="'+k+'">'+PIPE[k].label+'</option>'; }
+  return '<div class="tk-row" data-i="'+i+'">'+
+    '<select class="tk-size">'+sizeOptionsHTML("sch10")+'</select>'+
+    '<select class="tk-type">'+typeOpts+'</select>'+
+    '<input type="number" class="tk-len" min="0" step="1" placeholder="0">'+
+    '<button class="tk-del" title="Remove">&times;</button>'+
+  '</div>';
+}
+var rowSeq = 0;
+function addRow(){
+  var d = document.createElement("div");
+  d.innerHTML = rowHTML(rowSeq++);
+  var row = d.firstChild;
+  $("tkRows").appendChild(row);
+  syncSizes(row);
+  row.querySelector(".tk-type").addEventListener("change", function(){ syncSizes(row); tally(); });
+  row.querySelector(".tk-size").addEventListener("change", tally);
+  row.querySelector(".tk-len").addEventListener("input", tally);
+  row.querySelector(".tk-del").addEventListener("click", function(){ row.remove(); tally(); });
+  tally();
+}
+/* keep the size dropdown honest — CPVC and copper don't run to 8" here */
+function syncSizes(row){
+  var type = row.querySelector(".tk-type").value;
+  var sizeSel = row.querySelector(".tk-size");
+  var prev = sizeSel.value;
+  sizeSel.innerHTML = sizeOptionsHTML(type);
+  if(pipeID(type, prev) !== null){
+    sizeSel.value = prev;
+  } else {
+    /* The new type has no equivalent size. Snapping to the browser's default
+       first option lands on the SMALLEST size, which silently shrinks the
+       takeoff — e.g. 8" Sch 10 becoming 3/4" CPVC drops 165 gal off a 60 ft
+       run. Snap to the largest available instead: wrong in the conservative
+       direction, and visible because the total jumps rather than collapses. */
+    var sizes = PIPE[type].sizes;
+    sizeSel.value = sizes[sizes.length-1][0];
+    sizeSel.style.outline = "2px solid var(--amber)";
+    setTimeout(function(){ sizeSel.style.outline = ""; }, 2500);
+  }
+}
+function takeoffTotal(){
+  var total = 0;
+  Array.prototype.forEach.call($("tkRows").children, function(row){
+    var id  = pipeID(row.querySelector(".tk-type").value, row.querySelector(".tk-size").value);
+    var len = parseFloat(row.querySelector(".tk-len").value);
+    if(id && isFinite(len) && len > 0) total += galPerFt(id) * len;
+  });
+  return total;
+}
+function tally(){ $("tkTotal").textContent = fmt(takeoffTotal()); calc(true); }
+$("btnAddRow").addEventListener("click", addRow);
+
+var volMode = "takeoff";
+Array.prototype.forEach.call($("volMode").children, function(b){
+  b.addEventListener("click", function(){
+    volMode = b.dataset.mode;
+    Array.prototype.forEach.call($("volMode").children, function(x){
+      x.setAttribute("aria-pressed", x.dataset.mode === volMode ? "true":"false"); });
+    $("paneTakeoff").style.display = volMode === "takeoff" ? "" : "none";
+    $("paneManual").style.display  = volMode === "manual"  ? "" : "none";
+    calc(true);
+  });
+});
+function systemVolume(){
+  return volMode === "takeoff" ? takeoffTotal() : num("svManual");
+}
+
+/* ============================================================
+   PRODUCT UI
+   ============================================================ */
+(function initProducts(){
+  var sel = $("product"), html = "";
+  PRODUCTS.forEach(function(p){ html += '<option value="'+p.id+'">'+esc(p.name)+'</option>'; });
+  sel.innerHTML = html;
+  sel.addEventListener("change", onProduct);
+  onProduct();
+})();
+function currentProduct(){
+  var id = $("product").value;
+  for(var i=0;i<PRODUCTS.length;i++){ if(PRODUCTS[i].id === id) return PRODUCTS[i]; }
+  return PRODUCTS[0];
+}
+function onProduct(){ autoFill(); calc(true); }
+
+/* Pull DL and DH off the selected product's published table at the
+   user's T1 and T2. Refuses to extrapolate past the published domain —
+   outside it the product is not listed, so there is no right answer. */
+function autoFill(){
+  var p = currentProduct(), h = "";
+  var preset = !p.blocked && !!p.rows;
+
+  $("dl").disabled = p.blocked; $("dh").disabled = p.blocked;
+  $("dl").readOnly = preset;    $("dh").readOnly = preset;
+
+  if(p.blocked){
+    var eE = EDITIONS[ed];
+    var cite = /^legacy-/.test(p.id)
+      ? " <span style='opacity:.75'>Listing requirement §"+eE.solutions+" · concentration caps §"+eE.legacyAnnex+"</span>"
+      : " <span style='opacity:.75'>Listing requirement §"+eE.solutions+"</span>";
+    $("prodNote").innerHTML = flag("stop","■","<b>"+esc(p.name)+"</b><br>"+esc(p.note)+cite);
+    return;
+  }
+
+  if(!preset){
+    $("prodNote").innerHTML = flag("info","i", esc(p.note));
+    return;
+  }
+
+  var T1 = num("t1"), T2 = num("t2");
+  var DL = densityAt(p, T1), DH = densityAt(p, T2);
+
+  h += flag("ok","✓","<b>"+esc(p.name)+"</b> — densities read from the published table and interpolated. Units: <b>"+
+    p.unit+"</b>. Source: "+esc(p.doc)+". Keep that sheet with the submittal.");
+  h += flag("info","i", esc(p.note));
+
+  if(DL === null || DH === null){
+    var bad = [];
+    if(DL === null) bad.push("T₁ = "+(isFinite(T1)?T1+"°F":"—"));
+    if(DH === null) bad.push("T₂ = "+(isFinite(T2)?T2+"°F":"—"));
+    h += flag("stop","■","<b>Outside the published range.</b> "+bad.join(" and ")+
+      " falls outside this product's data, which runs <b>"+p.minF+"°F to "+p.maxF+
+      "°F</b>. That range is also its listed use range — outside it the product is not listed, so there is no density to extrapolate to. Change the temperature, pick a different product, or switch to hand entry with a value you can source.");
+    $("dl").value = ""; $("dh").value = "";
+  } else {
+    $("dl").value = DL.toFixed(4);
+    $("dh").value = DH.toFixed(4);
+  }
+  $("prodNote").innerHTML = h;
+}
+
+/* ============================================================
+   CALCULATION — NFPA 13 annex method
+     L   = SV x (DL/DH - 1)
+     V1  = P2 T1 L / (P2 T1 - P1 T2)
+     VEC = V0 = (P1 T0)/(P0 T1) x V1
+   All P absolute (psia), all T absolute (Rankine).
+   ============================================================ */
+/* ============================================================
+   HARD STOPS — conditions that must BLOCK a result, not just annotate one.
+   Every one of these was previously rendered as a red note while the
+   calculation ran anyway and recommended a tank. A guardrail that does not
+   stop the solve is decoration.
+   ============================================================ */
+function hardStops(i){
+  var s = [];
+  if(!isFinite(i.SV) || i.SV <= 0) s.push("System volume must be greater than zero.");
+  if(!isFinite(i.DL) || !isFinite(i.DH) || i.DH <= 0) s.push("Both densities are required.");
+  if(!isFinite(i.T0) || !isFinite(i.T1) || !isFinite(i.T2)) s.push("All three temperatures are required.");
+  if(!isFinite(i.P0) || !isFinite(i.P1) || !isFinite(i.P2) || i.P0 <= 0) s.push("All three pressures are required, and precharge must be above zero.");
+  if(s.length) return s;
+
+  if(i.T1 >= i.T2) s.push("T₁ must be lower than T₂. T₁ is the lowest expected temperature, T₂ the highest.");
+  if(i.DH >= i.DL) s.push("Dₗ must be greater than Dₕ — liquids get less dense as they warm, so density at the lowest temperature is the larger number. Check whether the two are swapped.");
+
+  if(i.DL > i.DH && i.T2 > i.T1){
+    var pct = (i.DL/i.DH - 1) * 100;
+    /* Water alone expands about 1.9% from 20°F to 150°F, and every listed
+       antifreeze expands more than water. Under 1.5% across a wide span means
+       the wrong row was read off the data sheet — almost always a mid-table
+       temperature grabbed instead of the design extreme. */
+    if((i.T2 - i.T1) > 40 && pct < 1.5){
+      s.push("These densities imply only <b>"+pct.toFixed(2)+"%</b> expansion across a "+
+        Math.round(i.T2-i.T1)+"°F span. Water alone expands about 1.9% over that range and every listed antifreeze expands more, so one of these values is almost certainly read from the wrong row — check that Dₗ is at "+
+        i.T1+"°F and Dₕ is at "+i.T2+"°F, not at some temperature in between.");
+    }
+  }
+
+  /* Temperature-corrected precharge vs static. If the precharge pressure,
+     corrected from T0 to T1, is at or above static supply pressure at the
+     tank, the diaphragm stays pinned against the shell and NO fluid enters
+     the chamber at static — the annex model has no physical referent and the
+     engine returns V1 > VEC, an air volume larger than the tank holding it. */
+  if(isFinite(i.P0) && isFinite(i.P1)){
+    var lhs = abs(i.P0) * R(i.T1), rhs = abs(i.P1) * R(i.T0);
+    if(lhs >= rhs){
+      s.push("Temperature-corrected precharge is at or above static supply pressure at the tank, so no fluid enters the chamber at static and the annex model does not apply. Precharge to roughly 2 psi <b>below</b> system static at the tank location — and never below 25% of the system's maximum rated pressure.");
+    }
+  }
+  return s;
+}
+
+/* Fluid a candidate shell of total volume Vt must actually accept.
+   Air precharged at (P0,T0) filling Vt compresses at static to
+   Vt·(P0/P1)·(T1/T0); the balance is water already in the tank before any
+   heating, and thermal expansion L arrives on top of it.
+   This reduces to VEC − V2 when Vt = VEC — which is why the earlier
+   single-value acceptance was right only for a shell nobody buys.
+   It GROWS with shell size while published acceptance PLATEAUS, so a larger
+   tank can fail where a smaller one passes. */
+function acceptanceRequired(Vt, r){
+  return Vt * (1 - (r.p0A * r.t1R) / (r.p1A * r.t0R)) + r.L;
+}
+
+/* THE ENGINE — pure function, no DOM. This is what the self-test exercises,
+   so the test cannot drift from the shipped math: there is only one copy. */
+function solve(i){
+  var t0R = R(i.T0), t1R = R(i.T1), t2R = R(i.T2);
+  var p0A = abs(i.P0), p1A = abs(i.P1), p2A = abs(i.P2);
+
+  var L     = i.SV * (i.DL/i.DH - 1);
+  var denom = p2A*t1R - p1A*t2R;
+  var V1    = p2A * t1R * L / denom;
+  var VEC   = (p1A * t0R) / (p0A * t1R) * V1;   /* = V0, total chamber volume */
+  var V2    = V1 - L;
+  /* Liquid in the chamber at peak temperature: the chamber is all air at
+     precharge (V0), and the air has been squeezed to V2. The difference is
+     the fluid the tank has to physically accept — a separate check from
+     total volume, and the one that fails first on a diaphragm tank. */
+  var ACC   = VEC - V2;
+
+  return {
+    SV:i.SV, DL:i.DL, DH:i.DH, L:L,
+    T0:i.T0, T1:i.T1, T2:i.T2, t0R:t0R, t1R:t1R, t2R:t2R,
+    P0:i.P0, P1:i.P1, P2:i.P2, p0A:p0A, p1A:p1A, p2A:p2A,
+    denom:denom, V1:V1, V2:V2, VEC:VEC, ACC:ACC,
+    solvable: denom > 0 && VEC >= 0 && isFinite(VEC)
+  };
+}
+
+function calc(quiet){
+  var SV = systemVolume();
+  var DL = num("dl"), DH = num("dh");
+  var T0 = num("t0"), T1 = num("t1"), T2 = num("t2");
+  var P0 = num("p0"), P1 = num("p1"), P2 = num("p2");
+  var p  = currentProduct();
+
+  /* ---- live input-side notes, shown whether or not we can solve ---- */
+  renderVolNotes(SV);
+  renderTempNotes(T0,T1,T2);
+  renderPresNotes(P0,P1,P2);
+  renderDensNotes(DL,DH);
+
+  var inputs = {SV:SV,DL:DL,DH:DH,T0:T0,T1:T1,T2:T2,P0:P0,P1:P1,P2:P2};
+  var stops = p.blocked ? ["This antifreeze is blocked — see the note above."] : hardStops(inputs);
+  lastStops = stops;
+
+  if(stops.length){ $("results").style.display = "none"; return; }
+
+  var r = solve(inputs);
+  r.product = p;
+  renderResults(r);
+}
+
+/* ---- input-side guardrails ---- */
+function renderVolNotes(SV){
+  var e = EDITIONS[ed], h = "";
+  if(isFinite(SV) && SV > 0 && SV <= e.reliefGal){
+    h += flag("info","i","System volume is <b>"+fmt(SV)+" gal</b>, at or under the "+e.reliefGal+
+      " gal threshold. A listed "+e.reliefSize+" relief valve is permitted <b>in lieu of</b> an expansion chamber at this size — §"+
+      e.relief+". You may not need a tank at all. This tool sizes the tank; it does not evaluate the relief valve option.");
+  }
+  if(isFinite(SV) && SV > e.reliefGal && e.darcy){
+    h += flag("warn","⚠","Over "+e.reliefGal+" gal, friction loss must <b>also</b> be calculated by Darcy&ndash;Weisbach, not Hazen&ndash;Williams alone — §"+
+      e.darcy+". That is a separate calculation this tool does not perform.");
+  }
+  $("volNotes").innerHTML = h;
+}
+function renderTempNotes(T0,T1,T2){
+  var h = "";
+  if(isFinite(T2) && T2 < 140){
+    h += flag("warn","⚠","T<sub>2</sub> = <b>"+T2+"°F</b> is below the 140–150°F range commonly seen in listing documents for attic and concealed-space service. A low T<sub>2</sub> understates expansion and undersizes the chamber. Confirm the actual peak for this space before accepting it.");
+  }
+  if(isFinite(T1) && isFinite(T2) && T1 >= T2){
+    h += flag("stop","■","T<sub>1</sub> must be lower than T<sub>2</sub>. T<sub>1</sub> is the lowest expected temperature, T<sub>2</sub> the highest.");
+  }
+  if(isFinite(T0) && isFinite(T2) && T0 > T2){
+    h += flag("warn","⚠","Precharge temperature T<sub>0</sub> is above the highest expected system temperature. Check that T<sub>0</sub> is the air temperature at the time the tank was precharged, before installation.");
+  }
+  $("tempNotes").innerHTML = h;
+}
+function renderPresNotes(P0,P1,P2){
+  var h = "";
+  if(isFinite(P2) && P2 > 175){
+    h += flag("warn","⚠","P<sub>2</sub> above 175 psi requires every component in the antifreeze system to carry that rating. Size on the <b>lowest-rated component</b>, not the highest — §"+EDITIONS[ed].maxPres+".");
+  }
+  if(isFinite(P1) && isFinite(P2) && P1 > 0.75*P2){
+    h += flag("warn","⚠","Static supply pressure is above 75% of the maximum allowable. As P<sub>1</sub> approaches P<sub>2</sub> the required chamber grows sharply, and past a point no chamber size works. Check the result carefully.");
+  }
+  if(isFinite(P0) && isFinite(P1) && Math.abs(P0-P1) > 0.001){
+    h += flag("info","i","P<sub>0</sub> and P<sub>1</sub> differ, which is normal and handled correctly — the annex treats precharge pressure (before installation) and static supply pressure as separate variables. Setting them equal is a simplification, not the method.");
+  }
+  $("presNotes").innerHTML = h;
+}
+function renderDensNotes(DL,DH){
+  var h = "";
+  if(isFinite(DL) && isFinite(DH)){
+    if(DH >= DL){
+      h += flag("stop","■","D<sub>L</sub> must be greater than D<sub>H</sub>. Liquids get less dense as they warm, so density at the <b>lowest</b> temperature is the larger number. Check that the two values aren't swapped.");
+    } else {
+      var pct = (DL/DH - 1) * 100;
+      if(pct > 12){
+        h += flag("warn","⚠","These densities imply <b>"+fmt(pct,1)+"%</b> volumetric expansion across your temperature span. That is high — re-read the data sheet rows before accepting it.");
+      }
+    }
+  }
+  if(currentProduct().rows){
+    h += flag("info","i","Preset densities were transcribed from the manufacturer's published table and independently re-checked against the source document. They are still <b>defaults to verify</b> — data sheets get revised. Confirm against the revision you hold before this goes out, and attach that sheet to the submittal.");
+  }
+  $("densNotes").innerHTML = h;
+}
+
+/* ---- results ---- */
+function renderResults(r){
+  var e = EDITIONS[ed];
+  $("results").style.display = "block";
+  var hero = $("hero"), flags = "";
+
+  if(r.denom <= 0 || r.VEC < 0){
+    hero.className = "res-hero bad";
+    $("vecVal").textContent = "No solution";
+    $("vecUnit").textContent = "";
+    $("vecNote").innerHTML = "The formula returns a negative result at these pressures and temperatures.";
+    $("twoChecks").style.display = "none";
+    $("tankCard").style.display = "none";
+    flags += flag("stop","■","<b>An expansion chamber cannot solve this.</b> The annex is explicit that a negative V<sub>EC</sub> means the static supply pressure sits too close to the maximum allowable working pressure — warm-weather expansion will push the system past its rating <b>regardless of how large the chamber is</b>. The remedies the annex names: use a <b>dry pipe system</b> instead, or install a <b>pressure-reducing valve ahead of the backflow preventer</b>. §"+e.annex);
+  } else {
+    hero.className = "res-hero";
+    $("vecVal").textContent = fmt(r.VEC);
+    $("vecUnit").textContent = "gal";
+    $("vecNote").innerHTML = "Total chamber volume — the air volume at precharge, before installation.";
+    $("twoChecks").style.display = "";
+    $("tankCard").style.display = "";
+    $("chkTotal").textContent  = fmt(r.VEC);
+    $("chkAccept").textContent = fmt(r.ACC);
+    renderTanks(r);
+    flags += flag("warn","⚠","Confirm the tank is <b>compatible with this antifreeze</b>. Some listed solutions name permitted diaphragm or bladder materials, and a tank rated for plain water is not automatically acceptable. Check the antifreeze data sheet and the tank listing together.");
+    flags += flag("warn","⚠","<b>Installed precharge is not the factory precharge.</b> Amtrol's installation instructions call for precharging to 2 psi below system static pressure at the tank location, and never below 25% of the system's maximum rated pressure. The 25 psig a tank ships with is a shipping charge. Set P<sub>0</sub> above to what will actually be in the tank once installed — a factory-precharge assumption overstates the acceptance you really have.");
+    flags += flag("warn","⚠","Confirm every component in the antifreeze system is rated at or above <b>"+fmt(r.P2,0)+" psi</b> — size on the lowest-rated one, §"+e.maxPres+".");
+  }
+  $("resFlags").innerHTML = flags;
+
+  /* worked steps */
+  var s = "";
+  s += step("Step 1 — Thermal expansion of the solution",
+    "L = SV &times; (D<sub>L</sub> / D<sub>H</sub> &minus; 1)",
+    "L = "+fmt(r.SV)+" &times; ("+fmt(r.DL,4)+" / "+fmt(r.DH,4)+" &minus; 1) = <span class='sv'>"+fmt(r.L,3)+" gal</span>",
+    "Formula ["+e.annex+"a]. The solution expands "+fmt((r.DL/r.DH-1)*100,2)+"% by volume between "+r.T1+"°F and "+r.T2+"°F.");
+  s += step("Step 2 — Convert to absolute units",
+    "T<sub>R</sub> = T<sub>°F</sub> + 459.67&nbsp;&nbsp;·&nbsp;&nbsp;P<sub>abs</sub> = P<sub>gauge</sub> + 14.7",
+    "T<sub>0</sub> = "+fmt(r.t0R,2)+" °R &nbsp; T<sub>1</sub> = "+fmt(r.t1R,2)+" °R &nbsp; T<sub>2</sub> = "+fmt(r.t2R,2)+" °R<br>"+
+    "P<sub>0</sub> = "+fmt(r.p0A,1)+" psia &nbsp; P<sub>1</sub> = "+fmt(r.p1A,1)+" psia &nbsp; P<sub>2</sub> = "+fmt(r.p2A,1)+" psia",
+    "The gas law is written in absolute pressure and absolute temperature. Gauge pressure or °F here produces a wrong answer that still looks plausible.");
+  s += step("Step 3 — Air volume at normal static pressure",
+    "P<sub>1</sub>V<sub>1</sub>/T<sub>1</sub> = P<sub>2</sub>V<sub>2</sub>/T<sub>2</sub>&nbsp; with &nbsp;V<sub>2</sub> = V<sub>1</sub> &minus; L&nbsp; &rarr;&nbsp; V<sub>1</sub> = P<sub>2</sub>T<sub>1</sub>L / (P<sub>2</sub>T<sub>1</sub> &minus; P<sub>1</sub>T<sub>2</sub>)",
+    "V<sub>1</sub> = ("+fmt(r.p2A,1)+" &times; "+fmt(r.t1R,2)+" &times; "+fmt(r.L,3)+") / "+fmt(r.denom,1)+" = <span class='sv'>"+fmt(r.V1,3)+" gal</span>",
+    "Formulas ["+e.annex+"b] and ["+e.annex+"c]. The antifreeze is treated as incompressible, so the air volume drops by exactly L as the solution expands.");
+  s += step("Step 4 — Back-calculate to the precharge condition",
+    "V<sub>EC</sub> = V<sub>0</sub> = (P<sub>1</sub>T<sub>0</sub>) / (P<sub>0</sub>T<sub>1</sub>) &times; V<sub>1</sub>",
+    "V<sub>EC</sub> = ("+fmt(r.p1A,1)+" &times; "+fmt(r.t0R,2)+") / ("+fmt(r.p0A,1)+" &times; "+fmt(r.t1R,2)+") &times; "+fmt(r.V1,3)+" = <span class='sv'>"+
+      (r.denom>0 && r.VEC>=0 ? fmt(r.VEC,3)+" gal" : "negative — no solution")+"</span>",
+    "Formula ["+e.annex+"d]: at precharge the chamber is entirely air, so V<sub>EC</sub> equals V<sub>0</sub>. This is why the precharge temperature is a required input — §"+e.preTemp+".");
+  if(r.denom > 0 && r.VEC >= 0){
+    s += step("Step 5 — Acceptance volume the shell must provide",
+      "Acceptance(V<sub>t</sub>) = V<sub>t</sub> &times; [ 1 &minus; (P<sub>0</sub>T<sub>1</sub>)/(P<sub>1</sub>T<sub>0</sub>) ] + L",
+      "At V<sub>t</sub> = V<sub>EC</sub> = "+fmt(r.VEC,3)+" gal: &nbsp;<span class='sv'>"+fmt(r.ACC,3)+" gal</span><br>"+
+      "<span style='font-size:12px;color:var(--ink3)'>(equivalently V<sub>EC</sub> &minus; V<sub>2</sub> = "+fmt(r.VEC,3)+" &minus; "+fmt(r.V2,3)+")</span>",
+      "Air precharged at P₀/T₀ filling the shell compresses at static to Vₜ·(P₀/P₁)·(T₁/T₀); the balance is water already in the tank before any heating, and thermal expansion L arrives on top. The requirement therefore <b>grows with shell size</b> while a fixed-diaphragm tank's published acceptance plateaus — so each candidate model must be checked against its own figure, not against this one. The table above does that.");
+  }
+  var du = r.product.unit || "units per data sheet";
+  s += step("Inputs of record",
+    "",
+    "System volume SV = "+fmt(r.SV)+" gal &nbsp;·&nbsp; D<sub>L</sub> = "+fmt(r.DL,4)+" "+du+" &nbsp;·&nbsp; D<sub>H</sub> = "+fmt(r.DH,4)+" "+du+"<br>"+
+    "T<sub>0</sub>/T<sub>1</sub>/T<sub>2</sub> = "+r.T0+"/"+r.T1+"/"+r.T2+" °F &nbsp;·&nbsp; P<sub>0</sub>/P<sub>1</sub>/P<sub>2</sub> = "+r.P0+"/"+r.P1+"/"+r.P2+" psi<br>"+
+    "Antifreeze: "+esc(r.product.name)+(r.product.doc ? "<br>Data sheet: "+esc(r.product.doc) : ""),
+    "Calculated under NFPA 13, "+ed+" edition, §"+e.annex+". Attach the antifreeze data sheet the densities were read from.");
+  $("steps").innerHTML = s;
+
+  /* reminders */
+  var rem = "";
+  rem += flag("info","·","<b>Backflow prevention.</b> An antifreeze system connected to a potable supply needs the appropriate backflow assembly — typically an RP. That assembly also sets where P<sub>1</sub> is measured.");
+  if(e.darcy){
+    rem += flag("info","·","<b>Darcy&ndash;Weisbach hydraulics.</b> Over "+e.reliefGal+" gal, friction loss must also be calculated by Darcy&ndash;Weisbach — §"+e.darcy+".");
+  }
+  rem += flag("info","·","<b>K-factor / density adjustment.</b> Antifreeze discharges differently than water. Account for it in the hydraulic calculation.");
+  rem += flag("info","·","<b>Signage.</b> A placard at the antifreeze system main valve must identify "+esc(e.placard)+" — §"+e.placardSec+".");
+  if(e.placardChanged){
+    rem += flag("warn","⚠","<b>The placard changed in 2025 — same section number, different content.</b> §8.6.1.5 called for <b>concentration by volume</b> through the 2019 edition and calls for the solution's <b>minimum-use temperature</b> in 2025. The section number did not move, so a placard ordered off an older template cites correctly and still says the wrong thing. The change makes sense: listed solutions are 100% factory pre-mixed, so a concentration line always reads 100%, while minimum-use temperature is what a field tech can act on.");
+  }
+  if(e.altSection){
+    rem += flag("info","·","<b>You may not need a chamber at all.</b> §"+e.altSection+" sets aside §"+
+      e.altSection.replace(/\.\d+$/,".1")+", §"+e.altSection.replace(/\.\d+$/,".2")+" and §"+e.sizeReq+
+      " where an automatic pump or equivalent holds higher pressure on the antifreeze side of the supply check valve, solution is automatically released to prevent thermal-expansion overpressure, and premixed solution is automatically supplied to restore pressure after contraction. All three conditions, not any one — that is an engineered pressure-maintenance system, not an omitted tank.");
+  }
+  rem += flag("info","·","<b>Annual sampling.</b> NFPA 25 requires concentration to be checked at the supply inlet and at a remote point of the system — §"+e.solutions+" points to it from the install side.");
+  rem += flag("info","·","<b>Listed solutions only on new systems.</b> "+esc(e.note));
+  $("reminders").innerHTML = rem;
+}
+/* Model table with both checks scored independently, so the acceptance
+   plateau is visible rather than hidden behind a single "recommended" row. */
+function renderTanks(r){
+  /* Acceptance requirement is a function of the SHELL, not a single number.
+     Evaluate every model against its own requirement. Because requirement
+     grows with shell size while published acceptance plateaus, the passing
+     set is not necessarily a tail — a larger tank can fail where a smaller
+     one passes, so this scans all models rather than stopping at the first. */
+  var rows = TANKS.map(function(t){
+    var req  = acceptanceRequired(t.total, r);
+    var okT  = t.total >= r.VEC;
+    var okA  = t.accept >= req;
+    return { t:t, req:req, okT:okT, okA:okA, both:okT && okA };
+  });
+
+  var passing = rows.filter(function(x){ return x.both; });
+  var pick = passing.length ? passing[0] : null;
+
+  var h = "";
+  if(pick){
+    h += flag("ok","✓","Smallest model passing both checks: <b>"+pick.t.model+"</b> — "+
+      fmt(pick.t.total,1)+" gal shell, rated for "+fmt(pick.t.accept,1)+" gal acceptance against the <b>"+
+      fmt(pick.req,2)+" gal</b> this shell would actually take in. "+pick.t.conn+" connection, "+pick.t.form.toLowerCase()+" mount.");
+  } else {
+    h += flag("stop","■","<b>No FIRE-X-TROL model satisfies both checks.</b> The smallest shell that clears the "+fmt(r.VEC)+
+      " gal total requirement would need to accept "+
+      (function(){ var c = rows.filter(function(x){return x.okT;})[0]; return c ? fmt(c.req,2)+" gal, against its "+fmt(c.t.accept,1)+" gal rating" : "more than any published model provides"; })()+
+      ". Consider multiple chambers in parallel, a full-acceptance bladder tank rather than a fixed-diaphragm one, or revisiting the temperature span and maximum allowable pressure.");
+  }
+
+  /* A model whose shell clears VEC but whose diaphragm cannot take the fluid. */
+  var trap = rows.filter(function(x){ return x.okT && !x.okA; })[0];
+  if(trap){
+    h += flag("warn","⚠","<b>"+trap.t.model+" is the trap here.</b> Its "+fmt(trap.t.total,1)+
+      " gal shell clears the "+fmt(r.VEC)+" gal total requirement, so a total-volume-only calculation would select it — but that shell would take in <b>"+
+      fmt(trap.req,2)+" gal</b> against a "+fmt(trap.t.accept,1)+" gal acceptance rating. Undersized in service.");
+  }
+
+  /* Larger-fails-where-smaller-passes only happens because acceptance plateaus. */
+  if(pick){
+    var laterFail = rows.filter(function(x){ return x.t.total > pick.t.total && !x.both; });
+    if(laterFail.length){
+      h += flag("warn","⚠","<b>Bigger is not safer here.</b> "+laterFail.map(function(x){return x.t.model;}).join(", ")+
+        " ha"+(laterFail.length>1?"ve":"s")+" a larger shell than "+pick.t.model+" and still fail"+(laterFail.length>1?"":"s")+
+        ", because a larger shell holds more water at static while the diaphragm's acceptance rating stops rising. Do not substitute up without re-running this.");
+    }
+  }
+
+  h += '<div class="tanktbl"><div class="tt-head"><div>Model</div><div>Shell</div><div>Rated<br>accept</div><div>Needs</div><div>Result</div></div>';
+  rows.forEach(function(x){
+    var cls = x.both ? (pick && x.t.model === pick.t.model ? "tt-row pick" : "tt-row pass") : "tt-row fail";
+    var verdict = x.both ? (pick && x.t.model === pick.t.model ? "Smallest fit" : "Passes")
+                : (!x.okT && !x.okA ? "Both short" : (!x.okA ? "Acceptance short" : "Shell short"));
+    h += '<div class="'+cls+'"><div><b>'+x.t.model+'</b><span class="tt-sub">'+x.t.conn+' · '+x.t.form+'</span></div>'+
+         '<div>'+fmt(x.t.total,1)+'</div><div>'+fmt(x.t.accept,1)+'</div><div>'+fmt(x.req,2)+'</div>'+
+         '<div class="tt-v">'+verdict+'</div></div>';
+  });
+  h += '</div>';
+  h += '<div style="font-size:12px;color:var(--ink3);margin-top:10px;line-height:1.55"><b>"Needs"</b> is the fluid that particular shell would take in — it rises with shell size, because a bigger tank holds more water at static before any heating. Published acceptance does not rise with it: 42V/60V/70V all accept 11.0 gal, and 80V/120V/180V/210V all accept 35.0 gal. That is why the two columns cross. All models: 175 psig maximum working pressure, ASME Section VIII Div 1, −20°F to 200°F.</div>';
+
+  $("tankPick").innerHTML = h;
+}
+
+function step(k, formula, value, note){
+  return '<div class="step">'+
+    '<div class="sk">'+k+'</div>'+
+    (formula ? '<div class="sf">'+formula+'</div>' : '')+
+    '<div>'+value+'</div>'+
+    (note ? '<div style="font-size:12.5px;color:var(--ink3);margin-top:6px;line-height:1.5">'+note+'</div>' : '')+
+  '</div>';
+}
+
+/* ============================================================
+   WIRING
+   ============================================================ */
+["svManual","dl","dh","t0","p0","p1","p2"].forEach(function(id){
+  $(id).addEventListener("input", function(){ calc(true); });
+});
+/* T1 and T2 also move the preset lookup, so they re-read the density table */
+["t1","t2"].forEach(function(id){
+  $(id).addEventListener("input", function(){ autoFill(); calc(true); });
+});
+$("btnCalc").addEventListener("click", function(){
+  calc(false);
+  if($("results").style.display === "block"){
+    $("stopPanel").innerHTML = "";
+    $("results").scrollIntoView({behavior:"smooth", block:"start"});
+  } else {
+    $("stopPanel").innerHTML = flag("stop","■",
+      "<b>No result — "+(lastStops.length === 1 ? "this must be resolved first" : "these must be resolved first")+":</b><ul style='margin:8px 0 0;padding-left:18px'>"+
+      lastStops.map(function(s){ return "<li style='margin-bottom:6px'>"+s+"</li>"; }).join("")+
+      "</ul>");
+    $("stopPanel").scrollIntoView({behavior:"smooth", block:"center"});
+  }
+});
+
+/* ============================================================
+   SELF-TEST
+   Every case is traceable to something outside this file: a published
+   worked example, a dimensional standard, a manufacturer's table, or a
+   law of physics. Nothing here asserts "the answer is what the code says".
+   ============================================================ */
+function near(a, b, tol){ return isFinite(a) && isFinite(b) && Math.abs(a-b) <= (tol===undefined?0.005:tol); }
+
+var TESTS = [
+  { name:"NFPA annex worked example — VEC",
+    src:"NFPA 13 2025 annex A.8.6.3.2 worked example. Published answer 3.25 gal using rounded intermediates; 3.236 unrounded.",
+    run:function(){
+      var r = solve({SV:100,DL:1.030,DH:1.015,P0:50,P1:60,P2:175,T0:70,T1:40,T2:100});
+      return { pass: near(r.VEC, 3.236, 0.01), got: fmt(r.VEC,4)+" gal", want:"3.236 gal" };
+    }},
+
+  { name:"NFPA annex worked example — air-volume ratios",
+    src:"Same example. Published V1/V0 = 0.817, V2/V0 = 0.361.",
+    run:function(){
+      var r = solve({SV:100,DL:1.030,DH:1.015,P0:50,P1:60,P2:175,T0:70,T1:40,T2:100});
+      var a = r.V1/r.VEC, b = r.V2/r.VEC;
+      return { pass: near(a,0.817,0.001) && near(b,0.361,0.001),
+               got: fmt(a,4)+" / "+fmt(b,4), want:"0.817 / 0.361" };
+    }},
+
+  { name:"Ideal gas law holds across all three states",
+    src:"Physics, not a formula. P0·V0/T0 = P1·V1/T1 = P2·V2/T2 must hold for the values the engine produces. This catches any algebra error in the closed form, because it checks against the gas law itself rather than against another rearrangement of it.",
+    run:function(){
+      var r = solve({SV:250,DL:1.0885,DH:1.0612,P0:45,P1:52,P2:175,T0:68,T1:15,T2:145});
+      var a = r.p0A*r.VEC/r.t0R, b = r.p1A*r.V1/r.t1R, c = r.p2A*r.V2/r.t2R;
+      var tol = Math.abs(a)*1e-9;
+      return { pass: near(a,b,tol) && near(b,c,tol),
+               got: fmt(a,6)+" / "+fmt(b,6)+" / "+fmt(c,6), want:"three identical values" };
+    }},
+
+  { name:"Incompressibility constraint V2 = V1 − L",
+    src:"Annex A.8.6.3.2c. The antifreeze is treated as incompressible, so chamber air volume drops by exactly the expansion.",
+    run:function(){
+      var r = solve({SV:180,DL:1.1153,DH:1.0606,P0:38,P1:38,P2:175,T0:70,T1:-12,T2:150});
+      return { pass: near(r.V2, r.V1 - r.L, 1e-9),
+               got:"V1−L = "+fmt(r.V1-r.L,6)+", V2 = "+fmt(r.V2,6), want:"equal" };
+    }},
+
+  { name:"Negative-result condition is detected",
+    src:"Annex: where static supply pressure sits too close to maximum allowable, the formula returns a negative result and no chamber size works.",
+    run:function(){
+      var r = solve({SV:100,DL:1.08,DH:1.05,P0:40,P1:150,P2:175,T0:70,T1:20,T2:150});
+      return { pass: r.solvable === false, got: r.solvable ? "reported solvable" : "correctly rejected", want:"rejected" };
+    }},
+
+  { name:"Isothermal case produces zero expansion",
+    src:"DL = DH means no temperature-driven volume change, so L and VEC must both be zero.",
+    run:function(){
+      var r = solve({SV:100,DL:1.05,DH:1.05,P0:40,P1:40,P2:175,T0:70,T1:70,T2:70});
+      return { pass: near(r.L,0,1e-12) && near(r.VEC,0,1e-12),
+               got:"L = "+fmt(r.L,6)+", VEC = "+fmt(r.VEC,6), want:"both 0" };
+    }},
+
+  { name:"Pipe volume — 2 in. Sch 40",
+    src:"ASME B36.10M ID 2.067 in. Volume = π/4 · d² · 12 / 231 per foot.",
+    run:function(){
+      var g = galPerFt(pipeID("sch40","2")) * 100;
+      return { pass: near(g,17.432,0.005), got: fmt(g,3)+" gal/100 ft", want:"17.432" };
+    }},
+
+  { name:"Pipe volume — 8 in. Sch 10 uses the fire-sprinkler wall",
+    src:"ASTM A135/A795 ID 8.249 in (0.188 in wall), NOT the generic B36.10M 8.329. Confirmed against Wheatland, Bull Moose and Allied submittals.",
+    run:function(){
+      var id = pipeID("sch10","8"), g = galPerFt(id) * 100;
+      return { pass: near(id,8.249,0.0005) && near(g,277.63,0.02),
+               got:"ID "+fmt(id,3)+", "+fmt(g,2)+" gal/100 ft", want:"ID 8.249, 277.63" };
+    }},
+
+  { name:"Density presets return published rows exactly",
+    src:"Tyco TFP1680 Table E endpoints; Lubrizol TDS 20-0249050 77°F row.",
+    run:function(){
+      var lfp = PRODUCTS.filter(function(p){return p.id==="lfp";})[0];
+      var fm  = PRODUCTS.filter(function(p){return p.id==="freezemaster";})[0];
+      var a = densityAt(lfp,-10), b = densityAt(lfp,150), c = densityAt(fm,77);
+      return { pass: near(a,72.4,1e-9) && near(b,68.2,1e-9) && near(c,1.0850,1e-9),
+               got:a+" / "+b+" / "+c, want:"72.4 / 68.2 / 1.085" };
+    }},
+
+  { name:"Density presets refuse to extrapolate",
+    src:"Published table endpoints are also the listed minimum/maximum use temperatures — outside them the product is not listed, so there is no value to extrapolate to.",
+    run:function(){
+      var lfp = PRODUCTS.filter(function(p){return p.id==="lfp";})[0];
+      return { pass: densityAt(lfp,-20) === null && densityAt(lfp,160) === null,
+               got:"−20°F → "+densityAt(lfp,-20)+", 160°F → "+densityAt(lfp,160), want:"null / null" };
+    }},
+
+  { name:"Acceptance volume is below total, and the gap is real",
+    src:"Acceptance = VEC − V2. On a diaphragm tank this is the check that fails first, so it must come out strictly less than total volume and strictly greater than zero on a normal case.",
+    run:function(){
+      var r = solve({SV:300,DL:71.6174,DH:68.2,P0:40,P1:40,P2:175,T0:70,T1:20,T2:150});
+      return { pass: r.ACC > 0 && r.ACC < r.VEC && near(r.ACC, r.VEC - r.V2, 1e-9),
+               got:"VEC "+fmt(r.VEC)+", acceptance "+fmt(r.ACC), want:"0 < acceptance < VEC" };
+    }},
+
+  { name:"Acceptance formula generalises correctly",
+    src:"Acceptance(Vt) = Vt·[1 − (P0T1)/(P1T0)] + L must reduce to VEC − V2 at Vt = VEC, and must increase with shell size. An earlier build used the single VEC−V2 value for every candidate tank, which understated the fluid a larger shell takes in.",
+    run:function(){
+      var r = solve({SV:300,DL:71.6174,DH:68.2,P0:40,P1:40,P2:175,T0:70,T1:20,T2:150});
+      var atVEC = acceptanceRequired(r.VEC, r);
+      var bigger = acceptanceRequired(r.VEC * 2, r);
+      return { pass: near(atVEC, r.VEC - r.V2, 1e-9) && bigger > atVEC,
+               got:"at VEC "+fmt(atVEC,4)+" (VEC−V2 = "+fmt(r.VEC-r.V2,4)+"), at 2×VEC "+fmt(bigger,4),
+               want:"equal at VEC, larger at 2×VEC" };
+    }},
+
+  { name:"STOP — temperature-corrected precharge at or above static",
+    src:"If precharge corrected from T0 to T1 meets static supply pressure, the diaphragm stays pinned and no fluid enters at static. The engine would return V1 > VEC — more air than the tank holding it. Must block, not warn.",
+    run:function(){
+      var i = {SV:300,DL:1.1045,DH:1.0606,P0:40,P1:20,P2:175,T0:70,T1:20,T2:150};
+      var stops = hardStops(i);
+      var r = solve(i);
+      return { pass: stops.length > 0 && r.V1 > r.VEC,
+               got: stops.length+" stop(s); unguarded engine gives V1 "+fmt(r.V1,2)+" > VEC "+fmt(r.VEC,2),
+               want:"blocked" };
+    }},
+
+  { name:"STOP — implied expansion too low to be real",
+    src:"Water alone expands ~1.9% from 20°F to 150°F and every listed antifreeze expands more. Reading a mid-table density row instead of the design extreme produced a 3× undersize with no warning in an earlier build.",
+    run:function(){
+      var bad  = hardStops({SV:300,DL:1.1045,DH:1.0883,P0:40,P1:40,P2:175,T0:70,T1:20,T2:150});
+      var good = hardStops({SV:300,DL:1.1045,DH:1.0606,P0:40,P1:40,P2:175,T0:70,T1:20,T2:150});
+      return { pass: bad.length > 0 && good.length === 0,
+               got:"wrong row → "+bad.length+" stop(s); correct row → "+good.length,
+               want:"blocked / allowed" };
+    }},
+
+  { name:"STOP — swapped densities and inverted temperatures block the solve",
+    src:"Both conditions were diagnosed in an earlier build but rendered as notes while the calculation ran on and recommended a tank. A guardrail that does not stop the solve is decoration.",
+    run:function(){
+      var swapped = hardStops({SV:100,DL:1.05,DH:1.08,P0:40,P1:40,P2:175,T0:70,T1:20,T2:150});
+      var invTemp = hardStops({SV:100,DL:1.08,DH:1.05,P0:40,P1:40,P2:175,T0:70,T1:150,T2:20});
+      return { pass: swapped.length > 0 && invTemp.length > 0,
+               got:"swapped → "+swapped.length+", inverted → "+invTemp.length, want:"both blocked" };
+    }},
+
+  { name:"Pipe type change snaps UP, never down",
+    src:"Changing 8 in. Sch 10 to CPVC (which has no 8 in.) previously fell to the browser's first option, 3/4 in. — silently dropping 165 gal off a 60 ft run, in the undersize direction.",
+    run:function(){
+      var cp = PIPE.cpvc.sizes, largest = cp[cp.length-1];
+      return { pass: largest[0] === "3" && pipeID("cpvc","8") === null && largest[1] > cp[0][1],
+               got:"largest CPVC is "+largest[0]+'" (ID '+largest[1]+"), smallest is "+cp[0][0]+'"',
+               want:'snap target is the largest, 3"' };
+    }},
+
+  { name:"Tank picker respects the acceptance plateau",
+    src:"Amtrol MC10016: FPT-70V has a 34.0 gal shell but accepts only 11.0 gal. Evaluated against its OWN acceptance requirement it must be rejected, and the selected model must satisfy the requirement computed at its own shell size.",
+    run:function(){
+      var r = solve({SV:300,DL:71.6174,DH:68.2,P0:40,P1:40,P2:175,T0:70,T1:20,T2:150});
+      var rows = TANKS.map(function(t){
+        var req = acceptanceRequired(t.total, r);
+        return { t:t, req:req, both: t.total >= r.VEC && t.accept >= req };
+      });
+      var pick = rows.filter(function(x){return x.both;})[0];
+      var v70  = rows.filter(function(x){return x.t.model==="FPT-70V(C)";})[0];
+      return { pass: !!pick && v70.t.total >= r.VEC && v70.t.accept < v70.req && pick.t.accept >= pick.req,
+               got: (pick ? pick.t.model+" selected (needs "+fmt(pick.req,2)+", rated "+fmt(pick.t.accept,1)+")" : "none")+
+                    "; 70V shell clears VEC but needs "+fmt(v70.req,2)+" against an 11.0 rating",
+               want:"70V rejected, selection satisfies its own requirement" };
+    }}
+];
+
+function runSelfTest(){
+  var pass = 0, h = "";
+  var rows = TESTS.map(function(t){
+    var r;
+    try { r = t.run(); } catch(e){ r = { pass:false, got:"threw: "+e.message, want:"no exception" }; }
+    if(r.pass) pass++;
+    return { t:t, r:r };
+  });
+
+  h += flag(pass === TESTS.length ? "ok" : "stop",
+            pass === TESTS.length ? "✓" : "■",
+            "<b>"+pass+" of "+TESTS.length+" passed.</b> "+
+            (pass === TESTS.length
+              ? "The engine matches the published worked example, satisfies the ideal gas law across all three states, and reproduces the pipe, density and tank constants."
+              : "<b>Do not use this tool until the failures below are resolved.</b>"));
+
+  h += '<div class="steps">';
+  rows.forEach(function(x){
+    h += '<div class="step">'+
+      '<div class="sk" style="color:'+(x.r.pass?"var(--green)":"var(--red)")+'">'+(x.r.pass?"PASS":"FAIL")+' — '+esc(x.t.name)+'</div>'+
+      '<div style="font-size:13px">Got <b>'+esc(String(x.r.got))+'</b> · expected <b>'+esc(String(x.r.want))+'</b></div>'+
+      '<div style="font-size:12px;color:var(--ink3);margin-top:5px;line-height:1.5">'+esc(x.t.src)+'</div>'+
+    '</div>';
+  });
+  h += '</div>';
+  $("testOut").innerHTML = h;
+}
+$("btnTest").addEventListener("click", runSelfTest);
+
+addRow();
+renderEdition();
+</script>
+</body>
+</html>
