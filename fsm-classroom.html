@@ -199,6 +199,45 @@ h1{
 .notes-tog .chev{transition:transform .18s ease;flex:none}
 .ep.notes-open .notes-tog .chev{transform:rotate(180deg)}
 .notes{display:none;padding:4px 26px 28px}
+
+/* ---- collapse an entire episode card ---- */
+.ep-min{
+  position:absolute;top:14px;right:14px;
+  width:30px;height:30px;border:0;border-radius:8px;
+  background:rgba(255,255,255,.06);color:var(--ink-2);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:17px;line-height:1;padding:0;
+}
+.ep-min:hover{background:rgba(255,255,255,.12);color:var(--ink)}
+.ep-min:focus-visible{outline:2px solid var(--blue-tx);outline-offset:2px}
+.ep{position:relative}
+.ep.collapsed .player,
+.ep.collapsed .notes-tog,
+.ep.collapsed .notes,
+.ep.collapsed .ep-sub,
+.ep.collapsed .ep-facts{display:none}
+.ep.collapsed .ep-head{padding-top:16px;padding-bottom:16px}
+.ep.collapsed .ep-head h2{font-size:18px;margin:2px 0 0}
+.ep.collapsed .ep-min{top:10px}
+
+/* ---- toolbar ---- */
+.ep-tools{
+  display:flex;gap:10px;flex-wrap:wrap;
+  margin:0 0 18px;padding:0 2px;
+}
+.ep-tools button{
+  border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);
+  color:var(--ink-2);border-radius:999px;padding:7px 14px;
+  font-size:13px;cursor:pointer;font-family:inherit;
+}
+.ep-tools button:hover{color:var(--ink);background:rgba(255,255,255,.09)}
+
+/* ---- two-up grid once there is room ---- */
+@media (min-width:1000px){
+  .wrap.eps{max-width:1180px}
+  .ep-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+  .ep-grid .ep{margin-bottom:0}
+}
 .ep.notes-open .notes{display:block}
 
 /* ---------- content blocks ---------- */
@@ -284,6 +323,8 @@ h1{
 .foot b{color:var(--ink-2);font-weight:600}
 
 @media (max-width:520px){
+  .ep.collapsed .ep-head h2{font-size:16.5px}
+  .ep-tools button{padding:6px 12px;font-size:12.5px}
   .wrap{padding:0 15px}
   .player,.ep-head,.notes{padding-left:18px;padding-right:18px}
   .notes-tog{padding-left:18px;padding-right:18px}
@@ -337,12 +378,175 @@ h1{
     <p class="series">Working through <em>The Apprentice's Field Guide</em>, one guide at a time.</p>
   </div>
 
+  <div class="ep-tools">
+    <button id="collapseAll" type="button">Collapse all</button>
+    <button id="expandAll" type="button">Expand all</button>
+  </div>
+
+  <div class="ep-grid">
+
+  <!-- ============================================================
+       EPISODE 5
+       ============================================================ -->
+  <div class="ep notes-open" data-ep="5" data-audio="audio/FSM_Classroom_Ep5_In-Rack_Sprinklers.mp3" data-len="24:22">
+    <div class="ep-head">
+      <button class="ep-min" aria-expanded="true" aria-label="Collapse episode 5"><span class="mg">&minus;</span></button>
+      <span class="ep-num latest">Episode 5</span>
+      <h2>In-Rack Sprinklers</h2>
+      <p class="ep-sub">Three chapters have been pointing here &mdash; &ldquo;in-rack sprinklers required, see Chapter 25.&rdquo; So you arrive expecting the chapter that decides. It does not. The decision already happened in the table that sent you. This chapter is entirely how: what sprinkler, where it goes vertically, where it goes horizontally, and how the water supply reconciles.</p>
+      <div class="ep-facts">
+        <span class="fact o">24 min</span>
+        <span class="fact">NFPA 13 &middot; 2019 &middot; Ch. 25</span>
+        <span class="fact g">Field Guide 5</span>
+      </div>
+    </div>
+
+    <div class="player">
+      <div class="pl-row">
+        <button class="btn-play" aria-label="Play episode 5">
+          <svg class="ic-play" width="22" height="24" viewBox="0 0 22 24" aria-hidden="true"><path d="M3 2.4c0-1 1.1-1.6 1.9-1.1l14.4 9.6c.8.5.8 1.7 0 2.2L4.9 22.7c-.8.5-1.9-.1-1.9-1.1V2.4z" fill="#fff"/></svg>
+          <svg class="ic-pause" width="20" height="22" viewBox="0 0 20 22" aria-hidden="true"><rect x="2" y="1" width="6" height="20" rx="2" fill="#fff"/><rect x="12" y="1" width="6" height="20" rx="2" fill="#fff"/></svg>
+        </button>
+        <div class="pl-meta">
+          <div class="pl-title">Ep. 5 &mdash; In-Rack Sprinklers</div>
+          <div class="pl-state">Ready &middot; 24:22</div>
+        </div>
+      </div>
+
+      <div class="scrub" role="slider" tabindex="0" aria-label="Seek through episode 5"
+           aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 minutes 0 seconds">
+        <div class="track"><div class="buffer"></div><div class="fill"></div></div>
+        <div class="knob"></div>
+      </div>
+      <div class="times"><span class="cur">0:00</span><span class="dur">24:22</span></div>
+
+      <div class="pl-ctrls">
+        <button class="ctrl back15" aria-label="Back 15 seconds">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3.2V.8L4.4 3.6 8 6.4V4c2.4 0 4.4 2 4.4 4.4S10.4 12.8 8 12.8 3.6 10.8 3.6 8.4H2c0 3.3 2.7 6 6 6s6-2.7 6-6-2.7-5.2-6-5.2z" fill="currentColor"/></svg>
+          15
+        </button>
+        <button class="ctrl fwd15" aria-label="Forward 15 seconds">
+          15
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3.2V.8l3.6 2.8L8 6.4V4C5.6 4 3.6 6 3.6 8.4s2 4.4 4.4 4.4 4.4-2 4.4-4.4H14c0 3.3-2.7 6-6 6s-6-2.7-6-6 2.7-5.2 6-5.2z" fill="currentColor" transform="scale(-1,1) translate(-16,0)"/></svg>
+        </button>
+        <div class="spacer"></div>
+        <button class="ctrl rate" aria-label="Playback speed">1&times;</button>
+        <a class="ctrl" href="audio/FSM_Classroom_Ep5_In-Rack_Sprinklers.mp3" download aria-label="Download episode 5 audio">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 1v8m0 0L4 6m3 3l3-3M1.5 11.5h11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <button class="resume" hidden></button>
+      </div>
+
+      <div class="fallback" hidden>
+        Audio could not load in this browser.
+        <a href="audio/FSM_Classroom_Ep5_In-Rack_Sprinklers.mp3" download>Download the MP3 instead.</a>
+      </div>
+
+      <audio preload="metadata"><source src="audio/FSM_Classroom_Ep5_In-Rack_Sprinklers.mp3" type="audio/mpeg"></audio>
+    </div>
+
+    <button class="notes-tog" aria-expanded="true">
+      <span>Show notes, takeaways &amp; 3 review questions</span>
+      <svg class="chev" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+
+    <div class="notes">
+
+      <div class="sec">
+        <div class="sec-h">What the episode walks through</div>
+
+        <div class="beat"><div class="beat-n">1</div><div class="beat-b">
+          <div class="beat-t">This chapter is the HOW, never the IF</div>
+          <div class="beat-d">Three chapters keep sending you here, so it feels like the chapter that decides whether you need in-rack sprinklers. It is not. That decision was already made by the cell in the table that sent you. Chapter 25 picks up after it: sprinkler type, vertical placement, horizontal placement, clearance, water supply. Read it looking for an eligibility test and you will look forever for a sentence that is not in there.</div>
+          <span class="cite">Ch. 25 scope</span>
+        </div></div>
+
+        <div class="beat"><div class="beat-n">2</div><div class="beat-b">
+          <div class="beat-t">No section names a person who decides</div>
+          <div class="beat-d">There is no paragraph anywhere assigning the decision to owner, designer or AHJ. The criteria themselves are the decision. What the standard does impose is an input obligation &mdash; the Owner&rsquo;s Certificate requires the owner to give the installer the intended use, the materials in the building, and the maximum storage height, before layout and detailing. Without those two facts you cannot reach the table that decides.</div>
+          <span class="cite">NFPA 13 &sect;4.2</span>
+        </div></div>
+
+        <div class="beat"><div class="beat-n">3</div><div class="beat-b">
+          <div class="beat-t">Ordinary temperature, and why that is not a mistake</div>
+          <div class="beat-d">Pendent or upright, standard or quick response, ordinary-temperature rated, K-5.6 / 8.0 / 11.2. The instinct in storage is &ldquo;bad fire, go high temp&rdquo; &mdash; but the in-rack head sits in the fuel and is supposed to operate early. Under an ESFR ceiling the hardware changes: quick response, ordinary temp, K-8.0 or larger. K-5.6 is off the table there, because the whole system is on a faster clock.</div>
+          <span class="cite">In-rack sprinkler characteristics</span>
+        </div></div>
+
+        <div class="beat"><div class="beat-n">4</div><div class="beat-b">
+          <div class="beat-t">The placement fractions &mdash; and the word that trips them</div>
+          <div class="beat-d">One level required with no figure: the first tier level at or above one-half the highest expected storage height. Two levels: at or above one-third and two-thirds. The trap is the phrase &ldquo;first tier level.&rdquo; Twenty-four foot storage with tiers at 6/12/18/24 puts your level at 12. Same storage with tiers at 5/10/15/20 puts it at 15 &mdash; because 10 is below the halfway mark. The rack&rsquo;s own geometry decides. You never hang a head in midair because the math said twelve.</div>
+          <span class="cite">Vertical placement, &sect;25.4</span>
+        </div></div>
+
+        <div class="beat"><div class="beat-n">5</div><div class="beat-b">
+          <div class="beat-t">The ten-foot cap almost nobody learns</div>
+          <div class="beat-d">Single- or double-row rack, Class I&ndash;IV, storage over 25 ft, CMDA at the ceiling: storage above the top level of in-rack sprinklers shall not exceed 10 ft. This is a check you run after placing by the fractions, not a placement rule itself. Place the levels, then measure from the top head to the top of the pile. Thirteen feet means the design you had is not the design you are building.</div>
+          <span class="cite">Maximum storage height above top level</span>
+        </div></div>
+
+        <div class="beat"><div class="beat-n">6</div><div class="beat-b">
+          <div class="beat-t">Horizontal placement pays off the flue spaces</div>
+          <div class="beat-d">Where the distance between transverse flues exceeds the maximum allowable spacing, heads go at the intersection of the transverse and longitudinal flues, with additional heads between transverse flues to satisfy spacing. The intersection, not just &ldquo;somewhere in the flue&rdquo; &mdash; a sprinkler fires because hot gas reaches that head, and the intersection is where the two chimneys meet. No transverse flues at all, and the rule collapses to the simple version: spacing cannot exceed the maximum. Under an ESFR ceiling the max is 5 ft. Heads sit at least 3 in. off the uprights.</div>
+          <span class="cite">Horizontal placement, &sect;25.5</span>
+        </div></div>
+
+        <div class="beat"><div class="beat-n">7</div><div class="beat-b">
+          <div class="beat-t">The obstruction exemption is narrower than it reads</div>
+          <div class="beat-d">In-rack sprinklers are not required to meet the Section 9.5 obstruction and clearance-from-storage rules &mdash; and two lines later, in-rack discharge shall not be obstructed by horizontal rack members. Both are true. The general rules were written for a sprinkler hanging in open air; a head buried in a steel rack full of boxes could never satisfy them, because the rack IS the obstruction. The standard lifts that section and replaces it with one narrow requirement. Read half of it and you walk away believing obstructions stopped mattering.</div>
+          <span class="cite">&sect;25.4.1 and &sect;25.4.3, two lines apart</span>
+        </div></div>
+
+        <div class="beat"><div class="beat-n">8</div><div class="beat-b">
+          <div class="beat-t">A water shield is about water, not forklifts</div>
+          <div class="beat-d">The head at level two operates and rains cold water on the unoperated head at level one, keeping its element cool so it cannot do its job. That is cold soldering, and it is what the shield prevents. Physical damage from material handling is a real concern handled elsewhere with guards and listings &mdash; two different problems, two different pieces of hardware, merged constantly. Where horizontal barriers already shield the head, no shield is required.</div>
+          <span class="cite">In-rack water shields</span>
+        </div></div>
+
+        <div class="beat"><div class="beat-n">9</div><div class="beat-b">
+          <div class="beat-t">Balancing, worked with real numbers</div>
+          <div class="beat-d">Ceiling and in-rack demand over the same protected area are hydraulically balanced together to the higher pressure at their point of connection. Say ceiling is 60 psi and in-rack is 45. You cannot hand the supply both and add the flows &mdash; a system does not run at two pressures at one point. The lower demand steps up: recalculate the in-rack at 60, where it flows more water, and those flows run together downstream. Water absolutely combines. What is ruled out is summing two demands computed at different pressures. Hose stream allowance gets added from the Chapter 20 table.</div>
+          <span class="cite">&sect;25.12.1.4 &mdash; with an exception for the &sect;25.8 arrangement</span>
+        </div></div>
+
+        <div class="beat"><div class="beat-n">10</div><div class="beat-b">
+          <div class="beat-t">Three rules that save money</div>
+          <div class="beat-d">Building steel needs no special protection where in-racks are installed per this chapter. Pipe sizing may be by hydraulic calculation, not restricted by any pipe schedule. And on a short rack where fewer heads physically exist than the design calls for, you design on only those actually installed &mdash; calculating twelve when eight exist is a conservative error nobody catches, and it quietly costs money on the supply side. Also: a separate control valve is not required where 20 or fewer in-racks are on that connection.</div>
+          <span class="cite">&sect;25.12.1 general criteria &middot; control valve exception</span>
+        </div></div>
+
+      </div>
+
+      <div class="sec">
+        <div class="sec-h">Three review questions</div>
+
+        <div class="beat"><div class="beat-n">Q</div><div class="beat-b">
+          <div class="beat-t">Storage goes to 30 ft, two levels of in-rack required, no figure applies. Tiers sit at 8, 16, 24 and 30 ft. Where do the two levels go?</div>
+          <div class="beat-d">One-third of 30 is 10; two-thirds is 20. The first tier level at or above 10 ft is <b>16</b>. The first tier at or above 20 is <b>24</b>. Not 10 and 20 &mdash; those are the marks, not tier levels.</div>
+        </div></div>
+
+        <div class="beat"><div class="beat-n">Q</div><div class="beat-b">
+          <div class="beat-t">Your ceiling demand is 55 psi at the point of connection and your in-rack demand is 40 psi. What is the supply designed to?</div>
+          <div class="beat-d">Balanced to <b>55</b> &mdash; the higher. The in-rack demand is recalculated at 55 psi, where it flows more water than it did at 40, and the flows combine downstream. Adding a 55 and a 40 as computed is the error the rule exists to prevent.</div>
+        </div></div>
+
+        <div class="beat"><div class="beat-n">Q</div><div class="beat-b">
+          <div class="beat-t">In-rack sprinklers are exempt from the Section 9.5 obstruction rules. So a horizontal load beam directly under a head is fine?</div>
+          <div class="beat-d"><b>No.</b> The exemption lifts the general obstruction section &mdash; which no rack-mounted head could satisfy, because the rack itself is the obstruction. Chapter 25 then imposes its own narrow rule: in-rack discharge shall not be obstructed by horizontal rack members. The exemption and the requirement sit two lines apart.</div>
+        </div></div>
+
+      </div>
+
+    </div>
+  </div>
+
   <!-- ============================================================
        EPISODE 4
        ============================================================ -->
-  <div class="ep notes-open" data-ep="4" data-audio="audio/FSM_Classroom_Ep4_Rack_Protection_and_CMDA.mp3" data-len="25:58">
+  <div class="ep" data-ep="4" data-audio="audio/FSM_Classroom_Ep4_Rack_Protection_and_CMDA.mp3" data-len="25:58">
     <div class="ep-head">
-      <span class="ep-num latest">Episode 4</span>
+      <button class="ep-min" aria-expanded="true" aria-label="Collapse episode 4"><span class="mg">&minus;</span></button>
+      <span class="ep-num">Episode 4</span>
       <h2>Rack Protection &amp; CMDA</h2>
       <p class="ep-sub">Chapter 21 is not a hard chapter. It is a chapter with a lot of small fences, and every expensive mistake in it is somebody stepping over a fence they did not see. Control mode density/area — what it inherits, what picks your sprinkler for you, and the one rule this series previously taught wrong.</p>
       <div class="ep-facts">
@@ -396,7 +600,7 @@ h1{
       <audio preload="metadata"><source src="audio/FSM_Classroom_Ep4_Rack_Protection_and_CMDA.mp3" type="audio/mpeg"></audio>
     </div>
 
-    <button class="notes-tog" aria-expanded="true">
+    <button class="notes-tog" aria-expanded="false">
       <span>Show notes, takeaways &amp; 3 review questions</span>
       <svg class="chev" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
@@ -560,6 +764,7 @@ h1{
        ============================================================ -->
   <div class="ep" data-ep="3" data-audio="audio/FSM_Classroom_Ep3_Finding_the_Remote_Area.mp3" data-len="22:24">
     <div class="ep-head">
+      <button class="ep-min" aria-expanded="true" aria-label="Collapse episode 3"><span class="mg">&minus;</span></button>
       <span class="ep-num">Episode 3</span>
       <h2>Finding the Remote Area — and Chasing the Water</h2>
       <p class="ep-sub">Nobody designs for the whole building. You find the single hardest corner to feed, prove the water gets there, and every easier spot is covered for free. Then you have to actually prove it — demand is a point, supply is a curve, and the point has to sit under the curve.</p>
@@ -794,6 +999,7 @@ h1{
        ============================================================ -->
   <div class="ep" data-ep="2" data-audio="audio/FSM_Classroom_Ep2_How_Its_Stacked.mp3" data-len="15:04">
     <div class="ep-head">
+      <button class="ep-min" aria-expanded="true" aria-label="Collapse episode 2"><span class="mg">&minus;</span></button>
       <span class="ep-num">Episode 2</span>
       <h2>How It's Stacked</h2>
       <p class="ep-sub">Commodity class was one input. This is the other one. Same boxes, same class, stacked two different ways, and you are in two different chapters with two different price tags — because the arrangement is what selects your protection criteria.</p>
@@ -1008,6 +1214,7 @@ h1{
        ============================================================ -->
   <div class="ep" data-ep="1" data-audio="audio/FSM_Classroom_Ep1_Commodity_Classification.mp3" data-len="25:38">
     <div class="ep-head">
+      <button class="ep-min" aria-expanded="true" aria-label="Collapse episode 1"><span class="mg">&minus;</span></button>
       <span class="ep-num">Episode 1</span>
       <h2>Commodity Classification</h2>
       <p class="ep-sub">You are not classifying a product. You are classifying a storage unit — the product, the packaging wrapped around it, and the pallet under it. Get this one answer wrong and every number downstream is confidently, precisely wrong.</p>
@@ -1199,9 +1406,11 @@ h1{
     </div>
   </div>
 
+  </div><!-- /.ep-grid -->
+
   <div class="more">
     <h3>More guides to come</h3>
-    <p>Episodes 1 and 2 built the storage picture — what is in the pile, and how it is stacked. Episode 3 crossed into design and hydraulics: find the hardest corner, then prove the water actually reaches it. Episode 4 opened Chapter 21 and found that the expensive mistakes are not hard sums — they are small fences nobody saw. The Field Guide keeps going.</p>
+    <p>Episodes 1 and 2 built the storage picture — what is in the pile, and how it is stacked. Episode 3 crossed into design and hydraulics: find the hardest corner, then prove the water actually reaches it. Episode 4 opened Chapter 21 and found that the expensive mistakes are not hard sums — they are small fences nobody saw. Episode 5 followed the pointer all of those chapters keep making — into Chapter 25, where the question is never whether you need in-rack sprinklers, only how they go in. The Field Guide keeps going.</p>
   </div>
 
   <div class="foot">
@@ -1415,6 +1624,41 @@ h1{
   });
 
   /* Notes disclosure, one per episode. */
+  /* ---- collapse an entire episode card (persisted per episode) ---- */
+  function setCollapsed(ep, on){
+    ep.classList.toggle('collapsed', on);
+    var b = ep.querySelector('.ep-min');
+    if (b){
+      b.setAttribute('aria-expanded', String(!on));
+      b.setAttribute('aria-label', (on?'Expand':'Collapse')+' episode '+ep.getAttribute('data-ep'));
+      var g = b.querySelector('.mg');
+      if (g) g.innerHTML = on ? '&plus;' : '&minus;';
+    }
+    try { localStorage.setItem('fsmcr-collapsed-'+ep.getAttribute('data-ep'), on?'1':'0'); } catch(e){}
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('.ep'), function(ep){
+    var n = ep.getAttribute('data-ep');
+    var saved = null;
+    try { saved = localStorage.getItem('fsmcr-collapsed-'+n); } catch(e){}
+    if (saved === '1') setCollapsed(ep, true);
+
+    var btn = ep.querySelector('.ep-min');
+    if (btn) btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      setCollapsed(ep, !ep.classList.contains('collapsed'));
+    });
+  });
+
+  var cAll = document.getElementById('collapseAll');
+  var xAll = document.getElementById('expandAll');
+  if (cAll) cAll.addEventListener('click', function(){
+    Array.prototype.forEach.call(document.querySelectorAll('.ep'), function(ep){ setCollapsed(ep, true); });
+  });
+  if (xAll) xAll.addEventListener('click', function(){
+    Array.prototype.forEach.call(document.querySelectorAll('.ep'), function(ep){ setCollapsed(ep, false); });
+  });
+
   Array.prototype.forEach.call(document.querySelectorAll('.notes-tog'), function(b){
     b.addEventListener('click', function(){
       var ep = b.closest('.ep');
