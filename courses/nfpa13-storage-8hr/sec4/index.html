@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NFPA 13 Storage Protection — Section 4: CMDA — Control Mode Density/Area</title>
+<style>
+  :root{
+    --bg:#0d0d0f; --panel:#161619; --panel2:#1e1e22; --line:#2a2a30;
+    --red:#e11d48; --red-dark:#b01031; --orange:#D85A30;
+    --green:#1D9E75; --text:#f2f2f4; --muted:#9a9aa2;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.5}
+  header{background:#000;border-bottom:1px solid var(--line);padding:14px 22px;
+    display:flex;align-items:center;gap:14px}
+  .flame{width:auto;height:30px;object-fit:contain}
+  .brand{font-weight:800;letter-spacing:1px;font-size:17px}
+  .brand small{display:block;font-size:9px;letter-spacing:4px;color:var(--muted);font-weight:600}
+  .osfm{margin-left:auto;font-size:11px;color:var(--muted);text-align:right;line-height:1.3}
+  .osfm b{color:var(--green)}
+  .wrap{max-width:960px;margin:0 auto;padding:24px 18px 80px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:18px}
+  h1{font-size:23px;margin:0 0 4px}
+  .sub{color:var(--muted);margin-top:0;font-size:14px}
+  .pill{display:inline-block;background:var(--panel2);border:1px solid var(--line);
+    color:var(--muted);font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;margin-bottom:14px}
+  .stepbar{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap}
+  .stepbar div{flex:1;min-width:90px;text-align:center;font-size:12px;font-weight:600;
+    color:var(--muted);padding:8px 4px;border-radius:8px;background:var(--panel);border:1px solid var(--line)}
+  .stepbar div.active{color:#fff;background:linear-gradient(135deg,var(--red),var(--red-dark));border-color:transparent}
+  .stepbar div.done{color:var(--green);border-color:var(--green)}
+  .slide{display:none}.slide.on{display:block}
+  button{font-family:inherit;font-size:15px;font-weight:700;border:none;border-radius:10px;padding:12px 24px;cursor:pointer;transition:.15s}
+  .btn{background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff}
+  .btn:hover{filter:brightness(1.1)}
+  .btn:disabled{opacity:.4;cursor:not-allowed;filter:none}
+  .btn-ghost{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+  .row{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:8px}
+
+  /* ---- PLAYER ---- */
+  .stage{position:relative;background:#000;border-radius:12px;overflow:hidden;aspect-ratio:16/9}
+  .stage img{width:100%;height:100%;object-fit:contain;display:block}
+  .pbar{height:6px;background:var(--panel2);border-radius:4px;overflow:hidden;margin:14px 0 6px}
+  .pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--red));width:0;transition:width .3s}
+  .pmeta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:12px}
+  .ctrls{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .ctrls .mid{flex:1;text-align:center;font-weight:600;font-size:14px}
+  .audio-wrap{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--line);
+    border-radius:10px;padding:8px 12px;margin-top:12px}
+  .audio-wrap audio{height:34px;flex:1}
+  .auto{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);white-space:nowrap}
+  .lockmsg{font-size:13px;color:var(--muted);margin-top:10px;text-align:center}
+
+  /* ---- QUIZ ---- */
+  .q{margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+  .q:last-child{border-bottom:none}
+  .q p{font-weight:600;margin:0 0 12px}
+  .opt{display:block;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:.12s}
+  .opt:hover{border-color:var(--red)}
+  .opt input{margin-right:10px}
+  label.opt:has(input:checked){border-color:var(--red);background:rgba(225,29,72,.12)}
+  input[type=text],input[type=email]{width:100%;padding:12px 14px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-size:15px;margin-top:6px}
+  .field{margin-bottom:16px}
+  .field label{font-size:13px;color:var(--muted);font-weight:600}
+  .result-big{font-size:40px;font-weight:800;text-align:center;margin:6px 0}
+  .pass{color:var(--green)}.fail{color:var(--red)}
+  .banner{background:rgba(29,158,117,.14);border:1px solid var(--green);color:#8ff0cf;border-radius:10px;padding:14px 16px;font-size:14px;font-weight:600;margin-bottom:18px}
+  .center{text-align:center}
+
+  /* ---- CERTIFICATE ---- */
+  .cert-stage{background:#333;padding:18px;border-radius:12px;overflow:auto}
+  #certificate{width:900px;height:636px;margin:0 auto;position:relative;font-family:Georgia,'Times New Roman',serif;
+    background:radial-gradient(circle at 50% 42%,#ffffff 0%,#fbe4e4 46%,#f3b9b9 100%);
+    border-radius:18px;box-shadow:0 10px 40px rgba(0,0,0,.5);padding:44px 52px;color:#111}
+  #certificate::after{content:"";position:absolute;inset:14px;border:2px solid rgba(176,16,49,.25);border-radius:12px;pointer-events:none}
+  .cert-top{display:flex;justify-content:space-between;align-items:flex-start}
+  .cert-left-logo{display:flex;flex-direction:column;align-items:center;width:110px}
+  .cert-left-logo .fsm-tag{font-weight:800;color:#c9a227;font-size:12px;margin-top:-6px;letter-spacing:1px}
+  .cert-osfm{font-size:11px;color:#7a1020;margin-top:6px;text-align:center;font-family:'Segoe UI',sans-serif;font-weight:700}
+  .cert-word{font-family:'Georgia',serif;font-weight:800;text-align:right;line-height:.92;color:#b0122e;font-size:50px;letter-spacing:2px}
+  .cert-title-block{margin-top:22px}
+  .cert-coc{font-size:24px;letter-spacing:2px;color:#111;font-weight:600}
+  .cert-course{font-size:33px;color:#d21f3c;margin:2px 0 2px;font-weight:700;line-height:1.05}
+  .cert-nfpa{font-size:13px;color:#c0392b;margin:1px 0}
+  .cert-issued{margin-top:20px;font-size:19px;letter-spacing:1px;color:#111}
+  .cert-name{font-size:32px;color:#111;font-weight:700;border-bottom:2px solid #b0122e;display:inline-block;padding:0 30px 2px;margin-top:4px;min-width:340px;text-align:center}
+  .cert-body{font-size:19px;color:#b0122e;text-align:center;margin:22px 10px 6px;font-weight:600}
+  .cert-body small{display:block;font-size:12px;color:#c0392b;font-weight:400;margin-top:4px}
+  .cert-foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:30px}
+  .cert-foot .fld{text-align:center}
+  .cert-foot .val{font-size:18px;border-bottom:1.5px solid #333;padding:0 20px 3px;min-width:150px;display:inline-block}
+  .cert-foot .lbl{font-size:13px;color:#222;margin-top:5px}
+  .cert-sig{font-family:'Segoe Script','Brush Script MT',cursive;font-size:26px;color:#111;border-bottom:1.5px solid #333;padding:0 24px 2px}
+  .cert-sig-img{height:60px;width:auto;max-width:250px;object-fit:contain;display:block;margin:0 auto;border-bottom:1.5px solid #333;padding:0 14px 4px}
+  .flame-red{width:auto;height:60px;object-fit:contain}
+  .muted-note{color:var(--muted);font-size:13px;margin-top:14px}
+  @media(max-width:600px){
+    .wrap{padding:16px 10px 60px}.card{padding:16px}
+    #certificate{transform:scale(.62);transform-origin:top center;margin-bottom:-230px}
+  }
+
+  .certbuy{display:flex;align-items:center;gap:18px;margin:18px 0;padding:18px 20px;
+    border:1px solid #F5B301;border-radius:12px;background:rgba(245,179,1,.07);text-align:left}
+  .certbuy-price{font-size:38px;font-weight:800;color:#F5B301;line-height:1}
+  .certbuy-what{font-size:15px;font-weight:600;line-height:1.4}
+  .certbuy-what small{display:block;font-weight:400;font-size:12.5px;opacity:.72;margin-top:4px}
+</style>
+</head>
+<body>
+<header>
+  <img class="flame" src="assets/flame.png" alt="FSM flame logo">
+  <div class="brand">FIRE SYSTEM<small>MASTERY</small></div>
+  <div class="osfm"><b>Illinois OSFM Approved</b><br>NFPA 13 Storage · Section 4 of 8</div>
+</header>
+
+<div class="wrap">
+  <div class="stepbar">
+    <div id="tab0" class="active">1. Section</div>
+    <div id="tab1">2. Test</div>
+    <div id="tab2">3. Complete</div>
+  </div>
+
+  <!-- ===== STEP 0: COURSE PLAYER ===== -->
+  <section id="step0" class="slide on">
+    <div class="card">
+      <span class="pill">SECTION 4 OF 8 · NFPA 13 (2019) CHAPTER 21</span>
+      <h1>CMDA — Control Mode Density/Area</h1>
+      <p class="sub">Watch all 17 slides with narration, then pass the 10-question test to unlock Section 5.</p>
+
+      <div class="stage"><img id="slideImg" src="slides/slide-01.png" alt="Course slide"></div>
+
+      <div class="pbar"><i id="prog"></i></div>
+      <div class="pmeta"><span id="counter">Slide 1 of 17</span><span id="seen">Viewed: 1 / 17</span></div>
+
+      <div class="audio-wrap">
+        <audio id="narration" controls src="audio/slide-01.mp3"></audio>
+        <label class="auto"><input type="checkbox" id="autoplay" checked> Auto-advance</label>
+      </div>
+
+      <div class="ctrls" style="margin-top:14px">
+        <button class="btn-ghost" id="prevBtn" onclick="nav(-1)" disabled>◀ Previous</button>
+        <span class="mid" id="slideTitle"></span>
+        <button class="btn" id="nextBtn" onclick="nav(1)">Next ▶</button>
+      </div>
+
+      <div id="unlock" class="lockmsg">🔒 View all 17 slides to unlock the test.</div>
+      <div class="center" style="margin-top:12px">
+        <button class="btn" id="toTest" onclick="go(1)" style="display:none">Start the Test ▶</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STEP 1: TEST ===== -->
+  <section id="step1" class="slide">
+    <div class="card">
+      <span class="pill">FINAL TEST · 10 QUESTIONS · PASS = 70% (7 of 10)</span>
+      <h1>Sprinkler Inspection — Test</h1>
+      <p class="sub">Answer all 10 questions, then submit.</p>
+      <form id="quiz"></form>
+      <div class="row">
+        <button class="btn-ghost" onclick="go(0)">◀ Back to course</button>
+        <button class="btn" onclick="grade()">Submit Test</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RESULT ===== -->
+  <section id="stepR" class="slide">
+    <div class="card center"><div id="resultBlock"></div></div>
+  </section>
+
+  <!-- ===== STEP 2: SECTION COMPLETE ===== -->
+  <section id="step2" class="slide">
+    <div class="card">
+      <span class="pill">✓ SECTION 4 COMPLETE</span>
+      <h1>Section 4 of 8 done</h1>
+      <p class="sub">Section 5 — <b>CMSA — Control Mode Specific Application</b> — is now unlocked.</p>
+      <p class="sub">Your progress is saved in this browser. Come back to the course page to pick up
+        where you left off.</p>
+      <div class="row" style="margin-top:20px">
+        <button class="btn-ghost" onclick="go(0)">◀ Review this section</button>
+        <a class="btn" href="../index.html">Back to the course ▶</a>
+      </div>
+      <p class="muted-note">Questions? Email
+        <a href="mailto:maurice@firesystemmastery.com">maurice@firesystemmastery.com</a>.</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* ================= COURSE PLAYER ================= */
+const NSLIDES=17;
+const TITLES=["CMDA: Control Mode Density/Area","Same pallets, two answers","Walk the racks before you open a table","Control is not suppression","The order you actually work it","The density picks the sprinkler — never the reverse","High temperature buys area, not density","Not in a rack? The pile can go to 30 ft","Encapsulated, or just wrapped?","Every curve in the chapter is a 20 ft curve","The rack table has no densities in it","The in-rack trigger: three tables, one direction","Four feet and eight feet — and nothing outside them","The adjustments stack — in this order","The trap: reading a routing table as a density table","Greeting cards, 22 ft, dry system","Carry these five out of the hour"];
+let cur=1, maxSeen=1;
+const img=document.getElementById('slideImg'), audio=document.getElementById('narration');
+
+function pad(n){return String(n).padStart(2,'0');}
+function render(){
+  img.src=`slides/slide-${pad(cur)}.png`;
+  audio.src=`audio/slide-${pad(cur)}.mp3`;
+  document.getElementById('counter').textContent=`Slide ${cur} of ${NSLIDES}`;
+  document.getElementById('seen').textContent=`Viewed: ${maxSeen} / ${NSLIDES}`;
+  document.getElementById('prog').style.width=(maxSeen/NSLIDES*100)+'%';
+  document.getElementById('slideTitle').textContent=TITLES[cur-1]||'';
+  document.getElementById('prevBtn').disabled = cur===1;
+  document.getElementById('nextBtn').style.display = cur===NSLIDES ? 'none':'inline-block';
+  // try to play narration (user gesture from clicking Next allows it)
+  audio.play().catch(()=>{});
+  checkUnlock();
+}
+function nav(d){
+  const nx=cur+d;
+  if(nx<1||nx>NSLIDES)return;
+  cur=nx;
+  if(cur>maxSeen)maxSeen=cur;
+  render();
+}
+function checkUnlock(){
+  if(maxSeen>=NSLIDES){
+    document.getElementById('unlock').innerHTML='✅ All slides viewed — the test is unlocked.';
+    document.getElementById('toTest').style.display='inline-block';
+  }
+}
+audio.addEventListener('ended',()=>{
+  if(document.getElementById('autoplay').checked && cur<NSLIDES) nav(1);
+});
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('step0').classList.contains('on'))return;
+  if(e.key==='ArrowRight')nav(1);
+  if(e.key==='ArrowLeft')nav(-1);
+});
+
+/* ================= QUIZ ================= */
+const QUESTIONS=[
+ {q:"A designer looks up Class III nonencapsulated commodity, double-row rack, 18 ft storage in Table 21.4.1.2. What does that cell actually give him?",
+  opts:["A design density in gpm/ft² and an area of operation","A figure reference, the curve letters for his aisle width, and whether the height adjustment applies","A minimum K-factor and a required sprinkler temperature rating"],a:1,
+  ex:"Tables 21.4.1.2, 21.4.1.3.1 and 21.4.1.3.2 in NFPA 13 (2019) contain no density values at all. They are routing tables: they take commodity class, height band and encapsulation state and return which figure to open, which curves apply, whether Figure 21.4.1.4.1 is applied, and on the multiple-row tables whether a 1.25 density multiplier applies. The gpm/ft² values live on Figures 21.4.1.2(a) through (e). K-factor comes later, out of §21.1.2 through §21.1.4, once the density is known."},
+ {q:"After the height adjustment, a rack design lands at 0.38 gpm/ft². What does the standard require of the sprinkler?",
+  opts:["Standard-response spray sprinklers, K-11.2 or larger, listed for storage applications","Standard-response sprinklers, K-8.0 or larger","Any K-5.6 or larger sprinkler, since the system is ceiling-only"],a:0,
+  ex:"NFPA 13 (2019) §21.1.4 takes over above 0.34 gpm/ft² and requires K-11.2 or larger standard-response spray sprinklers that are listed for storage applications. The storage listing is a separate hurdle and it appears only at this band. K-8.0 belongs to §21.1.3, which covers greater than 0.2 up to 0.34 — a common near-miss when the adjusted density lands just over the line."},
+ {q:"On Figure 21.4.1.2(a) — Class I nonencapsulated — what do curves C and D represent?",
+  opts:["The 4 ft aisle curves, the same as on Figures 21.4.1.2(b) through (e)","The multiple-row rack curves for aisles 8 ft or wider","The ordinary-temperature curves — on that figure the letters are ordered by temperature first"],a:2,
+  ex:"Figure 21.4.1.2(a) orders its curve legend by temperature: A and B are the high-temperature curves, C and D the ordinary-temperature ones. Figures (b) through (e) order theirs by aisle width instead, so on those four C and D genuinely are the 4 ft curves. The habit is right four times and wrong on the Class I figure, which is the one most designers open. The multiple-row curves on Figures (a), (b) and (c) are E and F."},
+ {q:"A warehouse stores nonencapsulated Class III commodity solid-piled on pallets, 28 ft high. No racks. Is a ceiling-only CMDA design available?",
+  opts:["No — above 25 ft all CMDA storage is designed per Chapter 25","No — anything above 20 ft requires in-rack sprinklers","Yes — §21.2.1(1) covers nonencapsulated solid-piled, palletized and bin box storage up to 30 ft"],a:2,
+  ex:"The 25 ft boundary is a rack rule. NFPA 13 (2019) §21.4.2.1 and §21.5.4.1 are both written about rack storage over 25 ft, and neither reaches a pile. §21.2.1(1) independently covers nonencapsulated solid-piled, palletized or bin box storage to 30 ft, and Figure 21.2.2.3's height axis runs to 30 ft to support it. Applying a blanket 25 ft cutoff would reject a legitimate design and sell an in-rack system nobody needed."},
+ {q:"Pallet loads on the floor of a rack are stretch-wrapped tightly around all four sides. The tops are open. How is this treated?",
+  opts:["Not encapsulated — wrapping the sides only is banding","Encapsulated — plastic film around a pallet load is encapsulation","Encapsulated only where the commodity is Class IV or a Group A plastic"],a:0,
+  ex:"NFPA 13 (2019) §3.3.64 defines encapsulation around a plastic sheet enclosing the sides and the top of a load, or individual items wrapped and stored exposed. Annex A.3.3.64 states plainly that banding — stretch-wrapping the sides only — is not encapsulation, and that a top cover whose holes or voids exceed half its area does not qualify either. Calling banded pallets encapsulated drives the design toward in-rack sprinklers it never required."},
+ {q:"Rack storage at 24 ft, density read off Figure 21.4.1.2(c). What does Figure 21.4.1.4.1 do to that density?",
+  opts:["Increases the design area by 30 percent without revising the density","Reduces the density, because the storage is still under the 25 ft limit","Increases it above the curve value, because the curves are drawn for 20 ft storage"],a:2,
+  ex:"Per NFPA 13 (2019) §21.4.1.4.1, densities from the design curves are adjusted using Figure 21.4.1.4.1 for storage over 12 ft up to and including 25 ft. Every curve in Figures 21.4.1.2(a) through (e) is captioned for 20 ft storage, and Figure 21.4.1.4.1's vertical axis runs past 100 percent to 175 percent — so above 20 ft the adjustment multiplies upward. The 30 percent area increase is the dry pipe and preaction rule in §20.13.3, a different adjustment entirely."},
+ {q:"A ceiling-only rack design sits at 0.30 gpm/ft² after the height adjustment. The loads are on solid, flat-bottom combustible pallets. What is the design density?",
+  opts:["0.36 gpm/ft² — the slave-pallet increase is 20 percent, applied after the height adjustment","0.30 gpm/ft² — the slave-pallet rule only applies to storage over 25 ft","0.375 gpm/ft² — a 25 percent increase applies"],a:0,
+  ex:"NFPA 13 (2019) §21.4.1.4.2 adds 20 percent for loads sitting on solid, flat-bottom combustible pallets at storage heights to 25 ft, because the design curves assume conventional pallets. §21.4.1.4.2(A) fixes the order — the percentage applies to the density already determined under §21.4.1.4 — and (B) waives it entirely where in-rack sprinklers are used. The 25 percent figure is the multiple-row encapsulation penalty for Class I through III in §21.4.1.3.3."},
+ {q:"A CMDA design area of 2500 ft² is being built on a dry pipe system. What happens to the area and to the water supply duration?",
+  opts:["3250 ft², and the hose allowance duration moves from 120 minutes to 150 minutes","3250 ft², with the duration unchanged at 120 minutes","2500 ft², with the density increased 30 percent instead"],a:0,
+  ex:"NFPA 13 (2019) §20.13.3 increases the CMDA area of operation 30 percent for dry pipe and preaction systems and leaves the density alone, so 2500 ft² becomes 3250 ft². The CMDA row of Table 20.12.2.6 is keyed to design area size: over 1500 up to 2600 ft² carries 500 gpm for 120 minutes, and over 2600 ft² carries 500 gpm for 150 minutes. Crossing 2600 ft² moves the duration, and almost nobody connects the two rules."},
+ {q:"Class IV commodity, nonencapsulated, stored 18 ft high in multiple-row racks 20 ft deep with 6 ft aisles. What does Chapter 21 permit?",
+  opts:["Ceiling-only protection per Figure 21.4.1.2(d), with the height adjustment applied","Ceiling-only protection with a 50 percent density increase for Class IV","In-rack sprinklers — Table 21.4.1.3.2 carries no ceiling-only cell above 15 ft"],a:2,
+  ex:"Rack depth over 16 ft or aisles narrower than 8 ft puts the job in Table 21.4.1.3.2 in NFPA 13 (2019), and that table's figure references stop at the over-12-to-15 ft band. Above 15 ft every cell reads that in-rack sprinklers are required, per Chapter 25. The 50 percent figure is the §21.4.1.3.4 encapsulation penalty for Class IV in multiple-row racks, which only matters in cells that still have a ceiling-only design to adjust."},
+ {q:"Aisles in a double-row rack measure a consistent 10 ft. How is the design density selected?",
+  opts:["Interpolate beyond the 8 ft value to earn a lower density for the wider aisle","Use the 8 ft density — the rules freeze the value there","Treat the racks as multiple-row, since the aisle is outside the tested range"],a:1,
+  ex:"NFPA 13 (2019) §21.4.1.2.1(B) holds anything wider than 8 ft at the 8 ft density, and (C) holds 3.5 ft up to 4 ft at the 4 ft density. Annex C.15 gives the reason: no fire tests were run outside 4 ft to 8 ft aisles, so the standard cannot say a wider aisle justifies less water. The multiple-row treatment in (D) is triggered by aisles narrower than 3.5 ft, not by wide ones."}
+];
+const PASSPCT=70;
+
+/* ===== BACKEND CONFIG ===== */
+const COURSE_NAME='Storage Protection — Section 4: CMDA — Control Mode Density/Area';
+let lastScoreStr='';
+
+const qForm=document.getElementById('quiz');
+QUESTIONS.forEach((item,i)=>{
+  let h=`<div class="q"><p>${i+1}. ${item.q}</p>`;
+  item.opts.forEach((o,j)=>{h+=`<label class="opt"><input type="radio" name="q${i}" value="${j}">${o}</label>`;});
+  h+=`</div>`;
+  qForm.insertAdjacentHTML('beforeend',h);
+});
+
+/* ================= NAV ================= */
+function go(step){
+  audio.pause();
+  document.querySelectorAll('.slide').forEach(s=>s.classList.remove('on'));
+  const map={0:'step0',1:'step1',R:'stepR',2:'step2',3:'step3'};
+  document.getElementById(map[step]).classList.add('on');
+  const tabIndex={0:0,1:1,R:1,2:2,3:3}[step];
+  for(let t=0;t<3;t++){
+    const el=document.getElementById('tab'+t);el.classList.remove('active','done');
+    if(t<tabIndex)el.classList.add('done');
+    if(t===tabIndex)el.classList.add('active');
+  }
+  if(step===0)audio.play().catch(()=>{});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ================= GRADE ================= */
+function grade(){
+  let score=0,unanswered=false;
+  QUESTIONS.forEach((item,i)=>{
+    const sel=document.querySelector(`input[name="q${i}"]:checked`);
+    if(!sel){unanswered=true;return;}
+    if(parseInt(sel.value)===item.a)score++;
+  });
+  if(unanswered){alert("Please answer all 10 questions before submitting.");return;}
+  const pct=Math.round(score/QUESTIONS.length*100);
+  const passed=pct>=PASSPCT;
+  lastScoreStr=score+'/'+QUESTIONS.length+' ('+pct+'%)';
+  document.getElementById('resultBlock').innerHTML=`
+    <div class="result-big ${passed?'pass':'fail'}">${pct}%</div>
+    <h2 class="${passed?'pass':'fail'}">${passed?'✓ You Passed!':'✗ Not quite — 70% needed'}</h2>
+    <p class="sub">You scored ${score} of ${QUESTIONS.length}.</p>
+    <div class="row center" style="justify-content:center;gap:12px">
+      ${passed?`<button class="btn" onclick="requestCert();go(2)">Continue ▶</button>`
+        :`<button class="btn-ghost" onclick="go(0)">Review course</button><button class="btn" onclick="resetQuiz()">Retake test</button>`}
+    </div>`;
+  go('R');
+}
+function resetQuiz(){document.getElementById('quiz').reset();go(1);}
+
+/* ================= CERTIFICATE REQUEST =================
+   Nothing here builds a certificate. Step 2 shows the price and points at Stripe
+   (if CERT_LINK is set) or an email request. Certificates are issued by hand from
+   05 Products/CE Courses/_Backend/FSM-Certificate-Issuer.html
+
+   TO SWITCH TO STRIPE: paste your Stripe Payment Link into CERT_LINK below. */
+const CERT_LINK = '';
+
+function goBuy(){
+  if(!CERT_LINK){ alert('Certificate checkout is temporarily unavailable. Please email maurice@firesystemmastery.com and he will sort it out.'); return; }
+  location.href = CERT_LINK;
+}
+function requestCert(){
+  try{localStorage.setItem('fsm13s_sec4','1');}catch(e){}
+}
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NFPA 13 Storage Protection — Section 8: Finishing the Design</title>
+<style>
+  :root{
+    --bg:#0d0d0f; --panel:#161619; --panel2:#1e1e22; --line:#2a2a30;
+    --red:#e11d48; --red-dark:#b01031; --orange:#D85A30;
+    --green:#1D9E75; --text:#f2f2f4; --muted:#9a9aa2;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.5}
+  header{background:#000;border-bottom:1px solid var(--line);padding:14px 22px;
+    display:flex;align-items:center;gap:14px}
+  .flame{width:auto;height:30px;object-fit:contain}
+  .brand{font-weight:800;letter-spacing:1px;font-size:17px}
+  .brand small{display:block;font-size:9px;letter-spacing:4px;color:var(--muted);font-weight:600}
+  .osfm{margin-left:auto;font-size:11px;color:var(--muted);text-align:right;line-height:1.3}
+  .osfm b{color:var(--green)}
+  .wrap{max-width:960px;margin:0 auto;padding:24px 18px 80px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:18px}
+  h1{font-size:23px;margin:0 0 4px}
+  .sub{color:var(--muted);margin-top:0;font-size:14px}
+  .pill{display:inline-block;background:var(--panel2);border:1px solid var(--line);
+    color:var(--muted);font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;margin-bottom:14px}
+  .stepbar{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap}
+  .stepbar div{flex:1;min-width:90px;text-align:center;font-size:12px;font-weight:600;
+    color:var(--muted);padding:8px 4px;border-radius:8px;background:var(--panel);border:1px solid var(--line)}
+  .stepbar div.active{color:#fff;background:linear-gradient(135deg,var(--red),var(--red-dark));border-color:transparent}
+  .stepbar div.done{color:var(--green);border-color:var(--green)}
+  .slide{display:none}.slide.on{display:block}
+  button{font-family:inherit;font-size:15px;font-weight:700;border:none;border-radius:10px;padding:12px 24px;cursor:pointer;transition:.15s}
+  .btn{background:linear-gradient(135deg,var(--red),var(--red-dark));color:#fff}
+  .btn:hover{filter:brightness(1.1)}
+  .btn:disabled{opacity:.4;cursor:not-allowed;filter:none}
+  .btn-ghost{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+  .row{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:8px}
+
+  /* ---- PLAYER ---- */
+  .stage{position:relative;background:#000;border-radius:12px;overflow:hidden;aspect-ratio:16/9}
+  .stage img{width:100%;height:100%;object-fit:contain;display:block}
+  .pbar{height:6px;background:var(--panel2);border-radius:4px;overflow:hidden;margin:14px 0 6px}
+  .pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--red));width:0;transition:width .3s}
+  .pmeta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:12px}
+  .ctrls{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .ctrls .mid{flex:1;text-align:center;font-weight:600;font-size:14px}
+  .audio-wrap{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--line);
+    border-radius:10px;padding:8px 12px;margin-top:12px}
+  .audio-wrap audio{height:34px;flex:1}
+  .auto{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);white-space:nowrap}
+  .lockmsg{font-size:13px;color:var(--muted);margin-top:10px;text-align:center}
+
+  /* ---- QUIZ ---- */
+  .q{margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+  .q:last-child{border-bottom:none}
+  .q p{font-weight:600;margin:0 0 12px}
+  .opt{display:block;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:.12s}
+  .opt:hover{border-color:var(--red)}
+  .opt input{margin-right:10px}
+  label.opt:has(input:checked){border-color:var(--red);background:rgba(225,29,72,.12)}
+  input[type=text],input[type=email]{width:100%;padding:12px 14px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-size:15px;margin-top:6px}
+  .field{margin-bottom:16px}
+  .field label{font-size:13px;color:var(--muted);font-weight:600}
+  .result-big{font-size:40px;font-weight:800;text-align:center;margin:6px 0}
+  .pass{color:var(--green)}.fail{color:var(--red)}
+  .banner{background:rgba(29,158,117,.14);border:1px solid var(--green);color:#8ff0cf;border-radius:10px;padding:14px 16px;font-size:14px;font-weight:600;margin-bottom:18px}
+  .center{text-align:center}
+
+  /* ---- CERTIFICATE ---- */
+  .cert-stage{background:#333;padding:18px;border-radius:12px;overflow:auto}
+  #certificate{width:900px;height:636px;margin:0 auto;position:relative;font-family:Georgia,'Times New Roman',serif;
+    background:radial-gradient(circle at 50% 42%,#ffffff 0%,#fbe4e4 46%,#f3b9b9 100%);
+    border-radius:18px;box-shadow:0 10px 40px rgba(0,0,0,.5);padding:44px 52px;color:#111}
+  #certificate::after{content:"";position:absolute;inset:14px;border:2px solid rgba(176,16,49,.25);border-radius:12px;pointer-events:none}
+  .cert-top{display:flex;justify-content:space-between;align-items:flex-start}
+  .cert-left-logo{display:flex;flex-direction:column;align-items:center;width:110px}
+  .cert-left-logo .fsm-tag{font-weight:800;color:#c9a227;font-size:12px;margin-top:-6px;letter-spacing:1px}
+  .cert-osfm{font-size:11px;color:#7a1020;margin-top:6px;text-align:center;font-family:'Segoe UI',sans-serif;font-weight:700}
+  .cert-word{font-family:'Georgia',serif;font-weight:800;text-align:right;line-height:.92;color:#b0122e;font-size:50px;letter-spacing:2px}
+  .cert-title-block{margin-top:22px}
+  .cert-coc{font-size:24px;letter-spacing:2px;color:#111;font-weight:600}
+  .cert-course{font-size:33px;color:#d21f3c;margin:2px 0 2px;font-weight:700;line-height:1.05}
+  .cert-nfpa{font-size:13px;color:#c0392b;margin:1px 0}
+  .cert-issued{margin-top:20px;font-size:19px;letter-spacing:1px;color:#111}
+  .cert-name{font-size:32px;color:#111;font-weight:700;border-bottom:2px solid #b0122e;display:inline-block;padding:0 30px 2px;margin-top:4px;min-width:340px;text-align:center}
+  .cert-body{font-size:19px;color:#b0122e;text-align:center;margin:22px 10px 6px;font-weight:600}
+  .cert-body small{display:block;font-size:12px;color:#c0392b;font-weight:400;margin-top:4px}
+  .cert-foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:30px}
+  .cert-foot .fld{text-align:center}
+  .cert-foot .val{font-size:18px;border-bottom:1.5px solid #333;padding:0 20px 3px;min-width:150px;display:inline-block}
+  .cert-foot .lbl{font-size:13px;color:#222;margin-top:5px}
+  .cert-sig{font-family:'Segoe Script','Brush Script MT',cursive;font-size:26px;color:#111;border-bottom:1.5px solid #333;padding:0 24px 2px}
+  .cert-sig-img{height:60px;width:auto;max-width:250px;object-fit:contain;display:block;margin:0 auto;border-bottom:1.5px solid #333;padding:0 14px 4px}
+  .flame-red{width:auto;height:60px;object-fit:contain}
+  .muted-note{color:var(--muted);font-size:13px;margin-top:14px}
+  @media(max-width:600px){
+    .wrap{padding:16px 10px 60px}.card{padding:16px}
+    #certificate{transform:scale(.62);transform-origin:top center;margin-bottom:-230px}
+  }
+
+  .certbuy{display:flex;align-items:center;gap:18px;margin:18px 0;padding:18px 20px;
+    border:1px solid #F5B301;border-radius:12px;background:rgba(245,179,1,.07);text-align:left}
+  .certbuy-price{font-size:38px;font-weight:800;color:#F5B301;line-height:1}
+  .certbuy-what{font-size:15px;font-weight:600;line-height:1.4}
+  .certbuy-what small{display:block;font-weight:400;font-size:12.5px;opacity:.72;margin-top:4px}
+</style>
+</head>
+<body>
+<header>
+  <img class="flame" src="assets/flame.png" alt="FSM flame logo">
+  <div class="brand">FIRE SYSTEM<small>MASTERY</small></div>
+  <div class="osfm"><b>Illinois OSFM Approved</b><br>NFPA 13 Storage · Section 8 of 8</div>
+</header>
+
+<div class="wrap">
+  <div class="stepbar">
+    <div id="tab0" class="active">1. Section</div>
+    <div id="tab1">2. Test</div>
+    <div id="tab2">3. Complete</div>
+  </div>
+
+  <!-- ===== STEP 0: COURSE PLAYER ===== -->
+  <section id="step0" class="slide on">
+    <div class="card">
+      <span class="pill">SECTION 8 OF 8 · NFPA 13 (2019) §20.6.7–20.15 AND CHAPTER 24</span>
+      <h1>Finishing the Design</h1>
+      <p class="sub">Watch all 17 slides with narration, then pass the 10-question test to finish the course.</p>
+
+      <div class="stage"><img id="slideImg" src="slides/slide-01.png" alt="Course slide"></div>
+
+      <div class="pbar"><i id="prog"></i></div>
+      <div class="pmeta"><span id="counter">Slide 1 of 17</span><span id="seen">Viewed: 1 / 17</span></div>
+
+      <div class="audio-wrap">
+        <audio id="narration" controls src="audio/slide-01.mp3"></audio>
+        <label class="auto"><input type="checkbox" id="autoplay" checked> Auto-advance</label>
+      </div>
+
+      <div class="ctrls" style="margin-top:14px">
+        <button class="btn-ghost" id="prevBtn" onclick="nav(-1)" disabled>◀ Previous</button>
+        <span class="mid" id="slideTitle"></span>
+        <button class="btn" id="nextBtn" onclick="nav(1)">Next ▶</button>
+      </div>
+
+      <div id="unlock" class="lockmsg">🔒 View all 17 slides to unlock the test.</div>
+      <div class="center" style="margin-top:12px">
+        <button class="btn" id="toTest" onclick="go(1)" style="display:none">Start the Test ▶</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STEP 1: TEST ===== -->
+  <section id="step1" class="slide">
+    <div class="card">
+      <span class="pill">FINAL TEST · 10 QUESTIONS · PASS = 70% (7 of 10)</span>
+      <h1>Sprinkler Inspection — Test</h1>
+      <p class="sub">Answer all 10 questions, then submit.</p>
+      <form id="quiz"></form>
+      <div class="row">
+        <button class="btn-ghost" onclick="go(0)">◀ Back to course</button>
+        <button class="btn" onclick="grade()">Submit Test</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RESULT ===== -->
+  <section id="stepR" class="slide">
+    <div class="card center"><div id="resultBlock"></div></div>
+  </section>
+
+  <!-- ===== STEP 2: SECTION COMPLETE ===== -->
+  <section id="step2" class="slide">
+    <div class="card">
+      <span class="pill">✓ SECTION 8 COMPLETE</span>
+      <h1>Section 8 of 8 done</h1>
+      <p class="sub">That is all eight sections. Your certificate is available from the course page.</p>
+      <p class="sub">Your progress is saved in this browser. Come back to the course page to pick up
+        where you left off.</p>
+      <div class="row" style="margin-top:20px">
+        <button class="btn-ghost" onclick="go(0)">◀ Review this section</button>
+        <a class="btn" href="../index.html">Back to the course ▶</a>
+      </div>
+      <p class="muted-note">Questions? Email
+        <a href="mailto:maurice@firesystemmastery.com">maurice@firesystemmastery.com</a>.</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* ================= COURSE PLAYER ================= */
+const NSLIDES=17;
+const TITLES=["Finishing the Design","The design was right and the building still beat it","Six things move the number. One moves the authority.","The room design method","What high-expansion foam actually buys you","The foam rule that decides whether it is buildable","The hazard next door is your problem","Two classifications, one system: pick one path","The hose stream table — finally","The hose rules nobody reads","Going dry costs you — but only CMDA gets a percentage","Idle pallets are their own hazard","Columns, and a free pass in the calculation","Chapter 24 is not a cheaper design","The trap","Worked example — dry system, concealed space, 2,000 ft² to start","Carry these out — and that is the course"];
+let cur=1, maxSeen=1;
+const img=document.getElementById('slideImg'), audio=document.getElementById('narration');
+
+function pad(n){return String(n).padStart(2,'0');}
+function render(){
+  img.src=`slides/slide-${pad(cur)}.png`;
+  audio.src=`audio/slide-${pad(cur)}.mp3`;
+  document.getElementById('counter').textContent=`Slide ${cur} of ${NSLIDES}`;
+  document.getElementById('seen').textContent=`Viewed: ${maxSeen} / ${NSLIDES}`;
+  document.getElementById('prog').style.width=(maxSeen/NSLIDES*100)+'%';
+  document.getElementById('slideTitle').textContent=TITLES[cur-1]||'';
+  document.getElementById('prevBtn').disabled = cur===1;
+  document.getElementById('nextBtn').style.display = cur===NSLIDES ? 'none':'inline-block';
+  // try to play narration (user gesture from clicking Next allows it)
+  audio.play().catch(()=>{});
+  checkUnlock();
+}
+function nav(d){
+  const nx=cur+d;
+  if(nx<1||nx>NSLIDES)return;
+  cur=nx;
+  if(cur>maxSeen)maxSeen=cur;
+  render();
+}
+function checkUnlock(){
+  if(maxSeen>=NSLIDES){
+    document.getElementById('unlock').innerHTML='✅ All slides viewed — the test is unlocked.';
+    document.getElementById('toTest').style.display='inline-block';
+  }
+}
+audio.addEventListener('ended',()=>{
+  if(document.getElementById('autoplay').checked && cur<NSLIDES) nav(1);
+});
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('step0').classList.contains('on'))return;
+  if(e.key==='ArrowRight')nav(1);
+  if(e.key==='ArrowLeft')nav(-1);
+});
+
+/* ================= QUIZ ================= */
+const QUESTIONS=[
+ {q:"Under the room design method, why is the largest room on a floor not automatically the worst room?",
+  opts:["Because the largest room usually has the lowest ceiling","Because rooms that communicate through an unprotected opening are evaluated together","Because design areas are always measured from the most remote corner"],a:1,
+  ex:"A.20.8.1 makes this point directly. Two modest rooms joined by an unprotected opening get assessed as one space, so they can beat a bigger isolated room. Two other things from the same annex catch people: a corridor counts as a room, and walls are permitted to stop at a substantial suspended ceiling rather than running to the deck. Walk the openings and the ratings, not the square footage."},
+ {q:"High-expansion foam is used with ceiling sprinklers over racks holding Class I, II, III or IV product, on a density and area design. What does §20.9.2.6 do?",
+  opts:["Cuts the ceiling density by half","Reduces the design area to 2,000 sq ft","Removes the requirement for in-rack sprinklers"],a:2,
+  ex:"It deletes the in-rack requirement outright — the only rule in this entire course that does. Do not confuse it with its neighbours: §20.9.2.1 is the half-density cut, and that applies to palletized, solid-piled, bin box and shelf storage, not rack. §20.9.2.2 is where the flat 0.2 and 0.25 gpm/ft² rack figures over 2,000 sq ft come from. Three different rules, three different effects."},
+ {q:"A warehouse has 24 ft of storage and 12 ft of clearance to the ceiling. The design uses high-expansion foam. Can detection be handled by ceiling detectors alone?",
+  opts:["No — clearance to ceiling exceeds 10 ft","Yes — storage is below the 25 ft limit","Yes, provided the detectors are spaced at half their listed spacing"],a:0,
+  ex:"§20.9.2.7.2 disqualifies ceiling detectors on their own where clearance to the ceiling exceeds 10 ft OR where storage exceeds 25 ft. Either condition alone is enough, and here the 12 ft clearance does it — the storage height never gets a vote. This is the rule that kills more foam schemes than cost does, so check it before you sell anyone on the density reduction."},
+ {q:"A Group A plastics operation sits in the corner of an ordinary hazard room with no barrier between them. How far does the more demanding design criteria extend past the plastics perimeter?",
+  opts:["10 ft","15 ft","20 ft"],a:1,
+  ex:"15 ft, per §20.10.1(1), and the annex confirms it with a worked example. If 20 ft is in your head, that is Table 20.6.4.2's maximum clearance from the top of storage to the ceiling — a different rule about a different measurement. A third number floats around too: Table A.20.10 recommends extending high-temperature-rated sprinklers 30 to 55 ft past the perimeter, but that is an annex recommendation about sprinkler type, not a design-criteria distance."},
+ {q:"§20.10.4 gives three approaches for the water supply on a system covering two hazard classifications. How are they meant to be applied?",
+  opts:["All three must be satisfied together","The most conservative of the three is required","The designer picks one of the three"],a:2,
+  ex:"The standard frames them as one of the following — you choose. The third option is the narrow one and it has two conditions people drop: the higher classification must exist only in individual rooms of 400 sq ft or less, and no two such rooms may be adjacent. Miss either and option three is off the table. Whichever you pick, the hose stream allowance and supply duration under §20.12.2 still ride on top."},
+ {q:"You are pulling the hose stream allowance for a CMSA design using standard-spacing sprinklers out of Table 20.12.2.6. What is the row keyed to?",
+  opts:["The number of sprinklers","The design area in square feet","The commodity class"],a:0,
+  ex:"Number of sprinklers. At standard spacing the breakpoints are 12, 15 and 25 — the same ladder as ESFR. Watch the spacing type though: CMSA at extended coverage has its own rows in the same table, breaking at 6, 8 and 12, with footnote (b) capping one of them at 144 sq ft per sprinkler. CMDA is keyed to design area in square feet instead, breaking at 1,200, 1,500 and 2,600. One table, several lookups, so read the column headers rather than reaching for the method name. Footnote (a) adds a real design break: obstruction sprinklers do not count toward the CMSA or ESFR sprinkler count."},
+ {q:"A CMDA design lands on 2,000 sq ft at a given density. The system is then changed to dry pipe. What happens?",
+  opts:["The density increases by 30 percent, area unchanged","Both density and area increase by 30 percent","The area of operation becomes 2,600 sq ft, density unchanged"],a:2,
+  ex:"§20.13.3 adds 30 percent to the area of sprinkler operation and leaves the density alone — 2,000 becomes 2,600. Read that section's scope, because it is expressly limited to CMDA. Under CMSA the dry penalty has a different shape entirely: it lands on the sprinkler count, and sometimes on the pressure too. In Table 22.2 the palletized Class I/II block goes 15 sprinklers wet to 25 dry at the same 25 psi on the K-11.2 row — but the K-16.8 row right below it goes 15 at 10 psi to 25 at 15 psi. Read the dry row; never adjust the wet one. Carrying the 30 percent across to CMSA is a common and expensive mistake."},
+ {q:"That same 2,000 sq ft CMDA design is on a dry system AND the building has an unsprinklered combustible concealed space. What is the final area of operation?",
+  opts:["3,900 sq ft — take the 3,000 sq ft concealed-space figure, then add 30 percent","3,000 sq ft — compound the dry increase off the original 2,000 to get 2,600, then apply §20.7 last as a floor","2,600 sq ft — the dry increase governs and the concealed space is already covered"],a:1,
+  ex:"Two short sentences decide this. §20.13.1.1 makes every adjustment compound off the area of operation you picked at the start — the original 2,000, not a running total. So dry gives 2,600. Then §20.13.1.2 requires §20.7 to be applied after every other modification, and §20.7.1 sets a floor of 3,000 sq ft rather than adding on top. Final answer 3,000. Apply them in the order you happen to meet them and you get 3,900 — 900 sq ft of design area, and a pump, that the standard never asked for."},
+ {q:"A sprinkler performs exceptionally well in full-scale fire testing. What does Chapter 24 let you do with that result?",
+  opts:["Nothing that shrinks the system — the count is the worst-case result plus a minimum 50 percent, over hard floors","Reduce the sprinkler count in proportion to the test performance","Reduce the in-rack water supply where the test demonstrated suppression"],a:0,
+  ex:"Chapter 24 is a path to using a sprinkler the ordinary tables do not cover. It is not a path to a cheaper design. §24.1.8 sets the count at the worst-case tested result plus a minimum of 50 percent; §24.1.8.1 puts hard floors of 12, 8 and 6 sprinklers underneath that no test may undercut; §24.1.8.2 sets a 768 sq ft minimum operating area; and §24.1.5 expressly blocks the chapter from reducing in-rack water supply, whatever the test showed."},
+ {q:"Rack storage is 18 ft high. A steel column stands in the aisle, 20 in. from the rack footprint. Does it need column protection under §20.15.1?",
+  opts:["Yes — storage above 15 ft triggers it regardless of column position","Yes — any column serving a rack over 15 ft is protected","No — the trigger needs both conditions, and at 20 in. the column is neither in the footprint nor within 12 in. of it"],a:2,
+  ex:"Both conditions have to be true together: storage above 15 ft, and the column either wholly or partly inside the rack footprint including flue spaces, or outside it but within 12 in. of it. The height is met here, neither position is, so no column sprinkler is required. Two more worth carrying: rubber tire storage escalates from one head at 15 to 20 ft to two heads above 20 ft, and column sprinkler flow may be omitted from the hydraulic calculations entirely — a permission that appears three separate times in the chapter."}
+];
+const PASSPCT=70;
+
+/* ===== BACKEND CONFIG ===== */
+const COURSE_NAME='Storage Protection — Section 8: Finishing the Design';
+let lastScoreStr='';
+
+const qForm=document.getElementById('quiz');
+QUESTIONS.forEach((item,i)=>{
+  let h=`<div class="q"><p>${i+1}. ${item.q}</p>`;
+  item.opts.forEach((o,j)=>{h+=`<label class="opt"><input type="radio" name="q${i}" value="${j}">${o}</label>`;});
+  h+=`</div>`;
+  qForm.insertAdjacentHTML('beforeend',h);
+});
+
+/* ================= NAV ================= */
+function go(step){
+  audio.pause();
+  document.querySelectorAll('.slide').forEach(s=>s.classList.remove('on'));
+  const map={0:'step0',1:'step1',R:'stepR',2:'step2',3:'step3'};
+  document.getElementById(map[step]).classList.add('on');
+  const tabIndex={0:0,1:1,R:1,2:2,3:3}[step];
+  for(let t=0;t<3;t++){
+    const el=document.getElementById('tab'+t);el.classList.remove('active','done');
+    if(t<tabIndex)el.classList.add('done');
+    if(t===tabIndex)el.classList.add('active');
+  }
+  if(step===0)audio.play().catch(()=>{});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ================= GRADE ================= */
+function grade(){
+  let score=0,unanswered=false;
+  QUESTIONS.forEach((item,i)=>{
+    const sel=document.querySelector(`input[name="q${i}"]:checked`);
+    if(!sel){unanswered=true;return;}
+    if(parseInt(sel.value)===item.a)score++;
+  });
+  if(unanswered){alert("Please answer all 10 questions before submitting.");return;}
+  const pct=Math.round(score/QUESTIONS.length*100);
+  const passed=pct>=PASSPCT;
+  lastScoreStr=score+'/'+QUESTIONS.length+' ('+pct+'%)';
+  document.getElementById('resultBlock').innerHTML=`
+    <div class="result-big ${passed?'pass':'fail'}">${pct}%</div>
+    <h2 class="${passed?'pass':'fail'}">${passed?'✓ You Passed!':'✗ Not quite — 70% needed'}</h2>
+    <p class="sub">You scored ${score} of ${QUESTIONS.length}.</p>
+    <div class="row center" style="justify-content:center;gap:12px">
+      ${passed?`<button class="btn" onclick="requestCert();go(2)">Continue ▶</button>`
+        :`<button class="btn-ghost" onclick="go(0)">Review course</button><button class="btn" onclick="resetQuiz()">Retake test</button>`}
+    </div>`;
+  go('R');
+}
+function resetQuiz(){document.getElementById('quiz').reset();go(1);}
+
+/* ================= CERTIFICATE REQUEST =================
+   Nothing here builds a certificate. Step 2 shows the price and points at Stripe
+   (if CERT_LINK is set) or an email request. Certificates are issued by hand from
+   05 Products/CE Courses/_Backend/FSM-Certificate-Issuer.html
+
+   TO SWITCH TO STRIPE: paste your Stripe Payment Link into CERT_LINK below. */
+const CERT_LINK = '';
+
+function goBuy(){
+  if(!CERT_LINK){ alert('Certificate checkout is temporarily unavailable. Please email maurice@firesystemmastery.com and he will sort it out.'); return; }
+  location.href = CERT_LINK;
+}
+function requestCert(){
+  try{localStorage.setItem('fsm13s_sec8','1');}catch(e){}
+}
+render();
+</script>
+</body>
+</html>
