@@ -119,7 +119,18 @@
   .certbuy-price{font-size:38px;font-weight:800;color:var(--gold);line-height:1}
   .certbuy-what{font-size:15px;font-weight:600;line-height:1.4}
   .certbuy-what small{display:block;font-weight:400;font-size:12.5px;color:var(--muted);margin-top:4px}
+  /* resume code */
+  .resume{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin:-12px 0 26px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .rc-lbl{font-family:'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;font-size:13px;color:var(--muted);display:block;margin-bottom:4px}
+  .rc-code{font-family:'Barlow Condensed',monospace;font-size:28px;letter-spacing:.12em;color:var(--gold);margin-right:10px}
+  .rc-note{color:var(--muted);font-size:13px;margin-top:6px}
+  .rc-row{display:flex;gap:8px;margin-top:6px}
+  .rc-row input{flex:1;min-width:0;padding:11px 12px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);font-size:16px;font-family:inherit;text-transform:uppercase;letter-spacing:.08em}
+  .rc-btn{padding:11px 18px}
+  .rc-msg{font-size:13px;margin-top:6px;min-height:18px}
+  .rc-msg.ok{color:#8ff0cf}.rc-msg.bad{color:#ff9a8a}
   @media(max-width:600px){
+    .resume{grid-template-columns:1fr;margin-top:-12px}
     .hero h1{font-size:30px}.scard{grid-template-columns:48px 1fr;gap:12px}.sstat{grid-column:1/-1;justify-self:start;margin-top:4px}
     #certificate{transform:scale(.62);transform-origin:top center;margin-bottom:-230px}
   }
@@ -144,6 +155,19 @@
     <span class="lbl"><b id="pcount">0</b> of 8 sections complete</span>
     <div class="ptrack"><i id="pbar"></i></div>
     <span class="phours" id="phours">0.0 / 8.0 CE hours</span>
+  </div>
+
+  <div class="resume">
+    <div>
+      <span class="rc-lbl">Your resume code</span>
+      <b id="rcode" class="rc-code">—</b><button class="btn-ghost rc-btn" id="rcCopyBtn" onclick="rcCopy()" style="display:none">Copy</button>
+      <div class="rc-note" id="rcNote">Your code appears here after you finish Section 1.</div>
+    </div>
+    <div>
+      <label class="rc-lbl" for="rcIn">Started on another device?</label>
+      <div class="rc-row"><input id="rcIn" autocomplete="off" autocapitalize="characters" spellcheck="false"><button class="btn rc-btn" onclick="rcRestore()">Resume</button></div>
+      <div class="rc-msg" id="rcMsg"></div>
+    </div>
   </div>
 
   <div class="sections" id="sections"></div>
@@ -239,6 +263,7 @@ function render(){
   const gate=document.getElementById('certgate'),btn=document.getElementById('certbtn'),msg=document.getElementById('certmsg');
   if(done>=8){gate.classList.remove('locked');btn.disabled=false;msg.textContent='All 8 sections complete. Your 8.0-hour Illinois OSFM certificate is ready to be issued.';}
   else{gate.classList.add('locked');btn.disabled=true;msg.textContent=`Complete all 8 sections to unlock your certificate. (${done}/8 done — ${8-done} to go.)`;}
+  renderResume();
 }
 function resetProgress(){if(confirm('Reset all course progress? This clears which sections you have completed.')){for(let n=1;n<=8;n++)localStorage.removeItem('fsm8_sec'+n);render();}}
 
@@ -254,6 +279,49 @@ function requestCert(){
   document.getElementById('modal').classList.add('on');
 }
 function closeCert(){document.getElementById('modal').classList.remove('on');}
+/* ===== resume code =====
+   Progress lives in this browser only. The resume code carries it to another device:
+   it encodes how many sections are complete, plus a checksum so a typo is rejected.
+   It is not a security control. The certificate is issued by hand after purchase. */
+const RC_PREFIX='NF25', RC_KEY='fsm8_';
+const RC_A='23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
+function rcHash(s){let h=2166136261;for(const ch of s){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)>>>0;}return h;}
+function rcSalt(){try{let s=localStorage.getItem(RC_KEY+'rcsalt');if(s===null||isNaN(+s)||+s<0||+s>1023){s=String(Math.floor(Math.random()*1024));localStorage.setItem(RC_KEY+'rcsalt',s);}return +s;}catch(e){return 0;}}
+function rcMake(n,salt){const c=rcHash(RC_PREFIX+salt+':'+n)%1024;return RC_PREFIX+'-'+RC_A[salt>>5]+RC_A[salt&31]+RC_A[(n*7+salt)%32]+'-'+RC_A[c>>5]+RC_A[c&31];}
+function rcRead(code){
+  let t=String(code||'').toUpperCase().replace(/[^0-9A-Z]/g,'');
+  if(!t.startsWith(RC_PREFIX))return null; t=t.slice(RC_PREFIX.length);
+  if(t.length!==5)return null;
+  const i=[...t].map(ch=>RC_A.indexOf(ch)); if(i.some(v=>v<0))return null;
+  const salt=i[0]*32+i[1], n=((((i[2]-salt)%32)+32)%32*23)%32;
+  if(n<1||n>8)return null;
+  if(rcMake(n,salt)!==RC_PREFIX+'-'+t.slice(0,3)+'-'+t.slice(3))return null;
+  return {n,salt};
+}
+function renderResume(){
+  const done=countPassed(), el=document.getElementById('rcode'), btn=document.getElementById('rcCopyBtn'), note=document.getElementById('rcNote');
+  document.getElementById('rcIn').placeholder=RC_PREFIX+'-XXX-XX';
+  if(done<1){el.textContent='—';btn.style.display='none';note.textContent='Your code appears here after you finish Section 1.';return;}
+  el.textContent=rcMake(done,rcSalt());btn.style.display='';
+  note.textContent='Switching to a phone, tablet or another computer? Write this code down or text it to yourself, then enter it on the other device. It updates each time you finish a section.';
+}
+function rcCopy(){
+  const code=document.getElementById('rcode').textContent, msg=document.getElementById('rcNote');
+  const ok=()=>{document.getElementById('rcCopyBtn').textContent='Copied ✓';setTimeout(()=>{document.getElementById('rcCopyBtn').textContent='Copy';},1800);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(code).then(ok,()=>{msg.textContent='Copy blocked by the browser. Write the code down: '+code;});}
+  else{msg.textContent='Write the code down: '+code;}
+}
+function rcRestore(){
+  const msg=document.getElementById('rcMsg'), r=rcRead(document.getElementById('rcIn').value), have=countPassed();
+  msg.className='rc-msg';
+  if(!r){msg.classList.add('bad');msg.textContent="That code doesn't match this course. Check it and try again.";return;}
+  if(r.n<=have){msg.classList.add('bad');msg.textContent='This device already shows '+have+' of 8 sections complete. Nothing changed.';return;}
+  try{for(let k=1;k<=r.n;k++)localStorage.setItem(RC_KEY+'sec'+k,'1');localStorage.setItem(RC_KEY+'rcsalt',String(r.salt));}
+  catch(e){msg.classList.add('bad');msg.textContent='This browser is blocking saved progress (private mode?). Try a normal window.';return;}
+  document.getElementById('rcIn').value='';
+  render();
+  msg.classList.add('ok');msg.textContent='Restored: '+r.n+' of 8 sections complete. Pick up at Section '+Math.min(r.n+1,8)+'.';
+}
 render();
 </script>
 </body>
