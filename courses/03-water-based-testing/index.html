@@ -339,10 +339,12 @@ function resetQuiz(){document.getElementById('quiz').reset();go(1);}
 
    TO SWITCH TO STRIPE: paste your Stripe Payment Link into CERT_LINK below. */
 const CERT_LINK = 'https://buy.stripe.com/9B600jfpr3ns1gA8POcIE01';
+/* Tells Stripe which course this certificate is for, so the website can issue it automatically. */
+const COURSE_ID = '03-water-based-testing';
 
 function goBuy(){
   if(!CERT_LINK){ alert('Certificate checkout is temporarily unavailable. Please email maurice@firesystemmastery.com and he will sort it out.'); return; }
-  location.href = CERT_LINK;
+  location.href = CERT_LINK + '?client_reference_id=' + encodeURIComponent(COURSE_ID);
 }
 function requestCert(){
 }

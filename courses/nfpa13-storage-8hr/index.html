@@ -235,6 +235,8 @@ const COURSE_NAME='NFPA 13 (2019) Storage Protection — 8-Hour Comprehensive CE
    TO SWITCH TO STRIPE: paste your Stripe Payment Link into CERT_LINK below. Leave it
    empty and the button falls back to an email request, which works today. */
 const CERT_LINK = 'https://buy.stripe.com/dRm14n2CF4rw0cw7LKcIE02';
+/* Tells Stripe which course this certificate is for, so the website can issue it automatically. */
+const COURSE_ID = 'nfpa13-storage-8hr';
 const CERT_PRICE = '$249';
 
 function passed(n){try{return localStorage.getItem('fsm13s_sec'+n)==='1';}catch(e){return false;}}
@@ -272,7 +274,7 @@ function resetProgress(){if(confirm('Reset all course progress? This clears whic
    Stripe (if CERT_LINK is set) or an email request. Certificates are issued by hand. */
 function goBuy(){
   if(!CERT_LINK){ alert('Certificate checkout is temporarily unavailable. Please email maurice@firesystemmastery.com and he will sort it out.'); return; }
-  location.href = CERT_LINK;
+  location.href = CERT_LINK + '?client_reference_id=' + encodeURIComponent(COURSE_ID);
 }
 function requestCert(){
   if(countPassed()<8) return;
