@@ -140,6 +140,7 @@ function episode(n) {
       <div class="noaudio" id="na" hidden>Audio for this episode hasn't been added yet. The questions below work now.</div>
       <div class="speeds">${SPEEDS.map(r => `<button data-r="${r}" class="${r === rate ? 'on' : ''}">${r}×</button>`).join('')}</div>
       <a class="printlink" href="questions.pdf" target="_blank">🖨 Print the questions (all 6 episodes)</a>
+      <a class="printlink" href="answers.pdf" target="_blank">🖨 Print the answer key, with how each one is worked out</a>
     </div>
     <p class="muted">The questions from this episode, in order. Try each one before you tap.</p>
     ${body}`;
